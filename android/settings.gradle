@@ -1,0 +1,3 @@
+rootProject.name = 'JitsiMeetApp'
+
+include ':app'
