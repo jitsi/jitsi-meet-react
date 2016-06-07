@@ -19,3 +19,9 @@ Android should be supported, but there has not been any testing done yet.
 
 - Configuration for web and desktop can be found in `web/[NODE_ENV].config.js` and `desktop/[NODE_ENV].development.js`, where `[NODE_ENV]` is based on the environment used to generate the build. There are two additional configuration file, `web/injected.config.js` and `desktop/injected.config.js` that allow injecting configuration as a separate script that will be loaded into the page.
 
+## Distributions
+
+Right now, only the web target generates a complete client distribution. The `dist/web` output should be able to be loaded directly onto a CDN.
+
+The other targets need further packaging support.
+
