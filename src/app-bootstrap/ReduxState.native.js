@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import { connect } from 'react-redux';
+
 
 const style = {
     alignItems: 'center',
@@ -7,12 +9,17 @@ const style = {
     flex: 1
 };
 
-export default class Hello extends Component {
+class ReduxState extends Component {
     render() {
         return (
           <View style={style}>
-            <Text>Hello, World!</Text>
+            <Text>Redux State:</Text>
+            <Text>{JSON.stringify(this.props.redux, null, 2)}</Text>
           </View>
         );
     }
 }
+
+
+export default connect(state => { return { redux: state } })(ReduxState);
+
