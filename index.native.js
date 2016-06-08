@@ -22,7 +22,7 @@ import Config from './config/development';
 
 const Jitsi = require('./src/jitsi');
 
-import ReduxState from './src/app-bootstrap/ReduxState.browser';
+import ReduxState from './src/app-bootstrap/ReduxState.native';
 
 
 const reducer = combineReducers({
