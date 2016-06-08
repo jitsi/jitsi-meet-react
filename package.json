@@ -4,19 +4,15 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf dist",
-    "build:web": "mkdir -p dist/web; cp -r static/* dist/web; cp -r web/static/* dist/web; webpack --config web/webpack.config.js",
-    "build:desktop": "mkdir -p dist/desktop; cp -r static/* dist/desktop; cp -r desktop/static/* dist/desktop; webpack --config desktop/webpack.config.js",
+    "build:web": "mkdir -p dist/; cp -r static/* dist/; webpack",
     "start:ios": "npm run clean; react-native run-ios",
-    "start:web": "webpack-dev-server --config web/webpack.config.js --colors --port 5000 --https --history-api-fallback --open",
-    "start:desktop": "npm run start:electron",
-    "start:electron": "npm run build:desktop && electron dist/desktop/electron.js",
-    "start:nwjs": "npm run build:desktop && /Applications/nwjs.app/Contents/MacOS/nwjs dist/desktop"
+    "start:web": "webpack-dev-server --colors --port 5000 --https --history-api-fallback --open"
   },
   "dependencies": {
-    "electron-prebuilt": "^1.2.1",
+    "getconfig": "^3.0.0",
     "html-webpack-plugin": "^2.19.0",
     "jitsi-meet-logger": "jitsi/jitsi-meet-logger",
-    "jquery": "~2.1.1",
+    "jquery": "^2.2.4",
     "lib-jitsi-meet": "jitsi/lib-jitsi-meet",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
@@ -26,19 +22,22 @@
     "react-router": "^2.4.1",
     "react-router-redux": "^4.0.5",
     "redux": "^3.5.2",
-    "strophe": "^1.2.2",
+    "redux-thunk": "^2.1.0",
+    "strophe": "^1.2.4",
     "strophejs-plugins": "^0.0.6",
-    "xmldom": "0.1.22"
+    "xmldom": "^0.1.22"
   },
   "devDependencies": {
     "babel-core": "^6.9.1",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-1": "^6.5.0",
+    "exorcist": "^0.4.0",
+    "html-webpack-template": "^5.0.0",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1",
     "browserify": "11.1.x",
-    "exorcist": "*",
     "uglify-js": "2.4.24"
   }
 }

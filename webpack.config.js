@@ -1,5 +1,6 @@
 var WebPack = require('webpack');
 var HtmlWebPackPlugin = require('html-webpack-plugin');
+var HtmlWebPackTemplate = require('html-webpack-template');
 
 
 var NODE_ENV = process.env.NODE_ENV || 'development';
@@ -9,7 +10,7 @@ var isDevelopment = NODE_ENV === 'development';
 
 var Config = new WebPack.NormalModuleReplacementPlugin(
     /^config$/,
-    __dirname + '/' + NODE_ENV + '.config.js'
+    __dirname + '/config/' + NODE_ENV + '.js'
 );
 
 
@@ -24,8 +25,7 @@ module.exports = {
     debug: true,
     devtool: false,
     entry: {
-        app: __dirname + '/../src/index.web.js',
-        config: __dirname + '/injected.config.js'
+        app: __dirname + '/index.web.js'
     },
     stats: {
         colors: true,
@@ -34,9 +34,14 @@ module.exports = {
     plugins: [
         Config,
         new HtmlWebPackPlugin({
-            inject: 'body',
+            template: HtmlWebPackTemplate,
+            inject: false,
+
+            title: 'Jitsi Meet App',
+            favicon: __dirname + '/static/favicon.ico',
             filename: 'index.html',
-            template: __dirname + '/index.template.html'
+            appMountId: 'app',
+            mobile: true
         })
     ],
     module: {
@@ -46,7 +51,7 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['es2015', 'react']
+                    presets: ['es2015', 'react', 'stage-1']
                 }
             }
         ]
