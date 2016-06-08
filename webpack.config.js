@@ -10,7 +10,7 @@ var isDevelopment = NODE_ENV === 'development';
 
 var Config = new WebPack.NormalModuleReplacementPlugin(
     /^config$/,
-    __dirname + '/config/' + NODE_ENV + '.js'
+    __dirname + '/config.js'
 );
 
 

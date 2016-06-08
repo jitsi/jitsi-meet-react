@@ -15,41 +15,29 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import Thunk from 'redux-thunk';
 
-import WebRTC from 'react-native-webrtc';
 
-
-import Config from './config/development';
+import Config from './config';
 
 const Jitsi = require('./src/jitsi');
-
-import ReduxState from './src/app-bootstrap/ReduxState.native';
+import Conference from './src/components/Conference';
 
 
 const reducer = combineReducers({
     jitsi: Jitsi.reducer 
 });
 
-const store = createStore(reducer, applyMiddleware(
-    Thunk.withExtraArgument(function getJitsiClient(store) {
-        return store.getState().jitsi.client;
-    })
-));
-
+const store = createStore(reducer, applyMiddleware(Thunk));
 
 class Root extends Component {
     render() {
         return (
           <Provider store={store}>
-            <ReduxState />
+            <Conference />
           </Provider>
         );
     }
 }
 
+store.dispatch(Jitsi.init(Config, 'lancetest'));
 
 AppRegistry.registerComponent('JitsiMeetApp', () => Root);
-
-
-// Temp bootstrapping
-store.dispatch(Jitsi.init(Config, 'fooo'));
-

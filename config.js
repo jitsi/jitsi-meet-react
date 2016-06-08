@@ -4,7 +4,7 @@ module.exports = {
     hosts: {
         domain: 'meet.jit.si',
         focus: 'focus.meet.jit.si',
-        conference: 'conference.meet.jit.si'
+        muc: 'conference.meet.jit.si'
     }
   }
 }
