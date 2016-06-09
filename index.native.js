@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry } from 'react-native';
+import { NavigatorIOS, AppRegistry } from 'react-native';
 
 
 const jQuery = require('jquery');
@@ -19,11 +19,15 @@ import Thunk from 'redux-thunk';
 import Config from './config';
 
 const Jitsi = require('./src/jitsi');
+
+import styles from './src/components/native/styles/MainStyle';
+
 import Conference from './src/components/Conference';
+import WelcomePage from './src/components/WelcomePage';
 
 
 const reducer = combineReducers({
-    jitsi: Jitsi.reducer 
+    jitsi: Jitsi.reducer
 });
 
 const store = createStore(reducer, applyMiddleware(Thunk));
@@ -31,13 +35,17 @@ const store = createStore(reducer, applyMiddleware(Thunk));
 class Root extends Component {
     render() {
         return (
-          <Provider store={store}>
-            <Conference />
+            <Provider store={store}>
+                <NavigatorIOS
+                    style={styles.navContainer}
+                    initialRoute={{
+                        title: "Jitsi Meet",
+                        component: WelcomePage
+                    }}
+                />
           </Provider>
         );
     }
 }
-
-store.dispatch(Jitsi.init(Config, 'lancetest'));
 
 AppRegistry.registerComponent('JitsiMeetApp', () => Root);

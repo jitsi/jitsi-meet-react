@@ -6,9 +6,9 @@ import ConferenceContainer from './native/ConferenceContainer';
 import ParticipantsContainer from './native/ParticipantsContainer';
 import LocalVideoThumbnail from './LocalVideoThumbnail';
 import RemoteVideoThumbnail from './RemoteVideoThumbnail';
+import Toolbar from './Toolbar';
 
 import { connect } from 'react-redux';
-
 
 class Conference extends Component {
 
@@ -55,6 +55,7 @@ class Conference extends Component {
                       videoStream={localVideoStream}/>
                   {this._renderRemoteVideoThumbnails(remoteStreamsByParticipant)}
               </ParticipantsContainer>
+              <Toolbar/>
           </ConferenceContainer>
         );
     }
@@ -85,4 +86,3 @@ const mapStateToProps = state => {
 
 
 export default connect(mapStateToProps)(Conference);
-
