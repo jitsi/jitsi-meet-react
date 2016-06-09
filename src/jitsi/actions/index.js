@@ -16,10 +16,8 @@ export const LOCAL_STREAM_ENDED = 'LOCAL_STREAM_ENDED';
 export const CHANGE_CAMERA_SOURCE = 'CHANGE_CAMERA_SOURCE';
 export const CHANGE_MIC_SOURCE = 'CHANGE_MIC_SOURCE';
 
-export const LOCAL_MUTE = 'LOCAL_MUTE';
-export const LOCAL_UNMUTE = 'LOCAL_UNMUTE';
-export const LOCAL_VIDEO_MUTE = 'LOCAL_VIDEO_MUTE';
-export const LOCAL_VIDEO_UNMUTE = 'LOCAL_VIDEO_UNMUTE';
+export const TOGGLE_AUDIO = 'TOGGLE_AUDIO';
+export const TOGGLE_VIDEO = 'TOGGLE_VIDEO';
 
 export const PEER_JOINED = 'PEER_JOINED';
 export const PEER_LEFT = 'PEER_LEFT';
@@ -49,4 +47,5 @@ export const SELECT_MEDIA = 'SELECT_MEDIA';
 // Action Creators
 
 export * from './client';
+export * from './tracks';
 
