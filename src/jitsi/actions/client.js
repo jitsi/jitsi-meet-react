@@ -8,6 +8,13 @@ import {
     JITSI_CONFERENCE_JOINED
 } from './';
 
+import {
+    userJoined,
+    userLeft,
+    dominantSpeakerChanged,
+    userRoleChanged
+} from './participants';
+
 
 import {
     startLocalTracks,
@@ -45,10 +52,25 @@ export function init(config, room) {
                     let conference = client.initJitsiConference(room, { openSctp: true });
 
                     conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
-                            () => dispatch(conferenceJoined(conference)));
+                        () => dispatch(conferenceJoined(conference)));
 
                     conference.on(JitsiConferenceEvents.TRACK_ADDED,
-                            track => dispatch(remoteTrackAdded(track)));
+                        track => dispatch(remoteTrackAdded(track)));
+
+                    conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
+                        (id) => {
+                            console.log('dominant speaker changed', arguments, id);
+                            dispatch(dominantSpeakerChanged(id));
+                        });
+
+                    conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
+                        (id) => dispatch(userRoleChanged(id, role)));
+
+                    conference.on(JitsiConferenceEvents.USER_JOINED,
+                        (id, user) => dispatch(userJoined(id, user)));
+
+                    conference.on(JitsiConferenceEvents.USER_LEFT,
+                        (id, user) => dispatch(userLeft(id, user)));
 
                     conference.join();
                 });
