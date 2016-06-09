@@ -33,7 +33,7 @@ class Toolbar extends Component {
  */
 const mapStateToProps = state => {
     return {
-        audioState: state.jitsi.client.audioState
+        audioState: state.jitsi.muteStates.audioMuted
     };
 }
 
@@ -43,8 +43,8 @@ const mapStateToProps = state => {
  */
 const mapDispatchToProps = (dispatch) => {
     return {
-        onAudioMute: (muted) => {
-            // dispatch(actions.muteAudio(muted))
+        onAudioMute: () => {
+            dispatch(Jitsi.toggleAudio())
         },
         onHangup: () => {
             // dispatch(actions.hangup())

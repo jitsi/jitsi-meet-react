@@ -5,10 +5,15 @@ import {
     JITSI_CLIENT_CREATED,
     JITSI_CLIENT_ERROR,
     JITSI_CLIENT_CONNECTED,
-    JITSI_CONFERENCE_JOINED,
-    REMOTE_TRACK_ADDED,
-    LOCAL_TRACKS_ADDED
+    JITSI_CONFERENCE_JOINED
 } from './';
+
+
+import {
+    startLocalTracks,
+    localTracksAdded,
+    remoteTrackAdded
+} from './tracks';
 
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
@@ -53,11 +58,6 @@ export function init(config, room) {
                 err => console.error('JitsiConnection failed err: ' + err));
 
             client.connect();
-
-            MediaStreamTrack.getSources(devices => {
-                let frontCamera = devices.find(d => (d.kind === 'video' || d.kind === 'videoinput') && d.facing === 'front');
-
-                            });
         }).catch(error => {
             dispatch(clientError(error));
             throw error;
@@ -105,54 +105,5 @@ export function conferenceJoined(conference) {
         type: JITSI_CONFERENCE_JOINED,
         conference
     }
-}
-
-export function remoteTrackAdded(track) {
-    return {
-        type: REMOTE_TRACK_ADDED,
-        track,
-        participant: {
-            id: track.getType()
-        }
-    }
-}
-
-export function startLocalTracks() {
-    return (dispatch, getState) => {
-        return JitsiMeetJS.createLocalTracks({
-            devices: ['audio', 'video']
-        }).then(localTracks => {
-            let conference = getState().jitsi.client.conference;
-            if (conference) {
-                Promise.all(
-                    conference.getLocalTracks()
-                        .map(t => conference.removeTrack(t))
-                ).then(() => {
-                    for (let track of localTracks) {
-                        track.isVideoTrack() && conference.addTrack(track);
-                    }
-                    for (let track of localTracks) {
-                        track.isVideoTrack() || conference.addTrack(track);
-                    }
-                });
-            }
-            dispatch(localTrackCreated(localTracks))
-        }).catch(reason => {
-            console.error(
-                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
-                + reason);
-        });
-
-    }
-}
-
-export function localTracksAdded(localTracks) {
-    return {
-        type: LOCAL_TRACKS_ADDED,
-        tracks: localTracks,
-        participant: {
-            id: 'local'
-        }
-    };
 }
 
