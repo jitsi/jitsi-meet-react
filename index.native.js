@@ -18,17 +18,12 @@ import Thunk from 'redux-thunk';
 
 import Config from './config';
 
-const Jitsi = require('./src/jitsi');
-
+import reducer from './src/reducers';
 import styles from './src/components/native/styles/MainStyle';
 
 import Conference from './src/components/Conference';
 import WelcomePage from './src/components/WelcomePage';
 
-
-const reducer = combineReducers({
-    jitsi: Jitsi.reducer
-});
 
 const store = createStore(reducer, applyMiddleware(Thunk));
 

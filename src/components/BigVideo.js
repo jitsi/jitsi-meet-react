@@ -2,19 +2,51 @@ import React, { Component } from 'react';
 import Video from './native/Video';
 import BigVideoContainer from './native/BigVideoContainer';
 
+import { connect } from 'react-redux';
+
 class BigVideo extends Component {
     render() {
+        let dominantSpeakerId;
+        let videoTrack;
+        let videoStream;
+        let participants = this.props.participants;
+
+        for (let id in participants) {
+            if (participants.hasOwnProperty(id) && participants[id].speaking) {
+                dominantSpeakerId = id;
+                break;
+            }
+        }
+
+        if (dominantSpeakerId) {
+            videoTrack = this.props.remoteTracks.find(track => {
+                return track.isVideoTrack()
+                    && track.getParticipantId() === dominantSpeakerId;
+            });
+        } else {
+            videoTrack = this.props.localTracks.find(t => t.isVideoTrack());
+        }
+
+        if (videoTrack) {
+            videoStream = videoTrack.getOriginalStream();
+        }
+
         return (
             <BigVideoContainer>
                 <Video
-                    stream={this.props.stream}/>
+                    stream={videoStream}/>
             </BigVideoContainer>
         );
     }
 }
 
-BigVideo.propTypes = {
-    stream: React.PropTypes.object
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        localTracks: state.localTracks,
+        remoteTracks: state.remoteTracks,
+        participants: state.participants
+    };
 };
 
-export default BigVideo;
+export default connect(mapStateToProps)(BigVideo);

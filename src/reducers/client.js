@@ -1,7 +1,8 @@
 import {
     JITSI_CLIENT_CREATED,
+    JITSI_CLIENT_DISCONNECTED,
     JITSI_CONFERENCE_JOINED
-} from '../actions';
+} from '../constants';
 
 
 const initial = {
@@ -11,14 +12,20 @@ const initial = {
 };
 
 
+/**
+ * Listen for actions that contain the connection or conference objects,
+ * so that they can be stored for use by other action creators.
+ */
 export default function (state = initial, action) {
     switch (action.type) {
         case JITSI_CLIENT_CREATED:
             return {
                 ...state,
-                connection: action.client,
+                connection: action.connection,
                 room: action.room
             };
+        case JITSI_CLIENT_DISCONNECTED:
+            return {};
         case JITSI_CONFERENCE_JOINED:
             return {
                 ...state,
@@ -28,4 +35,3 @@ export default function (state = initial, action) {
             return state;
     }
 }
-
