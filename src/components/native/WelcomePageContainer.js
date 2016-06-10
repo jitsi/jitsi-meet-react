@@ -9,7 +9,6 @@ import styles from './styles/MainStyle';
 class WelcomePageContainer extends React.Component {
 
   render() {
-      let roomName = '';
       return (
           <View style={styles.container}>
             <Text style={styles.title}>Enter room name</Text>
@@ -18,11 +17,13 @@ class WelcomePageContainer extends React.Component {
                     autoCorrect={false}
                     autoCapitalize="none"
                     placeholder="room name"
-                    onChangeText={(text) => {roomName = text;}}
+                    onChangeText={(text) => this.setState({
+                        roomName: text
+                    })}
                     />
             <TouchableHighlight
                 style={styles.button}
-                onPress={() => this.props.onJoin(roomName)}
+                onPress={() => this.props.onJoin(this.state.roomName)}
                 underlayColor="white">
                 <Text style={styles.buttonText}> JOIN </Text>
             </TouchableHighlight>
