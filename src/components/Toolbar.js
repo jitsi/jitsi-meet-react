@@ -42,9 +42,9 @@ Toolbar.propTypes = {
  */
 const mapStateToProps = state => {
     return {
-        audioState: state.muteStates.audioMuted
+        audioState: state.media.audioMuted
     };
-}
+};
 
 /**
  * Maps the onAudioMute, onHangup and onCameraChange actions to component
@@ -59,9 +59,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(Actions.hangup());
         },
         onCameraChange: () => {
-            // dispatch(actions.cameraChange())
+            dispatch(Actions.toggleCameraFacingMode())
         }
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);

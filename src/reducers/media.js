@@ -1,12 +1,15 @@
 import {
-    TOGGLE_AUDIO,
-    TOGGLE_VIDEO
+    TOGGLE_AUDIO_MUTED_STATE,
+    TOGGLE_VIDEO_MUTED_STATE,
+    CHANGE_CAMERA_FACING_MODE
 } from '../constants';
-
 
 const initial = {
     audioMuted: false,
-    videoMuted: false
+    videoMuted: false,
+    cameraId: undefined,
+    micId: undefined,
+    cameraFacingMode: 'user'
 };
 
 /**
@@ -15,15 +18,20 @@ const initial = {
  */
 export default function (state = initial, action) {
     switch (action.type) {
-        case TOGGLE_AUDIO:
+        case TOGGLE_AUDIO_MUTED_STATE:
             return {
                 ...state,
                 audioMuted: !state.audioMuted
             };
-        case TOGGLE_VIDEO:
+        case TOGGLE_VIDEO_MUTED_STATE:
             return {
                 ...state,
                 videoMuted: !state.videoMuted
+            };
+        case CHANGE_CAMERA_FACING_MODE:
+            return {
+                ...state,
+                cameraFacingMode: action.media.cameraFacingMode
             };
         default:
             return state;

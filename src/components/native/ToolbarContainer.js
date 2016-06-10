@@ -27,7 +27,7 @@ class ToolbarContainer extends Component {
                   style={styles.toolbarButton}
                   onPress={() => this.props.onCameraChange()}
                   underlayColor={underlayColor}>
-                  <Text style={styles.text}> Cam </Text>
+                  <Text style={styles.text}>Flip Cam</Text>
               </TouchableHighlight>
           </View>
         );
