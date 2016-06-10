@@ -11,14 +11,15 @@ export const JITSI_CONFERENCE_JOINED = 'JITSI_CONFERENCE_JOINED';
 export const REMOTE_TRACK_ADDED = 'REMOTE_TRACK_ADDED';
 export const REMOTE_TRACK_REMOVED = 'REMOTE_TRACK_ADDED';
 
-export const LOCAL_TRACKS_ADDED = 'LOCAL_TRACKS_ADDED';
+export const LOCAL_TRACKS_CHANGED = 'LOCAL_TRACKS_CHANGED';
 export const LOCAL_STREAM_ENDED = 'LOCAL_STREAM_ENDED';
 
 export const CHANGE_CAMERA_SOURCE = 'CHANGE_CAMERA_SOURCE';
 export const CHANGE_MIC_SOURCE = 'CHANGE_MIC_SOURCE';
+export const CHANGE_CAMERA_FACING_MODE = 'CHANGE_CAMERA_FACING_MODE';
 
-export const TOGGLE_AUDIO = 'TOGGLE_AUDIO';
-export const TOGGLE_VIDEO = 'TOGGLE_VIDEO';
+export const TOGGLE_AUDIO_MUTED_STATE = 'TOGGLE_AUDIO_MUTED_STATE';
+export const TOGGLE_VIDEO_MUTED_STATE = 'TOGGLE_VIDEO_MUTED_STATE';
 
 export const PEER_JOINED = 'PEER_JOINED';
 export const PEER_LEFT = 'PEER_LEFT';
@@ -45,3 +46,10 @@ export const PARTICIPANT_STATISTICS = 'PARTICIPANT_STATISTICS';
 
 export const MEDIA_CONNECTION_CHANGE = 'MEDIA_CONNECTION_CHANGE';
 export const SELECT_MEDIA = 'SELECT_MEDIA';
+
+// TODO: not sure if it's the best place to have it here. Probably we need to
+// split action names and other constants
+export const CAMERA_FACING_MODE = {
+    ENVIRONMENT: 'environment',
+    USER: 'user'
+};

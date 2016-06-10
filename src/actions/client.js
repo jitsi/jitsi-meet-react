@@ -20,10 +20,8 @@ import {
 
 
 import {
-    startLocalTracks,
-    localTracksAdded,
+    createLocalTracks,
     remoteTrackAdded,
-    remoteTrackRemoved,
     addTracksToConference
 } from './tracks';
 
@@ -40,7 +38,7 @@ export function init(config, room) {
     return (dispatch, getState) => {
         JitsiMeetJS.init({}).then(() => {
             console.log('RTC READY');
-            dispatch(startLocalTracks());
+            dispatch(createLocalTracks());
 
             const connection = new JitsiMeetJS.JitsiConnection(
                 config.appId,

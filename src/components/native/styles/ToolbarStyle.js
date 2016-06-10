@@ -5,7 +5,9 @@ var styles = StyleSheet.create({
         height: 70,
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 70
     },
     toolbarButton: {
       height: 70,

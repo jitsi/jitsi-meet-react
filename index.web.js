@@ -17,7 +17,7 @@ import Config from 'config';
 
 import * as Jitsi from './src/jitsi';
 
-import ReduxState from './src/app-bootstrap/ReduxState.browser';
+import ReduxState from './src/media-bootstrap/ReduxState.browser';
 
 
 const reducer = combineReducers({
@@ -45,7 +45,7 @@ ReactDOM.render((
       </Route>
     </Router>
   </Provider>
-), document.getElementById('app'));
+), document.getElementById('media'));
 
 
 console.log(store.getState());

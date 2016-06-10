@@ -3,9 +3,8 @@ import JitsiMeetJS from 'lib-jitsi-meet';
 
 import {
     REMOTE_TRACK_ADDED,
-    LOCAL_TRACKS_ADDED,
-    TOGGLE_AUDIO,
-    TOGGLE_VIDEO
+    REMOTE_TRACK_REMOVED,
+    LOCAL_TRACKS_CHANGED
 } from '../constants';
 
 
@@ -26,44 +25,6 @@ export function addTracksToConference(conference, localTracks) {
     for (let track of localTracks) {
         track.isVideoTrack() || conference.addTrack(track);
     }
-}
-
-/**
- * Toggle the mute state of the local tracks with the given media type.
- */
-function toggleMedia(media) {
-    return (dispatch, getState) => {
-        const localTracks = getState().localTracks;
-        for (let track of localTracks) {
-            console.log(track.getType(), '==?', media);
-            if (track.getType() !== media) {
-                continue;
-            }
-            if (track.isMuted()) {
-                track.unmute();
-            } else {
-                track.mute();
-            }
-        }
-
-        dispatch({
-            type: media === 'video' ? TOGGLE_VIDEO : TOGGLE_AUDIO
-        });
-    };
-}
-
-/**
- * Toggle the mute state of the local audio track.
- */
-export function toggleAudio() {
-    return toggleMedia('audio');
-}
-
-/**
- * Toggle the mute state of the local video track;
- */
-export function toggleVideo() {
-    return toggleMedia('video');
 }
 
 /**
@@ -89,17 +50,21 @@ export function remoteTrackRemoved(track) {
 }
 
 /**
- * Request to start capturing local audio and video.
- * 
+ * Request to start capturing local audio and/or video.
  * By default, the user facing camera will be selected.
+ *
+ * @param {object} (options) - @see options for JitsiMeetJS.createLocalTracks
  */
-export function startLocalTracks(facingMode) {
+export function createLocalTracks(options) {
+    options || (options = {});
     return (dispatch, getState) => {
         return JitsiMeetJS.createLocalTracks({
-            devices: ['audio', 'video'],
-            facingMode: facingMode || 'user'
+            devices: options.devices || ['audio', 'video'],
+            facingMode: options.facingMode || 'user',
+            cameraDeviceId: options.cameraDeviceId,
+            micDeviceId: options.micDeviceId
         }).then(localTracks => {
-            return dispatch(localTracksAdded(localTracks));
+            return dispatch(changeLocalTracks(localTracks));
         }).catch(reason => {
             console.error(
                 'JitsiMeetJS.createLocalTracks.catch rejection reason: '
@@ -111,22 +76,53 @@ export function startLocalTracks(facingMode) {
 /**
  * Add new local tracks to the conference, replacing any existing tracks
  * that were previously attached.
+ * @param {JitsiLocalTrack[]} newLocalTracks=[]
  */
-export function localTracksAdded(localTracks) {
+export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
         const conference = getState().client.conference;
+        let tracksToAdd = [];
+        let tracksToRemove = [];
+        let tracksToUse = [];
+        let newAudioTrack;
+        let newVideoTrack;
+        let promise = Promise.resolve();
+
         if (conference) {
-            Promise.all(
-                conference.getLocalTracks()
-                    .map(t => conference.removeTrack(t))
-            ).then(() => {
-                addTracksToConference(conference, localTracks)
+            conference.getLocalTracks().forEach(track => {
+                if (track.isAudioTrack()) {
+                    newAudioTrack = newLocalTracks.find(t => t.isAudioTrack());
+
+                    if (newAudioTrack) {
+                        tracksToAdd.push(newAudioTrack);
+                        tracksToRemove.push(track);
+                        tracksToUse.push(newAudioTrack);
+                    } else {
+                        tracksToUse.push(track);
+                    }
+                } else if (track.isVideoTrack()) {
+                    newVideoTrack = newLocalTracks.find(t => t.isVideoTrack());
+
+                    if (newVideoTrack) {
+                        tracksToAdd.push(newVideoTrack);
+                        tracksToRemove.push(track);
+                        tracksToUse.push(newVideoTrack);
+                    } else {
+                        tracksToUse.push(track);
+                    }
+                }
             });
+
+            // TODO: add various checks from original useVideo/AudioStream functions
+
+            promise = Promise.all(tracksToRemove.map(t => t.dispose()))
+                .then(() => addTracksToConference(conference, tracksToAdd));
+        } else {
+            tracksToUse = newLocalTracks;
         }
 
-        dispatch({
-            type: LOCAL_TRACKS_ADDED,
-            tracks: localTracks
-        });
+        return promise
+            .then(() =>
+                dispatch({ type: LOCAL_TRACKS_CHANGED, tracks: tracksToUse }));
     };
 }

@@ -3,7 +3,7 @@ import participants from './participants';
 import client from './client';
 import localTracks from './localTracks';
 import remoteTracks from './remoteTracks';
-import muteStates from './muteStates';
+import media from './media';
 
 
 const subReducers = {
@@ -12,7 +12,7 @@ const subReducers = {
     participants,
     localTracks,
     remoteTracks,
-    muteStates
+    media
 };
 
 
