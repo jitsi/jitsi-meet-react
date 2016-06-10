@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-const style = {
-    alignSelf: 'stretch',
-    flex: 1
-};
+import styles from './styles/VideoStyle';
 
+/**
+ * The native container rendering the conference view.
+ */
 export default class ConferenceContainer extends Component {
     render() {
         return (
-          <View style={style}>{this.props.children}</View>
+          <View style = { styles.conference }>{ this.props.children }</View>
         );
     }
 }
