@@ -1,8 +1,11 @@
-import { 
+import {
     LOCAL_TRACKS_ADDED
-} from '../actions';
+} from '../constants';
 
 
+/**
+ * Listen for actions that modify the set of local media tracks.
+ */
 export default function (state = [], action) {
     switch (action.type) {
         case LOCAL_TRACKS_ADDED:
@@ -11,4 +14,3 @@ export default function (state = [], action) {
             return state;
     }
 }
-

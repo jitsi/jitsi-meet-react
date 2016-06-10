@@ -4,9 +4,13 @@ import {
     PEER_CHANGED,
     DOMINANT_SPEAKER_CHANGED,
     MODERATOR_CHANGED
-} from '../actions';
+} from '../constants';
 
 
+/**
+ * Listen for actions which add, remove, or update the set of participants
+ * in the conference.
+ */
 export default function (state = {}, action) {
     let participants = {};
 
@@ -53,4 +57,3 @@ export default function (state = {}, action) {
             return state;
     }
 }
-

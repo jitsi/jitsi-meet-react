@@ -36,8 +36,8 @@ class RemoteVideoThumbnail extends Component {
 
 const mapStateToProps = state => {
     return {
-        remoteTracks: state.jitsi.remoteTracks,
-        participants: state.jitsi.participants
+        remoteTracks: state.remoteTracks,
+        participants: state.participants
     };
 };
 

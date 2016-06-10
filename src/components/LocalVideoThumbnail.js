@@ -32,8 +32,8 @@ class LocalVideoThumbnail extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.jitsi.client.user,
-        localTracks: state.jitsi.localTracks
+        user: state.client.user,
+        localTracks: state.localTracks
     };
 };
 

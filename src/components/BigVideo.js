@@ -42,10 +42,10 @@ class BigVideo extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.jitsi.client.user,
-        localTracks: state.jitsi.localTracks,
-        remoteTracks: state.jitsi.remoteTracks,
-        participants: state.jitsi.participants
+        user: state.user,
+        localTracks: state.localTracks,
+        remoteTracks: state.remoteTracks,
+        participants: state.participants
     };
 };
 

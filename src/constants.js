@@ -1,9 +1,10 @@
-// Action Types
-
 export const JITSI_CLIENT_INIT = 'JITSI_CLIENT_INIT';
 export const JITSI_CLIENT_CREATED = 'JITSI_CLIENT_CREATED';
 export const JITSI_CLIENT_CONNECTED = 'JITSI_CLIENT_CONNECTED';
+export const JITSI_CLIENT_DISCONNECTED = 'JITSI_CLIENT_DISCONNECTED';
 export const JITSI_CLIENT_ERROR = 'JITSI_CLIENT_ERROR';
+
+export const RTC_ERROR = 'RTC_ERROR';
 
 export const JITSI_CONFERENCE_JOINED = 'JITSI_CONFERENCE_JOINED';
 
@@ -44,10 +45,3 @@ export const PARTICIPANT_STATISTICS = 'PARTICIPANT_STATISTICS';
 
 export const MEDIA_CONNECTION_CHANGE = 'MEDIA_CONNECTION_CHANGE';
 export const SELECT_MEDIA = 'SELECT_MEDIA';
-
-
-// Action Creators
-
-export * from './client';
-export * from './tracks';
-
