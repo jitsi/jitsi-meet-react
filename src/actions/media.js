@@ -41,7 +41,7 @@ export function toggleAudio() {
 }
 
 /**
- * Toggle the mute state of the local video track;
+ * Toggle the mute state of the local video track.
  */
 export function toggleVideo() {
     return toggleMedia('video');
@@ -49,7 +49,7 @@ export function toggleVideo() {
 
 
 /**
- * Determines the 
+ * Toggles the camera between front and rear (user and environment).
  */
 export function toggleCameraFacingMode() {
     return (dispatch, getState) => {
