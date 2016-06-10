@@ -6,37 +6,49 @@ import { connect } from 'react-redux';
 
 class BigVideo extends Component {
     render() {
-        let dominantSpeakerId;
-        let videoTrack;
-        let videoStream;
-        let participants = this.props.participants;
-
-        for (let id in participants) {
-            if (participants.hasOwnProperty(id) && participants[id].speaking) {
-                dominantSpeakerId = id;
-                break;
-            }
-        }
-
-        if (dominantSpeakerId) {
-            videoTrack = this.props.remoteTracks.find(track => {
-                return track.isVideoTrack()
-                    && track.getParticipantId() === dominantSpeakerId;
-            });
-        } else {
-            videoTrack = this.props.localTracks.find(t => t.isVideoTrack());
-        }
-
-        if (videoTrack) {
-            videoStream = videoTrack.getOriginalStream();
-        }
+        let videoStream = getDominantSpeakerVideoStream(
+            this.props.participants,
+            this.props.remoteTracks,
+            this.props.localTracks);
 
         return (
             <BigVideoContainer>
-                <Video
-                    stream={videoStream}/>
+                {videoStream && <Video
+                    stream={videoStream}/>}
             </BigVideoContainer>
         );
+    }
+}
+
+/**
+ * Gets video stream of a dominant speaker.
+ *
+ * @param {object[]} participants
+ * @param {JitsiRemoteTrack[]} remoteTracks
+ * @param {JitsiRemoteTrack[]} localTracks
+ */
+function getDominantSpeakerVideoStream(participants, remoteTracks, localTracks) {
+    let dominantSpeakerId;
+    let videoTrack;
+
+    for (let id in participants) {
+        if (participants.hasOwnProperty(id) && participants[id].speaking) {
+            dominantSpeakerId = id;
+            break;
+        }
+    }
+
+    if (dominantSpeakerId) {
+        videoTrack = remoteTracks.find(track => {
+            return track.isVideoTrack()
+                && track.getParticipantId() === dominantSpeakerId;
+        });
+    } else {
+        videoTrack = localTracks.find(t => t.isVideoTrack());
+    }
+
+    if (videoTrack) {
+        return videoTrack.getOriginalStream();
     }
 }
 

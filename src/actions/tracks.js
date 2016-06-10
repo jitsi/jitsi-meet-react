@@ -113,6 +113,8 @@ export function changeLocalTracks(newLocalTracks = []) {
                 }
             });
 
+            // TODO: add various checks from original useVideo/AudioStream functions
+
             promise = Promise.all(tracksToRemove.map(t => t.dispose()))
                 .then(() => addTracksToConference(conference, tracksToAdd));
         } else {
