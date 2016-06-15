@@ -20,6 +20,8 @@ class Toolbar extends Component {
     render() {
         return (
             <ToolbarContainer
+                audioMuted = { this.props.audioMuted }
+                videoMuted = { this.props.videoMuted }
                 onAudioMute = { (muted) => {
                     this.props.onAudioMute(muted);
                 }}
@@ -33,16 +35,13 @@ class Toolbar extends Component {
     }
 }
 
-Toolbar.propTypes = {
-    navigator: React.PropTypes.object
-};
-
 /**
- * Maps the audioState to component props.
+ * Maps the audioMuted and videoMuted properties to component props.
  */
 const mapStateToProps = state => {
     return {
-        audioState: state.media.audioMuted
+        audioMuted: state.media.audioMuted,
+        videoMuted: state.media.videoMuted
     };
 };
 

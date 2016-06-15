@@ -3,31 +3,49 @@ import {  View,
           Text,
           TouchableHighlight } from 'react-native';
 
+import colorPalette from './styles/ColorPalette';
 import styles from './styles/ToolbarStyle';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+/**
+ * The native container rendering the in call main buttons.
+ */
 class ToolbarContainer extends Component {
 
     render() {
-        var underlayColor = 'grey';
+        var underlayColor = colorPalette.buttonUnderlay;
+        var micButtonStyle;
+        var micButtonIcon;
+        if (this.props.audioMuted) {
+            micButtonStyle = [ styles.toolbarButton,
+                                    { backgroundColor: underlayColor }];
+            micButtonIcon = "microphone-slash";
+        }
+        else {
+            micButtonStyle = styles.toolbarButton;
+            micButtonIcon = "microphone";
+        }
+
         return (
-            <View style={styles.toolbarContainer}>
+            <View style = { styles.toolbarContainer }>
               <TouchableHighlight
-                  style={styles.toolbarButton}
-                  onPress={() => this.props.onAudioMute()}
-                  underlayColor={underlayColor}>
-                  <Text style={styles.text}> Mike </Text>
+                  style = { micButtonStyle }
+                  onPress = { () => this.props.onAudioMute() }>
+                  <Icon style = { styles.icon } name = { micButtonIcon }/>
               </TouchableHighlight>
               <TouchableHighlight
-                  style={styles.hangupButton}
-                  onPress={() => this.props.onHangup()}
-                  underlayColor={underlayColor}>
-                  <Text style={styles.text}> Hang up </Text>
+                  style = {[ styles.toolbarButton,
+                                { backgroundColor: colorPalette.jitsiRed }]}
+                  onPress = { () => this.props.onHangup() }
+                  underlayColor = { underlayColor }>
+                  <Icon style = { styles.icon } name = "phone"/>
               </TouchableHighlight>
               <TouchableHighlight
-                  style={styles.toolbarButton}
-                  onPress={() => this.props.onCameraChange()}
-                  underlayColor={underlayColor}>
-                  <Text style={styles.text}>Flip Cam</Text>
+                  style = { styles.toolbarButton }
+                  onPress = { () => this.props.onCameraChange() }
+                  underlayColor = { underlayColor }>
+                  <Icon style = { styles.icon } name="camera"/>
               </TouchableHighlight>
           </View>
         );

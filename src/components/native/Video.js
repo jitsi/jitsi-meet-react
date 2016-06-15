@@ -1,12 +1,17 @@
 import { RTCView } from 'react-native-webrtc';
 import React, { Component } from 'react';
 
+import styles from './styles/VideoStyle';
+
+/**
+ * The video native container wrapping around the RTCView.
+ */
 class Video extends Component {
     render() {
         let streamUrl = this.props.stream ? this.props.stream.toURL() : '';
 
         return (
-            <RTCView style={{ alignSelf: 'stretch', flex: 1 }} streamURL={streamUrl}/>
+            <RTCView style = { styles.conference } streamURL={streamUrl}/>
         );
     }
 }

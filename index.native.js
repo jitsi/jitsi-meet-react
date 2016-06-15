@@ -19,7 +19,7 @@ import Thunk from 'redux-thunk';
 import Config from './config';
 
 import reducer from './src/reducers';
-import styles from './src/components/native/styles/MainStyle';
+import styles from './src/components/native/styles/WelcomePageStyle';
 
 import Conference from './src/components/Conference';
 import WelcomePage from './src/components/WelcomePage';

@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-const style = {
-    alignSelf: 'stretch',
-    flex: 1,
-    right: 5,
-    bottom: 5,
-    position: 'absolute',
-    flexDirection: 'row'
-};
+import styles from './styles/VideoStyle';
 
+/**
+ * The native container rendering the video thumbnails.
+ */
 export default class ParticipantsContainer extends Component {
     render() {
         return (
-          <View style={style}>{this.props.children}</View>
+          <View style = { styles.filmStrip }>{ this.props.children }</View>
         );
     }
 }

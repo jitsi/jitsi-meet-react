@@ -15,16 +15,16 @@ class Conference extends Component {
         return (
           <ConferenceContainer>
               <BigVideo/>
+              <Toolbar navigator = { this.props.navigator }/>
               <ParticipantsContainer>
                   <LocalVideoThumbnail/>
-                  {Object.keys(this.props.participants).map((id) => {
+                  { Object.keys(this.props.participants).map((id) => {
                       return <RemoteVideoThumbnail
                           key={id}
                           participantId={id}
                       />;
                   })}
               </ParticipantsContainer>
-              <Toolbar navigator={this.props.navigator}/>
           </ConferenceContainer>
         );
     }
