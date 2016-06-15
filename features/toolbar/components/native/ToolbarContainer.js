@@ -3,7 +3,7 @@ import {  View,
           Text,
           TouchableHighlight } from 'react-native';
 
-import colorPalette from './styles/ColorPalette';
+import colorPalette from '../../../base/styles/components/native/styles/ColorPalette';
 import styles from './styles/ToolbarStyle';
 
 import Icon from 'react-native-vector-icons/FontAwesome';

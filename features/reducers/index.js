@@ -1,3 +1,5 @@
+require('../polyfills');
+
 import user from './user';
 import participants from './participants';
 import client from './client';

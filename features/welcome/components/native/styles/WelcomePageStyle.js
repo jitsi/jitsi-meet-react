@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import ColorPalette from './ColorPalette';
+import ColorPalette from '../../../../base/styles/components/native/styles/ColorPalette';
 
 /**
  * The welcome page style.

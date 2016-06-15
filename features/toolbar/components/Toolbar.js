@@ -4,14 +4,7 @@ import ToolbarContainer from './native/ToolbarContainer';
 
 import { connect } from 'react-redux';
 
-
-// All those are needed for the connection with the store.
-require('../polyfills/browserify');
-const jQuery = require('jquery');
-require('../polyfills/browser');
-jQuery(window);
-const Actions = require('../actions');
-
+const Actions = require('../../actions');
 
 /**
  * The conference call toolbar.
