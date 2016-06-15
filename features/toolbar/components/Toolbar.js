@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-
-import ToolbarContainer from './native/ToolbarContainer';
-
 import { connect } from 'react-redux';
 
-const Actions = require('../../actions');
+import * as Actions from '../../actions';
+
+import ToolbarContainer from './native/ToolbarContainer';
 
 /**
  * The conference call toolbar.

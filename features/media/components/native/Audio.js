@@ -1,5 +1,5 @@
-import { RTCView } from 'react-native-webrtc';
 import React, { Component } from 'react';
+import { RTCView } from 'react-native-webrtc';
 
 class Audio extends Component {
     render() {

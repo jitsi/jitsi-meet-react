@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+
 import ColorPalette from '../../../../base/styles/components/native/styles/ColorPalette';
 
 /**

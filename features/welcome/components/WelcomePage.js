@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-
-import Conference from '../../conference/components/Conference';
-import WelcomePageContainer from './native/WelcomePageContainer';
-
 import { connect } from 'react-redux';
 
+import * as Actions from '../../actions';
+import Conference from '../../conference/components/Conference';
 import Config from '../../../config';
 
-import * as Actions from '../../actions';
+import WelcomePageContainer from './native/WelcomePageContainer';
 
 
 /**
