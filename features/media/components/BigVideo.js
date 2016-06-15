@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Video from './native/Video';
-import BigVideoContainer from './native/BigVideoContainer';
-
 import { connect } from 'react-redux';
+
+import BigVideoContainer from './native/BigVideoContainer';
+import Video from './native/Video';
 
 class BigVideo extends Component {
     render() {

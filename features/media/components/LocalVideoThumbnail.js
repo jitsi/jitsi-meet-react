@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import VideoThumbnail from './VideoThumbnail';
-
-import { connect } from 'react-redux';
 
 class LocalVideoThumbnail extends Component {
     render() {
