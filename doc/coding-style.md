@@ -20,7 +20,7 @@
 
 # Formatting
 
-* Line length is limited to 80 characters.
+* Line length is limited to 120 characters.
 
 # Naming
 
