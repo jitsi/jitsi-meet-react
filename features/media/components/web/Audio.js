@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Audio extends Component {
+export class Audio extends Component {
     render() {
         // TODO: use URL.releaseObjectURL on componentDid/WillUnmount
         let src = this.props.stream
@@ -20,5 +20,3 @@ Audio.propTypes = {
     stream: React.PropTypes.object,
     muted: React.PropTypes.bool
 };
-
-export default Audio;

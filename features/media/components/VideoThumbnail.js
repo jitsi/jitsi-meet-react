@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 
-// TODO: import depending on environment
-import Audio from './native/Audio';
-import Video from './native/Video';
-import VideoThumbnailContainer from './native/VideoThumbnailContainer';
-// import Audio from './browser/Audio';
-// import Video from './browser/Video';
-// import VideoThumbnailContainer from './browser/VideoThumbnailContainer';
+import { Audio, Video, VideoThumbnailContainer } from './_';
 
-class VideoThumbnail extends Component {
+export default class VideoThumbnail extends Component {
     render() {
         return (
             <VideoThumbnailContainer>
@@ -25,5 +19,3 @@ VideoThumbnail.propTypes = {
     videoStream: React.PropTypes.object,
     audioStream: React.PropTypes.object
 };
-
-export default VideoThumbnail;

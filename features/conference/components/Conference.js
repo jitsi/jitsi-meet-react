@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import { Text } from 'react-native';
 import { connect } from 'react-redux';
 
-import BigVideo from '../../media/components/BigVideo';
-import LocalVideoThumbnail from '../../media/components/LocalVideoThumbnail';
-import RemoteVideoThumbnail from '../../media/components/RemoteVideoThumbnail';
-import Toolbar from '../../toolbar/components/Toolbar';
+import { BigVideo, LocalVideoThumbnail, RemoteVideoThumbnail } from '../../media';
+import { Toolbar } from '../../toolbar';
 
-import ConferenceContainer from './native/ConferenceContainer';
-import ParticipantsContainer from './native/ParticipantsContainer';
+import { ConferenceContainer, ParticipantsContainer } from './_';
 
 class Conference extends Component {
     render() {

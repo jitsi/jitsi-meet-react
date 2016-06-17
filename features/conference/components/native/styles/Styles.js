@@ -24,17 +24,6 @@ var styles = StyleSheet.create({
         position: 'absolute',
         flexDirection: 'row'
     },
-    /**
-     * Video thumbnail style.
-     */
-    thumbnail: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 80,
-        height: 80,
-        borderWidth: 1,
-        flex: 1
-    }
 });
 
 export default styles;

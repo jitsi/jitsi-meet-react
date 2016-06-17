@@ -8,9 +8,11 @@ import Thunk from 'redux-thunk';
 import Config from './config';
 
 import reducer from './features/reducers';
-import styles from './features/welcome/components/native/styles/WelcomePageStyle';
+// FIXME Don't import private styles. Move common/shared styles to a feature in
+// base.
+import styles from './features/welcome/components/native/styles/Styles';
 
-import WelcomePage from './features/welcome/components/WelcomePage';
+import { WelcomePage } from './features/welcome';
 
 
 const store = createStore(reducer, applyMiddleware(Thunk));

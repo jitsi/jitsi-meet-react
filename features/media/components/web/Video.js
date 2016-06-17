@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Video extends Component {
+export class Video extends Component {
     render() {
         // TODO: use URL.releaseObjectURL on componentDid/WillUnmount
         let src = this.props.stream
@@ -20,5 +20,3 @@ Video.propTypes = {
     stream: React.PropTypes.object,
     muted: React.PropTypes.bool
 };
-
-export default Video;

@@ -5,15 +5,14 @@ import {  View,
 
 import colorPalette from '../../../base/styles/components/native/styles/ColorPalette';
 
-import styles from './styles/ToolbarStyle';
+import styles from './styles/Styles';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 /**
  * The native container rendering the in call main buttons.
  */
-class ToolbarContainer extends Component {
-
+export class ToolbarContainer extends Component {
     render() {
         var underlayColor = colorPalette.buttonUnderlay;
         var micButtonStyle;
@@ -52,5 +51,3 @@ class ToolbarContainer extends Component {
         );
     }
 }
-
-export default ToolbarContainer;

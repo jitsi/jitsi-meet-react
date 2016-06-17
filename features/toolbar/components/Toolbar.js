@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import * as Actions from '../../actions';
 
-import ToolbarContainer from './native/ToolbarContainer';
+import { ToolbarContainer } from './_';
 
 /**
  * The conference call toolbar.

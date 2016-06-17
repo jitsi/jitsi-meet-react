@@ -4,13 +4,12 @@ import {  View,
           TouchableHighlight,
           TextInput } from 'react-native';
 
-import styles from './styles/WelcomePageStyle';
+import styles from './styles/Styles';
 
 /**
  * The native container rendering the welcome page.
  */
-class WelcomePageContainer extends React.Component {
-
+export class WelcomePageContainer extends React.Component {
   render() {
       return (
           <View style = { styles.container }>
@@ -34,5 +33,3 @@ class WelcomePageContainer extends React.Component {
     );
   }
 }
-
-export default WelcomePageContainer;
