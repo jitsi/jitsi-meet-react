@@ -9,11 +9,11 @@ import {
  */
 export default function (state = [], action) {
     switch (action.type) {
-        case REMOTE_TRACK_ADDED:
-            return [...state, action.track];
-        case REMOTE_TRACK_REMOVED:
-            return state.filter(track => track !== action.track);
-        default:
-            return state;
+    case REMOTE_TRACK_ADDED:
+        return [...state, action.track];
+    case REMOTE_TRACK_REMOVED:
+        return state.filter(track => track !== action.track);
+    default:
+        return state;
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import * as Actions from '../../actions';
+import * as Actions from '../actions';
 
 import { ToolbarContainer } from './_';
 
@@ -31,9 +31,10 @@ class Toolbar extends Component {
  * Maps the audioMuted and videoMuted properties to component props.
  */
 const mapStateToProps = state => {
+    const stateFeaturesToolbar = state['features/toolbar'];
     return {
-        audioMuted: state.media.audioMuted,
-        videoMuted: state.media.videoMuted
+        audioMuted: stateFeaturesToolbar.audioMuted,
+        videoMuted: stateFeaturesToolbar.videoMuted
     };
 };
 
@@ -41,7 +42,7 @@ const mapStateToProps = state => {
  * Maps the onAudioMute, onHangup and onCameraChange actions to component
  * props.
  */
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
         onAudioMute: () => {
             dispatch(Actions.toggleAudio());

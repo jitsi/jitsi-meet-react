@@ -40,7 +40,7 @@ Conference.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        room: state.client.room,
+        room: state['features/welcome'].room,
         user: state.user,
         localTracks: state.localTracks,
         remoteTracks: state.remoteTracks,

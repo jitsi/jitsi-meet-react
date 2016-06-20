@@ -1,12 +1,10 @@
 import JitsiMeetJS from 'lib-jitsi-meet';
 
-
 import {
     REMOTE_TRACK_ADDED,
     REMOTE_TRACK_REMOVED,
     LOCAL_TRACKS_CHANGED
 } from '../constants';
-
 
 /**
  * Attach a set of local tracks to a conference.
@@ -25,17 +23,6 @@ export function addTracksToConference(conference, localTracks) {
     for (let track of localTracks) {
         track.isVideoTrack() || conference.addTrack(track);
     }
-}
-
-/**
- * Create an action for when a new track has been signaled to be added
- * to the conference.
- */
-export function remoteTrackAdded(track) {
-    return {
-        type: REMOTE_TRACK_ADDED,
-        track
-    };
 }
 
 /**
@@ -80,7 +67,7 @@ export function createLocalTracks(options) {
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
-        const conference = getState().client.conference;
+        const conference = getState()['features/welcome'].conference;
         let tracksToAdd = [];
         let tracksToRemove = [];
         let tracksToUse = [];

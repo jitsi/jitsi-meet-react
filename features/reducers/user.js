@@ -17,9 +17,9 @@ const initial = {
  */
 export default function (state = initial, action) {
     switch (action.type) {
-        case UPDATE_PROFILE:
-            return { ...state, ...action.profile};
-        default:
-            return state;
+    case UPDATE_PROFILE:
+        return { ...state, ...action.profile};
+    default:
+        return state;
     }
 }
