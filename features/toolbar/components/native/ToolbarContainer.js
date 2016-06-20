@@ -3,7 +3,7 @@ import {  View,
           Text,
           TouchableHighlight } from 'react-native';
 
-import colorPalette from '../../../base/styles/components/native/styles/ColorPalette';
+import { ColorPalette } from '../../../base/styles';
 
 import styles from './styles/Styles';
 
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
  */
 export class ToolbarContainer extends Component {
     render() {
-        var underlayColor = colorPalette.buttonUnderlay;
+        var underlayColor = ColorPalette.buttonUnderlay;
         var micButtonStyle;
         var micButtonIcon;
         if (this.props.audioMuted) {
@@ -36,7 +36,7 @@ export class ToolbarContainer extends Component {
               </TouchableHighlight>
               <TouchableHighlight
                   style = {[ styles.toolbarButton,
-                                { backgroundColor: colorPalette.jitsiRed }]}
+                                { backgroundColor: ColorPalette.jitsiRed }]}
                   onPress = { () => this.props.onHangup() }
                   underlayColor = { underlayColor }>
                   <Icon style = { styles.icon } name = "phone"/>
