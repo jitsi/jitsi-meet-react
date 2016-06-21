@@ -8,27 +8,50 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import Thunk from 'redux-thunk';
+import {
+    syncHistoryWithStore,
+    routerReducer,
+    routerMiddleware,
+    push
+} from 'react-router-redux';
 
 
-import Config from 'config';
+import Config from './config';
+import reducers from './features/reducers';
+import * as Actions from './features/actions';
+import { WelcomePage } from './features/welcome';
+import { Conference } from './features/conference';
 
-import * as Jitsi from './src/jitsi';
+import { APP_NAVIGATE } from './features/constants';
 
-import ReduxState from './src/media-bootstrap/ReduxState.browser';
+/**
+ * This router middleware is used to abstract navigation
+ * inside the app for both native and web.
+ */
+const router = store => next => action => {
+    if (action.type === APP_NAVIGATE) {
+        switch (action.screen) {
+            case 'home':
+                return store.dispatch(push('/'));
+            case 'conference':
+                return store.dispatch(push('/' + action.room));
+        }
+    }
+    return next(action);
+};
 
 
 const reducer = combineReducers({
-    routing: routerReducer,
-    jitsi: Jitsi.reducer 
+    ...reducers,
+    routing: routerReducer
 });
 
 const store = createStore(reducer, applyMiddleware(
-    Thunk.withExtraArgument(function getJitsiClient(store) {
-        return store.getState().jitsi.client;
-    })
+    Thunk,
+    router,
+    routerMiddleware(browserHistory)
 ));
 
 const history = syncHistoryWithStore(browserHistory, store);
@@ -37,15 +60,12 @@ const history = syncHistoryWithStore(browserHistory, store);
 ReactDOM.render((
   <Provider store={store}>
     <Router history={history}>
-      <Route path='/' component={ReduxState}>
-        <Route path='*' component={ReduxState} onEnter={(nextState) => {
-            const room = nextState.location.pathname.substr(1);
-            store.dispatch(Jitsi.init(Config, room));
-        }} />
-      </Route>
+      <Route path='/' component={WelcomePage} />
+      <Route path='*' component={Conference} onEnter={route => {
+          const room = route.location.pathname.substr(1).toLowerCase();
+          store.dispatch(Actions.init(Config, room));
+      }} />
     </Router>
   </Provider>
-), document.getElementById('media'));
+), document.body);
 
-
-console.log(store.getState());

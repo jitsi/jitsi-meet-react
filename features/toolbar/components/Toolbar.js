@@ -18,8 +18,7 @@ class Toolbar extends Component {
                     this.props.onAudioMute(muted);
                 }}
                 onHangup = {() => {
-                    this.props.onHangup();
-                    this.props.navigator.pop();
+                    this.props.onHangup(this.props.navigator);
                 }}
                 onCameraChange = {() => {this.props.onCameraChange()}}
             />
@@ -46,8 +45,12 @@ const mapDispatchToProps = (dispatch) => {
         onAudioMute: () => {
             dispatch(Actions.toggleAudio());
         },
-        onHangup: () => {
+        onHangup: (navigator) => {
             dispatch(Actions.hangup());
+            dispatch(Actions.navigate({
+                screen: 'home',
+                navigator
+            }));
         },
         onCameraChange: () => {
             dispatch(Actions.toggleCameraFacingMode())
