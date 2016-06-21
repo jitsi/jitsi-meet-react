@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 
 import * as Actions from '../../actions';
 import { Conference } from '../../conference';
@@ -17,11 +18,7 @@ class WelcomePage extends Component {
             <WelcomePageContainer
                 room={ this.props.room }
                 onJoin={ (roomName) => {
-                    this.props.onJoin(roomName);
-                    this.props.navigator.push({
-                        title: "Conference screen",
-                        component: Conference
-                  });
+                    this.props.onJoin(roomName, this.props.navigator);
                     }
                 }/>
         );
@@ -42,8 +39,13 @@ const mapStateToProps = state => {
  */
 const mapDispatchToProps = (dispatch) => {
     return {
-        onJoin: (roomName) => {
-            dispatch(Actions.init(Config, roomName))
+        onJoin: (roomName, navigator) => {
+            dispatch({
+                type: 'APP_NAVIGATE',
+                screen: 'conference',
+                room: roomName,
+                navigator
+            });
         }
     }
 }

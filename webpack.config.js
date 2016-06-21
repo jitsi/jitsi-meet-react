@@ -1,24 +1,13 @@
 var WebPack = require('webpack');
-var HtmlWebPackPlugin = require('html-webpack-plugin');
-var HtmlWebPackTemplate = require('html-webpack-template');
-
-
-var NODE_ENV = process.env.NODE_ENV || 'development';
-var isDevelopment = NODE_ENV === 'development';
-
-
-
-var Config = new WebPack.NormalModuleReplacementPlugin(
-    /^config$/,
-    __dirname + '/config.js'
-);
+var HtmlPlugin = require('html-webpack-plugin');
+var HasteResolver = require('haste-resolver-webpack-plugin');
 
 
 
 module.exports = {
     output: {
-        filename: '[name].[hash].js',
-        path: __dirname + '/dist',
+        filename: 'bundle.js',
+        path: __dirname,
         publicPath: '/'
     },
     cache: true,
@@ -27,21 +16,12 @@ module.exports = {
     entry: {
         app: __dirname + '/index.web.js'
     },
-    stats: {
-        colors: true,
-        reasons: true
-    },
     plugins: [
-        Config,
-        new HtmlWebPackPlugin({
-            template: HtmlWebPackTemplate,
-            inject: false,
-
-            title: 'Jitsi Meet App',
-            favicon: __dirname + '/static/favicon.ico',
-            filename: 'index.html',
-            appMountId: 'app',
-            mobile: true
+        new HasteResolver({
+            platform: 'web'
+        }),
+        new HtmlPlugin({
+            filename: 'index.html'
         })
     ],
     module: {

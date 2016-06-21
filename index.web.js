@@ -8,27 +8,41 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import Thunk from 'redux-thunk';
 
 
-import Config from 'config';
+import Config from './config';
+import reducers from './features/reducers';
+import * as Actions from './features/actions/client';
+import { WelcomePage } from './features/welcome';
+import { Conference } from './features/conference';
 
-import * as Jitsi from './src/jitsi';
 
-import ReduxState from './src/media-bootstrap/ReduxState.browser';
+const router = store => next => action => {
+    console.log(action.type);
+    if (action.type === 'APP_NAVIGATE') {
+        switch (action.screen) {
+            case 'home':
+                return store.dispatch(push('/'));
+            case 'conference':
+                return store.dispatch(push('/' + action.room));
+        }
+    }
+    return next(action);
+};
 
 
 const reducer = combineReducers({
-    routing: routerReducer,
-    jitsi: Jitsi.reducer 
+    ...reducers,
+    routing: routerReducer
 });
 
 const store = createStore(reducer, applyMiddleware(
-    Thunk.withExtraArgument(function getJitsiClient(store) {
-        return store.getState().jitsi.client;
-    })
+    Thunk,
+    router,
+    routerMiddleware(browserHistory)
 ));
 
 const history = syncHistoryWithStore(browserHistory, store);
@@ -37,15 +51,12 @@ const history = syncHistoryWithStore(browserHistory, store);
 ReactDOM.render((
   <Provider store={store}>
     <Router history={history}>
-      <Route path='/' component={ReduxState}>
-        <Route path='*' component={ReduxState} onEnter={(nextState) => {
-            const room = nextState.location.pathname.substr(1);
-            store.dispatch(Jitsi.init(Config, room));
-        }} />
-      </Route>
+      <Route path='/' component={WelcomePage} />
+      <Route path='*' component={Conference} onEnter={route => {
+          console.log(route);
+          store.dispatch(Actions.init(Config, route.location.pathname.substr(1).toLowerCase()));
+      }} />
     </Router>
   </Provider>
-), document.getElementById('media'));
+), document.body);
 
-
-console.log(store.getState());

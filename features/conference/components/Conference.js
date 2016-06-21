@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import { BigVideo, LocalVideoThumbnail, RemoteVideoThumbnail } from '../../media';
@@ -22,11 +21,11 @@ class Conference extends Component {
                       />;
                   })}
               </ParticipantsContainer>
-          </ConferenceContainer>
+         </ConferenceContainer>
         );
     }
 }
-
+ 
 Conference.propTypes = {
     navigator: React.PropTypes.object
 };
