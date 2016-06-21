@@ -47,6 +47,8 @@ export const PARTICIPANT_STATISTICS = 'PARTICIPANT_STATISTICS';
 export const MEDIA_CONNECTION_CHANGE = 'MEDIA_CONNECTION_CHANGE';
 export const SELECT_MEDIA = 'SELECT_MEDIA';
 
+export const APP_NAVIGATE = 'APP_NAVIGATE';
+
 // TODO: not sure if it's the best place to have it here. Probably we need to
 // split action names and other constants
 export const CAMERA_FACING_MODE = {

@@ -40,12 +40,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onJoin: (roomName, navigator) => {
-            dispatch({
-                type: 'APP_NAVIGATE',
+            dispatch(Actions.navigate({
                 screen: 'conference',
                 room: roomName,
                 navigator
-            });
+            }));
         }
     }
 }

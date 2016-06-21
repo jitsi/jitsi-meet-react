@@ -47,11 +47,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         onHangup: (navigator) => {
             dispatch(Actions.hangup());
-            dispatch({
-                type: 'APP_NAVIGATE',
+            dispatch(Actions.navigate({
                 screen: 'home',
                 navigator
-            });
+            }));
         },
         onCameraChange: () => {
             dispatch(Actions.toggleCameraFacingMode())

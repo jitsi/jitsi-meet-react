@@ -16,10 +16,12 @@ import * as Actions from './features/actions';
 import { WelcomePage } from './features/welcome';
 import { Conference } from './features/conference';
 
+import { APP_NAVIGATE } from './features/constants';
+
 
 const router = store => next => action => {
     console.log(action.type);
-    if (action.type === 'APP_NAVIGATE') {
+    if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
             case 'home':
                 return action.navigator.push({
