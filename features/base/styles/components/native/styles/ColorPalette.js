@@ -6,6 +6,6 @@ const ColorPalette = {
     jitsiBlue: '#00ccff',
     jitsiRed: '#ff0000',
     jitsiToggled: this.buttonUnderlay
-}
+};
 
-export ColorPalette;
+export { ColorPalette };
