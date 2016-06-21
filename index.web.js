@@ -8,9 +8,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import Thunk from 'redux-thunk';
+import {
+    syncHistoryWithStore,
+    routerReducer,
+    routerMiddleware,
+    push
+} from 'react-router-redux';
 
 
 import Config from './config';
@@ -21,7 +26,10 @@ import { Conference } from './features/conference';
 
 import { APP_NAVIGATE } from './features/constants';
 
-
+/**
+ * This router middleware is used to abstract navigation
+ * inside the app for both native and web.
+ */
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
@@ -54,7 +62,8 @@ ReactDOM.render((
     <Router history={history}>
       <Route path='/' component={WelcomePage} />
       <Route path='*' component={Conference} onEnter={route => {
-          store.dispatch(Actions.init(Config, route.location.pathname.substr(1).toLowerCase()));
+          const room = route.location.pathname.substr(1).toLowerCase();
+          store.dispatch(Actions.init(Config, room));
       }} />
     </Router>
   </Provider>

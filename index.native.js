@@ -18,7 +18,10 @@ import { Conference } from './features/conference';
 
 import { APP_NAVIGATE } from './features/constants';
 
-
+/**
+ * This router middleware is used to abstract navigation
+ * inside the app for both native and web.
+ */
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
