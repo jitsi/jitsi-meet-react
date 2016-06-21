@@ -23,7 +23,6 @@ import { APP_NAVIGATE } from './features/constants';
 
 
 const router = store => next => action => {
-    console.log(action.type);
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
             case 'home':
@@ -55,7 +54,6 @@ ReactDOM.render((
     <Router history={history}>
       <Route path='/' component={WelcomePage} />
       <Route path='*' component={Conference} onEnter={route => {
-          console.log(route);
           store.dispatch(Actions.init(Config, route.location.pathname.substr(1).toLowerCase()));
       }} />
     </Router>

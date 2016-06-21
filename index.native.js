@@ -20,7 +20,6 @@ import { APP_NAVIGATE } from './features/constants';
 
 
 const router = store => next => action => {
-    console.log(action.type);
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
             case 'home':
