@@ -17,6 +17,7 @@
     "lib-jitsi-meet": "jitsi/lib-jitsi-meet",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-fontawesome": "^1.1.0",
     "react-native": "0.27.0",
     "react-native-vector-icons": "^2.0.3",
     "react-native-webrtc": "jitsi/react-native-webrtc#lib-jitsi-meet",
