@@ -13,6 +13,10 @@ import { WelcomePageContainer } from './_';
  * The welcome page of the application.
  */
 class WelcomePage extends Component {
+    /**
+     * Render a WelcomePageContainer, which will show the room name
+     * prompt appropriate for mobile or web.
+     */
     render() {
         return (
             <WelcomePageContainer

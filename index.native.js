@@ -1,22 +1,18 @@
 import React, { Component } from 'react';
 import { NavigatorIOS, AppRegistry } from 'react-native';
-
-import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-
+import * as Actions from './features/actions';
+import { APP_NAVIGATE } from './features/constants';
+import { Conference } from './features/conference';
 import reducers from './features/reducers';
 // FIXME Don't import private styles. Move common/shared styles to a feature in
 // base.
-import styles from './features/welcome/components/native/styles/Styles';
+import { WelcomePage, styles } from './features/welcome';
 
-import * as Actions from './features/actions';
-import { WelcomePage } from './features/welcome';
-import { Conference } from './features/conference';
-
-import { APP_NAVIGATE } from './features/constants';
 
 /**
  * This router middleware is used to abstract navigation
