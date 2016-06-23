@@ -12,7 +12,7 @@ module.exports = {
     },
     cache: true,
     debug: true,
-    devtool: false,
+    devtool: 'source-map',
     entry: {
         app: __dirname + '/index.web.js'
     },
