@@ -28,10 +28,10 @@ const router = store => next => action => {
                 });
             case 'conference':
                 action.navigator.push({
-                    title: action.roomName,
+                    title: action.room,
                     component: Conference
                 });
-                store.dispatch(Actions.init(Config, action.roomName));
+                store.dispatch(Actions.init(Config, action.room));
                 return;
         }
     }
