@@ -7,35 +7,43 @@ import styles from './styles/Styles';
  */
 export class WelcomePageContainer extends Component {
 
-  constructor() {
-      super();
+    /**
+     * Initialize the WelcomePageContainer, including the initial
+     * state of the room name input.
+     */
+    constructor() {
+        super();
 
-      this.state = {
-          roomName: ''
-      };
+        this.state = {
+            roomName: ''
+        };
 
-      this.handleChange = event => {
-          this.setState({ roomName: event.target.value });
-      };
+        this.handleChange = event => {
+            this.setState({ roomName: event.target.value });
+        };
 
-      this.handleSubmit = () => {
-          this.props.onJoin(this.state.roomName);
-      };
-  }
+        this.handleSubmit = () => {
+            this.props.onJoin(this.state.roomName);
+        };
+    }
 
-  render() {
-      return (
-          <div style={styles.container}>
-            <p style={styles.title}>Enter room name</p>
-            <input type="text"
-                   style={styles.textInput}
-                   onChange={this.handleChange}
-                   value={this.state.roomName}  />
-            <button style={styles.button}
-                    onClick={this.handleSubmit}>JOIN</button>
-          </div>
-    );
-  }
+    /**
+     * Render the WelcomePageContainer to show a prompt for
+     * entering a room name.
+     */
+    render() {
+        return (
+            <div style = { styles.container }>
+                <p style ={ styles.title }>Enter room name</p>
+                <input
+                    type="text"
+                    style = { styles.textInput }
+                    onChange= { this.handleChange }
+                    value= { this.state.roomName }  />
+                <button
+                    style = { styles.button }
+                    onClick = { this.handleSubmit }>JOIN</button>
+            </div>
+        );
+    }
 }
-
-

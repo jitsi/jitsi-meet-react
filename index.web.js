@@ -6,25 +6,24 @@ import Strophe from 'strophe';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
-import Thunk from 'redux-thunk';
+import { Router, Route, browserHistory } from 'react-router';
 import {
     syncHistoryWithStore,
     routerReducer,
     routerMiddleware,
     push
 } from 'react-router-redux';
-
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import Thunk from 'redux-thunk';
 
 import Config from './config';
-import reducers from './features/reducers';
 import * as Actions from './features/actions';
-import { WelcomePage } from './features/welcome';
 import { Conference } from './features/conference';
-
 import { APP_NAVIGATE } from './features/constants';
+import reducers from './features/reducers';
+import { WelcomePage } from './features/welcome';
+
 
 /**
  * This router middleware is used to abstract navigation

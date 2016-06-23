@@ -5,6 +5,7 @@ import * as Actions from '../../actions';
 
 import { ToolbarContainer } from './_';
 
+
 /**
  * The conference call toolbar.
  */
@@ -16,12 +17,12 @@ class Toolbar extends Component {
                 videoMuted = { this.props.videoMuted }
                 onAudioMute = { (muted) => {
                     this.props.onAudioMute(muted);
-                }}
+                } }
                 onHangup = {() => {
                     this.props.onHangup(this.props.navigator);
-                }}
-                onCameraChange = {() => {this.props.onCameraChange()}}
-            />
+                } }
+                onCameraChange = {() => { this.props.onCameraChange() } }
+                />
         );
     }
 }

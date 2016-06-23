@@ -9,7 +9,7 @@ import styles from './styles/Styles';
 export class ParticipantsContainer extends Component {
     render() {
         return (
-          <View style = { styles.filmStrip }>{ this.props.children }</View>
+            <View style = { styles.filmStrip }>{ this.props.children }</View>
         );
     }
 }
