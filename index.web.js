@@ -7,7 +7,7 @@ import Strophe from 'strophe';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import Thunk from 'redux-thunk';
 import {
@@ -48,10 +48,12 @@ const reducer = combineReducers({
     routing: routerReducer
 });
 
-const store = createStore(reducer, applyMiddleware(
-    Thunk,
-    router,
-    routerMiddleware(browserHistory)
+const store = createStore(reducer, compose(
+    applyMiddleware(
+        Thunk,
+        router,
+        routerMiddleware(browserHistory)),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 
 const history = syncHistoryWithStore(browserHistory, store);
