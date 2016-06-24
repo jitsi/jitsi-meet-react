@@ -2,6 +2,8 @@ import jQuery from 'jquery';
 jQuery(window);
 window.$ = jQuery;
 
+require('strophe');
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
