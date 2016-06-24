@@ -13,3 +13,7 @@ export class VideoThumbnailContainer extends Component {
         );
     }
 }
+
+VideoThumbnailContainer.propTypes = {
+    children: React.PropTypes.element
+};

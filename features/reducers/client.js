@@ -18,20 +18,20 @@ const initial = {
  */
 export default function (state = initial, action) {
     switch (action.type) {
-        case JITSI_CLIENT_CREATED:
-            return {
-                ...state,
-                connection: action.connection,
-                room: action.room
-            };
-        case JITSI_CLIENT_DISCONNECTED:
-            return {};
-        case JITSI_CONFERENCE_JOINED:
-            return {
-                ...state,
-                conference: action.conference
-            };
-        default:
-            return state;
+    case JITSI_CLIENT_CREATED:
+        return {
+            ...state,
+            connection: action.connection,
+            room: action.room
+        };
+    case JITSI_CLIENT_DISCONNECTED:
+        return {};
+    case JITSI_CONFERENCE_JOINED:
+        return {
+            ...state,
+            conference: action.conference
+        };
+    default:
+        return state;
     }
 }

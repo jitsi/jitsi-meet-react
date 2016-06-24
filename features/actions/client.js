@@ -35,7 +35,7 @@ const JitsiConferenceEvents = JitsiMeetJS.events.conference;
  * the named conference.
  */
 export function init(config, room) {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         JitsiMeetJS.init({}).then(() => {
             console.log('RTC READY');
             dispatch(createLocalTracks());
@@ -65,7 +65,7 @@ export function rtcError(error) {
     return {
         type: RTC_ERROR,
         error
-    }
+    };
 }
 
 /**
@@ -143,7 +143,7 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
                 if (!track.isLocal()) {
-                    dispatch(remoteTrackAdded(track))
+                    dispatch(remoteTrackAdded(track));
                 }
             });
 
@@ -160,7 +160,7 @@ export function conferenceInitialized(conference) {
             (id, user) => dispatch(userLeft(id, user)));
 
         conference.join();
-    }
+    };
 }
 
 /**

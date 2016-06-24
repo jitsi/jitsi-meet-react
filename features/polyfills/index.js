@@ -6,4 +6,4 @@ require('strophejs-plugins/disco/strophe.disco');
 require('strophejs-plugins/caps/strophe.caps.jsonly');
 require('./browserify');
 
-module.exports = { jQuery };
+module.exports = {jQuery};

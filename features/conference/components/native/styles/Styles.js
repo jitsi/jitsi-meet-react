@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 /**
  * The video screen style.
@@ -23,7 +23,7 @@ var styles = StyleSheet.create({
         bottom: 110,
         position: 'absolute',
         flexDirection: 'row'
-    },
+    }
 });
 
 export default styles;

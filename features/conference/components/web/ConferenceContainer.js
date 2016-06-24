@@ -10,3 +10,7 @@ export class ConferenceContainer extends Component {
         );
     }
 }
+
+ConferenceContainer.propTypes = {
+    children: React.PropTypes.element
+};

@@ -18,22 +18,22 @@ const initial = {
  */
 export default function (state = initial, action) {
     switch (action.type) {
-        case TOGGLE_AUDIO_MUTED_STATE:
-            return {
-                ...state,
-                audioMuted: !state.audioMuted
-            };
-        case TOGGLE_VIDEO_MUTED_STATE:
-            return {
-                ...state,
-                videoMuted: !state.videoMuted
-            };
-        case CHANGE_CAMERA_FACING_MODE:
-            return {
-                ...state,
-                cameraFacingMode: action.media.cameraFacingMode
-            };
-        default:
-            return state;
+    case TOGGLE_AUDIO_MUTED_STATE:
+        return {
+            ...state,
+            audioMuted: !state.audioMuted
+        };
+    case TOGGLE_VIDEO_MUTED_STATE:
+        return {
+            ...state,
+            videoMuted: !state.videoMuted
+        };
+    case CHANGE_CAMERA_FACING_MODE:
+        return {
+            ...state,
+            cameraFacingMode: action.media.cameraFacingMode
+        };
+    default:
+        return state;
     }
 }

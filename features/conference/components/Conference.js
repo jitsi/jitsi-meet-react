@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { BigVideo, LocalVideoThumbnail, RemoteVideoThumbnail } from '../../media';
+import {
+    BigVideo,
+    LocalVideoThumbnail,
+    RemoteVideoThumbnail
+} from '../../media';
 import { Toolbar } from '../../toolbar';
 
 import { ConferenceContainer, ParticipantsContainer } from './_';
@@ -35,7 +39,8 @@ class Conference extends Component {
  * on mobile.
  */
 Conference.propTypes = {
-    navigator: React.PropTypes.object
+    navigator: React.PropTypes.object,
+    participants: React.PropTypes.object
 };
 
 const mapStateToProps = state => {

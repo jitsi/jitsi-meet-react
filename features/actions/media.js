@@ -66,12 +66,12 @@ export function toggleCameraFacingMode() {
                 })
             )
             .then(() => {
-                dispatch({
+                return dispatch({
                     type: CHANGE_CAMERA_FACING_MODE,
                     media: {
                         cameraFacingMode: newFacingMode
                     }
-                })
+                });
             });
     };
 }

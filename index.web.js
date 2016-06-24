@@ -1,8 +1,6 @@
 import jQuery from 'jquery';
 jQuery(window);
 window.$ = jQuery;
-import Strophe from 'strophe';
-
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -14,15 +12,19 @@ import {
     routerMiddleware,
     push
 } from 'react-router-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import {
+    createStore,
+    applyMiddleware,
+    combineReducers
+} from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
 import * as Actions from './features/actions';
-import { Conference } from './features/conference';
-import { APP_NAVIGATE } from './features/constants';
+import {Conference} from './features/conference';
+import {APP_NAVIGATE} from './features/constants';
 import reducers from './features/reducers';
-import { WelcomePage } from './features/welcome';
+import {WelcomePage} from './features/welcome';
 
 
 /**
@@ -32,10 +34,10 @@ import { WelcomePage } from './features/welcome';
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
-            case 'home':
-                return store.dispatch(push('/'));
-            case 'conference':
-                return store.dispatch(push('/' + action.room));
+        case 'home':
+            return store.dispatch(push('/'));
+        case 'conference':
+            return store.dispatch(push('/' + action.room));
         }
     }
     return next(action);
@@ -57,14 +59,18 @@ const history = syncHistoryWithStore(browserHistory, store);
 
 
 ReactDOM.render((
-  <Provider store={store}>
-    <Router history={history}>
-      <Route path='/' component={WelcomePage} />
-      <Route path='*' component={Conference} onEnter={route => {
-          const room = route.location.pathname.substr(1).toLowerCase();
-          store.dispatch(Actions.init(Config, room));
-      }} />
-    </Router>
-  </Provider>
+    <Provider store={ store }>
+        <Router history={ history }>
+            <Route path='/' component={ WelcomePage }/>
+            <Route
+                path='*'
+                component={ Conference }
+                onEnter={ route => {
+                    const room =
+                        route.location.pathname.substr(1).toLowerCase();
+                    store.dispatch(Actions.init(Config, room));
+                }}/>
+        </Router>
+    </Provider>
 ), document.body);
 

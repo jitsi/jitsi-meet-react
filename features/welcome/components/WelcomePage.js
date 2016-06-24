@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 
 import * as Actions from '../../actions';
-import { Conference } from '../../conference';
-import Config from '../../../config';
 
 import { WelcomePageContainer } from './_';
 
@@ -21,9 +18,8 @@ class WelcomePage extends Component {
         return (
             <WelcomePageContainer
                 room={ this.props.room }
-                onJoin={ (roomName) => {
-                    this.props.onJoin(roomName, this.props.navigator);
-                    }
+                onJoin={ roomName =>
+                        this.props.onJoin(roomName, this.props.navigator)
                 }/>
         );
     }
@@ -36,7 +32,7 @@ const mapStateToProps = state => {
     return {
         room: state.client.room
     };
-}
+};
 
 /**
  * Maps the onJoin action.
@@ -50,7 +46,13 @@ const mapDispatchToProps = (dispatch) => {
                 navigator
             }));
         }
-    }
-}
+    };
+};
+
+WelcomePage.propTypes = {
+    onJoin: React.PropTypes.func,
+    room: React.PropTypes.object,
+    navigator: React.PropTypes.object
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {  View,
-    Text,
-    TouchableHighlight } from 'react-native';
+import {
+    TouchableHighlight,
+    View
+} from 'react-native';
 
 import { ColorPalette } from '../../../base/styles';
 
@@ -22,11 +23,11 @@ export class ToolbarContainer extends Component {
                 styles.toolbarButton,
                 { backgroundColor: underlayColor }
             ];
-            micButtonIcon = "microphone-slash";
+            micButtonIcon = 'microphone-slash';
         }
         else {
             micButtonStyle = styles.toolbarButton;
-            micButtonIcon = "microphone";
+            micButtonIcon = 'microphone';
         }
 
         return (
@@ -55,3 +56,10 @@ export class ToolbarContainer extends Component {
         );
     }
 }
+
+ToolbarContainer.propTypes = {
+    onAudioMute: React.PropTypes.func,
+    onHangup: React.PropTypes.func,
+    onCameraChange: React.PropTypes.func,
+    audioMuted: React.PropTypes.bool
+};

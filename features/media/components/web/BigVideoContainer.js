@@ -7,3 +7,7 @@ export class BigVideoContainer extends Component {
         );
     }
 }
+
+BigVideoContainer.propTypes = {
+    children: React.PropTypes.element
+};

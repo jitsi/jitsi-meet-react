@@ -25,7 +25,7 @@ export function userJoined(id, user) {
 /**
  * Create an action for when a participant has left the conference.
  */
-export function userLeft(id, user) {
+export function userLeft(id) {
     return {
         type: PEER_LEFT,
         participant: {

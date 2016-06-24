@@ -57,7 +57,7 @@ export function remoteTrackRemoved(track) {
  */
 export function createLocalTracks(options) {
     options || (options = {});
-    return (dispatch, getState) => {
+    return dispatch => {
         return JitsiMeetJS.createLocalTracks({
             devices: options.devices || ['audio', 'video'],
             facingMode: options.facingMode || 'user',

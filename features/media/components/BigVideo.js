@@ -60,4 +60,10 @@ const mapStateToProps = state => {
     };
 };
 
+BigVideo.propTypes = {
+    localTracks: React.PropTypes.array,
+    remoteTracks: React.PropTypes.array,
+    participants: React.PropTypes.object
+};
+
 export default connect(mapStateToProps)(BigVideo);
