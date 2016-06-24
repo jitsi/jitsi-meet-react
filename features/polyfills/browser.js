@@ -131,15 +131,15 @@ function _visitNode(node, callback) {
                 };
             }
         }
-        // FIXME There is a weird infinite loop related to console.log and Document
-        // and/or Element at the time of this writing. Work around it by patching
-        // Node and/or overriding console.log.
+        // FIXME There is a weird infinite loop related to console.log and
+        // Document and/or Element at the time of this writing. Work around it
+        // by patching Node and/or overriding console.log.
         let nodePrototype
             = _getCommonPrototype(documentPrototype, elementPrototype);
         if (nodePrototype
-            // XXX The intention was to find Node from which Document and Element
-            // extend. If for whatever reason we've reached Object, then it doesn't
-            // sound like what expected.
+            // XXX The intention was to find Node from which Document and
+            // Element extend. If for whatever reason we've reached Object, then
+            // it doesn't sound like what expected.
             && nodePrototype !== Object.getPrototypeOf({})) {
             // Override console.log.
             let console = global.console;
@@ -156,7 +156,8 @@ function _visitNode(node, callback) {
                                 let arg = arguments[i];
                                 if (arg
                                     && typeof arg !== 'string'
-                                    // Limit the console.log override to Node (instances).
+                                    // Limit the console.log override to Node
+                                    // (instances).
                                     && nodePrototype.isPrototypeOf(arg)) {
                                     let toString = arg.toString;
                                     if (toString) {
@@ -265,7 +266,8 @@ function _visitNode(node, callback) {
                     let responseText = this.responseText;
                     let responseXML;
                     if (responseText) {
-                        responseXML = new DOMParser().parseFromString(responseText);
+                        responseXML = new DOMParser()
+                            .parseFromString(responseText);
                     }
                     return responseXML;
                 }

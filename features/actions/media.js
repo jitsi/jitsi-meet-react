@@ -28,7 +28,9 @@ function toggleMedia(media) {
         }
 
         dispatch({
-            type: media === 'video' ? TOGGLE_VIDEO_MUTED_STATE : TOGGLE_AUDIO_MUTED_STATE
+            type: media === 'video'
+                ? TOGGLE_VIDEO_MUTED_STATE
+                : TOGGLE_AUDIO_MUTED_STATE
         });
     };
 }

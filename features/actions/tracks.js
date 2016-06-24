@@ -14,11 +14,11 @@ import {
 export function addTracksToConference(conference, localTracks) {
     // XXX The implementation of getUserMedia provided by react-native-webrtc
     // initializes the local MediaStream instances from 1 constant label.
-    // RTCPeerConnection will not add a MediaStream if a MediaStream with the same
-    // label has been added already. Consequently, the second MediaStream with the
-    // same label will not be streamed (to the remote endpoint). Until this issue
-    // with the labels is fixed, prefer to stream the video if any and not the
-    // audio MediaStream.
+    // RTCPeerConnection will not add a MediaStream if a MediaStream with the
+    // same label has been added already. Consequently, the second MediaStream
+    // with the same label will not be streamed (to the remote endpoint). Until
+    // this issue with the labels is fixed, prefer to stream the video if any
+    // and not the audio MediaStream.
     for (let track of localTracks) {
         track.isVideoTrack() && conference.addTrack(track);
     }
@@ -113,7 +113,7 @@ export function changeLocalTracks(newLocalTracks = []) {
                 }
             });
 
-            // TODO: add various checks from original useVideo/AudioStream functions
+            // TODO: add various checks from original useVideo/AudioStream
 
             promise = Promise.all(tracksToRemove.map(t => t.dispose()))
                 .then(() => addTracksToConference(conference, tracksToAdd));

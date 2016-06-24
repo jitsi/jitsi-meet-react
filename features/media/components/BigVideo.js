@@ -26,7 +26,8 @@ class BigVideo extends Component {
  * @param {JitsiRemoteTrack[]} remoteTracks
  * @param {JitsiRemoteTrack[]} localTracks
  */
-function getDominantSpeakerVideoStream(participants, remoteTracks, localTracks) {
+function getDominantSpeakerVideoStream(
+    participants, remoteTracks, localTracks) {
     let dominantSpeakerId;
     let videoTrack;
 

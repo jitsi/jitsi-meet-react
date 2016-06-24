@@ -83,8 +83,9 @@
         };
         _RTCPeerConnection.prototype.setRemoteDescription =
             function (sessionDescription, successCallback, errorCallback) {
-                // Ensure I'm not remembering onaddstream invocations from previous
-                // setRemoteDescription calls. I shouldn't be but... anyway.
+                // Ensure I'm not remembering onaddstream invocations from
+                // previous setRemoteDescription calls. I shouldn't be but...
+                // anyway.
                 this._onaddstreamQueue = [];
                 return RTCPeerConnection.prototype.setRemoteDescription.call(
                     this,
