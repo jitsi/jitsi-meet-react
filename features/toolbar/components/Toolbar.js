@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import * as Actions from '../actions';
+import { hangup, toggleAudio, toggleCameraFacingMode } from '../';
+import { navigate } from '../../base/navigation';
 
 import { ToolbarContainer } from './_';
 
@@ -45,17 +46,17 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAudioMute: () => {
-            dispatch(Actions.toggleAudio());
+            dispatch(toggleAudio());
         },
         onHangup: (navigator) => {
-            dispatch(Actions.hangup());
-            dispatch(Actions.navigate({
+            dispatch(hangup());
+            dispatch(navigate({
                 screen: 'home',
                 navigator
             }));
         },
         onCameraChange: () => {
-            dispatch(Actions.toggleCameraFacingMode())
+            dispatch(toggleCameraFacingMode())
         }
     }
 };

@@ -1,3 +1,5 @@
+import Reducers from '../../ReducerRegistry';
+
 import {
     CHANGE_CAMERA_FACING_MODE,
     TOGGLE_AUDIO_MUTED_STATE,
@@ -16,7 +18,7 @@ const INITIAL_STATE = {
  * Listen for actions that toggle the desired state of local media capture,
  * i.e. disable or enable audio or video capture.
  */
-export default function (state = INITIAL_STATE, action) {
+Reducers.register('features/toolbar', (state = INITIAL_STATE, action) => {
     switch (action.type) {
     case CHANGE_CAMERA_FACING_MODE:
         return {
@@ -36,4 +38,4 @@ export default function (state = INITIAL_STATE, action) {
     default:
         return state;
     }
-}
+});

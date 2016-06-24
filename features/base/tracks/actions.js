@@ -1,10 +1,12 @@
+require('../../polyfills');
+
 import JitsiMeetJS from 'lib-jitsi-meet';
 
 import {
     REMOTE_TRACK_ADDED,
     REMOTE_TRACK_REMOVED,
     LOCAL_TRACKS_CHANGED
-} from '../constants';
+} from './actionTypes';
 
 /**
  * Attach a set of local tracks to a conference.

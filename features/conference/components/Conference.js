@@ -42,9 +42,9 @@ const mapStateToProps = state => {
     return {
         room: state['features/welcome'].room,
         user: state.user,
-        localTracks: state.localTracks,
-        remoteTracks: state.remoteTracks,
-        participants: state.participants
+        localTracks: state['features/base/tracks'].filter(track => track.isLocal()),
+        remoteTracks: state['features/base/tracks'].filter(track => !track.isLocal()),
+        participants: state['features/welcome/participants']
     };
 };
 

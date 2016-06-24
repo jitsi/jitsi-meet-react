@@ -1,6 +1,8 @@
+require('../polyfills');
+
 import JitsiMeetJS from 'lib-jitsi-meet';
 
-import { createLocalTracks } from '../actions/tracks.js';
+import { createLocalTracks } from '../base/tracks';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -22,7 +24,6 @@ const JitsiConferenceEvents = JitsiMeetJS.events.conference;
  * Create an action for when the signaling connection has been established.
  */
 export function conferenceInitialized(conference) {
-    console.log('CONFERENCE INITIALIZED');
     return dispatch => {
         conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
             () => dispatch(conferenceJoined(conference)));
@@ -150,7 +151,6 @@ export function dominantSpeakerChanged(id) {
 export function init(config, room) {
     return (dispatch, getState) => {
         JitsiMeetJS.init({}).then(() => {
-            console.log('RTC READY');
             dispatch(createLocalTracks());
 
             const connection = new JitsiMeetJS.JitsiConnection(

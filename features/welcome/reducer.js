@@ -1,3 +1,5 @@
+import Reducers from '../../ReducerRegistry';
+
 import {
     DOMINANT_SPEAKER_CHANGED,
     JITSI_CLIENT_CREATED,
@@ -19,7 +21,7 @@ const INITIAL_STATE = {
  * Listen for actions that contain the connection or conference objects,
  * so that they can be stored for use by other action creators.
  */
-export default function (state = INITIAL_STATE, action) {
+Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
     switch (action.type) {
     case JITSI_CLIENT_CREATED:
         return {
@@ -37,13 +39,14 @@ export default function (state = INITIAL_STATE, action) {
     default:
         return state;
     }
-}
+});
+
 
 /**
  * Listen for actions which add, remove, or update the set of participants
  * in the conference.
  */
-function participants(state = {}, action) {
+Reducers.register('features/welcome/participants', (state = {}, action) => {
     let participants = {};
 
     switch (action.type) {
@@ -85,7 +88,15 @@ function participants(state = {}, action) {
 
         return participants;
     case PEER_CHANGED:
+        for (let key in state) {
+            if (state.hasOwnProperty(key)) {
+                participants[key] = Object.assign(
+                    {}, state[key], action.participant);
+            }
+        }
+
+        return participants;
     default:
         return state;
     }
-}
+});

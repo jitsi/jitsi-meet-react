@@ -54,8 +54,8 @@ function getDominantSpeakerVideoStream(participants, remoteTracks, localTracks) 
 const mapStateToProps = state => {
     return {
         user: state.user,
-        localTracks: state.localTracks,
-        remoteTracks: state.remoteTracks,
+        localTracks: state['features/base/tracks'].filter(track => track.isLocal()),
+        remoteTracks: state['features/base/tracks'].filter(track => !track.isLocal()),
         participants: state.participants
     };
 };
