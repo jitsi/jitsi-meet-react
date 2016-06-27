@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-import { BigVideo, LocalVideoThumbnail, RemoteVideoThumbnail } from '../../media';
+import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
+import { FilmStrip } from '../../filmStrip';
 
-import { ConferenceContainer, ParticipantsContainer } from './_';
-
+import { ConferenceContainer } from './_';
 
 /**
  * The conference page for the application.
@@ -14,17 +13,9 @@ class Conference extends Component {
     render() {
         return (
             <ConferenceContainer>
-                <BigVideo/>
+                <LargeVideo/>
                 <Toolbar navigator = { this.props.navigator }/>
-                <ParticipantsContainer>
-                    <LocalVideoThumbnail/>
-                    { Object.keys(this.props.participants).map((id) => {
-                        return <RemoteVideoThumbnail
-                            key={id}
-                            participantId={id}
-                            />;
-                    }) }
-                </ParticipantsContainer>
+                <FilmStrip/>
             </ConferenceContainer>
         );
     }
@@ -38,14 +29,4 @@ Conference.propTypes = {
     navigator: React.PropTypes.object
 };
 
-const mapStateToProps = state => {
-    return {
-        room: state['features/welcome'].room,
-        user: state.user,
-        localTracks: state['features/base/tracks'].filter(track => track.isLocal()),
-        remoteTracks: state['features/base/tracks'].filter(track => !track.isLocal()),
-        participants: state['features/welcome/participants']
-    };
-};
-
-export default connect(mapStateToProps)(Conference);
+export default Conference;

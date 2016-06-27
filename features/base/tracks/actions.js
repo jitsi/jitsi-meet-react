@@ -2,11 +2,9 @@ require('../../polyfills');
 
 const JitsiMeetJS = require('lib-jitsi-meet');
 
-
 import {
-    REMOTE_TRACK_ADDED,
-    REMOTE_TRACK_REMOVED,
-    LOCAL_TRACKS_CHANGED
+    TRACK_ADDED,
+    TRACK_REMOVED
 } from './actionTypes';
 
 /**
@@ -29,12 +27,27 @@ export function addTracksToConference(conference, localTracks) {
 }
 
 /**
- * Create an action for when a remote track has been signaled for
+ * Create an action for when a track has been signaled for
  * removal from the conference.
+ * @param {JitsiTrack} track
+ * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
  */
-export function remoteTrackRemoved(track) {
+export function trackRemoved(track) {
     return {
-        type: REMOTE_TRACK_REMOVED,
+        type: TRACK_REMOVED,
+        track
+    };
+}
+
+/**
+ * Create an action for when a new track has been signaled to be added
+ * to the conference.
+ * @param {JitsiTrack} track
+ * @returns {{ type: TRACK_ADDED, track: JitsiTrack }}
+ */
+export function trackAdded(track) {
+    return {
+        type: TRACK_ADDED,
         track
     };
 }
@@ -47,7 +60,7 @@ export function remoteTrackRemoved(track) {
  */
 export function createLocalTracks(options) {
     options || (options = {});
-    return (dispatch, getState) => {
+    return dispatch => {
         return JitsiMeetJS.createLocalTracks({
             devices: options.devices || ['audio', 'video'],
             facingMode: options.facingMode || 'user',
@@ -73,7 +86,6 @@ export function changeLocalTracks(newLocalTracks = []) {
         const conference = getState()['features/welcome'].conference;
         let tracksToAdd = [];
         let tracksToRemove = [];
-        let tracksToUse = [];
         let newAudioTrack;
         let newVideoTrack;
         let promise = Promise.resolve();
@@ -86,9 +98,6 @@ export function changeLocalTracks(newLocalTracks = []) {
                     if (newAudioTrack) {
                         tracksToAdd.push(newAudioTrack);
                         tracksToRemove.push(track);
-                        tracksToUse.push(newAudioTrack);
-                    } else {
-                        tracksToUse.push(track);
                     }
                 } else if (track.isVideoTrack()) {
                     newVideoTrack = newLocalTracks.find(t => t.isVideoTrack());
@@ -96,23 +105,21 @@ export function changeLocalTracks(newLocalTracks = []) {
                     if (newVideoTrack) {
                         tracksToAdd.push(newVideoTrack);
                         tracksToRemove.push(track);
-                        tracksToUse.push(newVideoTrack);
-                    } else {
-                        tracksToUse.push(track);
                     }
                 }
             });
 
-            // TODO: add various checks from original useVideo/AudioStream functions
+            // TODO: add various checks from original useVideo/AudioStream
 
             promise = Promise.all(tracksToRemove.map(t => t.dispose()))
+                .then(() => Promise.all(
+                    tracksToRemove.map(t => dispatch(trackRemoved(t)))))
                 .then(() => addTracksToConference(conference, tracksToAdd));
         } else {
-            tracksToUse = newLocalTracks;
+            tracksToAdd = newLocalTracks;
         }
 
-        return promise
-            .then(() =>
-                dispatch({ type: LOCAL_TRACKS_CHANGED, tracks: tracksToUse }));
+        return promise.then(() =>
+            Promise.all(tracksToAdd.map(t => dispatch(trackAdded(t)))));
     };
 }
