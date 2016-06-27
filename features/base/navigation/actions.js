@@ -1,6 +1,6 @@
 import {
     APP_NAVIGATE
-} from '../constants';
+} from './actionTypes';
 
 
 /**

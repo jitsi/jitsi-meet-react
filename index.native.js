@@ -5,14 +5,12 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import * as Actions from './features/actions';
-import { APP_NAVIGATE } from './features/constants';
+import { APP_NAVIGATE } from './features/base/navigation';
 import { Conference } from './features/conference';
-import reducers from './features/reducers';
 // FIXME Don't import private styles. Move common/shared styles to a feature in
 // base.
-import { WelcomePage, styles } from './features/welcome';
-
+import { WelcomePage, styles, init } from './features/welcome';
+import Reducers from './ReducerRegistry';
 
 /**
  * This router middleware is used to abstract navigation
@@ -31,7 +29,7 @@ const router = store => next => action => {
                     title: action.room,
                     component: Conference
                 });
-                store.dispatch(Actions.init(Config, action.room));
+                store.dispatch(init(Config, action.room));
                 return;
         }
     }
@@ -39,7 +37,7 @@ const router = store => next => action => {
 };
 
 
-const reducer = combineReducers(reducers);
+const reducer = Reducers.getReducer();
 const store = createStore(reducer, applyMiddleware(Thunk, router));
 
 class Root extends Component {

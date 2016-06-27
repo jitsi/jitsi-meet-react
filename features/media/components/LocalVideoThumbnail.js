@@ -31,8 +31,8 @@ class LocalVideoThumbnail extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.client.user,
-        localTracks: state.localTracks
+        user: state.user,
+        localTracks: state['features/base/tracks'].filter(track => track.isLocal())
     };
 };
 
