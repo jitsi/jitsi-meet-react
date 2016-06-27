@@ -3,7 +3,7 @@ require('../polyfills');
 const JitsiMeetJS = require('lib-jitsi-meet');
 
 
-import { createLocalTracks } from '../base/tracks';
+import { createLocalTracks, addTracksToConference } from '../base/tracks';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -58,7 +58,8 @@ export function conferenceInitialized(conference) {
  */
 export function conferenceJoined(conference) {
     return (dispatch, getState) => {
-        var localTracks = getState().localTracks;
+        const stateFeaturesTracks = getState()['features/base/tracks'];
+        var localTracks = stateFeaturesTracks.filter(track => track.isLocal);
         if (localTracks) {
             addTracksToConference(conference, localTracks);
         }

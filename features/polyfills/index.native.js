@@ -3,6 +3,7 @@ require('./browserify');
 
 const jQuery = require('jquery');
 jQuery(window);
+window.$ = jQuery;
 
 require('strophe');
 require('strophejs-plugins/disco/strophe.disco');
