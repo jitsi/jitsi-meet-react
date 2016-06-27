@@ -41,6 +41,7 @@
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1",
     "browserify": "11.1.x",
-    "uglify-js": "2.4.24"
+    "uglify-js": "2.4.24",
+    "imports-loader": "*"
   }
 }

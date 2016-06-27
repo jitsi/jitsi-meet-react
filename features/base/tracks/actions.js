@@ -1,7 +1,4 @@
-require('../../polyfills');
-
-const JitsiMeetJS = require('lib-jitsi-meet');
-
+import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
     REMOTE_TRACK_ADDED,

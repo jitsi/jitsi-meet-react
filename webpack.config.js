@@ -2,8 +2,6 @@ var WebPack = require('webpack');
 var HtmlPlugin = require('html-webpack-plugin');
 var HasteResolver = require('haste-resolver-webpack-plugin');
 
-
-
 module.exports = {
     output: {
         filename: 'bundle.js',
@@ -33,8 +31,13 @@ module.exports = {
                 query: {
                     presets: ['es2015', 'react', 'stage-1']
                 }
+            },
+            // Disable AMD for Strophe and its plugins because we don't know how
+            // to require them successfully.
+            {
+                test: /\/strophe(js-plugins)?\//,
+                loader: 'imports?define=>false&this=>window'
             }
         ]
     }
 };
-

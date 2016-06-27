@@ -1,9 +1,3 @@
-import jQuery from 'jquery';
-jQuery(window);
-window.$ = jQuery;
-import Strophe from 'strophe';
-
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -65,4 +59,3 @@ ReactDOM.render((
     </Router>
   </Provider>
 ), document.body);
-
