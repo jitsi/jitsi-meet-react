@@ -18,11 +18,10 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import * as Actions from './features/actions';
+import { APP_NAVIGATE } from './features/base/navigation';
 import { Conference } from './features/conference';
-import { APP_NAVIGATE } from './features/constants';
-import reducers from './features/reducers';
-import { WelcomePage } from './features/welcome';
+import { WelcomePage, init } from './features/welcome';
+import Reducers from './ReducerRegistry';
 
 
 /**
@@ -42,8 +41,7 @@ const router = store => next => action => {
 };
 
 
-const reducer = combineReducers({
-    ...reducers,
+const reducer = Reducers.getReducer({
     routing: routerReducer
 });
 
@@ -62,7 +60,7 @@ ReactDOM.render((
       <Route path='/' component={WelcomePage} />
       <Route path='*' component={Conference} onEnter={route => {
           const room = route.location.pathname.substr(1).toLowerCase();
-          store.dispatch(Actions.init(Config, room));
+          store.dispatch(init(Config, room));
       }} />
     </Router>
   </Provider>

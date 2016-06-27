@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import * as Actions from '../../actions';
+import { navigate } from '../../base/navigation';
 import { Conference } from '../../conference';
 import Config from '../../../config';
 
@@ -34,7 +34,7 @@ class WelcomePage extends Component {
  */
 const mapStateToProps = state => {
     return {
-        room: state.client.room
+        room: state['features/welcome'].room
     };
 }
 
@@ -44,7 +44,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onJoin: (roomName, navigator) => {
-            dispatch(Actions.navigate({
+            dispatch(navigate({
                 screen: 'conference',
                 room: roomName,
                 navigator
