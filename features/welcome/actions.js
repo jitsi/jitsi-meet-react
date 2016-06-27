@@ -1,6 +1,5 @@
-require('../polyfills');
+const JitsiMeetJS = require('../polyfills').JitsiMeetJS;
 
-import JitsiMeetJS from 'lib-jitsi-meet';
 
 import { createLocalTracks } from '../base/tracks';
 
