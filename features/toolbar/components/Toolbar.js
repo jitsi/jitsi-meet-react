@@ -15,13 +15,9 @@ class Toolbar extends Component {
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
                 videoMuted = { this.props.videoMuted }
-                onAudioMute = { (muted) => {
-                    this.props.onAudioMute(muted);
-                } }
-                onHangup = {() => {
-                    this.props.onHangup(this.props.navigator);
-                } }
-                onCameraChange = {() => { this.props.onCameraChange() } }
+                onAudioMute = { muted => this.props.onAudioMute(muted) }
+                onHangup = { () => this.props.onHangup(this.props.navigator) }
+                onCameraChange = { () => this.props.onCameraChange() }
                 />
         );
     }
@@ -55,9 +51,18 @@ const mapDispatchToProps = dispatch => {
             }));
         },
         onCameraChange: () => {
-            dispatch(toggleCameraFacingMode())
+            dispatch(toggleCameraFacingMode());
         }
-    }
+    };
+};
+
+Toolbar.propTypes = {
+    onAudioMute: React.PropTypes.func,
+    onHangup: React.PropTypes.func,
+    onCameraChange: React.PropTypes.func,
+    audioMuted: React.PropTypes.bool,
+    videoMuted: React.PropTypes.bool,
+    navigator: React.PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);

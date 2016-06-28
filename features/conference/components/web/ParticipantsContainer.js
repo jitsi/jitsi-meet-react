@@ -13,3 +13,7 @@ export class ParticipantsContainer extends Component {
         );
     }
 }
+
+ParticipantsContainer.propTypes = {
+    children: React.PropTypes.element
+};

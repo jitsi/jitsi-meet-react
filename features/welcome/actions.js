@@ -1,5 +1,9 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
-import { addTracksToConference, createLocalTracks } from '../base/tracks';
+import {
+    addTracksToConference,
+    createLocalTracks,
+    remoteTrackAdded
+} from '../base/tracks';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -16,7 +20,6 @@ import {
 
 require('./reducer');
 
-
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 
@@ -31,12 +34,12 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
                 if (!track.isLocal()) {
-                    dispatch(remoteTrackAdded(track))
+                    dispatch(remoteTrackAdded(track));
                 }
             });
 
         conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
-            (id) => dispatch(dominantSpeakerChanged(id)));
+            id => dispatch(dominantSpeakerChanged(id)));
 
         conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
             (id, role) => dispatch(userRoleChanged(id, role)));
@@ -48,7 +51,7 @@ export function conferenceInitialized(conference) {
             (id, user) => dispatch(userLeft(id, user)));
 
         conference.join();
-    }
+    };
 }
 
 /**
@@ -140,7 +143,7 @@ export function dominantSpeakerChanged(id) {
     return {
         type: DOMINANT_SPEAKER_CHANGED,
         participant: {
-            id: id
+            id
         }
     };
 }
@@ -150,7 +153,7 @@ export function dominantSpeakerChanged(id) {
  * the named conference.
  */
 export function init(config, room) {
-    return (dispatch, getState) => {
+    return dispatch => {
         JitsiMeetJS.init({}).then(() => {
             dispatch(createLocalTracks());
 
@@ -173,24 +176,13 @@ export function init(config, room) {
 }
 
 /**
- * Create an action for when a new track has been signaled to be added
- * to the conference.
- */
-export function remoteTrackAdded(track) {
-    return {
-        type: REMOTE_TRACK_ADDED,
-        track
-    };
-}
-
-/**
  * Create an action for when the JitsiMeetJS library could not be initialized.
  */
 export function rtcError(error) {
     return {
         type: RTC_ERROR,
         error
-    }
+    };
 }
 
 /**
@@ -200,7 +192,7 @@ export function userJoined(id, user) {
     return {
         type: PEER_JOINED,
         participant: {
-            id: id,
+            id,
             // TODO: get this from interface config
             name: user._displayName || 'Fellow Jitster',
             gravatar: '',
@@ -212,11 +204,11 @@ export function userJoined(id, user) {
 /**
  * Create an action for when a participant has left the conference.
  */
-export function userLeft(id, user) {
+export function userLeft(id) {
     return {
         type: PEER_LEFT,
         participant: {
-            id: id
+            id
         }
     };
 }
@@ -230,7 +222,7 @@ export function userRoleChanged(id, role) {
     return {
         type: MODERATOR_CHANGED,
         participant: {
-            id: id,
+            id,
             moderator: role === 'moderator'
         }
     };

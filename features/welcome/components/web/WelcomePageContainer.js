@@ -47,3 +47,7 @@ export class WelcomePageContainer extends Component {
         );
     }
 }
+
+WelcomePageContainer.propTypes = {
+    onJoin: React.PropTypes.func
+};
