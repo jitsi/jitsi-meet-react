@@ -13,9 +13,9 @@ import Thunk from 'redux-thunk';
 
 import Config from './config';
 import { APP_NAVIGATE } from './features/base/navigation';
+import ReducerRegistry from './features/base/redux';
 import { Conference } from './features/conference';
 import { WelcomePage, init } from './features/welcome';
-import Reducers from './ReducerRegistry';
 
 
 /**
@@ -35,7 +35,7 @@ const router = store => next => action => {
 };
 
 
-const reducer = Reducers.getReducer({
+const reducer = ReducerRegistry.getReducer({
     routing: routerReducer
 });
 

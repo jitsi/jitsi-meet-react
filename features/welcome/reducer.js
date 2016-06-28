@@ -1,4 +1,4 @@
-import Reducers from '../../ReducerRegistry';
+import ReducerRegistry from '../base/redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -21,7 +21,7 @@ const INITIAL_STATE = {
  * Listen for actions that contain the connection or conference objects,
  * so that they can be stored for use by other action creators.
  */
-Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
+ReducerRegistry.register('features/welcome', (state = INITIAL_STATE, action) => {
     switch (action.type) {
     case JITSI_CLIENT_CREATED:
         return {
@@ -46,7 +46,7 @@ Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
  * Listen for actions which add, remove, or update the set of participants
  * in the conference.
  */
-Reducers.register('features/welcome/participants', (state = {}, action) => {
+ReducerRegistry.register('features/welcome/participants', (state = {}, action) => {
     let participants = {};
 
     switch (action.type) {

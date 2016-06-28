@@ -1,4 +1,4 @@
-import Reducers from '../../../ReducerRegistry';
+import ReducerRegistry from '../redux';
 
 import {
     REMOTE_TRACK_ADDED,
@@ -9,7 +9,7 @@ import {
 /**
  * Listen for actions that add or remove remote tracks.
  */
-Reducers.register('features/base/tracks', (state = [], action) => {
+ReducerRegistry.register('features/base/tracks', (state = [], action) => {
     switch (action.type) {
     case LOCAL_TRACKS_CHANGED:
         return [...action.tracks, ...state.filter(track => !track.isLocal())];

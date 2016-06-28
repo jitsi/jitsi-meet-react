@@ -6,11 +6,11 @@ import Thunk from 'redux-thunk';
 
 import Config from './config';
 import { APP_NAVIGATE } from './features/base/navigation';
+import ReducerRegistry from './features/base/redux';
 import { Conference } from './features/conference';
 // FIXME Don't import private styles. Move common/shared styles to a feature in
 // base.
 import { WelcomePage, styles, init } from './features/welcome';
-import Reducers from './ReducerRegistry';
 
 /**
  * This router middleware is used to abstract navigation
@@ -37,7 +37,7 @@ const router = store => next => action => {
 };
 
 
-const reducer = Reducers.getReducer();
+const reducer = ReducerRegistry.getReducer();
 const store = createStore(reducer, applyMiddleware(Thunk, router));
 
 class Root extends Component {
