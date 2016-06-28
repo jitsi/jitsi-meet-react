@@ -1,9 +1,9 @@
 import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
+    LOCAL_TRACKS_CHANGED,
     REMOTE_TRACK_ADDED,
-    REMOTE_TRACK_REMOVED,
-    LOCAL_TRACKS_CHANGED
+    REMOTE_TRACK_REMOVED
 } from './actionTypes';
 
 /**
@@ -23,41 +23,6 @@ export function addTracksToConference(conference, localTracks) {
     for (let track of localTracks) {
         track.isVideoTrack() || conference.addTrack(track);
     }
-}
-
-/**
- * Create an action for when a remote track has been signaled for
- * removal from the conference.
- */
-export function remoteTrackRemoved(track) {
-    return {
-        type: REMOTE_TRACK_REMOVED,
-        track
-    };
-}
-
-/**
- * Request to start capturing local audio and/or video.
- * By default, the user facing camera will be selected.
- *
- * @param {object} (options) - @see options for JitsiMeetJS.createLocalTracks
- */
-export function createLocalTracks(options) {
-    options || (options = {});
-    return (dispatch, getState) => {
-        return JitsiMeetJS.createLocalTracks({
-            devices: options.devices || ['audio', 'video'],
-            facingMode: options.facingMode || 'user',
-            cameraDeviceId: options.cameraDeviceId,
-            micDeviceId: options.micDeviceId
-        }).then(localTracks => {
-            return dispatch(changeLocalTracks(localTracks));
-        }).catch(reason => {
-            console.error(
-                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
-                + reason);
-        });
-    };
 }
 
 /**
@@ -111,5 +76,40 @@ export function changeLocalTracks(newLocalTracks = []) {
         return promise
             .then(() =>
                 dispatch({ type: LOCAL_TRACKS_CHANGED, tracks: tracksToUse }));
+    };
+}
+
+/**
+ * Request to start capturing local audio and/or video.
+ * By default, the user facing camera will be selected.
+ *
+ * @param {object} (options) - @see options for JitsiMeetJS.createLocalTracks
+ */
+export function createLocalTracks(options) {
+    options || (options = {});
+    return (dispatch, getState) => {
+        return JitsiMeetJS.createLocalTracks({
+            devices: options.devices || ['audio', 'video'],
+            facingMode: options.facingMode || 'user',
+            cameraDeviceId: options.cameraDeviceId,
+            micDeviceId: options.micDeviceId
+        }).then(localTracks => {
+            return dispatch(changeLocalTracks(localTracks));
+        }).catch(reason => {
+            console.error(
+                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
+                + reason);
+        });
+    };
+}
+
+/**
+ * Create an action for when a remote track has been signaled for
+ * removal from the conference.
+ */
+export function remoteTrackRemoved(track) {
+    return {
+        type: REMOTE_TRACK_REMOVED,
+        track
     };
 }

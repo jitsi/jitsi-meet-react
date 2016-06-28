@@ -1,5 +1,5 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
-import { createLocalTracks, addTracksToConference } from '../base/tracks';
+import { addTracksToConference, createLocalTracks } from '../base/tracks';
 
 import {
     DOMINANT_SPEAKER_CHANGED,

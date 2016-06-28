@@ -6,7 +6,6 @@ import {
     LOCAL_TRACKS_CHANGED
 } from './actionTypes';
 
-
 /**
  * Listen for actions that add or remove remote tracks.
  */

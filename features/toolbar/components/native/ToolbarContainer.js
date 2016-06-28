@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import {  View,
-    Text,
-    TouchableHighlight } from 'react-native';
+import { Text, TouchableHighlight, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { ColorPalette } from '../../../base/styles';
 
 import styles from './styles/Styles';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 /**
  * The native container rendering the in call main buttons.

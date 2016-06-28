@@ -25,10 +25,10 @@ import Reducers from './ReducerRegistry';
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
-            case 'home':
-                return store.dispatch(push('/'));
-            case 'conference':
-                return store.dispatch(push('/' + action.room));
+        case 'home':
+            return store.dispatch(push('/'));
+        case 'conference':
+            return store.dispatch(push('/' + action.room));
         }
     }
     return next(action);

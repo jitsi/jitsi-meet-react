@@ -5,7 +5,6 @@ import { ColorPalette } from '../../../base/styles';
 
 import styles from './styles/Styles';
 
-
 export class ToolbarContainer extends Component {
     render() {
         var underlayColor = ColorPalette.buttonUnderlay;
@@ -47,4 +46,3 @@ export class ToolbarContainer extends Component {
         );
     }
 }
-

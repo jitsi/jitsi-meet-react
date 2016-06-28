@@ -1,13 +1,10 @@
-import {
-    createLocalTracks
-} from '../base/tracks';
+import { createLocalTracks } from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
     TOGGLE_AUDIO_MUTED_STATE,
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
-
 
 const CAMERA_FACING_MODE = {
     ENVIRONMENT: 'environment',

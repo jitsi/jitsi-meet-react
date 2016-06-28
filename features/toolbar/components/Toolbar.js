@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { hangup, toggleAudio, toggleCameraFacingMode } from '../';
 import { navigate } from '../../base/navigation';
 
+import { hangup, toggleAudio, toggleCameraFacingMode } from '../';
 import { ToolbarContainer } from './_';
-
 
 /**
  * The conference call toolbar.

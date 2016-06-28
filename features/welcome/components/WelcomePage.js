@@ -8,7 +8,6 @@ import Config from '../../../config';
 
 import { WelcomePageContainer } from './_';
 
-
 /**
  * The welcome page of the application.
  */

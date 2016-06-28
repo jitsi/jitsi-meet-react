@@ -19,18 +19,18 @@ import Reducers from './ReducerRegistry';
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
-            case 'home':
-                return action.navigator.push({
-                    title: 'Jitsi Meet',
-                    component: WelcomePage
-                });
-            case 'conference':
-                action.navigator.push({
-                    title: action.room,
-                    component: Conference
-                });
-                store.dispatch(init(Config, action.room));
-                return;
+        case 'home':
+            return action.navigator.push({
+                title: 'Jitsi Meet',
+                component: WelcomePage
+            });
+        case 'conference':
+            action.navigator.push({
+                title: action.room,
+                component: Conference
+            });
+            store.dispatch(init(Config, action.room));
+            return;
         }
     }
     return next(action);
