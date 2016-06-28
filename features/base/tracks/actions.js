@@ -6,6 +6,9 @@ import {
     REMOTE_TRACK_REMOVED
 } from './actionTypes';
 
+require('./reducer');
+
+
 /**
  * Attach a set of local tracks to a conference.
  */

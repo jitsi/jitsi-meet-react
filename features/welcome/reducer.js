@@ -1,4 +1,4 @@
-import Reducers from '../../ReducerRegistry';
+import { ReducerRegistry } from '../base/redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -12,16 +12,16 @@ import {
 } from './actionTypes';
 
 const INITIAL_STATE = {
-    room: '',
+    conference: null,
     connection: null,
-    conference: null
+    room: ''
 };
 
 /**
  * Listen for actions that contain the connection or conference objects,
  * so that they can be stored for use by other action creators.
  */
-Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
+ReducerRegistry.register('features/welcome', (state = INITIAL_STATE, action) => {
     switch (action.type) {
     case JITSI_CLIENT_CREATED:
         return {
@@ -29,13 +29,16 @@ Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
             connection: action.connection,
             room: action.room
         };
+
     case JITSI_CLIENT_DISCONNECTED:
         return {};
+
     case JITSI_CONFERENCE_JOINED:
         return {
             ...state,
             conference: action.conference
         };
+
     default:
         return state;
     }
@@ -46,7 +49,7 @@ Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
  * Listen for actions which add, remove, or update the set of participants
  * in the conference.
  */
-Reducers.register('features/welcome/participants', (state = {}, action) => {
+ReducerRegistry.register('features/welcome/participants', (state = {}, action) => {
     let participants = {};
 
     switch (action.type) {
@@ -54,12 +57,12 @@ Reducers.register('features/welcome/participants', (state = {}, action) => {
         return Object.assign({}, state, {
             [action.participant.id]: action.participant
         });
+
     case PEER_LEFT:
         participants = Object.assign({}, state);
-
         delete participants[action.participant.id];
-
         return participants;
+
     case DOMINANT_SPEAKER_CHANGED:
         for (let key in state) {
             if (state.hasOwnProperty(key)) {
@@ -68,12 +71,11 @@ Reducers.register('features/welcome/participants', (state = {}, action) => {
                 });
             }
         }
-
         if (participants[action.participant.id]) {
             participants[action.participant.id].speaking = true;
         }
-
         return participants;
+
     case MODERATOR_CHANGED:
         for (let key in state) {
             if (state.hasOwnProperty(key)) {
@@ -85,8 +87,8 @@ Reducers.register('features/welcome/participants', (state = {}, action) => {
                 }
             }
         }
-
         return participants;
+
     case PEER_CHANGED:
         for (let key in state) {
             if (state.hasOwnProperty(key)) {
@@ -94,8 +96,8 @@ Reducers.register('features/welcome/participants', (state = {}, action) => {
                     {}, state[key], action.participant);
             }
         }
-
         return participants;
+
     default:
         return state;
     }

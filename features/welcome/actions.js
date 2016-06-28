@@ -14,6 +14,9 @@ import {
     RTC_ERROR
 } from './actionTypes';
 
+require('./reducer');
+
+
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 
