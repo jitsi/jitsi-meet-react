@@ -22,8 +22,63 @@
 
 * Line length is limited to 80 characters.
 
+* Sort by alphabetical order in order to make the addition of new entities as
+  easy as looking a word up in a dictionary. Otherwise, one risks duplicate
+  entries (with conflicting values in the cases of key-value pairs). For
+  example:
+
+  * Within an `import` of multiple names from a module, sort the names in
+    alphabetical order. (Of course, the default name stays first as required by
+    the `import` syntax.)
+
+    ````javascript
+    import {
+        DOMINANT_SPEAKER_CHANGED,
+        JITSI_CLIENT_CONNECTED,
+        JITSI_CLIENT_CREATED,
+        JITSI_CLIENT_DISCONNECTED,
+        JITSI_CLIENT_ERROR,
+        JITSI_CONFERENCE_JOINED,
+        MODERATOR_CHANGED,
+        PEER_JOINED,
+        PEER_LEFT,
+        RTC_ERROR
+    } from './actionTypes';
+    ````
+
+  * Within a group of imports (e.g. groups of imports delimited by an empty line
+    may be: third-party modules, then project modules, and eventually the
+    private files of a module), sort the module names in alphabetical order.
+
+    ````javascript
+    import React, { Component } from 'react';
+    import { connect } from 'react-redux';
+    ````
+
+# Indentation
+
+* Align `switch` and `case`/`default`. Don't indent the `case`/`default` more
+  than its `switch`.
+
+  ````javascript
+  switch (i) {
+  case 0:
+      ...
+      break;
+  default:
+      ...
+  }
+  ````
+
 # Naming
 
-* An abstraction should have one name across multiple projects. For example, the
-  instance of lib-jitsi-meet's JitsiConnection type should be named connection
-  in jitsi-meet-react.
+* An abstraction should have one name within the project and across multiple
+  projects. For example:
+
+  * The instance of lib-jitsi-meet's `JitsiConnection` type should be named
+    `connection` or `jitsiConnection` in jitsi-meet-react, not `client`.
+
+  * The class `ReducerRegistry` should be defined in ReducerRegistry.js and its
+    imports in other files should use the same name. Don't define the class
+    `Registry` in ReducerRegistry.js and then import it as `Reducers` in other
+    files.
