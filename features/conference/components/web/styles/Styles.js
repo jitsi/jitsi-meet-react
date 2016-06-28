@@ -21,7 +21,7 @@ var styles = {
         bottom: 110,
         position: 'absolute',
         flexDirection: 'row'
-    },
+    }
 };
 
 export default styles;

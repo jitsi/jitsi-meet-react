@@ -8,7 +8,6 @@ import {
 
 require('./reducer');
 
-
 /**
  * Attach a set of local tracks to a conference.
  */
@@ -103,6 +102,17 @@ export function createLocalTracks(options) {
                 'JitsiMeetJS.createLocalTracks.catch rejection reason: '
                 + reason);
         });
+    };
+}
+
+/**
+ * Create an action for when a new track has been signaled to be added
+ * to the conference.
+ */
+export function remoteTrackAdded(track) {
+    return {
+        type: REMOTE_TRACK_ADDED,
+        track
     };
 }
 

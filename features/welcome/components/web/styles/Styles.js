@@ -30,7 +30,7 @@ var styles = {
         padding: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: ColorPalette.jitsiBlue,
+        backgroundColor: ColorPalette.jitsiBlue
     },
     /**
      * Room input style.

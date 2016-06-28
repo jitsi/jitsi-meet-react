@@ -14,7 +14,7 @@ export class Video extends Component {
             <RTCView style = { styles.conference } streamURL={streamUrl}/>
         );
     }
-};
+}
 
 Video.propTypes = {
     stream: React.PropTypes.object,

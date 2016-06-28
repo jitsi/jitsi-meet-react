@@ -26,7 +26,8 @@ class BigVideo extends Component {
  * @param {JitsiRemoteTrack[]} remoteTracks
  * @param {JitsiRemoteTrack[]} localTracks
  */
-function getDominantSpeakerVideoStream(participants, remoteTracks, localTracks) {
+function getDominantSpeakerVideoStream(
+    participants, remoteTracks, localTracks) {
     let dominantSpeakerId;
     let videoTrack;
 
@@ -58,6 +59,12 @@ const mapStateToProps = state => {
         remoteTracks: state['features/base/tracks'].filter(track => !track.isLocal()),
         participants: state.participants
     };
+};
+
+BigVideo.propTypes = {
+    localTracks: React.PropTypes.array,
+    remoteTracks: React.PropTypes.array,
+    participants: React.PropTypes.object
 };
 
 export default connect(mapStateToProps)(BigVideo);

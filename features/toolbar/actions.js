@@ -46,9 +46,10 @@ export function toggleAudio() {
 export function toggleCameraFacingMode() {
     return (dispatch, getState) => {
         const stateFeaturesToolbar = getState()['features/toolbar'];
-        const cameraFacingMode = stateFeaturesToolbar.cameraFacingMode === CAMERA_FACING_MODE.USER
-            ? CAMERA_FACING_MODE.ENVIRONMENT
-            : CAMERA_FACING_MODE.USER;
+        const cameraFacingMode =
+            stateFeaturesToolbar.cameraFacingMode === CAMERA_FACING_MODE.USER
+                ? CAMERA_FACING_MODE.ENVIRONMENT
+                : CAMERA_FACING_MODE.USER;
 
         return dispatch(
                 createLocalTracks({
@@ -60,7 +61,7 @@ export function toggleCameraFacingMode() {
                 dispatch({
                     type: CHANGE_CAMERA_FACING_MODE,
                     cameraFacingMode
-                })
+                });
             });
     };
 }
@@ -85,7 +86,9 @@ function toggleMedia(media) {
         }
 
         dispatch({
-            type: media === 'video' ? TOGGLE_VIDEO_MUTED_STATE : TOGGLE_AUDIO_MUTED_STATE
+            type: media === 'video'
+                ? TOGGLE_VIDEO_MUTED_STATE
+                : TOGGLE_AUDIO_MUTED_STATE
         });
     };
 }

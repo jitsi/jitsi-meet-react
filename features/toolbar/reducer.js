@@ -18,27 +18,29 @@ const INITIAL_STATE = {
  * Listen for actions that toggle the desired state of local media capture,
  * i.e. disable or enable audio or video capture.
  */
-ReducerRegistry.register('features/toolbar', (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-    case CHANGE_CAMERA_FACING_MODE:
-        return {
-            ...state,
-            cameraFacingMode: action.cameraFacingMode
-        };
+ReducerRegistry.register(
+    'features/toolbar',
+    (state = INITIAL_STATE, action) => {
+        switch (action.type) {
+        case CHANGE_CAMERA_FACING_MODE:
+            return {
+                ...state,
+                cameraFacingMode: action.cameraFacingMode
+            };
 
-    case TOGGLE_AUDIO_MUTED_STATE:
-        return {
-            ...state,
-            audioMuted: !state.audioMuted
-        };
+        case TOGGLE_AUDIO_MUTED_STATE:
+            return {
+                ...state,
+                audioMuted: !state.audioMuted
+            };
 
-    case TOGGLE_VIDEO_MUTED_STATE:
-        return {
-            ...state,
-            videoMuted: !state.videoMuted
-        };
+        case TOGGLE_VIDEO_MUTED_STATE:
+            return {
+                ...state,
+                videoMuted: !state.videoMuted
+            };
 
-    default:
-        return state;
-    }
-});
+        default:
+            return state;
+        }
+    });
