@@ -6,6 +6,7 @@
     "clean": "rm -rf dist",
     "build:web": "mkdir -p dist/; cp -r static/* dist/; webpack",
     "start:ios": "npm run clean; react-native run-ios",
+    "start:android": "npm run clean; react-native run-android",
     "start:web": "webpack-dev-server --inline --hot --colors --port 5000 --https --history-api-fallback --open"
   },
   "dependencies": {

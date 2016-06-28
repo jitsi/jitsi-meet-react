@@ -2,7 +2,7 @@ package com.jitsimeetapp;
 
 import com.facebook.react.ReactActivity;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.oney.ReactNativeWebRTC.WebRTCModulePackage;
+import com.oney.WebRTCModule.WebRTCModulePackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
