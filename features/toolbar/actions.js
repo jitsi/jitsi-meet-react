@@ -6,6 +6,9 @@ import {
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
 
+require('./reducer');
+
+
 const CAMERA_FACING_MODE = {
     ENVIRONMENT: 'environment',
     USER: 'user'
