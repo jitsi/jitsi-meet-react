@@ -1,4 +1,4 @@
-import Reducers from '../../ReducerRegistry';
+import { ReducerRegistry } from '../base/redux';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -8,33 +8,36 @@ import {
 
 const INITIAL_STATE = {
     audioMuted: false,
-    videoMuted: false,
+    cameraFacingMode: 'user',
     cameraId: undefined,
     micId: undefined,
-    cameraFacingMode: 'user'
+    videoMuted: false
 };
 
 /**
  * Listen for actions that toggle the desired state of local media capture,
  * i.e. disable or enable audio or video capture.
  */
-Reducers.register('features/toolbar', (state = INITIAL_STATE, action) => {
+ReducerRegistry.register('features/toolbar', (state = INITIAL_STATE, action) => {
     switch (action.type) {
     case CHANGE_CAMERA_FACING_MODE:
         return {
             ...state,
             cameraFacingMode: action.cameraFacingMode
         };
+
     case TOGGLE_AUDIO_MUTED_STATE:
         return {
             ...state,
             audioMuted: !state.audioMuted
         };
+
     case TOGGLE_VIDEO_MUTED_STATE:
         return {
             ...state,
             videoMuted: !state.videoMuted
         };
+
     default:
         return state;
     }

@@ -1,22 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, browserHistory } from 'react-router';
+import { browserHistory, Route, Router } from 'react-router';
 import {
-    syncHistoryWithStore,
-    routerReducer,
+    push,
     routerMiddleware,
-    push
+    routerReducer,
+    syncHistoryWithStore
 } from 'react-router-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
 import { APP_NAVIGATE } from './features/base/navigation';
+import { ReducerRegistry } from './features/base/redux';
 import { Conference } from './features/conference';
-import { WelcomePage, init } from './features/welcome';
-import Reducers from './ReducerRegistry';
-
+import { init, WelcomePage } from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation
@@ -35,7 +34,7 @@ const router = store => next => action => {
 };
 
 
-const reducer = Reducers.getReducer({
+const reducer = ReducerRegistry.combineReducers({
     routing: routerReducer
 });
 
