@@ -49,10 +49,7 @@ const reducer = combineReducers({
 });
 
 const store = createStore(reducer, compose(
-    applyMiddleware(
-        Thunk,
-        router,
-        routerMiddleware(browserHistory)),
+    applyMiddleware(Thunk, router, routerMiddleware(browserHistory)),
     window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 
