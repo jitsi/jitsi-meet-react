@@ -1,6 +1,4 @@
-require('../polyfills');
-
-const JitsiMeetJS = require('lib-jitsi-meet');
+import JitsiMeetJS from '../base/lib-jitsi-meet';
 
 import {
     addTracksToConference,
@@ -24,6 +22,9 @@ import {
     JITSI_CONFERENCE_JOINED,
     RTC_ERROR
 } from './actionTypes';
+
+require('./reducer');
+
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;

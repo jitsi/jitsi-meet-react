@@ -1,7 +1,4 @@
-import {
-    APP_NAVIGATE
-} from './actionTypes';
-
+import { APP_NAVIGATE } from './actionTypes';
 
 /**
  * Trigger an in-app navigation to a different screen.
@@ -12,9 +9,8 @@ import {
 export function navigate(opts) {
     return {
         type: APP_NAVIGATE,
-        screen: opts.screen,
+        navigator: opts.navigator,
         room: opts.room,
-        navigator: opts.navigator
+        screen: opts.screen
     };
 }
-

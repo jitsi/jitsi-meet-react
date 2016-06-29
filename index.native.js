@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { NavigatorIOS, AppRegistry } from 'react-native';
+import { AppRegistry, NavigatorIOS } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
 import { APP_NAVIGATE } from './features/base/navigation';
+import { ReducerRegistry } from './features/base/redux';
 import { Conference } from './features/conference';
 // FIXME Don't import private styles. Move common/shared styles to a feature in
 // base.
-import { WelcomePage, styles, init } from './features/welcome';
-import Reducers from './ReducerRegistry';
+import { init, styles, WelcomePage } from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation
@@ -19,25 +19,25 @@ import Reducers from './ReducerRegistry';
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
-            case 'home':
-                return action.navigator.push({
-                    title: 'Jitsi Meet',
-                    component: WelcomePage
-                });
-            case 'conference':
-                action.navigator.push({
-                    title: action.room,
-                    component: Conference
-                });
-                store.dispatch(init(Config, action.room));
-                return;
+        case 'home':
+            return action.navigator.push({
+                title: 'Jitsi Meet',
+                component: WelcomePage
+            });
+        case 'conference':
+            action.navigator.push({
+                title: action.room,
+                component: Conference
+            });
+            store.dispatch(init(Config, action.room));
+            return;
         }
     }
     return next(action);
 };
 
 
-const reducer = Reducers.getReducer();
+const reducer = ReducerRegistry.combineReducers();
 const store = createStore(reducer, applyMiddleware(Thunk, router));
 
 class Root extends Component {

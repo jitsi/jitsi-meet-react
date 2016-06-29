@@ -243,7 +243,7 @@ function _visitNode (node, callback) {
   }
 
   // WebRTC
-  require('./webrtc');
+  require('./polyfills-webrtc');
 
   // XMLHttpRequest
   if (global.XMLHttpRequest) {

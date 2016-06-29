@@ -1,11 +1,12 @@
-require('../../polyfills');
-
-const JitsiMeetJS = require('lib-jitsi-meet');
+import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
     TRACK_ADDED,
     TRACK_REMOVED
 } from './actionTypes';
+
+require('./reducer');
+
 
 /**
  * Attach a set of local tracks to a conference.
@@ -121,5 +122,40 @@ export function changeLocalTracks(newLocalTracks = []) {
 
         return promise.then(() =>
             Promise.all(tracksToAdd.map(t => dispatch(trackAdded(t)))));
+    };
+}
+
+/**
+ * Request to start capturing local audio and/or video.
+ * By default, the user facing camera will be selected.
+ *
+ * @param {object} (options) - @see options for JitsiMeetJS.createLocalTracks
+ */
+export function createLocalTracks(options) {
+    options || (options = {});
+    return (dispatch, getState) => {
+        return JitsiMeetJS.createLocalTracks({
+            devices: options.devices || ['audio', 'video'],
+            facingMode: options.facingMode || 'user',
+            cameraDeviceId: options.cameraDeviceId,
+            micDeviceId: options.micDeviceId
+        }).then(localTracks => {
+            return dispatch(changeLocalTracks(localTracks));
+        }).catch(reason => {
+            console.error(
+                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
+                + reason);
+        });
+    };
+}
+
+/**
+ * Create an action for when a remote track has been signaled for
+ * removal from the conference.
+ */
+export function remoteTrackRemoved(track) {
+    return {
+        type: REMOTE_TRACK_REMOVED,
+        track
     };
 }

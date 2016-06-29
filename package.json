@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "clean": "rm -rf dist",
     "build:web": "mkdir -p dist/; cp -r static/* dist/; webpack",
+    "clean": "rm -rf dist",
+    "start:android": "npm run clean; react-native run-android",
     "start:ios": "npm run clean; react-native run-ios",
     "start:web": "webpack-dev-server --inline --hot --colors --port 5000 --https --history-api-fallback --open"
   },
@@ -36,11 +37,12 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
+    "browserify": "11.1.x",
     "exorcist": "^0.4.0",
     "html-webpack-template": "^5.0.0",
+    "imports-loader": "0.6.5",
+    "uglify-js": "2.4.24",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1",
-    "browserify": "11.1.x",
-    "uglify-js": "2.4.24"
+    "webpack-dev-server": "^1.14.1"
   }
 }

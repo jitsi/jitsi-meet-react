@@ -5,8 +5,7 @@
 
 - For web: `npm run start:web`
 - For iOS: `npm run start:ios`
-
-Android should be supported, but there has not been any testing done yet.
+- For Android: `npm run start:android`
 
 ## Where things are right now:
 

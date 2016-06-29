@@ -1,4 +1,4 @@
-import Reducers from '../../ReducerRegistry';
+import { ReducerRegistry } from '../base/redux';
 
 import {
     JITSI_CLIENT_CREATED,
@@ -7,31 +7,31 @@ import {
 } from './actionTypes';
 
 const INITIAL_STATE = {
-    room: '',
+    conference: null,
     connection: null,
-    conference: null
+    room: ''
 };
 
 /**
  * Listen for actions that contain the connection or conference objects,
  * so that they can be stored for use by other action creators.
  */
-Reducers.register('features/welcome', (state = INITIAL_STATE, action) => {
+ReducerRegistry.register('features/welcome', (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case JITSI_CLIENT_CREATED:
-            return {
-                ...state,
-                connection: action.connection,
-                room: action.room
-            };
-        case JITSI_CLIENT_DISCONNECTED:
-            return {};
-        case JITSI_CONFERENCE_JOINED:
-            return {
-                ...state,
-                conference: action.conference
-            };
-        default:
-            return state;
+    case JITSI_CLIENT_CREATED:
+        return {
+            ...state,
+            connection: action.connection,
+            room: action.room
+        };
+    case JITSI_CLIENT_DISCONNECTED:
+        return {};
+    case JITSI_CONFERENCE_JOINED:
+        return {
+            ...state,
+            conference: action.conference
+        };
+    default:
+        return state;
     }
 });

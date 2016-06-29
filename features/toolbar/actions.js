@@ -1,12 +1,12 @@
-import {
-    createLocalTracks
-} from '../base/tracks';
+import { createLocalTracks } from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
     TOGGLE_AUDIO_MUTED_STATE,
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
+
+require('./reducer');
 
 
 const CAMERA_FACING_MODE = {
@@ -71,7 +71,7 @@ export function toggleCameraFacingMode() {
 function toggleMedia(media) {
     return (dispatch, getState) => {
         const stateFeaturesTracks = getState()['features/base/tracks'];
-        const localTracks = stateFeaturesTracks.filter(track => track.isLocal);
+        const localTracks = stateFeaturesTracks.filter(track => track.isLocal());
         for (let track of localTracks) {
             const type = track.getType();
             if (type !== media) {

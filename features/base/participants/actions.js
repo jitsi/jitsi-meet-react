@@ -7,6 +7,9 @@ import {
     PARTICIPANT_VIDEO_STARTED
 } from './actionTypes';
 
+require('./reducer');
+
+
 /**
  * Action to create a local user.
  * @param {string} id - user id

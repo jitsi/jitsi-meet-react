@@ -1,4 +1,4 @@
-import Reducers from '../../../ReducerRegistry';
+import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -32,38 +32,38 @@ import {
  */
 function participant(state, action) {
     switch (action.type) {
-        case PARTICIPANT_ADDED:
-            return {
-                id: action.participant.id,
-                name: action.participant.name,
-                avatar: action.participant.avatar,
-                role: action.participant.role,
-                local: action.participant.local || false,
-                pinned: action.participant.pinned || false,
-                speaking: action.participant.speaking || false,
-                videoStarted: false
-            };
-        case DOMINANT_SPEAKER_CHANGED:
-            // Only one dominant speaker is allowed.
-            return Object.assign({}, state, {
-                speaking: state.id === action.participant.id
-            });
-        case PARTICIPANT_PINNED:
-            // Currently only one pinned participant is allowed.
-            return Object.assign({}, state, {
-                pinned: state.id === action.participant.id
-            });
-        case PARTICIPANT_VIDEO_STARTED:
-            if (state.id === action.participant.id) {
-                return Object.assign({}, state, { videoStarted: true });
-            }
+    case PARTICIPANT_ADDED:
+        return {
+            id: action.participant.id,
+            name: action.participant.name,
+            avatar: action.participant.avatar,
+            role: action.participant.role,
+            local: action.participant.local || false,
+            pinned: action.participant.pinned || false,
+            speaking: action.participant.speaking || false,
+            videoStarted: false
+        };
+    case DOMINANT_SPEAKER_CHANGED:
+        // Only one dominant speaker is allowed.
+        return Object.assign({}, state, {
+            speaking: state.id === action.participant.id
+        });
+    case PARTICIPANT_PINNED:
+        // Currently only one pinned participant is allowed.
+        return Object.assign({}, state, {
+            pinned: state.id === action.participant.id
+        });
+    case PARTICIPANT_VIDEO_STARTED:
+        if (state.id === action.participant.id) {
+            return Object.assign({}, state, { videoStarted: true });
+        }
 
-            return state;
-        case PARTICIPANT_ROLE_CHANGED:
-            // TODO: check how actually roles change!!
-            return state;
-        default:
-            return state;
+        return state;
+    case PARTICIPANT_ROLE_CHANGED:
+        // TODO: check how actually roles change!!
+        return state;
+    default:
+        return state;
     }
 }
 
@@ -76,18 +76,18 @@ function participant(state, action) {
 * @param {Participant} action.participant
 * @returns {Participant[]}
 */
-Reducers.register('features/base/participants', (state = [], action) => {
+ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
-        case PARTICIPANT_ADDED:
-            return [ ...state, participant(undefined, action) ];
-        case PARTICIPANT_REMOVED:
-            return state.filter(p => p.id !== action.participant.id);
-        case DOMINANT_SPEAKER_CHANGED:
-        case PARTICIPANT_PINNED:
-        case PARTICIPANT_ROLE_CHANGED:
-        case PARTICIPANT_VIDEO_STARTED:
-            return state.map(p => participant(p, action));
-        default:
-            return state;
+    case PARTICIPANT_ADDED:
+        return [ ...state, participant(undefined, action) ];
+    case PARTICIPANT_REMOVED:
+        return state.filter(p => p.id !== action.participant.id);
+    case DOMINANT_SPEAKER_CHANGED:
+    case PARTICIPANT_PINNED:
+    case PARTICIPANT_ROLE_CHANGED:
+    case PARTICIPANT_VIDEO_STARTED:
+        return state.map(p => participant(p, action));
+    default:
+        return state;
     }
 });
