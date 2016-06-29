@@ -4,7 +4,15 @@ import { connect } from 'react-redux';
 import VideoThumbnail from './VideoThumbnail';
 import { FilmStripContainer } from './_';
 
+/**
+ * React component for film strip.
+ * @extends Component
+ */
 class FilmStrip extends Component {
+    /**
+     * React component render method.
+     * @inheritdoc
+     */
     render() {
         return (
             <FilmStripContainer>
@@ -41,11 +49,28 @@ class FilmStrip extends Component {
     }
 }
 
+/**
+ * Function that maps parts of Redux state tree into component props.
+ * @param {Object} state
+ * @returns {{
+ *  participants: Participant[],
+ *  tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
+ *  }}
+ */
 const mapStateToProps = state => {
     return {
         participants: state['features/base/participants'],
         tracks: state['features/base/tracks']
     };
+};
+
+/**
+ * React PropTypes for FilmStrip component.
+ * @static
+ */
+FilmStrip.propTypes = {
+    participants: React.PropTypes.array,
+    tracks: React.PropTypes.array
 };
 
 export default connect(mapStateToProps)(FilmStrip);

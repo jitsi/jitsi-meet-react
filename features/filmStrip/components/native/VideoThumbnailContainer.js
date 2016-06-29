@@ -14,7 +14,7 @@ export class VideoThumbnailContainer extends Component {
         return (
             <TouchableHighlight onPress={this.props.onClick}>
                 <View
-                    style = { this.props.pinned
+                    style = { this.props.focused
                         ? [ styles.thumbnail, styles.thumbnailFocused ]
                         : [ styles.thumbnail ] }>
                     { this.props.children }

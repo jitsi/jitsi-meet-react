@@ -4,36 +4,61 @@ import { connect } from 'react-redux';
 import { LargeVideoContainer } from './_';
 import { Video } from '../../base/media';
 
+import { participantSelected } from '../../base/participants';
+
+/**
+ * Large video React component.
+ * @extends Component
+ */
 class LargeVideo extends Component {
+    /**
+     * @constructor
+     * @param props
+     */
     constructor(props) {
         super(props);
 
         this.state = {
             videoStream: null,
             activeParticipant: null
-        };
+        }
     }
 
+    /**
+     * How we handle new component properties.
+     * @inheritdoc
+     * @param nextProps
+     */
     componentWillReceiveProps(nextProps) {
         let activeParticipant = getActiveParticipant(nextProps);
         let videoStream = null;
+        let videoTrack = null;
 
         if (activeParticipant) {
             // If current active active participant is local user and he is
-            // dominant speaker and not pinned, use previous video stream.
+            // dominant speaker and not focused, use previous video stream.
             if (activeParticipant.local &&
                 activeParticipant.speaking &&
-                !activeParticipant.pinned &&
+                !activeParticipant.focused &&
                 this.state.videoStream) {
                 videoStream = this.state.videoStream;
             } else {
-                videoStream = getVideoStream(
+                videoTrack = getVideoTrack(
                     activeParticipant, this.props.tracks);
 
-                if (!videoStream) {
-                    videoStream = this.state.videoStream;
-                }
+                videoStream = videoTrack
+                    ? videoTrack.getOriginalStream()
+                    : this.state.videoStream;
             }
+        }
+
+        // If our active participant changed and we're going to show "camera" on
+        // large video, dispatch respective event.
+        if (activeParticipant &&
+            videoTrack &&
+            !activeParticipant.selected &&
+            activeParticipant.videoType === "camera") {
+            this.props.dispatch(participantSelected(activeParticipant.id));
         }
 
         this.setState({
@@ -42,6 +67,10 @@ class LargeVideo extends Component {
         });
     }
 
+    /**
+     * React component render method implementation.
+     * @inhertidoc
+     */
     render() {
         let videoStreamParticipant = getParticipantByVideoStream(
             this.state.videoStream,
@@ -68,18 +97,18 @@ class LargeVideo extends Component {
  * @returns {Participant|undefined}
  */
 function getActiveParticipant(props) {
-    // First get the pinned participant.
-    let activeParticipant = props.participants.find(p => p.pinned);
+    // First get the focused participant.
+    let activeParticipant = props.participants.find(p => p.focused);
 
-    // If no participant is pinned, get the dominant speaker.
+    // If no participant is focused, get the dominant speaker.
     if (!activeParticipant) {
         activeParticipant = props.participants.find(p => p.speaking);
     }
 
-    // If no participant is pinned and no dominant speaker,
-    // just get the local participant.
+    // If no participant is focused and no dominant speaker,
+    // just get the last one participant.
     if (!activeParticipant) {
-        activeParticipant = props.participants.find(p => p.local);
+        activeParticipant = props.participants[props.participants.length - 1];
     }
 
     return activeParticipant;
@@ -89,19 +118,15 @@ function getActiveParticipant(props) {
  * Returns video stream for a specified participant.
  * @param {Participant} participant
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks
- * @returns {MediaStream|undefined}
+ * @returns {JitsiLocalTrack|JitsiRemoteTrack|undefined}
  */
-function getVideoStream(participant, tracks) {
-    let videoTrack = tracks.find(t => {
+function getVideoTrack(participant, tracks) {
+    return tracks.find(t => {
         return t.isVideoTrack() &&
             ((participant.local && t.isLocal()) ||
             (!participant.local && !t.isLocal() &&
             t.getParticipantId() === participant.id));
     });
-
-    if (videoTrack) {
-        return videoTrack.getOriginalStream();
-    }
 }
 
 /**
@@ -127,6 +152,14 @@ function getParticipantByVideoStream(stream, tracks, participants) {
     }
 }
 
+/**
+ * Maps parts Redux state to Component's props.
+ * @param state
+ * @returns {{
+ *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[],
+ *      participants: Participant[]
+ *  }}
+ */
 const mapStateToProps = state => {
     return {
         tracks: state['features/base/tracks'],

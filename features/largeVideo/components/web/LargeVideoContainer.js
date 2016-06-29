@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+/**
+ * The web container rendering the person "on stage".
+ */
 export class LargeVideoContainer extends Component {
     render() {
         return (
@@ -8,6 +11,6 @@ export class LargeVideoContainer extends Component {
     }
 }
 
-BigVideoContainer.propTypes = {
+LargeVideoContainer.propTypes = {
     children: React.PropTypes.element
 };

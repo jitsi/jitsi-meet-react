@@ -5,6 +5,10 @@ import {
     TRACK_REMOVED
 } from './actionTypes';
 
+import {
+    participantVideoTypeChanged
+} from '../../base/participants';
+
 require('./reducer');
 
 
@@ -120,8 +124,35 @@ export function changeLocalTracks(newLocalTracks = []) {
             tracksToAdd = newLocalTracks;
         }
 
-        return promise.then(() =>
-            Promise.all(tracksToAdd.map(t => dispatch(trackAdded(t)))));
+        return promise
+            .then(() => Promise.all(
+                tracksToAdd.map(t => dispatch(trackAdded(t)))))
+            .then(() => {
+                // Maybe update local participant's videoType after we received
+                // new media tracks.
+                let participants = getState()['features/base/participants'];
+                let localParticipant = participants.find(p => p.local);
+                let promise = Promise.resolve();
+                let addedVideoTrack = tracksToAdd.find(t => t.isVideoTrack());
+                let removedVideoTrack = tracksToRemove
+                    .find(t => t.isVideoTrack());
+
+                if (localParticipant) {
+                    if (addedVideoTrack) {
+                        promise = dispatch(participantVideoTypeChanged(
+                            localParticipant.id,
+                            addedVideoTrack.videoType));
+                    } else {
+                        if (removedVideoTrack) {
+                            promise = dispatch(participantVideoTypeChanged(
+                                localParticipant.id,
+                                undefined));
+                        }
+                    }
+                }
+
+                return promise;
+            });
     };
 }
 
@@ -146,16 +177,5 @@ export function createLocalTracks(options) {
                 'JitsiMeetJS.createLocalTracks.catch rejection reason: '
                 + reason);
         });
-    };
-}
-
-/**
- * Create an action for when a remote track has been signaled for
- * removal from the conference.
- */
-export function remoteTrackRemoved(track) {
-    return {
-        type: REMOTE_TRACK_REMOVED,
-        track
     };
 }

@@ -14,6 +14,6 @@ export class LargeVideoContainer extends Component {
     }
 }
 
-BigVideoContainer.propTypes = {
+LargeVideoContainer.propTypes = {
     children: React.PropTypes.element
 };

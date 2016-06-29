@@ -11,6 +11,7 @@ import {
     localParticipantJoined,
     participantLeft,
     participantRoleChanged,
+    participantVideoTypeChanged,
     remoteParticipantJoined
 } from '../base/participants';
 
@@ -27,6 +28,7 @@ require('./reducer');
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
+const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Create an action for when the signaling connection has been established.
@@ -38,9 +40,16 @@ export function conferenceInitialized(conference) {
 
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
-                if (!track.isLocal()) {
-                    dispatch(trackAdded(track));
+                if (!track || track.isLocal()) {
+                    return;
                 }
+                
+                dispatch(trackAdded(track));
+
+                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
+                    dispatch(participantVideoTypeChanged(
+                        track.getParticipantId(), type));
+                });
             });
 
         conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,

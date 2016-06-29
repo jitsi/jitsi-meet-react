@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { ColorPalette } from '../../../base/styles';
 
+/**
+ * The video thumbnail web container.
+ */
 export class VideoThumbnailContainer extends Component {
     render() {
         let styles = {};
 
         // TODO: this is temporary solution, discuss UI
-        if (this.props.pinned) {
+        if (this.props.focused) {
             styles.border = "5px solid " + ColorPalette.jitsiBlue;
             /*
              .videoContainerFocused
