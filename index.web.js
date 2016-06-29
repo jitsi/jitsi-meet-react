@@ -18,8 +18,8 @@ import { Conference } from './features/conference';
 import { init, WelcomePage } from './features/welcome';
 
 /**
- * This router middleware is used to abstract navigation
- * inside the app for both native and web.
+ * This router middleware is used to abstract navigation inside the app for both
+ * native and web.
  */
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
@@ -37,7 +37,6 @@ const router = store => next => action => {
 const reducer = ReducerRegistry.combineReducers({
     routing: routerReducer
 });
-
 const store = createStore(reducer, applyMiddleware(
     Thunk,
     router,
@@ -45,7 +44,6 @@ const store = createStore(reducer, applyMiddleware(
 ));
 
 const history = syncHistoryWithStore(browserHistory, store);
-
 
 ReactDOM.render((
   <Provider store={store}>
