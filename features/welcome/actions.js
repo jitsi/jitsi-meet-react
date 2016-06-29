@@ -39,7 +39,7 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
                 if (!track.isLocal()) {
-                    dispatch(trackAdded(track))
+                    dispatch(trackAdded(track));
                 }
             });
 
@@ -56,7 +56,7 @@ export function conferenceInitialized(conference) {
             })));
 
         conference.on(JitsiConferenceEvents.USER_LEFT,
-            (id, user) => dispatch(participantLeft(id)));
+            id => dispatch(participantLeft(id)));
 
         conference.join();
     };

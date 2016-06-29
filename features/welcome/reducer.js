@@ -16,22 +16,23 @@ const INITIAL_STATE = {
  * Listen for actions that contain the connection or conference objects,
  * so that they can be stored for use by other action creators.
  */
-ReducerRegistry.register('features/welcome', (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-    case JITSI_CLIENT_CREATED:
-        return {
-            ...state,
-            connection: action.connection,
-            room: action.room
-        };
-    case JITSI_CLIENT_DISCONNECTED:
-        return {};
-    case JITSI_CONFERENCE_JOINED:
-        return {
-            ...state,
-            conference: action.conference
-        };
-    default:
-        return state;
-    }
-});
+ReducerRegistry.register('features/welcome',
+    (state = INITIAL_STATE, action) => {
+        switch (action.type) {
+        case JITSI_CLIENT_CREATED:
+            return {
+                ...state,
+                connection: action.connection,
+                room: action.room
+            };
+        case JITSI_CLIENT_DISCONNECTED:
+            return {};
+        case JITSI_CONFERENCE_JOINED:
+            return {
+                ...state,
+                conference: action.conference
+            };
+        default:
+            return state;
+        }
+    });

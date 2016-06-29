@@ -72,7 +72,7 @@ export function toggleCameraFacingMode() {
 function toggleMedia(media) {
     return (dispatch, getState) => {
         const stateFeaturesTracks = getState()['features/base/tracks'];
-        const localTracks = stateFeaturesTracks.filter(track => track.isLocal());
+        const localTracks = stateFeaturesTracks.filter(t => t.isLocal());
         for (let track of localTracks) {
             const type = track.getType();
             if (type !== media) {
