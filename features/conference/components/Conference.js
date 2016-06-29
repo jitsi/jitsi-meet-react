@@ -26,7 +26,8 @@ class Conference extends Component {
  * on mobile.
  */
 Conference.propTypes = {
-    navigator: React.PropTypes.object
+    navigator: React.PropTypes.object,
+    participants: React.PropTypes.object
 };
 
 export default Conference;

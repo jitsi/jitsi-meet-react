@@ -47,7 +47,7 @@ class Root extends Component {
                 <NavigatorIOS
                     style={styles.navContainer}
                     initialRoute={{
-                        title: "Jitsi Meet",
+                        title: 'Jitsi Meet',
                         component: WelcomePage
                     }}
                 />

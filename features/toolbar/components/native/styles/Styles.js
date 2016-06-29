@@ -25,15 +25,15 @@ var styles = StyleSheet.create({
      * The toolbar button style.
      */
     toolbarButton: {
-      height: 70,
-      width: 70,
-      borderRadius: 35,
-      backgroundColor: ColorPalette.jitsiBlue,
-      marginLeft: 20,
-      marginRight: 20,
-      alignSelf: 'center',
-      flexDirection: 'row',
-      justifyContent: 'center'
+        height: 70,
+        width: 70,
+        borderRadius: 35,
+        backgroundColor: ColorPalette.jitsiBlue,
+        marginLeft: 20,
+        marginRight: 20,
+        alignSelf: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
     /**
      * The toolbar button icon style.

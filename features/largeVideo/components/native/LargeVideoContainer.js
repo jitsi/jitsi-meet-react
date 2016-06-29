@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import styles from './styles/Styles';
 
@@ -13,3 +13,7 @@ export class LargeVideoContainer extends Component {
         );
     }
 }
+
+BigVideoContainer.propTypes = {
+    children: React.PropTypes.element
+};

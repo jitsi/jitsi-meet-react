@@ -25,7 +25,6 @@ import {
 
 require('./reducer');
 
-
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 
@@ -45,7 +44,7 @@ export function conferenceInitialized(conference) {
             });
 
         conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
-            (id) => dispatch(dominantSpeakerChanged(id)));
+            id => dispatch(dominantSpeakerChanged(id)));
 
         conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
             (id, role) => dispatch(participantRoleChanged(id, role)));
@@ -60,7 +59,7 @@ export function conferenceInitialized(conference) {
             (id, user) => dispatch(participantLeft(id)));
 
         conference.join();
-    }
+    };
 }
 
 /**
@@ -181,5 +180,5 @@ export function rtcError(error) {
     return {
         type: RTC_ERROR,
         error
-    }
+    };
 }

@@ -13,3 +13,7 @@ export class FilmStripContainer extends Component {
         );
     }
 }
+
+ParticipantsContainer.propTypes = {
+    children: React.PropTypes.element
+};
