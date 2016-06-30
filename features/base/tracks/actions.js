@@ -16,18 +16,13 @@ require('./reducer');
  * Attach a set of local tracks to a conference.
  */
 export function addTracksToConference(conference, localTracks) {
-    // XXX The implementation of getUserMedia provided by react-native-webrtc
-    // initializes the local MediaStream instances from 1 constant label.
-    // RTCPeerConnection will not add a MediaStream if a MediaStream with the same
-    // label has been added already. Consequently, the second MediaStream with the
-    // same label will not be streamed (to the remote endpoint). Until this issue
-    // with the labels is fixed, prefer to stream the video if any and not the
-    // audio MediaStream.
+    let conferenceLocalTracks = conference.getLocalTracks();
     for (let track of localTracks) {
-        track.isVideoTrack() && conference.addTrack(track);
-    }
-    for (let track of localTracks) {
-        track.isVideoTrack() || conference.addTrack(track);
+        // XXX The library lib-jitsi-meet may be draconian, for example, when
+        // adding one and the same video track multiple times.
+        if (-1 === conferenceLocalTracks.indexOf(track)) {
+            conference.addTrack(track);
+        }
     }
 }
 
@@ -92,12 +87,10 @@ export function changeLocalTracks(newLocalTracks = []) {
                         promise = dispatch(participantVideoTypeChanged(
                             localParticipant.id,
                             addedVideoTrack.videoType));
-                    } else {
-                        if (removedVideoTrack) {
-                            promise = dispatch(participantVideoTypeChanged(
-                                localParticipant.id,
-                                undefined));
-                        }
+                    } else if (removedVideoTrack) {
+                        promise = dispatch(participantVideoTypeChanged(
+                            localParticipant.id,
+                            undefined));
                     }
                 }
 
