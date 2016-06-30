@@ -4,7 +4,8 @@ import { RTCView } from 'react-native-webrtc';
 import styles from './styles/Styles';
 
 /**
- * The video native container wrapping around the RTCView.
+ * The React Native component which is similar to Web's video element and wraps
+ * around react-native-webrtc's RTCView.
  */
 export class Video extends Component {
     componentDidMount() {
@@ -16,11 +17,21 @@ export class Video extends Component {
     }
 
     render() {
-        let streamUrl = this.props.stream ? this.props.stream.toURL() : '';
+        let stream = this.props.stream;
 
-        return (
-            <RTCView style = { styles.video } streamURL={streamUrl}/>
-        );
+        if (stream) {
+            let streamURL = stream.toURL();
+
+            return (
+                <RTCView style={ styles.video } streamURL={ streamURL }/>
+            );
+        }
+
+        // RTCView has peculiarities which may or may not be platform specific.
+        // For example, it doesn't accept an empty streamURL. If the execution
+        // reached here, it means that we explicitly chose to not initialize an
+        // RTCView as a way of dealing with its idiosyncrasies.
+        return null;
     }
 }
 
