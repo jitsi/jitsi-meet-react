@@ -14,23 +14,23 @@ import {
 /**
  * Participant object.
  * @typedef {Object} Participant
- * @property {string} id - participant ID.
- * @property {string} name - participant name.
- * @property {string} avatar - path to participant avatar if any.
- * @property {string} role - participant role.
- * @property {boolean} local - if true, participant is local.
- * @property {boolean} pinned - if true, participant is current
+ * @property {string} id - Participant ID.
+ * @property {string} name - Participant name.
+ * @property {string} avatar - Path to participant avatar if any.
+ * @property {string} role - Participant role.
+ * @property {boolean} local - If true, participant is local.
+ * @property {boolean} pinned - If true, participant is current
  *      "PINNED_ENDPOINT".
- * @property {boolean} speaking - if true, participant is currently a
+ * @property {boolean} speaking - If true, participant is currently a
  *      dominant speaker.
- * @property {boolean} focused - if true, participant is currently visually
+ * @property {boolean} focused - If true, participant is currently visually
  *      selected on UI.
- * @property {boolean} selected - if true, participant is current
+ * @property {boolean} selected - If true, participant is current
  *      "SELECTED_ENDPOINT".
- * @property {boolean} videoStarted -  if true, participant video stream has
+ * @property {boolean} videoStarted -  If true, participant video stream has
  *      already started.
- * @property {'camera'|'desktop'|undefined} videoType - type of participant's
- *      current video stream.
+ * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
+ *      current video stream if any.
  */
 
 /**
@@ -42,12 +42,14 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE = [
     'id', 'local', 'pinned', 'speaking', 'focused'];
 
 /**
-* Actions for a single participant.
-* @param {Participant|undefined} state
-* @param {Object} action
-* @param {string} action.type
-* @param {Participant} action.participant
-* @returns {Participant|undefined}
+ * Reducer function for a single participant.
+ *
+ * @param {Participant|undefined} state - Participant to be modified.
+ * @param {Object} action - Action object.
+ * @param {string} action.type - Type of action.
+ * @param {Participant} action.participant - Information about participant to be
+ * added/modified.
+ * @returns {Participant|undefined}
  */
 function participant(state, action) {
     switch (action.type) {
@@ -115,14 +117,16 @@ function participant(state, action) {
 }
 
 /**
-* Listen for actions which add, remove, or update the set of participants
-* in the conference.
-* @param {Participant[]} state
-* @param {Object} action
-* @param {string} action.type
-* @param {Participant} action.participant
-* @returns {Participant[]}
-*/
+ * Listen for actions which add, remove, or update the set of participants
+ * in the conference.
+ *
+ * @param {Participant[]} state - List of participants to be modified.
+ * @param {Object} action - Action object.
+ * @param {string} action.type - Type of action.
+ * @param {Participant} action.participant - Information about participant to be
+ * added/removed/modified.
+ * @returns {Participant[]}
+ */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
     case PARTICIPANT_ADDED:

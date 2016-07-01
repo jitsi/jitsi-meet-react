@@ -10,7 +10,8 @@ import { FilmStripContainer } from './_';
  */
 class FilmStrip extends Component {
     /**
-     * React component render method.
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
      */
     render() {
@@ -45,16 +46,17 @@ class FilmStrip extends Component {
                         })
                 }
             </FilmStripContainer>
-        )
+        );
     }
 }
 
 /**
  * Function that maps parts of Redux state tree into component props.
- * @param {Object} state
+ *
+ * @param {Object} state - Redux state.
  * @returns {{
- *  participants: Participant[],
- *  tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
+ *      participants: Participant[],
+ *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
  *  }}
  */
 const mapStateToProps = state => {
@@ -65,7 +67,8 @@ const mapStateToProps = state => {
 };
 
 /**
- * React PropTypes for FilmStrip component.
+ * FilmStrip component's property types.
+ *
  * @static
  */
 FilmStrip.propTypes = {

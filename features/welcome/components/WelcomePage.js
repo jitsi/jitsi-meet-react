@@ -10,8 +10,12 @@ import { WelcomePageContainer } from './_';
  */
 class WelcomePage extends Component {
     /**
-     * Render a WelcomePageContainer, which will show the room name
-     * prompt appropriate for mobile or web.
+     * Implements React's {@link Component#render()}. Renders a
+     * WelcomePageContainer which is to show the room name prompt appropriate
+     * for mobile or web.
+     *
+     * @inheritdoc
+     * @returns {XML}
      */
     render() {
         return (
@@ -26,6 +30,9 @@ class WelcomePage extends Component {
 
 /**
  * Maps the state room property to component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{ room: string }}
  */
 const mapStateToProps = state => {
     return {
@@ -35,6 +42,9 @@ const mapStateToProps = state => {
 
 /**
  * Maps the onJoin action.
+ *
+ * @param {Function} dispatch - Redux dispatch function.
+ * @returns {{ onJoin: Function }}
  */
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -48,6 +58,11 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+/**
+ * WelcomePage component's property types.
+ *
+ * @static
+ */
 WelcomePage.propTypes = {
     onJoin: React.PropTypes.func,
     room: React.PropTypes.string,

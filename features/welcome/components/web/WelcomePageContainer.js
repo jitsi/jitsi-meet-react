@@ -6,13 +6,14 @@ import styles from './styles/Styles';
  * The web container rendering the welcome page.
  */
 export class WelcomePageContainer extends Component {
-
     /**
      * Initialize the WelcomePageContainer, including the initial
      * state of the room name input.
+     *
+     * @param {Object} props - Component properties.
      */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             roomName: ''
@@ -28,8 +29,11 @@ export class WelcomePageContainer extends Component {
     }
 
     /**
-     * Render the WelcomePageContainer to show a prompt for
+     * Implements React's {@link Component#render()}. Renders a prompt for
      * entering a room name.
+     *
+     * @inheritdoc
+     * @returns {XML}
      */
     render() {
         return (
@@ -48,6 +52,11 @@ export class WelcomePageContainer extends Component {
     }
 }
 
+/**
+ * WelcomePageContainer component's property types.
+ *
+ * @static
+ */
 WelcomePageContainer.propTypes = {
     onJoin: React.PropTypes.func
 };

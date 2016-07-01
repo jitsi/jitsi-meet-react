@@ -7,6 +7,12 @@ import styles from './styles/Styles';
  * The native container rendering the conference view.
  */
 export class ConferenceContainer extends Component {
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         return (
             <View style = { styles.conference }>{ this.props.children }</View>
@@ -14,6 +20,11 @@ export class ConferenceContainer extends Component {
     }
 }
 
+/**
+ * ConferenceContainer component's property types.
+ *
+ * @static
+ */
 ConferenceContainer.propTypes = {
-    children: React.PropTypes.element
+    children: React.PropTypes.node
 };

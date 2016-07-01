@@ -4,6 +4,12 @@ import React, { Component } from 'react';
  * The web container rendering the person "on stage".
  */
 export class LargeVideoContainer extends Component {
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         return (
           <div>{this.props.children}</div>
@@ -11,6 +17,11 @@ export class LargeVideoContainer extends Component {
     }
 }
 
+/**
+ * LargeVideoContainer component's property types.
+ *
+ * @static
+ */
 LargeVideoContainer.propTypes = {
-    children: React.PropTypes.element
+    children: React.PropTypes.node
 };
