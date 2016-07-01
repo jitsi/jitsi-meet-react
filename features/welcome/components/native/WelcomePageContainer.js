@@ -10,6 +10,7 @@ export class WelcomePageContainer extends React.Component {
     /**
      * Render the WelcomePageContainer to show a prompt for
      * entering a room name.
+     * 
      * @inheritdoc
      * @returns {XML}
      */

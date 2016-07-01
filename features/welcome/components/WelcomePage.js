@@ -29,7 +29,8 @@ class WelcomePage extends Component {
 
 /**
  * Maps the state room property to component props.
- * @param {Object} state
+ *
+ * @param {Object} state - Redux state.
  * @returns {{ room: string }}
  */
 const mapStateToProps = state => {
@@ -40,7 +41,8 @@ const mapStateToProps = state => {
 
 /**
  * Maps the onJoin action.
- * @param {Function} dispatch
+ *
+ * @param {Function} dispatch - Redux dispatch function.
  * @returns {{ onJoin: Function }}
  */
 const mapDispatchToProps = (dispatch) => {

@@ -8,6 +8,7 @@ import { ColorPalette } from '../../../base/styles';
 export class VideoThumbnailContainer extends Component {
     /**
      * React component render method.
+     *
      * @inheritdoc
      * @returns {XML}
      */
@@ -42,6 +43,7 @@ export class VideoThumbnailContainer extends Component {
 
 /**
  * React PropTypes for VideoThumbnailContainer component.
+ * 
  * @static
  */
 VideoThumbnailContainer.propTypes = {

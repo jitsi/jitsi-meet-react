@@ -18,7 +18,8 @@ class VideoThumbnail extends Component {
     /**
      * Handles click/tap event on the thumbnail. Prevents further event
      * propagation.
-     * @param {Event} event
+     *
+     * @param {Event} event - DOM event.
      * @returns {false}
      */
     onClickHandler(event) {
@@ -37,6 +38,7 @@ class VideoThumbnail extends Component {
 
     /**
      * Processes click on video thumbnail.
+     *
      * @returns {void}
      */
     handleVideoThumbClicked () {
@@ -54,6 +56,7 @@ class VideoThumbnail extends Component {
 
     /**
      * Handler for case when video starts to play.
+     *
      * @returns {void}
      */
     onVideoPlayingHandler() {
@@ -62,6 +65,7 @@ class VideoThumbnail extends Component {
 
     /**
      * Returns audio and video media streams for participant.
+     *
      * @returns {{ video: (MediaStream|null), audio: (MediaStream|null) }}
      */
     getMediaStreams() {
@@ -77,6 +81,7 @@ class VideoThumbnail extends Component {
 
     /**
      * React component render method.
+     *
      * @inheritdoc
      * @returns {XML}
      */
@@ -99,6 +104,7 @@ class VideoThumbnail extends Component {
 
 /**
  * React PropTypes for VideoThumbnail component.
+ * 
  * @static
  */
 VideoThumbnail.propTypes = {

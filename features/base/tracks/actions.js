@@ -14,8 +14,9 @@ require('./reducer');
 
 /**
  * Attach a set of local tracks to a conference.
- * @param {JitsiConference} conference
- * @param {JitsiLocalTrack[]} localTracks
+ *
+ * @param {JitsiConference} conference - Conference instance.
+ * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
  * @returns {void}
  */
 export function addTracksToConference(conference, localTracks) {
@@ -32,7 +33,9 @@ export function addTracksToConference(conference, localTracks) {
 /**
  * Add new local tracks to the conference, replacing any existing tracks
  * that were previously attached.
- * @param {JitsiLocalTrack[]} newLocalTracks=[]
+ *
+ * @param {JitsiLocalTrack[]} [newLocalTracks=[]] - List of new local media
+ *      tracks.
  * @returns {Function}
  */
 export function changeLocalTracks(newLocalTracks = []) {
@@ -107,7 +110,7 @@ export function changeLocalTracks(newLocalTracks = []) {
  * Request to start capturing local audio and/or video.
  * By default, the user facing camera will be selected.
  *
- * @param {Object} [options] - @see JitsiMeetJS.createLocalTracks
+ * @param {Object} [options] - For info @see JitsiMeetJS.createLocalTracks.
  * @returns {Function}
  */
 export function createLocalTracks(options) {
@@ -131,7 +134,8 @@ export function createLocalTracks(options) {
 /**
  * Create an action for when a new track has been signaled to be added
  * to the conference.
- * @param {JitsiTrack} track
+ *
+ * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_ADDED, track: JitsiTrack }}
  */
 export function trackAdded(track) {
@@ -144,7 +148,8 @@ export function trackAdded(track) {
 /**
  * Create an action for when a track has been signaled for
  * removal from the conference.
- * @param {JitsiTrack} track
+ *
+ * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
  */
 export function trackRemoved(track) {

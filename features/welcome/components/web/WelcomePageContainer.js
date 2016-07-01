@@ -6,12 +6,11 @@ import styles from './styles/Styles';
  * The web container rendering the welcome page.
  */
 export class WelcomePageContainer extends Component {
-
     /**
      * Initialize the WelcomePageContainer, including the initial
      * state of the room name input.
-     * @constructor
-     * @param {Object} props
+     *
+     * @param {Object} props - Component properties.
      */
     constructor(props) {
         super(props);
@@ -32,7 +31,8 @@ export class WelcomePageContainer extends Component {
     /**
      * Render the WelcomePageContainer to show a prompt for
      * entering a room name.
-     * @inhertidoc
+     *
+     * @inheritdoc
      * @returns {XML}
      */
     render() {

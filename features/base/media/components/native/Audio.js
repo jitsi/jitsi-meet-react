@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 export class Audio extends Component {
     /**
      * Implements React Component's render method.
+     * 
      * @inheritdoc
      * @returns {null}
      */

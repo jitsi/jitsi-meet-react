@@ -8,6 +8,7 @@ import styles from './styles/Styles';
 export class FilmStripContainer extends Component {
     /**
      * React component render method.
+     * 
      * @inheritdoc
      * @returns {XML}
      */

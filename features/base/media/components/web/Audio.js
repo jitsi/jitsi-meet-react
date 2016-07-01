@@ -8,8 +8,9 @@ export class Audio extends Component {
     /**
      * Implements shouldComponentUpdate of React Component. We don't update 
      * component if stream has not changed.
-     * @inhertidoc
-     * @param {Object} nextProps
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - Props that component is going to receive.
      * @returns {boolean}
      */
     shouldComponentUpdate(nextProps) {
@@ -18,6 +19,7 @@ export class Audio extends Component {
 
     /**
      * Implements React Component's render method.
+     *
      * @inheritdoc
      * @returns {XML} - JSX markup.
      */

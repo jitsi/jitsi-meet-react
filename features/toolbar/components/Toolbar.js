@@ -16,6 +16,7 @@ import { ToolbarContainer } from './_';
 class Toolbar extends Component {
     /**
      * Implements React Component's render method.
+     *
      * @inheritdoc
      * @returns {XML}
      */
@@ -35,7 +36,7 @@ class Toolbar extends Component {
 /**
  * Maps the audioMuted and videoMuted properties to component props.
  *
- * @param {Object} state
+ * @param {Object} state - Redux state.
  * @returns {{ audioMuted: boolean, videoMuted: boolean }}
  */
 const mapStateToProps = state => {
@@ -49,7 +50,8 @@ const mapStateToProps = state => {
 /**
  * Maps the onAudioMute, onHangup and onCameraChange actions to component
  * props.
- * @param {Function} dispatch
+ *
+ * @param {Function} dispatch - Redux dispatch function.
  * @returns {{
  *      onAudioMute: Function,
  *      onHangup: Function,

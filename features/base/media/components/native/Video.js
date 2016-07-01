@@ -10,6 +10,7 @@ import styles from './styles/Styles';
 export class Video extends Component {
     /**
      * React Component method that executes once component is mounted.
+     *
      * @inheritdoc
      */
     componentDidMount() {
@@ -22,6 +23,7 @@ export class Video extends Component {
 
     /**
      * React Component render method.
+     * 
      * @inheritdoc
      * @returns {*}
      */

@@ -12,6 +12,7 @@ import { ConferenceContainer } from './_';
 class Conference extends Component {
     /**
      * Implements React Component's render method.
+     * 
      * @inheritdoc
      * @returns {XML}
      */

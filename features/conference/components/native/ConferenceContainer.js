@@ -9,6 +9,7 @@ import styles from './styles/Styles';
 export class ConferenceContainer extends Component {
     /**
      * Implements React Component's render method.
+     * 
      * @inheritdoc
      * @returns {XML}
      */

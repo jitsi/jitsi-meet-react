@@ -13,7 +13,8 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "jsdoc"
     ],
     "rules": {
         "indent": [
@@ -50,6 +51,9 @@ module.exports = {
                 }
             }
         ],
+        // Currently we are using both valid-jsdoc and 'jsdoc' plugin,
+        // but in future we might stick to a single one in future as soon as
+        // one of them has all features.
         "valid-jsdoc": [
             "error",
             {
@@ -69,9 +73,30 @@ module.exports = {
                 "requireReturn": true,
                 "requireReturnType": true,
                 "matchDescription": ".+",
-                "requireParamDescription": false,
+                "requireParamDescription": true,
                 "requireReturnDescription": false
             }
-        ]
+        ],
+        // These rules are additional to valid-jsdoc.
+        "jsdoc/check-tag-names": [
+            "error"
+        ],
+        "jsdoc/newline-after-description": [
+            "error"
+        ],
+        "jsdoc/require-description-complete-sentence": [
+            "error"
+        ],
+        "jsdoc/require-hyphen-before-param-description": [
+            "error"
+        ],
+        // Those rules are covered by valid-jsdoc, so disable them.
+        "jsdoc/check-types": 0,
+        "jsdoc/check-param-names": 0,
+        "jsdoc/require-param": 0,
+        "jsdoc/require-param-description": 0,
+        "jsdoc/require-param-type": 0,
+        "jsdoc/require-returns-description": 0,
+        "jsdoc/require-returns-type": 0
     }
 };

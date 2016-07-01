@@ -12,7 +12,8 @@ import './reducer';
 
 /**
  * Create an action for when dominant speaker changes.
- * @param {string} id - user id
+ *
+ * @param {string} id - User id.
  * @returns {Object}
  */
 export function dominantSpeakerChanged(id) {
@@ -26,11 +27,12 @@ export function dominantSpeakerChanged(id) {
 
 /**
  * Action to create a local user.
- * @param {string} id - user id
- * @param {Object} [user={}]
- * @param {string} [user.displayName='me']
- * @param {string} [user.avatar='']
- * @param {string} [user.role='none']
+ *
+ * @param {string} id - User id.
+ * @param {Object} [user={}] - Additional information about user.
+ * @param {string} [user.displayName='me'] - User's display name.
+ * @param {string} [user.avatar=''] - User's avatar.
+ * @param {string} [user.role='none'] - User's role.
  * @returns {Function}
  */
 export function localParticipantJoined(id, user = {}) {
@@ -58,7 +60,9 @@ export function localParticipantJoined(id, user = {}) {
 
 /**
  * Create an action for when the user in conference is focused.
- * @param {string|null} id - user id
+ *
+ * @param {string|null} id - User id. If null is passed, means no one is
+ *      currently focused.
  * @returns {{
  *      type: PARTICIPANT_FOCUSED,
  *      participant: {
@@ -77,7 +81,8 @@ export function participantFocused(id) {
 
 /**
  * Action to handle case when participant lefts.
- * @param {string} id - user id
+ *
+ * @param {string} id - User id.
  * @returns {{
  *      type: PARTICIPANT_REMOVED,
  *      participant: {
@@ -96,7 +101,9 @@ export function participantLeft(id) {
 
 /**
  * Create an action for when the user in conference is pinned.
- * @param {string|null} id - user id
+ *
+ * @param {string|null} id - User id. If null is passed, no one is currently
+ *      pinned.
  * @returns {Function}
  */
 export function participantPinned(id) {
@@ -127,8 +134,9 @@ export function participantPinned(id) {
 
 /**
  * Action to handle case when participant's role changes.
- * @param {string} id - user id
- * @param {string} role - new user role
+ *
+ * @param {string} id - User id.
+ * @param {string} role - User's new role.
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
@@ -149,7 +157,8 @@ export function participantRoleChanged(id, role) {
 
 /**
  * Create an action for when the user in conference is selected.
- * @param {string|null} id - user id
+ *
+ * @param {string|null} id - User id. If null, no one is selected.
  * @returns {Function}
  */
 export function participantSelected(id) {
@@ -169,7 +178,8 @@ export function participantSelected(id) {
 
 /**
  * Create an action for when the user's video started to play.
- * @param {string} id - user id
+ *
+ * @param {string} id - User id.
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
@@ -190,8 +200,9 @@ export function participantVideoStarted(id) {
 
 /**
  * Create an action for when participant video type changes.
- * @param {string} id - user id
- * @param {string} videoType - video type
+ *
+ * @param {string} id - User id.
+ * @param {string} videoType - Video type ('desktop' or 'camera').
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
@@ -212,11 +223,12 @@ export function participantVideoTypeChanged(id, videoType) {
 
 /**
  * Action to create a remote user.
- * @param {string} id - user id
- * @param {Object} [user={}]
- * @param {string} [user.displayName='Fellow Jitster']
- * @param {string} [user.avatar='']
- * @param {string} [user.role='none']
+ *
+ * @param {string} id - User id.
+ * @param {Object} [user={}] - Additional information about user.
+ * @param {string} [user.displayName='Fellow Jitster'] - User's display name.
+ * @param {string} [user.avatar=''] - User's avatar.
+ * @param {string} [user.role='none'] - User's role.
  * @returns {{
  *      type: PARTICIPANT_ADDED,
  *      participant: {

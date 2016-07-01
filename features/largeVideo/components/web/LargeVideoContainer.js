@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 export class LargeVideoContainer extends Component {
     /**
      * Implements React Component's render method.
+     * 
      * @inheritdoc
      * @returns {XML}
      */

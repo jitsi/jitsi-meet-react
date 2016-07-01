@@ -14,7 +14,7 @@ class LargeVideo extends Component {
     /**
      * Constructs new LargeVideo component.
      *
-     * @param {Object} props
+     * @param {Object} props - Component props.
      */
     constructor(props) {
         super(props);
@@ -27,8 +27,9 @@ class LargeVideo extends Component {
 
     /**
      * How we handle new component properties.
+     *
      * @inheritdoc
-     * @param {Object} nextProps
+     * @param {Object} nextProps - New props that component will receive.
      */
     componentWillReceiveProps(nextProps) {
         let activeParticipant = getActiveParticipant(nextProps);
@@ -70,7 +71,8 @@ class LargeVideo extends Component {
 
     /**
      * React component render method implementation.
-     * @inhertidoc
+     *
+     * @inheritdoc
      * @returns {XML}
      */
     render() {
@@ -95,7 +97,8 @@ class LargeVideo extends Component {
 
 /**
  * Returns active participant to show.
- * @param {Object} props
+ *
+ * @param {Object} props - Component props.
  * @returns {(Participant|undefined)}
  */
 function getActiveParticipant(props) {
@@ -118,10 +121,11 @@ function getActiveParticipant(props) {
 
 /**
  * Returns participant corresponding to video stream.
- * @param {MediaStream} stream
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks
- * @param {Object} participants
- * @returns {(Object|undefined)}
+ *
+ * @param {MediaStream} stream - MediaStream.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
+ * @param {Participant[]} participants - List of all participants.
+ * @returns {(Participant|undefined)}
  */
 function getParticipantByVideoStream(stream, tracks, participants) {
     if (!stream) {
@@ -141,8 +145,9 @@ function getParticipantByVideoStream(stream, tracks, participants) {
 
 /**
  * Returns video stream for a specified participant.
- * @param {Participant} participant
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks
+ *
+ * @param {Participant} participant - Participant object.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
  * @returns {(JitsiLocalTrack|JitsiRemoteTrack|undefined)}
  */
 function getVideoTrack(participant, tracks) {
@@ -156,7 +161,8 @@ function getVideoTrack(participant, tracks) {
 
 /**
  * Maps parts Redux state to Component's props.
- * @param {Object} state
+ *
+ * @param {Object} state - Redux state.
  * @returns {{
  *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[],
  *      participants: Participant[]

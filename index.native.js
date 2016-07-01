@@ -13,8 +13,9 @@ import { Conference } from './features/conference';
 import { init, styles, WelcomePage } from './features/welcome';
 
 /**
- * This router middleware is used to abstract navigation
- * inside the app for both native and web.
+ * This router middleware is used to abstract navigation inside the app for both
+ * native and web.
+ *
  * @param {Store} store - Redux store.
  * @returns {Object}
  */
@@ -49,8 +50,8 @@ class Root extends Component {
     /**
      * Initializes a new Root instance.
      *
-     * @param {Object} props - the read-only properties with which the new
-     * instance is to be initialized
+     * @param {Object} props - The read-only properties with which the new
+     * instance is to be initialized.
      */
     constructor(props) {
         super(props);
@@ -61,6 +62,7 @@ class Root extends Component {
 
     /**
      * Implements React Component's render method.
+     *
      * @inheritdoc
      * @returns {XML} - JSX markup.
      */
@@ -82,12 +84,12 @@ class Root extends Component {
     /**
      * Renders the scene identified by a specific route in a specific Navigator.
      *
-     * @param {Object} route - the route which identifies the scene to be
+     * @param {Object} route - The route which identifies the scene to be
      * rendered in the specified navigator. In the fashion of NavigatorIOS, the
      * specified route is expected to define a value for its component property
      * which is the type of React component to be rendered.
-     * @param {Navigator} navigator - the Navigator in which the scene
-     * identified by the specified route is to be rendered
+     * @param {Navigator} navigator - The Navigator in which the scene
+     * identified by the specified route is to be rendered.
      * @private
      * @returns {ReactElement}
      */

@@ -27,6 +27,7 @@ const MEDIA_TYPE = {
 
 /**
  * Leaves the conference and closes the connection.
+ *
  * @returns {Function}
  */
 export function hangup() {
@@ -47,6 +48,7 @@ export function hangup() {
 
 /**
  * Toggles the mute state of the local audio track(s).
+ *
  * @returns {Function}
  */
 export function toggleAudio() {
@@ -55,6 +57,7 @@ export function toggleAudio() {
 
 /**
  * Toggles the camera between front and rear (user and environment).
+ *
  * @returns {Function}
  */
 export function toggleCameraFacingMode() {
@@ -82,7 +85,8 @@ export function toggleCameraFacingMode() {
 
 /**
  * Toggles the mute state of the local tracks with the given media type.
- * @param {MEDIA_TYPE} media
+ *
+ * @param {MEDIA_TYPE} media - Type of media device to toggle ('audio'/'video').
  * @returns {Function}
  */
 function toggleMedia(media) {
@@ -111,6 +115,7 @@ function toggleMedia(media) {
 
 /**
  * Toggles the mute state of the local video track(s).
+ *
  * @returns {Function}
  */
 export function toggleVideo() {

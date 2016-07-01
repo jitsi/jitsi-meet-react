@@ -1,12 +1,12 @@
 /**
  * Gets the first common prototype of two specified Objects (treating the
- * Objects themselves as prototypes as well).
+ * objects themselves as prototypes as well).
  *
- * @param {Object} a - the first prototype chain to climb in search of a common
- *      prototype
- * @param {Object} b - the second prototype chain to climb in search of a common
- *      prototype
- * @returns {Object|undefined} - the first common prototype of a and b
+ * @param {Object} a - The first prototype chain to climb in search of a common
+ *      prototype.
+ * @param {Object} b - The second prototype chain to climb in search of a common
+ *      prototype.
+ * @returns {Object|undefined} - The first common prototype of a and b.
  */
 function _getCommonPrototype(a, b) {
     // Allow the arguments to be prototypes themselves.
@@ -31,10 +31,10 @@ function _getCommonPrototype(a, b) {
  * and Element.querySelector. Implements the most simple of selectors necessary
  * to satisfy the call sites at the time of this writing i.e. select by tagName.
  *
- * @param {Node} node - the Node which is the root of the tree to query
- * @param {string} selectors - the group of CSS selectors to match on
- * @returns {Element} - the first Element which is a descendant of the specified
- * node and matches the specified group of selectors
+ * @param {Node} node - The Node which is the root of the tree to query.
+ * @param {string} selectors - The group of CSS selectors to match on.
+ * @returns {Element} - The first Element which is a descendant of the specified
+ *      node and matches the specified group of selectors.
  */
 function _querySelector(node, selectors) {
     let element = null;
@@ -56,11 +56,11 @@ function _querySelector(node, selectors) {
  * Visits each Node in the tree of a specific root Node (using depth-first
  * traversal) and invokes a specific callback until the callback returns true.
  *
- * @param {Node} node - the root Node which represents the tree of Nodes to
- *      visit
- * @param {Function} callback - the callback to invoke with each visted Node
- * @returns {boolean} - true if the specified callback returned true for a Node;
- *      otherwise, false
+ * @param {Node} node - The root Node which represents the tree of Nodes to
+ *      visit.
+ * @param {Function} callback - The callback to invoke with each visited Node.
+ * @returns {boolean} - True if the specified callback returned true for a Node.
+ *      Otherwise, false.
  */
 function _visitNode(node, callback) {
     if (callback(node)) {

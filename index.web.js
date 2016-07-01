@@ -18,8 +18,9 @@ import { Conference } from './features/conference';
 import { init, WelcomePage } from './features/welcome';
 
 /**
- * This router middleware is used to abstract navigation
- * inside the app for both native and web.
+ * This router middleware is used to abstract navigation inside the app for both
+ * native and web.
+ *
  * @param {Store} store - Redux store.
  * @returns {Object}
  */
