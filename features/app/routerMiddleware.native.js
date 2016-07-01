@@ -1,7 +1,7 @@
 import { APP_NAVIGATE } from './actionTypes';
 import { APP_SCREEN } from './constants';
-import { WelcomePage } from '../welcome';
 import { Conference } from '../conference';
+import { WelcomePage } from '../welcome';
 
 /**
  * This router middleware is used to track navigation routes inside the native
@@ -13,7 +13,7 @@ export function routerMiddleware() {
     return next => action => {
         if (action.type === APP_NAVIGATE) {
             switch (action.screen) {
-            case APP_SCREEN.HOME:
+            case APP_SCREEN.WELCOME:
                 return action.navigator.push({
                     title: 'Jitsi Meet',
                     component: WelcomePage

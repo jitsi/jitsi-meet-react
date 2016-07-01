@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { Navigator } from 'react-native';
-import { init, WelcomePage } from '../../../welcome';
+
 import { Conference } from '../../../conference';
+import {
+    init,
+    WelcomePage
+} from '../../../welcome';
 
 /**
  * Root application component.

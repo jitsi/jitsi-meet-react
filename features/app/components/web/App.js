@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { browserHistory, Route, Router } from 'react-router';
+import {
+    browserHistory,
+    Route,
+    Router
+} from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 import { Conference } from '../../../conference';
-import { init, WelcomePage } from '../../../welcome';
+import {
+    init,
+    WelcomePage
+} from '../../../welcome';
 
 /**
  * Root application component.

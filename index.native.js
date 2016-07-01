@@ -3,8 +3,8 @@ import { AppRegistry } from 'react-native';
 import { applyMiddleware, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
-import { ReducerRegistry } from './features/base/redux';
 import Config from './config';
+import { ReducerRegistry } from './features/base/redux';
 import {
     App,
     routerMiddleware as router

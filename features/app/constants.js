@@ -4,6 +4,6 @@
  * @enum {string}
  */
 export const APP_SCREEN = {
-    HOME: 'home',
+    WELCOME: 'welcome',
     CONFERENCE: 'conference'
 };

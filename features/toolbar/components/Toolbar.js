@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { navigate } from '../../app';
-
+import {
+    APP_SCREEN,
+    navigate
+} from '../../app';
 import {
     hangup,
     toggleAudio,
@@ -66,7 +68,7 @@ const mapDispatchToProps = dispatch => {
         onHangup: (navigator) => {
             dispatch(hangup());
             dispatch(navigate({
-                screen: 'home',
+                screen: APP_SCREEN.WELCOME,
                 navigator
             }));
         },

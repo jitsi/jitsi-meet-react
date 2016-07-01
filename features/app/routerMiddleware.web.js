@@ -1,4 +1,5 @@
 import { push } from 'react-router-redux';
+
 import { APP_NAVIGATE } from './actionTypes';
 import { APP_SCREEN } from './constants';
 
@@ -12,7 +13,7 @@ export function routerMiddleware(store) {
     return next => action => {
         if (action.type === APP_NAVIGATE) {
             switch (action.screen) {
-            case APP_SCREEN.HOME:
+            case APP_SCREEN.WELCOME:
                 return store.dispatch(push('/'));
             case APP_SCREEN.CONFERENCE:
                 return store.dispatch(push('/' + action.room));
