@@ -30,6 +30,7 @@ import {
  *      already started.
  * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
  *      current video stream if any.
+ * @property {string} email - participant email.
  */
 
 /**

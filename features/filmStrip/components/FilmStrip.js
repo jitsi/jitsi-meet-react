@@ -39,12 +39,12 @@ class FilmStrip extends Component {
                                 <VideoThumbnail
                                     key={p.id}
                                     participant={p}
-                                    videoTrack={videoTrack}
-                                    audioTrack={audioTrack}
                                     audioMuted={!audioTrack ||
                                         (audioTrack && audioTrack.isMuted())}
+                                    audioTrack={audioTrack}
                                     videoMuted={!videoTrack ||
                                         (videoTrack && videoTrack.isMuted())}
+                                    videoTrack={videoTrack}
                                 />
                             );
                         })

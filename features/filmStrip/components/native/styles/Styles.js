@@ -4,6 +4,15 @@ import { ColorPalette } from '../../../../base/styles';
 
 
 const styles = StyleSheet.create({
+
+    /**
+     * Avatar style.
+     */
+    avatar: {
+        flex: 1,
+        alignSelf: 'stretch'
+    },
+
     /**
      * Video thumbnail style.
      */

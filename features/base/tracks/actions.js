@@ -163,6 +163,7 @@ export function trackMuteChanged(track) {
 /**
  * Create an action for when a track has been signaled for
  * removal from the conference.
+ *
  * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
  */

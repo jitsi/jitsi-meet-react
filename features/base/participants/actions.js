@@ -1,3 +1,5 @@
+/* global MD5 */
+
 import {
     DOMINANT_SPEAKER_CHANGED,
     PARTICIPANT_ADDED,
@@ -9,6 +11,46 @@ import {
 } from './actionTypes';
 import { PARTICIPANT_ROLE } from './constants';
 import './reducer';
+
+
+/**
+ * Returns the URL of the image for the avatar of a particular user,
+ * identified by its id.
+ * @param {string} userId - user id
+ * @param {string} email - user email
+ */
+function getAvatarUrl(userId, email) {
+    // TODO: Use disableThirdPartyRequests config
+
+    let avatarId = email || userId;
+
+    // If the ID looks like an email, we'll use gravatar.
+    // Otherwise, it's a random avatar, and we'll use the configured
+    // URL.
+    let random = !avatarId || avatarId.indexOf('@') < 0;
+
+    if (!avatarId) {
+        avatarId = userId;
+    }
+    // MD5 is provided by Strophe
+    avatarId = MD5.hexdigest(avatarId.trim().toLowerCase());
+
+
+    let urlPref = null;
+    let urlSuf = null;
+    if (!random) {
+        urlPref = 'https://www.gravatar.com/avatar/';
+        urlSuf = "?d=wavatar&size=200";
+    }
+    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
+    else {
+        urlPref = 'https://robohash.org/';
+        urlSuf = ".png?size=200x200";
+    }
+
+    return urlPref + avatarId + urlSuf;
+}
+
 
 /**
  * Create an action for when dominant speaker changes.
@@ -52,8 +94,9 @@ export function localParticipantJoined(id, user = {}) {
             participant: {
                 id,
                 name: user.displayName || 'me',
-                avatar: user.avatar || '',
                 role: user.role || PARTICIPANT_ROLE.NONE,
+                avatar: getAvatarUrl(id, user.email),
+                email: user.email,
                 local: true,
                 videoType: localVideoTrack
                     ? localVideoTrack.videoType
@@ -249,9 +292,35 @@ export function remoteParticipantJoined(id, user = {}) {
             id,
             // TODO: get default value from interface config
             name: user.displayName || 'Fellow Jitster',
-            // TODO: get avatar
-            avatar: user.avatar || '',
+            avatar: getAvatarUrl(id),
             role: user.role || 'none'
         }
     };
 }
+
+
+/**
+ * Action to update a participant's email.
+ *
+ * @param {string} id - user id
+ * @param {string} email - user email
+ * @returns {{
+ *      type: PARTICIPANT_UPDATED,
+ *      participant: {
+ *          id: string,
+ *          avatar: string,
+ *          email: string
+ *      }
+ * }}
+ */
+export function changeParticipantEmail(id, email) {
+    return {
+        type: PARTICIPANT_UPDATED,
+        participant: {
+            id,
+            avatar: getAvatarUrl(id, email),
+            email
+        }
+    };
+}
+

@@ -1,5 +1,6 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 import {
+    changeParticipantEmail,
     dominantSpeakerChanged,
     localParticipantJoined,
     participantLeft,
@@ -22,6 +23,7 @@ import {
     JITSI_CONFERENCE_JOINED,
     RTC_ERROR
 } from './actionTypes';
+import { EMAIL_COMMAND } from './constants';
 import './reducer';
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
@@ -70,6 +72,10 @@ export function conferenceInitialized(conference) {
 
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));
+
+        conference.addCommandListener(EMAIL_COMMAND, (data, id) => {
+            dispatch(changeParticipantEmail(id, data.value));
+        });
 
         conference.join();
     };
