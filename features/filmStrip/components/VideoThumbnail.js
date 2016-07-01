@@ -16,10 +16,24 @@ import { VideoThumbnailContainer } from './_';
  */
 class VideoThumbnail extends Component {
     /**
+     * Initializes new Video Thumbnail component.
+     *
+     * @param {Object} props - Component props.
+     */
+    constructor(props) {
+        super(props);
+
+        // Bind event handlers to current context.
+        this._onClick = this._onClick.bind(this);
+        this._onVideoPlaying = this._onVideoPlaying.bind(this);
+    }
+
+    /**
      * Handles click/tap event on the thumbnail.
+     * @private
      * @param {Event} event
      */
-    onClickHandler(event) {
+    _onClick(event) {
         this.handleVideoThumbClicked();
 
         // On IE we need to populate this handler on video <object>
@@ -51,8 +65,9 @@ class VideoThumbnail extends Component {
 
     /**
      * Handler for case when video starts to play.
+     * @private
      */
-    onVideoPlayingHandler() {
+    _onVideoPlaying() {
         this.props.dispatch(participantVideoStarted(this.props.participant.id));
     }
 
@@ -81,10 +96,10 @@ class VideoThumbnail extends Component {
         return (
             <VideoThumbnailContainer
                 focused={this.props.participant.focused}
-                onClick={this.onClickHandler.bind(this)}>
+                onClick={this._onClick}>
                 {streams.video && <Video
                     stream={streams.video}
-                    onPlaying={this.onVideoPlayingHandler.bind(this)}/>}
+                    onPlaying={this._onVideoPlaying}/>}
                 {streams.audio && <Audio
                     stream={streams.audio}/>}
             </VideoThumbnailContainer>
