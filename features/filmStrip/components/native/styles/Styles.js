@@ -2,17 +2,21 @@ import { StyleSheet } from 'react-native';
 
 import { ColorPalette } from '../../../../base/styles';
 
-var styles = StyleSheet.create({
+
+const styles = StyleSheet.create({
     /**
      * Video thumbnail style.
      */
     thumbnail: {
         alignItems: 'center',
-        justifyContent: 'center',
-        width: 80,
-        height: 80,
+        backgroundColor: 'black',
+        // TODO: This should go into the color palette
+        borderColor: '#424242',
         borderWidth: 1,
-        flex: 1
+        flex: 1,
+        height: 80,
+        justifyContent: 'center',
+        width: 80
     },
 
     /**
@@ -20,7 +24,12 @@ var styles = StyleSheet.create({
      */
     thumbnailFocused: {
         borderColor: ColorPalette.jitsiBlue,
-        borderWidth: 5
+        shadowColor: 'black',
+        shadowOffset: {
+            height: 5,
+            width: 5 
+        },
+        shadowRadius: 5
     },
 
     /**
@@ -28,12 +37,71 @@ var styles = StyleSheet.create({
      */
     filmStrip: {
         alignSelf: 'stretch',
-        flex: 1,
-        right: 5,
         bottom: 110,
+        flex: 1,
+        flexDirection: 'row',
         position: 'absolute',
-        flexDirection: 'row'
+        right: 5
+    },
+
+    /**
+     * Audio muted indicator style.
+     */
+    audioMutedIndicator: {
+        backgroundColor: 'transparent',
+        color: 'white',
+        left: 20,
+        position: 'absolute',
+        textShadowColor: 'black',
+        textShadowOffset: { width: 0, height: -1},
+        top: 1
+    },
+
+    /**
+     * Moderator indicator style.
+     */
+    moderatorIndicator: {
+        backgroundColor: 'transparent',
+        color: 'white',
+        left: 1,
+        position: 'absolute',
+        textShadowColor: 'black',
+        textShadowOffset: { width: 0, height: -1},
+        top: 1
+    },
+
+    /**
+     * Dominant speaker indicator style.
+     */
+    dominantSpeakerIndicator: {
+        color: 'white'
+    },
+
+    /**
+     * Dominant speaker indicator background style.
+     */
+    dominantSpeakerIndicatorBackground: {
+        backgroundColor: ColorPalette.jitsiBlue,
+        borderRadius: 10,
+        bottom: 2,
+        left: 1,
+        padding: 5,
+        position: 'absolute'
+    },
+
+    /**
+     * Video muted indicator style.
+     */
+    videoMutedIndicator: {
+        backgroundColor: 'transparent',
+        color: 'white',
+        left: 35,
+        position: 'absolute',
+        textShadowColor: 'black',
+        textShadowOffset: { width: 0, height: -1},
+        top: 1
     }
+
 });
 
 export default styles;

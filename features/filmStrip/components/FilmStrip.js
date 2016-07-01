@@ -41,6 +41,10 @@ class FilmStrip extends Component {
                                     participant={p}
                                     videoTrack={videoTrack}
                                     audioTrack={audioTrack}
+                                    audioMuted={!audioTrack ||
+                                        (audioTrack && audioTrack.isMuted())}
+                                    videoMuted={!videoTrack ||
+                                        (videoTrack && videoTrack.isMuted())}
                                 />
                             );
                         })
