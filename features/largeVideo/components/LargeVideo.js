@@ -12,8 +12,9 @@ import { LargeVideoContainer } from './_';
  */
 class LargeVideo extends Component {
     /**
-     * @constructor
-     * @param props
+     * Constructs new LargeVideo component.
+     *
+     * @param {Object} props
      */
     constructor(props) {
         super(props);
@@ -21,13 +22,13 @@ class LargeVideo extends Component {
         this.state = {
             videoStream: null,
             activeParticipant: null
-        }
+        };
     }
 
     /**
      * How we handle new component properties.
      * @inheritdoc
-     * @param nextProps
+     * @param {Object} nextProps
      */
     componentWillReceiveProps(nextProps) {
         let activeParticipant = getActiveParticipant(nextProps);
@@ -57,7 +58,7 @@ class LargeVideo extends Component {
         if (activeParticipant &&
             videoTrack &&
             !activeParticipant.selected &&
-            activeParticipant.videoType === "camera") {
+            activeParticipant.videoType === 'camera') {
             this.props.dispatch(participantSelected(activeParticipant.id));
         }
 
@@ -70,6 +71,7 @@ class LargeVideo extends Component {
     /**
      * React component render method implementation.
      * @inhertidoc
+     * @returns {XML}
      */
     render() {
         let videoStreamParticipant = getParticipantByVideoStream(
@@ -94,7 +96,7 @@ class LargeVideo extends Component {
 /**
  * Returns active participant to show.
  * @param {Object} props
- * @returns {Participant|undefined}
+ * @returns {(Participant|undefined)}
  */
 function getActiveParticipant(props) {
     // First get the focused participant.
@@ -119,7 +121,7 @@ function getActiveParticipant(props) {
  * @param {MediaStream} stream
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks
  * @param {Object} participants
- * @returns {Object|undefined}
+ * @returns {(Object|undefined)}
  */
 function getParticipantByVideoStream(stream, tracks, participants) {
     if (!stream) {
@@ -141,7 +143,7 @@ function getParticipantByVideoStream(stream, tracks, participants) {
  * Returns video stream for a specified participant.
  * @param {Participant} participant
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks
- * @returns {JitsiLocalTrack|JitsiRemoteTrack|undefined}
+ * @returns {(JitsiLocalTrack|JitsiRemoteTrack|undefined)}
  */
 function getVideoTrack(participant, tracks) {
     return tracks.find(t => {
@@ -154,7 +156,7 @@ function getVideoTrack(participant, tracks) {
 
 /**
  * Maps parts Redux state to Component's props.
- * @param state
+ * @param {Object} state
  * @returns {{
  *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[],
  *      participants: Participant[]
@@ -165,6 +167,12 @@ const mapStateToProps = state => {
         tracks: state['features/base/tracks'],
         participants: state['features/base/participants']
     };
+};
+
+LargeVideo.propTypes = {
+    tracks: React.PropTypes.array,
+    participants: React.PropTypes.array,
+    dispatch: React.PropTypes.func
 };
 
 export default connect(mapStateToProps)(LargeVideo);

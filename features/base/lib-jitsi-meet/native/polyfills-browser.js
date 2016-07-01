@@ -2,9 +2,11 @@
  * Gets the first common prototype of two specified Objects (treating the
  * Objects themselves as prototypes as well).
  *
- * @param a the first prototype chain to climb in search of a common prototype
- * @param b the second prototype chain to climb in search of a common prototype
- * @return the first common prototype of a and b
+ * @param {Object} a - the first prototype chain to climb in search of a common
+ *      prototype
+ * @param {Object} b - the second prototype chain to climb in search of a common
+ *      prototype
+ * @returns {Object|undefined} - the first common prototype of a and b
  */
 function _getCommonPrototype(a, b) {
     // Allow the arguments to be prototypes themselves.
@@ -31,7 +33,7 @@ function _getCommonPrototype(a, b) {
  *
  * @param {Node} node - the Node which is the root of the tree to query
  * @param {string} selectors - the group of CSS selectors to match on
- * @return {Element} the first Element which is a descendant of the specified
+ * @returns {Element} - the first Element which is a descendant of the specified
  * node and matches the specified group of selectors
  */
 function _querySelector(node, selectors) {
@@ -55,10 +57,10 @@ function _querySelector(node, selectors) {
  * traversal) and invokes a specific callback until the callback returns true.
  *
  * @param {Node} node - the root Node which represents the tree of Nodes to
- * visit
+ *      visit
  * @param {Function} callback - the callback to invoke with each visted Node
- * @return {boolean} true if the specified callback returned true for a Node;
- * otherwise, false
+ * @returns {boolean} - true if the specified callback returned true for a Node;
+ *      otherwise, false
  */
 function _visitNode(node, callback) {
     if (callback(node)) {

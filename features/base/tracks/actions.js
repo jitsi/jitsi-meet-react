@@ -14,6 +14,9 @@ require('./reducer');
 
 /**
  * Attach a set of local tracks to a conference.
+ * @param {JitsiConference} conference
+ * @param {JitsiLocalTrack[]} localTracks
+ * @returns {void}
  */
 export function addTracksToConference(conference, localTracks) {
     let conferenceLocalTracks = conference.getLocalTracks();
@@ -30,6 +33,7 @@ export function addTracksToConference(conference, localTracks) {
  * Add new local tracks to the conference, replacing any existing tracks
  * that were previously attached.
  * @param {JitsiLocalTrack[]} newLocalTracks=[]
+ * @returns {Function}
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
@@ -103,7 +107,8 @@ export function changeLocalTracks(newLocalTracks = []) {
  * Request to start capturing local audio and/or video.
  * By default, the user facing camera will be selected.
  *
- * @param {object} (options) - @see options for JitsiMeetJS.createLocalTracks
+ * @param {Object} [options] - @see JitsiMeetJS.createLocalTracks
+ * @returns {Function}
  */
 export function createLocalTracks(options) {
     options || (options = {});

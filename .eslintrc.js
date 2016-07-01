@@ -39,6 +39,39 @@ module.exports = {
         "max-len": [
             "error",
             80
+        ],
+        "require-jsdoc": [
+            "error",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": true,
+                    "ClassDeclaration": true
+                }
+            }
+        ],
+        "valid-jsdoc": [
+            "error",
+            {
+                "prefer": {
+                    "arg": "param",
+                    "argument": "param",
+                    "return": "returns"
+                },
+                "preferType": {
+                    "Boolean": "boolean",
+                    "Number": "number",
+                    "String": "string",
+                    "object": "Object",
+                    "array": "Array",
+                    "function": "Function"
+                },
+                "requireReturn": true,
+                "requireReturnType": true,
+                "matchDescription": ".+",
+                "requireParamDescription": false,
+                "requireReturnDescription": false
+            }
         ]
     }
 };

@@ -6,12 +6,17 @@ import { ColorPalette } from '../../../base/styles';
  * The video thumbnail web container.
  */
 export class VideoThumbnailContainer extends Component {
+    /**
+     * React component render method.
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         let styles = {};
 
         // TODO: this is temporary solution, discuss UI
         if (this.props.focused) {
-            styles.border = "5px solid " + ColorPalette.jitsiBlue;
+            styles.border = '5px solid ' + ColorPalette.jitsiBlue;
             /*
              .videoContainerFocused
              cursor: hand;
@@ -34,3 +39,13 @@ export class VideoThumbnailContainer extends Component {
         );
     }
 }
+
+/**
+ * React PropTypes for VideoThumbnailContainer component.
+ * @static
+ */
+VideoThumbnailContainer.propTypes = {
+    onClick: React.PropTypes.func,
+    focused: React.PropTypes.bool,
+    children: React.PropTypes.node
+};

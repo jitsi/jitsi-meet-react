@@ -12,6 +12,9 @@ class WelcomePage extends Component {
     /**
      * Render a WelcomePageContainer, which will show the room name
      * prompt appropriate for mobile or web.
+     *
+     * @inheritdoc
+     * @returns {XML}
      */
     render() {
         return (
@@ -26,6 +29,8 @@ class WelcomePage extends Component {
 
 /**
  * Maps the state room property to component props.
+ * @param {Object} state
+ * @returns {{ room: string }}
  */
 const mapStateToProps = state => {
     return {
@@ -35,6 +40,8 @@ const mapStateToProps = state => {
 
 /**
  * Maps the onJoin action.
+ * @param {Function} dispatch
+ * @returns {{ onJoin: Function }}
  */
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -48,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+/**
+ * Prop types for component.
+ */
 WelcomePage.propTypes = {
     onJoin: React.PropTypes.func,
     room: React.PropTypes.string,

@@ -20,13 +20,17 @@
         // lib-jitsi-meet which has been successfully running on Chrome,
         // Firefox, Temasys, etc. for a very long time, attempt to meets its
         // expectations (by extending RTCPPeerConnection).
-        // XXX At the time of this writing extending RTCPeerConnection using ES6
-        // 'class' and 'extends' causes a runtime error related to the attemp to
-        // define the onaddstream property setter. The error mentions that
-        // babelHelpers.set is undefined which appears to be a thing inside
-        // React Native's packager. As a workaround, extend using the pre-ES6
-        // way.
-        // eslint-disable-next-line no-inner-declarations
+        /*eslint-disable no-inner-declarations */
+        /**
+         * At the time of this writing extending RTCPeerConnection using ES6
+         * 'class' and 'extends' causes a runtime error related to the attempt
+         * to define the onaddstream property setter. The error mentions that
+         * babelHelpers.set is undefined which appears to be a thing inside
+         * React Native's packager. As a workaround, extend using the pre-ES6
+         * way.
+         *
+         * @class
+         * */
         function _RTCPeerConnection() {
             RTCPeerConnection.apply(this, arguments);
 
@@ -53,6 +57,7 @@
                 }
             });
         }
+        /*eslint-enable no-inner-declarations */
 
         _RTCPeerConnection.prototype =
             Object.create(RTCPeerConnection.prototype);

@@ -10,6 +10,11 @@ import { ConferenceContainer } from './_';
  * The conference page for the application.
  */
 class Conference extends Component {
+    /**
+     * Implements React Component's render method.
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         return (
             <ConferenceContainer>
@@ -22,6 +27,7 @@ class Conference extends Component {
 }
 
 /**
+ * Component's prop types.
  * Ensure that the application navigator object is passed down via props
  * on mobile.
  */

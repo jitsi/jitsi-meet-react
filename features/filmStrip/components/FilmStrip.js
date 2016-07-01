@@ -45,7 +45,7 @@ class FilmStrip extends Component {
                         })
                 }
             </FilmStripContainer>
-        )
+        );
     }
 }
 

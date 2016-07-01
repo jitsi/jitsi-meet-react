@@ -10,9 +10,11 @@ export class WelcomePageContainer extends Component {
     /**
      * Initialize the WelcomePageContainer, including the initial
      * state of the room name input.
+     * @constructor
+     * @param {Object} props
      */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             roomName: ''
@@ -30,6 +32,8 @@ export class WelcomePageContainer extends Component {
     /**
      * Render the WelcomePageContainer to show a prompt for
      * entering a room name.
+     * @inhertidoc
+     * @returns {XML}
      */
     render() {
         return (

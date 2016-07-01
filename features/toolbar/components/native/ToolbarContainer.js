@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Text, TouchableHighlight, View } from 'react-native';
+import {
+    TouchableHighlight,
+    View
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { ColorPalette } from '../../../base/styles';
@@ -10,6 +13,11 @@ import styles from './styles/Styles';
  * The native container rendering the in call main buttons.
  */
 export class ToolbarContainer extends Component {
+    /**
+     * Implements React Component's render method.
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         var underlayColor = ColorPalette.buttonUnderlay;
         var micButtonStyle;
@@ -53,6 +61,9 @@ export class ToolbarContainer extends Component {
     }
 }
 
+/**
+ * Component's prop types.
+ */
 ToolbarContainer.propTypes = {
     onAudioMute: React.PropTypes.func,
     onHangup: React.PropTypes.func,
