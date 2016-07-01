@@ -4,17 +4,22 @@ import {
     PARTICIPANT_FOCUSED,
     PARTICIPANT_PINNED,
     PARTICIPANT_REMOVED,
-    PARTICIPANT_ROLE_CHANGED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
+import { PARTICIPANT_ROLE } from './constants';
 import './reducer';
 
 /**
  * Create an action for when dominant speaker changes.
  *
  * @param {string} id - User id.
- * @returns {Object}
+ * @returns {{
+ *      type: DOMINANT_SPEAKER_CHANGED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
  */
 export function dominantSpeakerChanged(id) {
     return {
@@ -48,7 +53,7 @@ export function localParticipantJoined(id, user = {}) {
                 id,
                 name: user.displayName || 'me',
                 avatar: user.avatar || '',
-                role: user.role || 'none',
+                role: user.role || PARTICIPANT_ROLE.NONE,
                 local: true,
                 videoType: localVideoTrack
                     ? localVideoTrack.videoType
@@ -134,18 +139,18 @@ export function participantPinned(id) {
  * Action to handle case when participant's role changes.
  *
  * @param {string} id - User id.
- * @param {string} role - User's new role.
+ * @param {PARTICIPANT_ROLE} role - User's new role
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
  *          id: string,
- *          role: string
+ *          role: PARTICIPANT_ROLE
  *      }
  * }}
  */
 export function participantRoleChanged(id, role) {
     return {
-        type: PARTICIPANT_ROLE_CHANGED,
+        type: PARTICIPANT_UPDATED,
         participant: {
             id,
             role
@@ -233,9 +238,9 @@ export function participantVideoTypeChanged(id, videoType) {
  *          id: string,
  *          name: string,
  *          avatar: string,
- *          role: string
+ *          role: PARTICIPANT_ROLE
  *      }
- *  }}
+ * }}
  */
 export function remoteParticipantJoined(id, user = {}) {
     return {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
+    PARTICIPANT_ROLE,
     participantFocused,
     participantPinned,
     participantVideoStarted
@@ -126,9 +127,9 @@ class VideoThumbnail extends Component {
                 {streams.video && !this.props.videoMuted &&
                     <Video
                         stream={streams.video}
-                        onPlaying={this.onVideoPlayingHandler.bind(this)}/>}
+                        onPlaying={this._onVideoPlaying}/>}
 
-                {this.props.participant.role === 'moderator' &&
+                {this.props.participant.role === PARTICIPANT_ROLE.MODERATOR &&
                     <ModeratorIndicator />}
 
                 {this.props.participant.speaking &&

@@ -6,7 +6,6 @@ import {
     PARTICIPANT_FOCUSED,
     PARTICIPANT_PINNED,
     PARTICIPANT_REMOVED,
-    PARTICIPANT_ROLE_CHANGED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -107,14 +106,6 @@ function participant(state, action) {
         }
         return state;
 
-    case PARTICIPANT_ROLE_CHANGED:
-        if (state.id === action.participant.id) {
-            return Object.assign({}, state, {
-                role: action.participant.role
-            });
-        }
-        return state;
-
     default:
         return state;
     }
@@ -142,7 +133,6 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_FOCUSED:
     case PARTICIPANT_PINNED:
-    case PARTICIPANT_ROLE_CHANGED:
     case PARTICIPANT_SELECTED:
     case PARTICIPANT_UPDATED:
         return state.map(p => participant(p, action));
