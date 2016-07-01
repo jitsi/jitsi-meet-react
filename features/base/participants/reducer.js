@@ -108,7 +108,11 @@ function participant(state, action) {
         return state;
 
     case PARTICIPANT_ROLE_CHANGED:
-        // TODO: check how actually roles change!!
+        if (state.id === action.participant.id) {
+            return Object.assign({}, state, {
+                role: action.participant.role
+            });
+        }
         return state;
 
     default:
