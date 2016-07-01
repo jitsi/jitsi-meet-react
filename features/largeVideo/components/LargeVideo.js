@@ -73,7 +73,7 @@ class LargeVideo extends Component {
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         let videoStreamParticipant = getParticipantByVideoStream(

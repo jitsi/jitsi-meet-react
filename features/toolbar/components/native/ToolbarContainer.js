@@ -17,7 +17,7 @@ export class ToolbarContainer extends Component {
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         var underlayColor = ColorPalette.buttonUnderlay;

@@ -16,24 +16,32 @@ import { VideoThumbnailContainer } from './_';
  */
 class VideoThumbnail extends Component {
     /**
-     * Handles click/tap event on the thumbnail. Prevents further event
-     * propagation.
+     * Initializes new Video Thumbnail component.
      *
-     * @param {Event} event - DOM event.
-     * @returns {false}
+     * @param {Object} props - Component props.
      */
-    onClickHandler(event) {
-        this.handleVideoThumbClicked();
+    constructor(props) {
+        super(props);
 
-        // On IE we need to populate this handler on video <object>
-        // and it does not give event instance as an argument,
-        // so we check here for methods.
-        if (event && event.stopPropagation && event.preventDefault) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
+        // Bind event handlers so they are only bound once for every instance.
+        this._onClick = this._onClick.bind(this);
+        this._onVideoPlaying = this._onVideoPlaying.bind(this);
+    }
 
-        return false;
+    /**
+     * Returns audio and video media streams for participant.
+     *
+     * @returns {{ video: (MediaStream|null), audio: (MediaStream|null) }}
+     */
+    getMediaStreams() {
+        return {
+            video: this.props.videoTrack
+                ? this.props.videoTrack.getOriginalStream()
+                : null,
+            audio: this.props.audioTrack
+                ? this.props.audioTrack.getOriginalStream()
+                : null
+        };
     }
 
     /**
@@ -55,35 +63,42 @@ class VideoThumbnail extends Component {
     }
 
     /**
-     * Handler for case when video starts to play.
      *
-     * @returns {void}
+     * Handles click/tap event on the thumbnail. Prevents further event
+     * propagation.
+     *
+     * @param {Event} event - DOM event.
+     * @returns {false}
      */
-    onVideoPlayingHandler() {
-        this.props.dispatch(participantVideoStarted(this.props.participant.id));
+    _onClick(event) {
+        this.handleVideoThumbClicked();
+
+        // On IE we need to populate this handler on video <object>
+        // and it does not give event instance as an argument,
+        // so we check here for methods.
+        if (event && event.stopPropagation && event.preventDefault) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
+        return false;
     }
 
     /**
-     * Returns audio and video media streams for participant.
+     * Handler for case when video starts to play.
      *
-     * @returns {{ video: (MediaStream|null), audio: (MediaStream|null) }}
+     * @private
+     * @returns {void}
      */
-    getMediaStreams() {
-        return {
-            video: this.props.videoTrack
-                ? this.props.videoTrack.getOriginalStream()
-                : null,
-            audio: this.props.audioTrack
-                ? this.props.audioTrack.getOriginalStream()
-                : null
-        };
+    _onVideoPlaying() {
+        this.props.dispatch(participantVideoStarted(this.props.participant.id));
     }
 
     /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         let streams = this.getMediaStreams();
@@ -91,10 +106,10 @@ class VideoThumbnail extends Component {
         return (
             <VideoThumbnailContainer
                 focused={this.props.participant.focused}
-                onClick={this.onClickHandler.bind(this)}>
+                onClick={this._onClick}>
                 {streams.video && <Video
                     stream={streams.video}
-                    onPlaying={this.onVideoPlayingHandler.bind(this)}/>}
+                    onPlaying={this._onVideoPlaying}/>}
                 {streams.audio && <Audio
                     stream={streams.audio}/>}
             </VideoThumbnailContainer>

@@ -18,7 +18,7 @@ class Toolbar extends Component {
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (

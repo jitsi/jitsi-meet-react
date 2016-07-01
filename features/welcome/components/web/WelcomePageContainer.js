@@ -33,7 +33,7 @@ export class WelcomePageContainer extends Component {
      * entering a room name.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (

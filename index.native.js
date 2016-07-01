@@ -64,7 +64,7 @@ class Root extends Component {
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML} - JSX markup.
+     * @returns {ReactElement}
      */
     render() {
         return (
