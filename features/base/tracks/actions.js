@@ -2,6 +2,7 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
     TRACK_ADDED,
+    TRACK_MUTE_CHANGED,
     TRACK_REMOVED
 } from './actionTypes';
 
@@ -150,6 +151,19 @@ export function trackAdded(track) {
  * conference.
  *
  * @param {JitsiTrack} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_MUTE_CHANGED, track: JitsiTrack }}
+ */
+export function trackMuteChanged(track) {
+    return {
+        type: TRACK_MUTE_CHANGED,
+        track
+    };
+}
+
+/**
+ * Create an action for when a track has been signaled for
+ * removal from the conference.
+ * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
  */
 export function trackRemoved(track) {
@@ -158,3 +172,4 @@ export function trackRemoved(track) {
         track
     };
 }
+

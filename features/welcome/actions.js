@@ -10,7 +10,8 @@ import {
 import {
     addTracksToConference,
     createLocalTracks,
-    trackAdded
+    trackAdded,
+    trackMuteChanged
 } from '../base/tracks';
 
 import {
@@ -54,6 +55,9 @@ export function conferenceInitialized(conference) {
 
         conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
             id => dispatch(dominantSpeakerChanged(id)));
+
+        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
+            track => dispatch(trackMuteChanged(track)));
 
         conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
             (id, role) => dispatch(participantRoleChanged(id, role)));
