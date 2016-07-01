@@ -20,6 +20,9 @@ import { init, WelcomePage } from './features/welcome';
 /**
  * This router middleware is used to abstract navigation inside the app for both
  * native and web.
+ *
+ * @param {Store} store - Redux store.
+ * @returns {Object}
  */
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {

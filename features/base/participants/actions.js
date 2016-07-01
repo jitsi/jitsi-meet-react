@@ -12,7 +12,8 @@ import './reducer';
 
 /**
  * Create an action for when dominant speaker changes.
- * @param {string} id - user id
+ *
+ * @param {string} id - User id.
  * @returns {Object}
  */
 export function dominantSpeakerChanged(id) {
@@ -26,12 +27,13 @@ export function dominantSpeakerChanged(id) {
 
 /**
  * Action to create a local user.
- * @param {string} id - user id
- * @param {Object} user={}
- * @param {string} (user.displayName='me')
- * @param {string} (user.avatar='')
- * @param {string} (user.role='none')
- * @returns {Object}
+ *
+ * @param {string} id - User id.
+ * @param {Object} [user={}] - Additional information about user.
+ * @param {string} [user.displayName='me'] - User's display name.
+ * @param {string} [user.avatar=''] - User's avatar.
+ * @param {string} [user.role='none'] - User's role.
+ * @returns {Function}
  */
 export function localParticipantJoined(id, user = {}) {
     return (dispatch, getState) => {
@@ -53,13 +55,19 @@ export function localParticipantJoined(id, user = {}) {
                     : undefined
             }
         });
-    }
+    };
 }
 
 /**
  * Create an action for when the user in conference is focused.
- * @param {string|null} id - user id
- * @returns {Object}
+ *
+ * @param {string|null} id - User id or null if no one is currently focused.
+ * @returns {{
+ *      type: PARTICIPANT_FOCUSED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
  */
 export function participantFocused(id) {
     return {
@@ -72,8 +80,14 @@ export function participantFocused(id) {
 
 /**
  * Action to handle case when participant lefts.
- * @param {string} id - user id
- * @returns {Object}
+ *
+ * @param {string} id - User id.
+ * @returns {{
+ *      type: PARTICIPANT_REMOVED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
  */
 export function participantLeft(id) {
     return {
@@ -86,8 +100,9 @@ export function participantLeft(id) {
 
 /**
  * Create an action for when the user in conference is pinned.
- * @param {string|null} id - user id
- * @returns {Object}
+ *
+ * @param {string|null} id - User id or null if no one is currently pinned.
+ * @returns {Function}
  */
 export function participantPinned(id) {
     return (dispatch, getState) => {
@@ -117,9 +132,16 @@ export function participantPinned(id) {
 
 /**
  * Action to handle case when participant's role changes.
- * @param {string} id - user id
- * @param {string} role - new user role
- * @returns {Object}
+ *
+ * @param {string} id - User id.
+ * @param {string} role - User's new role.
+ * @returns {{
+ *      type: PARTICIPANT_UPDATED,
+ *      participant: {
+ *          id: string,
+ *          role: string
+ *      }
+ * }}
  */
 export function participantRoleChanged(id, role) {
     return {
@@ -133,8 +155,9 @@ export function participantRoleChanged(id, role) {
 
 /**
  * Create an action for when the user in conference is selected.
- * @param {string|null} id - user id
- * @returns {Object}
+ *
+ * @param {string|null} id - User id. If null, no one is selected.
+ * @returns {Function}
  */
 export function participantSelected(id) {
     return (dispatch, getState) => {
@@ -153,8 +176,15 @@ export function participantSelected(id) {
 
 /**
  * Create an action for when the user's video started to play.
- * @param {string} id - user id
- * @returns {Object}
+ *
+ * @param {string} id - User id.
+ * @returns {{
+ *      type: PARTICIPANT_UPDATED,
+ *      participant: {
+ *          id: string,
+ *          videoStarted: boolean
+ *      }
+ * }}
  */
 export function participantVideoStarted(id) {
     return {
@@ -168,13 +198,14 @@ export function participantVideoStarted(id) {
 
 /**
  * Create an action for when participant video type changes.
- * @param {string} id - user id
- * @param {'camera'|'desktop'} videoType - video type
+ *
+ * @param {string} id - User id.
+ * @param {string} videoType - Video type ('desktop' or 'camera').
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
  *          id: string,
- *          videoType: 'camera'|'desktop'
+ *          videoType: string
  *      }
  * }}
  */
@@ -190,12 +221,21 @@ export function participantVideoTypeChanged(id, videoType) {
 
 /**
  * Action to create a remote user.
- * @param {string} id - user id
- * @param {Object} user={}
- * @param {string} (user.displayName='Fellow Jitster')
- * @param {string} (user.avatar='')
- * @param {string} (user.role='none')
- * @returns {Object}
+ *
+ * @param {string} id - User id.
+ * @param {Object} [user={}] - Additional information about user.
+ * @param {string} [user.displayName='Fellow Jitster'] - User's display name.
+ * @param {string} [user.avatar=''] - User's avatar.
+ * @param {string} [user.role='none'] - User's role.
+ * @returns {{
+ *      type: PARTICIPANT_ADDED,
+ *      participant: {
+ *          id: string,
+ *          name: string,
+ *          avatar: string,
+ *          role: string
+ *      }
+ *  }}
  */
 export function remoteParticipantJoined(id, user = {}) {
     return {

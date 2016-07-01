@@ -5,7 +5,16 @@ import { ColorPalette } from '../../../base/styles';
 
 import styles from './styles/Styles';
 
+/**
+ * The web container rendering the toolbar.
+ */
 export class ToolbarContainer extends Component {
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         var underlayColor = ColorPalette.buttonUnderlay;
         var micButtonStyle;
@@ -47,6 +56,11 @@ export class ToolbarContainer extends Component {
     }
 }
 
+/**
+ * ToolbarContainer component's property types.
+ *
+ * @static
+ */
 ToolbarContainer.propTypes = {
     onAudioMute: React.PropTypes.func,
     onHangup: React.PropTypes.func,

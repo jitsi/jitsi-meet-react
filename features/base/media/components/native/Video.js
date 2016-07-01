@@ -8,6 +8,11 @@ import styles from './styles/Styles';
  * around react-native-webrtc's RTCView.
  */
 export class Video extends Component {
+    /**
+     * React Component method that executes once component is mounted.
+     *
+     * @inheritdoc
+     */
     componentDidMount() {
         // RTCView currently does not support media events, so just fire
         // onPlaying callback when <RTCView> is rendered.
@@ -16,6 +21,12 @@ export class Video extends Component {
         }
     }
 
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {ReactElement|null}
+     */
     render() {
         let stream = this.props.stream;
 
@@ -35,6 +46,11 @@ export class Video extends Component {
     }
 }
 
+/**
+ * Video component's property types.
+ *
+ * @static
+ */
 Video.propTypes = {
     stream: React.PropTypes.object,
     muted: React.PropTypes.bool,

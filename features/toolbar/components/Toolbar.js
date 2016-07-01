@@ -3,13 +3,23 @@ import { connect } from 'react-redux';
 
 import { navigate } from '../../base/navigation';
 
-import { hangup, toggleAudio, toggleCameraFacingMode } from '../';
+import {
+    hangup,
+    toggleAudio,
+    toggleCameraFacingMode
+} from '../';
 import { ToolbarContainer } from './_';
 
 /**
  * The conference call toolbar.
  */
 class Toolbar extends Component {
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         return (
             <ToolbarContainer
@@ -25,6 +35,9 @@ class Toolbar extends Component {
 
 /**
  * Maps the audioMuted and videoMuted properties to component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{ audioMuted: boolean, videoMuted: boolean }}
  */
 const mapStateToProps = state => {
     const stateFeaturesToolbar = state['features/toolbar'];
@@ -37,6 +50,13 @@ const mapStateToProps = state => {
 /**
  * Maps the onAudioMute, onHangup and onCameraChange actions to component
  * props.
+ *
+ * @param {Function} dispatch - Redux dispatch function.
+ * @returns {{
+ *      onAudioMute: Function,
+ *      onHangup: Function,
+ *      onCameraChange: Function
+ *  }}
  */
 const mapDispatchToProps = dispatch => {
     return {
@@ -56,6 +76,11 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
+/**
+ * Toolbar component's property types.
+ *
+ * @static
+ */
 Toolbar.propTypes = {
     onAudioMute: React.PropTypes.func,
     onHangup: React.PropTypes.func,

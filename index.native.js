@@ -15,6 +15,9 @@ import { init, styles, WelcomePage } from './features/welcome';
 /**
  * This router middleware is used to abstract navigation inside the app for both
  * native and web.
+ *
+ * @param {Store} store - Redux store.
+ * @returns {Object}
  */
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
@@ -39,12 +42,16 @@ const router = store => next => action => {
 const reducer = ReducerRegistry.combineReducers();
 const store = createStore(reducer, applyMiddleware(Thunk, router));
 
+/**
+ * App root component.
+ * @extends Component
+ */
 class Root extends Component {
     /**
      * Initializes a new Root instance.
      *
-     * @param {object} props - the read-only properties with which the new
-     * instance is to be initialized
+     * @param {Object} props - The read-only properties with which the new
+     * instance is to be initialized.
      */
     constructor(props) {
         super(props);
@@ -53,6 +60,12 @@ class Root extends Component {
         this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
     }
 
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML} - JSX markup.
+     */
     render() {
         return (
             <Provider store={store}>
@@ -71,13 +84,14 @@ class Root extends Component {
     /**
      * Renders the scene identified by a specific route in a specific Navigator.
      *
-     * @param {object} route - the route which identifies the scene to be
+     * @param {Object} route - The route which identifies the scene to be
      * rendered in the specified navigator. In the fashion of NavigatorIOS, the
      * specified route is expected to define a value for its component property
      * which is the type of React component to be rendered.
-     * @param {Navigator} navigator - the Navigator in which the scene
-     * identified by the specified route is to be rendered
+     * @param {Navigator} navigator - The Navigator in which the scene
+     * identified by the specified route is to be rendered.
      * @private
+     * @returns {ReactElement}
      */
     _navigatorRenderScene(route, navigator) {
         // We started with NavigatorIOS and then switched to Navigator in order

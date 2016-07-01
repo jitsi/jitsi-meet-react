@@ -4,6 +4,12 @@ import React, { Component } from 'react';
  * The web container rendering the conference view.
  */
 export class ConferenceContainer extends Component {
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML}
+     */
     render() {
         return (
             <div>{this.props.children}</div>
@@ -11,6 +17,11 @@ export class ConferenceContainer extends Component {
     }
 }
 
+/**
+ * ConferenceContainer component's property types.
+ *
+ * @static
+ */
 ConferenceContainer.propTypes = {
-    children: React.PropTypes.element
+    children: React.PropTypes.node
 };

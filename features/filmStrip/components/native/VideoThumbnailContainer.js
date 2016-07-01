@@ -4,9 +4,16 @@ import { TouchableHighlight, View } from 'react-native';
 import styles from './styles/Styles';
 
 /**
- * The video thumbnail native container.
+ * Web version of Video Thumbnail Container component.
+ * @extends Component
  */
 export class VideoThumbnailContainer extends Component {
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {XML} - JSX markup.
+     */
     render() {
         return (
             <TouchableHighlight onPress={this.props.onClick}>
@@ -20,3 +27,14 @@ export class VideoThumbnailContainer extends Component {
         );
     }
 }
+
+/**
+ * VideoThumbnailContainer component's property types.
+ *
+ * @static
+ */
+VideoThumbnailContainer.propTypes = {
+    onClick: React.PropTypes.func,
+    focused: React.PropTypes.bool,
+    children: React.PropTypes.node
+};

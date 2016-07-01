@@ -14,6 +14,10 @@ require('./reducer');
 
 /**
  * Attach a set of local tracks to a conference.
+ *
+ * @param {JitsiConference} conference - Conference instance.
+ * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
+ * @returns {void}
  */
 export function addTracksToConference(conference, localTracks) {
     let conferenceLocalTracks = conference.getLocalTracks();
@@ -27,9 +31,12 @@ export function addTracksToConference(conference, localTracks) {
 }
 
 /**
- * Add new local tracks to the conference, replacing any existing tracks
- * that were previously attached.
- * @param {JitsiLocalTrack[]} newLocalTracks=[]
+ * Add new local tracks to the conference, replacing any existing tracks that
+ * were previously attached.
+ *
+ * @param {JitsiLocalTrack[]} [newLocalTracks=[]] - List of new local media
+ * tracks.
+ * @returns {Function}
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
@@ -100,10 +107,11 @@ export function changeLocalTracks(newLocalTracks = []) {
 }
 
 /**
- * Request to start capturing local audio and/or video.
- * By default, the user facing camera will be selected.
+ * Request to start capturing local audio and/or video. By default, the user
+ * facing camera will be selected.
  *
- * @param {object} (options) - @see options for JitsiMeetJS.createLocalTracks
+ * @param {Object} [options] - For info @see JitsiMeetJS.createLocalTracks.
+ * @returns {Function}
  */
 export function createLocalTracks(options) {
     options || (options = {});
@@ -124,9 +132,10 @@ export function createLocalTracks(options) {
 }
 
 /**
- * Create an action for when a new track has been signaled to be added
- * to the conference.
- * @param {JitsiTrack} track
+ * Create an action for when a new track has been signaled to be added to the
+ * conference.
+ *
+ * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_ADDED, track: JitsiTrack }}
  */
 export function trackAdded(track) {
@@ -137,9 +146,10 @@ export function trackAdded(track) {
 }
 
 /**
- * Create an action for when a track has been signaled for
- * removal from the conference.
- * @param {JitsiTrack} track
+ * Create an action for when a track has been signaled for removal from the
+ * conference.
+ *
+ * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
  */
 export function trackRemoved(track) {

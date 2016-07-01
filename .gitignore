@@ -1,6 +1,6 @@
+dist
 ios/build
 ios/JitsiMeetApp.xcodeproj/xcuserdata
 ios/JitsiMeetApp.xcodeproj/project.xcworkspace
 node_modules
-dist
-
+npm-debug.log

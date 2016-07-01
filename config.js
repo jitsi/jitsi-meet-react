@@ -1,11 +1,12 @@
-module.exports = {
-  connection: {
-    bosh: 'https://meet.jit.si/http-bind',
-    hosts: {
-        domain: 'meet.jit.si',
-        focus: 'focus.meet.jit.si',
-        muc: 'conference.meet.jit.si'
-    }
-  }
-}
+let domain = 'meet.jit.si';
 
+module.exports = {
+    connection: {
+        bosh: 'https://' + domain + '/http-bind',
+        hosts: {
+            domain,
+            focus: 'focus.' + domain,
+            muc: 'conference.' + domain
+        }
+    }
+};

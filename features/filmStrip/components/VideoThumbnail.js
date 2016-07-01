@@ -16,8 +16,11 @@ import { VideoThumbnailContainer } from './_';
  */
 class VideoThumbnail extends Component {
     /**
-     * Handles click/tap event on the thumbnail.
-     * @param {Event} event
+     * Handles click/tap event on the thumbnail. Prevents further event
+     * propagation.
+     *
+     * @param {Event} event - DOM event.
+     * @returns {false}
      */
     onClickHandler(event) {
         this.handleVideoThumbClicked();
@@ -35,6 +38,8 @@ class VideoThumbnail extends Component {
 
     /**
      * Processes click on video thumbnail.
+     *
+     * @returns {void}
      */
     handleVideoThumbClicked () {
         // TODO: this currently ignores interfaceConfig.filmStripOnly
@@ -51,6 +56,8 @@ class VideoThumbnail extends Component {
 
     /**
      * Handler for case when video starts to play.
+     *
+     * @returns {void}
      */
     onVideoPlayingHandler() {
         this.props.dispatch(participantVideoStarted(this.props.participant.id));
@@ -58,7 +65,8 @@ class VideoThumbnail extends Component {
 
     /**
      * Returns audio and video media streams for participant.
-     * @returns {{ video: MediaStream|null, audio: MediaStream|null }}
+     *
+     * @returns {{ video: (MediaStream|null), audio: (MediaStream|null) }}
      */
     getMediaStreams() {
         return {
@@ -72,8 +80,10 @@ class VideoThumbnail extends Component {
     }
 
     /**
-     * React component render method.
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
+     * @returns {XML}
      */
     render() {
         let streams = this.getMediaStreams();
@@ -93,12 +103,14 @@ class VideoThumbnail extends Component {
 }
 
 /**
- * React PropTypes for VideoThumbnail component.
+ * VideoThumbnail component's property types.
+ *
  * @static
  */
 VideoThumbnail.propTypes = {
-    participant: React.PropTypes.object,
     audioTrack: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    participant: React.PropTypes.object,
     videoTrack: React.PropTypes.object
 };
 

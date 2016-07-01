@@ -5,11 +5,8 @@ import { combineReducers } from 'redux';
  * without needing to create additional inter-feature dependencies.
  */
 class ReducerRegistry {
-
     /**
      * Creates a ReducerRegistry instance.
-     *
-     * @constructor
      */
     constructor() {
         /**
@@ -22,8 +19,9 @@ class ReducerRegistry {
     /**
      * Combines all registered reducers into a single reducing function.
      *
-     * @param {object} additional = {} - Any additional reducers that need to be
+     * @param {Object} [additional={}] - Any additional reducers that need to be
      * included (such as reducers from third-party modules).
+     * @returns {Function}
      */
     combineReducers(additional = {}) {
         return combineReducers({
@@ -37,7 +35,8 @@ class ReducerRegistry {
      *
      * @param {string} name - The field in the state object that will be managed
      * by the provided reducer.
-     * @param reducer {Function} A Redux reducer
+     * @param {Function} reducer - A Redux reducer.
+     * @returns {void}
      */
     register(name, reducer) {
         this.reducerRegistry[name] = reducer;
