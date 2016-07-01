@@ -8,7 +8,7 @@ export class LargeVideoContainer extends Component {
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (

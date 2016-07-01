@@ -12,7 +12,7 @@ export class WelcomePageContainer extends React.Component {
      * entering a room name.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (

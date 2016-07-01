@@ -15,7 +15,7 @@ class WelcomePage extends Component {
      * for mobile or web.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
