@@ -27,22 +27,8 @@ export const JITSI_CLIENT_DISCONNECTED = 'JITSI_CLIENT_DISCONNECTED';
 export const JITSI_CLIENT_ERROR = 'JITSI_CLIENT_ERROR';
 
 /**
- * Action type to signal that we are joining the conference.
- *
- * @type {string}
- */
-export const JITSI_CONFERENCE_JOINED = 'JITSI_CONFERENCE_JOINED';
-
-/**
- * Action type to signal that we are leaving the conference.
- *
- * @type {string}
- */
-export const JITSI_CONFERENCE_LEFT = 'JITSI_CONFERENCE_LEFT';
-
-/**
  * Action type to signal generic WebRTC error.
- * 
+ *
  * @type {string}
  */
 export const RTC_ERROR = 'RTC_ERROR';

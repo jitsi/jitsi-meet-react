@@ -1,9 +1,6 @@
 import { createLocalTracks } from '../base/tracks';
-
-import {
-    disconnectConnection,
-    leaveConference
-} from '../welcome';
+import { leaveConference } from '../conference';
+import { disconnectConnection } from '../connection';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -121,7 +118,7 @@ export function toggleVideo() {
 
 /**
  * Resets toolbar to initial state.
- * 
+ *
  * @returns {{type: RESET_TOOLBAR}}
  */
 export function resetToolbar() {

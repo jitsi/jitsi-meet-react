@@ -8,9 +8,10 @@ import Config from './config';
 import { APP_NAVIGATE } from './features/base/navigation';
 import { ReducerRegistry } from './features/base/redux';
 import { Conference } from './features/conference';
+import { init } from './features/connection';
 // FIXME Don't import private styles. Move common/shared styles to a feature in
 // base.
-import { init, styles, WelcomePage } from './features/welcome';
+import { styles, WelcomePage } from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both
