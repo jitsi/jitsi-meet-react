@@ -1,8 +1,8 @@
 import { ReducerRegistry } from '../base/redux';
 
 import {
-    JITSI_CLIENT_CREATED,
-    JITSI_CLIENT_DISCONNECTED
+    CONNECTION_DISCONNECTED,
+    CONNECTION_ESTABLISHED
 } from './actionTypes';
 
 /**
@@ -11,10 +11,10 @@ import {
  */
 ReducerRegistry.register('features/connection', (state = null, action) => {
     switch (action.type) {
-    case JITSI_CLIENT_CREATED:
+    case CONNECTION_ESTABLISHED:
         return action.connection;
 
-    case JITSI_CLIENT_DISCONNECTED:
+    case CONNECTION_DISCONNECTED:
         return null;
 
     default:

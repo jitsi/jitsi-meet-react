@@ -1,6 +1,11 @@
-import { createLocalTracks } from '../base/tracks';
+import {
+    CAMERA_FACING_MODE,
+    createLocalTracks,
+    DEVICE_TYPE,
+    setLocalTracks
+} from '../base/tracks';
 import { leaveConference } from '../conference';
-import { disconnectConnection } from '../connection';
+import { disconnect } from '../connection';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -8,25 +13,8 @@ import {
     TOGGLE_AUDIO_MUTED_STATE,
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
+
 import './reducer';
-
-/**
- * Camera facing modes.
- * @enum {string}
- */
-const CAMERA_FACING_MODE = {
-    ENVIRONMENT: 'environment',
-    USER: 'user'
-};
-
-/**
- * Media types.
- * @enum {string}
- */
-const MEDIA_TYPE = {
-    VIDEO: 'video',
-    AUDIO: 'audio'
-};
 
 /**
  * Leaves the conference and closes the connection.
@@ -36,7 +24,7 @@ const MEDIA_TYPE = {
 export function hangup() {
     return dispatch => {
         return dispatch(leaveConference())
-            .then(() => dispatch(disconnectConnection()));
+            .then(() => dispatch(disconnect()));
     };
 }
 
@@ -46,7 +34,7 @@ export function hangup() {
  * @returns {Function}
  */
 export function toggleAudio() {
-    return toggleMedia(MEDIA_TYPE.AUDIO);
+    return toggleMedia(DEVICE_TYPE.AUDIO);
 }
 
 /**
@@ -62,25 +50,22 @@ export function toggleCameraFacingMode() {
                 ? CAMERA_FACING_MODE.ENVIRONMENT
                 : CAMERA_FACING_MODE.USER;
 
-        return dispatch(
-                createLocalTracks({
-                    devices: [ MEDIA_TYPE.VIDEO ],
-                    facingMode: cameraFacingMode
-                })
-            )
-            .then(() => {
-                dispatch({
-                    type: CHANGE_CAMERA_FACING_MODE,
-                    cameraFacingMode
-                });
-            });
+        createLocalTracks({
+            devices: [ DEVICE_TYPE.VIDEO ],
+            facingMode: cameraFacingMode
+        })
+        .then(localTracks => dispatch(setLocalTracks(localTracks)))
+        .then(() => dispatch({
+            type: CHANGE_CAMERA_FACING_MODE,
+            cameraFacingMode
+        }));
     };
 }
 
 /**
  * Toggles the mute state of the local tracks with the given media type.
  *
- * @param {MEDIA_TYPE} media - Type of media device to toggle ('audio'/'video').
+ * @param {DEVICE_TYPE} media - Type of media device to toggle.
  * @returns {Function}
  */
 function toggleMedia(media) {
@@ -100,7 +85,7 @@ function toggleMedia(media) {
         }
 
         dispatch({
-            type: media === MEDIA_TYPE.VIDEO
+            type: media === DEVICE_TYPE.VIDEO
                 ? TOGGLE_VIDEO_MUTED_STATE
                 : TOGGLE_AUDIO_MUTED_STATE
         });
@@ -113,7 +98,7 @@ function toggleMedia(media) {
  * @returns {Function}
  */
 export function toggleVideo() {
-    return toggleMedia(MEDIA_TYPE.VIDEO);
+    return toggleMedia(DEVICE_TYPE.VIDEO);
 }
 
 /**

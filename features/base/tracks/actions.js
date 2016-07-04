@@ -1,4 +1,9 @@
+import config from '../../../config';
 import JitsiMeetJS from '../lib-jitsi-meet';
+
+import {
+    participantVideoTypeChanged
+} from '../../base/participants';
 
 import {
     TRACK_ADDED,
@@ -6,8 +11,9 @@ import {
 } from './actionTypes';
 
 import {
-    participantVideoTypeChanged
-} from '../../base/participants';
+    CAMERA_FACING_MODE,
+    DEVICE_TYPE
+} from './constants';
 
 require('./reducer');
 
@@ -38,7 +44,7 @@ export function addTracksToConference(conference, localTracks) {
  * tracks.
  * @returns {Function}
  */
-export function changeLocalTracks(newLocalTracks = []) {
+export function setLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
         const conference = getState()['features/conference'];
         let tracksToAdd = [];
@@ -110,25 +116,37 @@ export function changeLocalTracks(newLocalTracks = []) {
  * Request to start capturing local audio and/or video. By default, the user
  * facing camera will be selected.
  *
- * @param {Object} [options] - For info @see JitsiMeetJS.createLocalTracks.
- * @returns {Function}
+ * @param {Object} [options] - Options.
+ * @param {string[]} [options.devices=[DEVICE_TYPE.AUDIO, DEVICE_TYPE.VIDEO]] -
+ *      Required device types ('audio', 'video' etc.).
+ * @param {string|null} [options.cameraDeviceId] - Camera device id.
+ * @param {string|null} [options.micDeviceId] - Microphone device id.
+ * @param {string|null} [options.facingMode=CAMERA_FACING_MODE.USER] - Camera
+ *      facing mode to use.
+ * @param {boolean} [checkForPermissionPrompt] - If lib-jitsi-meet should check
+ *      for gUM permission prompt.
+ * @returns {Promise<JitsiLocalTrack[]>}
  */
-export function createLocalTracks(options) {
+export function createLocalTracks(options, checkForPermissionPrompt) {
     options || (options = {});
-    return dispatch => {
-        return JitsiMeetJS.createLocalTracks({
-            devices: options.devices || ['audio', 'video'],
-            facingMode: options.facingMode || 'user',
-            cameraDeviceId: options.cameraDeviceId,
-            micDeviceId: options.micDeviceId
-        }).then(localTracks => {
-            return dispatch(changeLocalTracks(localTracks));
-        }).catch(reason => {
-            console.error(
-                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
-                + reason);
-        });
-    };
+    options.devices || (options.devices = [
+        DEVICE_TYPE.AUDIO, DEVICE_TYPE.VIDEO]);
+
+    return JitsiMeetJS.createLocalTracks({
+        // copy array to avoid mutations inside library
+        devices: options.devices.slice(0),
+        facingMode: options.facingMode || CAMERA_FACING_MODE.USER,
+        resolution: config.resolution,
+        // TODO: use device IDs from settings when available
+        cameraDeviceId: options.cameraDeviceId,
+        micDeviceId: options.micDeviceId,
+        // adds any ff fake device settings if any
+        firefox_fake_device: config.firefox_fake_device
+    }, checkForPermissionPrompt)
+    .catch(function (err) {
+        console.error('failed to create local tracks', options.devices, err);
+        return Promise.reject(err);
+    });
 }
 
 /**

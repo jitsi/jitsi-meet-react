@@ -1,34 +1,20 @@
 /**
- * Action type to signal that have successfully created a connection.
- *
- * @type {string}
- */
-export const JITSI_CLIENT_CONNECTED = 'JITSI_CLIENT_CONNECTED';
-
-/**
- * Action type to signal that have successfully created client.
- *
- * @type {string}
- */
-export const JITSI_CLIENT_CREATED = 'JITSI_CLIENT_CREATED';
-
-/**
  * Action type to signal that connection has disconnected.
  *
  * @type {string}
  */
-export const JITSI_CLIENT_DISCONNECTED = 'JITSI_CLIENT_DISCONNECTED';
+export const CONNECTION_DISCONNECTED = 'CONNECTION_DISCONNECTED';
 
 /**
- * Action type to signal a client error.
+ * Action type to signal a connection error.
  *
  * @type {string}
  */
-export const JITSI_CLIENT_ERROR = 'JITSI_CLIENT_ERROR';
+export const CONNECTION_ERROR = 'CONNECTION_ERROR';
 
 /**
- * Action type to signal generic WebRTC error.
+ * Action type to signal that have successfully established a connection.
  *
  * @type {string}
  */
-export const RTC_ERROR = 'RTC_ERROR';
+export const CONNECTION_ESTABLISHED = 'CONNECTION_ESTABLISHED';

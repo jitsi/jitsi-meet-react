@@ -7,7 +7,9 @@ import {
 
 import {
     createLocalTracks,
-    removeLocalTracks
+    DEVICE_TYPE,
+    removeLocalTracks,
+    setLocalTracks
 } from '../base/tracks';
 
 import {
@@ -15,29 +17,103 @@ import {
 } from '../conference';
 
 import {
-    JITSI_CLIENT_CONNECTED,
-    JITSI_CLIENT_CREATED,
-    JITSI_CLIENT_DISCONNECTED,
-    JITSI_CLIENT_ERROR,
-    RTC_ERROR
+    CONNECTION_DISCONNECTED,
+    CONNECTION_ERROR,
+    CONNECTION_ESTABLISHED
 } from './actionTypes';
+
+import { openConnection } from './connection';
 
 import './reducer';
 
-const JitsiConnectionEvents = JitsiMeetJS.events.connection;
+/**
+ * Creates local media tracks. Will show error dialogs in case if accessing
+ * local microphone and/or camera failed. Will show guidance overlay for users
+ * on how to give access to camera and/or microphone.
+ *
+ * @returns {Promise<JitsiLocalTrack[]>}
+ */
+function createInitialLocalTracks() {
+    let audioAndVideoError,
+        audioOnlyError;
+
+    // TODO: show guidance overlay when UI is available
+    // JitsiMeetJS.mediaDevices.addEventListener(
+    //     JitsiMeetJS.events.mediaDevices.PERMISSION_PROMPT_IS_SHOWN,
+    //     browser => APP.UI.showUserMediaPermissionsGuidanceOverlay(browser));
+
+    // First try to retrieve both audio and video.
+    return createLocalTracks({
+        devices: [ DEVICE_TYPE.AUDIO, DEVICE_TYPE.VIDEO ]
+    }, true)
+    .catch(err => {
+        // If failed then try to retrieve only audio.
+        audioAndVideoError = err;
+        return createLocalTracks({ devices: [ DEVICE_TYPE.AUDIO ] }, true);
+    })
+    .catch(err => {
+        // If audio failed too then just return empty array for tracks.
+        audioOnlyError = err;
+        return [];
+    })
+    .then(tracks => {
+        // TODO: hide overlay when UI is available
+        //APP.UI.hideUserMediaPermissionsGuidanceOverlay();
+
+        if (audioAndVideoError) {
+            if (audioOnlyError) {
+                // If both requests for 'audio' + 'video' and 'audio' only
+                // failed, we assume that there is some problems with user's
+                // microphone and show corresponding dialog.
+                // TODO: show dialog instead of console.error
+                //APP.UI.showDeviceErrorDialog(audioOnlyError, null);
+                console.error('Microphone gUM error', audioOnlyError);
+            } else {
+                // If request for 'audio' + 'video' failed, but request for
+                // 'audio' only was OK, we assume that we had problems with
+                // camera and show corresponding dialog.
+                // TODO: show dialog instead of console.error
+                //APP.UI.showDeviceErrorDialog(null, audioAndVideoError);
+                console.error('Camera gUM error', audioOnlyError);
+            }
+        }
+
+        return tracks;
+    });
+}
+
+/**
+ * Open Connection. When authentication failed it shows auth dialog.
+ *
+ * @param {string} roomName - The room name to use.
+ * @returns {Promise<JitsiConnection>}
+ */
+function connect(roomName) {
+    return openConnection({retry: true, roomName: roomName})
+        .catch(function (err) {
+            // TODO: implement when UI is available instead of console.log
+            console.error(err);
+
+            // if (err === JitsiConnectionErrors.PASSWORD_REQUIRED) {
+            //     APP.UI.notifyTokenAuthFailed();
+            // } else {
+            //     APP.UI.notifyConnectionFailed(err);
+            // }
+
+            throw err;
+        });
+}
 
 /**
  * Create an action for when the signaling connection has been lost.
  *
  * @param {string} [message] - Error message.
- * @returns {{type: JITSI_CLIENT_DISCONNECTED, message: string}}
+ * @returns {{type: CONNECTION_DISCONNECTED, message: string}}
  */
 export function connectionDisconnected(message) {
-    return dispatch => {
-        dispatch(removeLocalParticipant());
-
-        return dispatch(removeLocalTracks())
-            .then(() => dispatch({ type: JITSI_CLIENT_DISCONNECTED, message }));
+    return {
+        type: CONNECTION_DISCONNECTED,
+        message
     };
 }
 
@@ -45,11 +121,11 @@ export function connectionDisconnected(message) {
  * Create an action for when the signaling connection could not be created.
  *
  * @param {string} error - Error message.
- * @returns {{type: JITSI_CLIENT_ERROR, error: string}}
+ * @returns {{type: CONNECTION_ERROR, error: string}}
  */
-export function connectionError(error) {
+export function connectionFailed(error) {
     return {
-        type: JITSI_CLIENT_ERROR,
+        type: CONNECTION_ERROR,
         error
     };
 }
@@ -57,48 +133,13 @@ export function connectionError(error) {
 /**
  * Create an action for when the signaling connection has been established.
  *
- * @param {string} id - The ID of the local endpoint/participant/peer (within
- *      the context of the established connection).
- * @returns {{type: JITSI_CLIENT_CONNECTED, id: string}}
+ * @param {JitsiConnection} connection - JitsiConnection instance.
+ * @returns {{type: CONNECTION_ESTABLISHED, connection: JitsiConnection}}
  */
-export function connectionEstablished(id) {
+export function connectionEstablished(connection) {
     return {
-        type: JITSI_CLIENT_CONNECTED,
-        id
-    };
-}
-
-/**
- * Configure a newly created connection, binding its events to actions.
- *
- * @param {JitsiConnection} connection - Connection instance.
- * @param {string} room - Conference room name.
- * @returns {Function}
- */
-export function connectionInitialized(connection, room) {
-    return dispatch => {
-        connection.addEventListener(
-            JitsiConnectionEvents.CONNECTION_ESTABLISHED,
-            id => {
-                let conference = connection.initJitsiConference(room, {
-                    openSctp: true
-                });
-                dispatch(localParticipantJoined(conference.myUserId()));
-                dispatch(connectionEstablished(id));
-                dispatch(conferenceInitialized(conference));
-            });
-
-        connection.addEventListener(
-            JitsiConnectionEvents.CONNECTION_FAILED,
-            err => dispatch(connectionError(err)));
-
-        connection.connect();
-
-        dispatch({
-            type: JITSI_CLIENT_CREATED,
-            room,
-            connection
-        });
+        type: CONNECTION_ESTABLISHED,
+        connection
     };
 }
 
@@ -112,37 +153,28 @@ export function connectionInitialized(connection, room) {
  */
 export function init(config, room) {
     return dispatch => {
-        JitsiMeetJS.init({}).then(() => {
-            dispatch(createLocalTracks());
+        JitsiMeetJS.init(config)
+            .then(() => {
+                let localTracksPromise = createInitialLocalTracks();
+                let connectionPromise = connect(room)
+                    .catch(err => {
+                        dispatch(connectionFailed(err));
+                        throw err;
+                    });
 
-            const connection = new JitsiMeetJS.JitsiConnection(
-                config.appId,
-                config.token,
-                {
-                    ...config.connection,
-                    bosh: config.connection.bosh + (
-                        room ? ('?room=' + room) : ''
-                    )
-                }
-            );
+                return Promise.all([ localTracksPromise, connectionPromise ]);
+            })
+            .then(([tracks, connection]) => {
+                dispatch(setLocalTracks(tracks));
+                dispatch(connectionEstablished(connection));
 
-            dispatch(connectionInitialized(connection, room));
-        }).catch(error => {
-            dispatch(rtcError(error));
-        });
-    };
-}
+                let conference = connection.initJitsiConference(room, {
+                    openSctp: true
+                });
 
-/**
- * Create an action for when the JitsiMeetJS library could not be initialized.
- *
- * @param {Object} error - Generic Error.
- * @returns {{type: RTC_ERROR, error: Object}}
- */
-export function rtcError(error) {
-    return {
-        type: RTC_ERROR,
-        error
+                dispatch(localParticipantJoined(conference.myUserId()));
+                dispatch(conferenceInitialized(conference));
+            });
     };
 }
 
@@ -151,13 +183,15 @@ export function rtcError(error) {
  *
  * @returns {Function}
  */
-export function disconnectConnection() {
+export function disconnect() {
     return (dispatch, getState) => {
         const connection = getState()['features/connection'];
 
         if (connection) {
             connection.disconnect();
 
+            dispatch(removeLocalParticipant());
+            dispatch(removeLocalTracks());
             dispatch(connectionDisconnected());
         }
     };
