@@ -17,10 +17,10 @@ import { ToolbarContainer } from './_';
  */
 class Toolbar extends Component {
     /**
-     * Implements React Component's render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -79,7 +79,9 @@ const mapDispatchToProps = dispatch => {
 };
 
 /**
- * Prop types for component.
+ * Toolbar component's property types.
+ *
+ * @static
  */
 Toolbar.propTypes = {
     onAudioMute: React.PropTypes.func,

@@ -10,11 +10,12 @@ import { WelcomePageContainer } from './_';
  */
 class WelcomePage extends Component {
     /**
-     * Render a WelcomePageContainer, which will show the room name
-     * prompt appropriate for mobile or web.
+     * Implements React's {@link Component#render()}. Renders a
+     * WelcomePageContainer which is to show the room name prompt appropriate
+     * for mobile or web.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -58,7 +59,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 /**
- * Prop types for component.
+ * WelcomePage component's property types.
+ *
+ * @static
  */
 WelcomePage.propTypes = {
     onJoin: React.PropTypes.func,

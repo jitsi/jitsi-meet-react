@@ -61,8 +61,7 @@ export function localParticipantJoined(id, user = {}) {
 /**
  * Create an action for when the user in conference is focused.
  *
- * @param {string|null} id - User id. If null is passed, means no one is
- *      currently focused.
+ * @param {string|null} id - User id or null if no one is currently focused.
  * @returns {{
  *      type: PARTICIPANT_FOCUSED,
  *      participant: {
@@ -102,8 +101,7 @@ export function participantLeft(id) {
 /**
  * Create an action for when the user in conference is pinned.
  *
- * @param {string|null} id - User id. If null is passed, no one is currently
- *      pinned.
+ * @param {string|null} id - User id or null if no one is currently pinned.
  * @returns {Function}
  */
 export function participantPinned(id) {

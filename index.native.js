@@ -29,10 +29,10 @@ const store = createStore(reducer, applyMiddleware(Thunk, router));
  */
 class Root extends Component {
     /**
-     * React component render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return <App store={store} config={Config}/>;

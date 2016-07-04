@@ -70,10 +70,10 @@ class LargeVideo extends Component {
     }
 
     /**
-     * React component render method implementation.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         let videoStreamParticipant = getParticipantByVideoStream(
@@ -175,6 +175,11 @@ const mapStateToProps = state => {
     };
 };
 
+/**
+ * LargeVideo component's property types.
+ *
+ * @static
+ */
 LargeVideo.propTypes = {
     tracks: React.PropTypes.array,
     participants: React.PropTypes.array,

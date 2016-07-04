@@ -6,8 +6,8 @@ import React, { Component } from 'react';
  */
 export class Audio extends Component {
     /**
-     * Implements React Component's render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
      * @returns {null}
      */
@@ -20,7 +20,9 @@ export class Audio extends Component {
 }
 
 /**
- * Component's prop types.
+ * Audio component's property types.
+ *
+ * @static
  */
 Audio.propTypes = {
     stream: React.PropTypes.object,

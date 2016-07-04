@@ -18,10 +18,10 @@ export class Video extends Component {
     }
 
     /**
-     * Implements React Component's render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {XML} - JSX markup.
+     * @returns {ReactElement}
      */
     render() {
         // TODO: use URL.releaseObjectURL on componentDid/WillUnmount
@@ -40,7 +40,9 @@ export class Video extends Component {
 }
 
 /**
- * PropTypes for component.
+ * Video component's property types.
+ *
+ * @static
  */
 Video.propTypes = {
     stream: React.PropTypes.object,

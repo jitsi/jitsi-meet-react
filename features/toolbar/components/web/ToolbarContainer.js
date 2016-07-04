@@ -10,10 +10,10 @@ import styles from './styles/Styles';
  */
 export class ToolbarContainer extends Component {
     /**
-     * Implements React Component's render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         var underlayColor = ColorPalette.buttonUnderlay;
@@ -57,7 +57,9 @@ export class ToolbarContainer extends Component {
 }
 
 /**
- * Prop types for component.
+ * ToolbarContainer component's property types.
+ *
+ * @static
  */
 ToolbarContainer.propTypes = {
     onAudioMute: React.PropTypes.func,

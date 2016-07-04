@@ -7,14 +7,14 @@ import { Toolbar } from '../../toolbar';
 import { ConferenceContainer } from './_';
 
 /**
- * The conference page for the application.
+ * The conference page of the application.
  */
 class Conference extends Component {
     /**
-     * Implements React Component's render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -28,9 +28,12 @@ class Conference extends Component {
 }
 
 /**
- * Component's prop types.
- * Ensure that the application navigator object is passed down via props
- * on mobile.
+ * Conference component's property types.
+ *
+ * Ensure that the application navigator object is passed down via props on
+ * mobile.
+ *
+ * @static
  */
 Conference.propTypes = {
     navigator: React.PropTypes.object,

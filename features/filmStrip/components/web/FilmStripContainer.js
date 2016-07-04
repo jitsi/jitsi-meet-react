@@ -7,10 +7,10 @@ import styles from './styles/Styles';
  */
 export class FilmStripContainer extends Component {
     /**
-     * React component render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -19,6 +19,11 @@ export class FilmStripContainer extends Component {
     }
 }
 
+/**
+ * FilmStripContainer component's property types.
+ *
+ * @static
+ */
 FilmStripContainer.propTypes = {
     children: React.PropTypes.node
 };

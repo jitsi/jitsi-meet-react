@@ -48,7 +48,7 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE = [
  * @param {Object} action - Action object.
  * @param {string} action.type - Type of action.
  * @param {Participant} action.participant - Information about participant to be
- *      added/modified.
+ * added/modified.
  * @returns {Participant|undefined}
  */
 function participant(state, action) {
@@ -124,7 +124,7 @@ function participant(state, action) {
  * @param {Object} action - Action object.
  * @param {string} action.type - Type of action.
  * @param {Participant} action.participant - Information about participant to be
- *      added/removed/modified.
+ * added/removed/modified.
  * @returns {Participant[]}
  */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {

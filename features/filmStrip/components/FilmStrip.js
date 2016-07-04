@@ -10,7 +10,7 @@ import { FilmStripContainer } from './_';
  */
 class FilmStrip extends Component {
     /**
-     * React component render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      */
@@ -67,7 +67,7 @@ const mapStateToProps = state => {
 };
 
 /**
- * React PropTypes for FilmStrip component.
+ * FilmStrip component's property types.
  *
  * @static
  */

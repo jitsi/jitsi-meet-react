@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
 /**
- * React-Native version of Audio component.
+ * The React equivalent of Web's audio element.
+ *
  * @extends Component
  */
 export class Audio extends Component {
     /**
-     * Implements shouldComponentUpdate of React Component. We don't update 
+     * Implements shouldComponentUpdate of React Component. We don't update
      * component if stream has not changed.
      *
      * @inheritdoc
@@ -18,10 +19,10 @@ export class Audio extends Component {
     }
 
     /**
-     * Implements React Component's render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML} - JSX markup.
+     * @returns {ReactElement}
      */
     render() {
         // TODO: use URL.releaseObjectURL on componentDid/WillUnmount
@@ -39,7 +40,9 @@ export class Audio extends Component {
 }
 
 /**
- * PropTypes for component.
+ * Audio component's property types.
+ *
+ * @static
  */
 Audio.propTypes = {
     stream: React.PropTypes.object,

@@ -29,11 +29,11 @@ export class WelcomePageContainer extends Component {
     }
 
     /**
-     * Render the WelcomePageContainer to show a prompt for
+     * Implements React's {@link Component#render()}. Renders a prompt for
      * entering a room name.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -52,6 +52,11 @@ export class WelcomePageContainer extends Component {
     }
 }
 
+/**
+ * WelcomePageContainer component's property types.
+ *
+ * @static
+ */
 WelcomePageContainer.propTypes = {
     onJoin: React.PropTypes.func
 };

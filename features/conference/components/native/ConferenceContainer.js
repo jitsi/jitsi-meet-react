@@ -8,10 +8,10 @@ import styles from './styles/Styles';
  */
 export class ConferenceContainer extends Component {
     /**
-     * Implements React Component's render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -21,7 +21,9 @@ export class ConferenceContainer extends Component {
 }
 
 /**
- * Prop types for component.
+ * ConferenceContainer component's property types.
+ *
+ * @static
  */
 ConferenceContainer.propTypes = {
     children: React.PropTypes.node

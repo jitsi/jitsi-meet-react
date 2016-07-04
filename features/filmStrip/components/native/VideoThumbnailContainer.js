@@ -9,10 +9,10 @@ import styles from './styles/Styles';
  */
 export class VideoThumbnailContainer extends Component {
     /**
-     * Implements React Component's render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML} - JSX markup.
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -29,8 +29,8 @@ export class VideoThumbnailContainer extends Component {
 }
 
 /**
- * React PropTypes for VideoThumbnailContainer component.
- * 
+ * VideoThumbnailContainer component's property types.
+ *
  * @static
  */
 VideoThumbnailContainer.propTypes = {

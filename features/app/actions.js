@@ -1,9 +1,8 @@
 import { APP_NAVIGATE } from './actionTypes';
 
 /**
- * Trigger an in-app navigation to a different screen.
- * Using this action allows for navigation to be abstracted between the mobile
- * and web versions.
+ * Trigger an in-app navigation to a different screen. Allows navigation to be
+ * abstracted between the mobile and web versions.
  *
  * @param {Object} opts - Navigation options.
  * @param {Navigator} opts.navigator - Navigator instance.

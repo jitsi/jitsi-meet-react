@@ -3,9 +3,9 @@
  * objects themselves as prototypes as well).
  *
  * @param {Object} a - The first prototype chain to climb in search of a common
- *      prototype.
+ * prototype.
  * @param {Object} b - The second prototype chain to climb in search of a common
- *      prototype.
+ * prototype.
  * @returns {Object|undefined} - The first common prototype of a and b.
  */
 function _getCommonPrototype(a, b) {
@@ -34,7 +34,7 @@ function _getCommonPrototype(a, b) {
  * @param {Node} node - The Node which is the root of the tree to query.
  * @param {string} selectors - The group of CSS selectors to match on.
  * @returns {Element} - The first Element which is a descendant of the specified
- *      node and matches the specified group of selectors.
+ * node and matches the specified group of selectors.
  */
 function _querySelector(node, selectors) {
     let element = null;
@@ -57,10 +57,10 @@ function _querySelector(node, selectors) {
  * traversal) and invokes a specific callback until the callback returns true.
  *
  * @param {Node} node - The root Node which represents the tree of Nodes to
- *      visit.
+ * visit.
  * @param {Function} callback - The callback to invoke with each visited Node.
- * @returns {boolean} - True if the specified callback returned true for a Node.
- *      Otherwise, false.
+ * @returns {boolean} - True if the specified callback returned true for a Node
+ * (at which point the visiting stopped); otherwise, false.
  */
 function _visitNode(node, callback) {
     if (callback(node)) {

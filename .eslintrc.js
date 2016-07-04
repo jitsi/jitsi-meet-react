@@ -1,102 +1,78 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es6": true
+    'env': {
+        'browser': true,
+        'commonjs': true,
+        'es6': true
     },
-    "extends": ["eslint:recommended", "plugin:react/recommended"],
-    "parserOptions": {
-        "ecmaFeatures": {
-            "experimentalObjectRestSpread": true,
-            "jsx": true
+    'extends': ['eslint:recommended', 'plugin:react/recommended'],
+    'parserOptions': {
+        'ecmaFeatures': {
+            'experimentalObjectRestSpread': true,
+            'jsx': true
         },
-        "sourceType": "module"
+        'sourceType': 'module'
     },
-    "plugins": [
-        "react",
-        "jsdoc"
+    'plugins': [
+        'jsdoc',
+        'react'
     ],
-    "rules": {
-        "indent": [
-            "error",
-            4,
-            { "SwitchCase": 0 }
-        ],
-        "no-console": [
-            "off"
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "max-len": [
-            "error",
-            80
-        ],
-        "require-jsdoc": [
-            "error",
+    'rules': {
+        'indent': [ 'error', 4, { 'SwitchCase': 0 } ],
+        'linebreak-style': [ 'error', 'unix' ],
+        'max-len': [ 'error', 80 ],
+        'no-console': [ 'off' ],
+        'quotes': [ 'error', 'single' ],
+        'require-jsdoc': [
+            'error',
             {
-                "require": {
-                    "FunctionDeclaration": true,
-                    "MethodDefinition": true,
-                    "ClassDeclaration": true
+                'require': {
+                    'ClassDeclaration': true,
+                    'FunctionDeclaration': true,
+                    'MethodDefinition': true
                 }
             }
         ],
-        // Currently we are using both valid-jsdoc and 'jsdoc' plugin,
-        // but in future we might stick to a single one in future as soon as
-        // one of them has all features.
-        "valid-jsdoc": [
-            "error",
+        'semi': [ 'error', 'always' ],
+        // Currently, we are using both valid-jsdoc and 'jsdoc' plugin. In the
+        // future we might stick to one as soon as it has all the features.
+        'valid-jsdoc': [
+            'error',
             {
-                "prefer": {
-                    "arg": "param",
-                    "argument": "param",
-                    "return": "returns"
+                'matchDescription': '.+',
+                'prefer': {
+                    'arg': 'param',
+                    'argument': 'param',
+                    'return': 'returns'
                 },
-                "preferType": {
-                    "Boolean": "boolean",
-                    "Number": "number",
-                    "String": "string",
-                    "object": "Object",
-                    "array": "Array",
-                    "function": "Function"
+                'preferType': {
+                    'array': 'Array',
+                    'Boolean': 'boolean',
+                    'function': 'Function',
+                    'Number': 'number',
+                    'object': 'Object',
+                    'String': 'string'
                 },
-                "requireReturn": true,
-                "requireReturnType": true,
-                "matchDescription": ".+",
-                "requireParamDescription": true,
-                "requireReturnDescription": false
+                'requireParamDescription': true,
+                'requireReturn': true,
+                'requireReturnDescription': false,
+                'requireReturnType': true
             }
         ],
-        // These rules are additional to valid-jsdoc.
-        "jsdoc/check-tag-names": [
-            "error"
-        ],
-        "jsdoc/newline-after-description": [
-            "error"
-        ],
-        "jsdoc/require-description-complete-sentence": [
-            "error"
-        ],
-        "jsdoc/require-hyphen-before-param-description": [
-            "error"
-        ],
-        // Those rules are covered by valid-jsdoc, so disable them.
-        "jsdoc/check-types": 0,
-        "jsdoc/check-param-names": 0,
-        "jsdoc/require-param": 0,
-        "jsdoc/require-param-description": 0,
-        "jsdoc/require-param-type": 0,
-        "jsdoc/require-returns-description": 0,
-        "jsdoc/require-returns-type": 0
+        // The following rules are in addition to valid-jsdoc.
+        'jsdoc/check-tag-names': [ 'error' ],
+        'jsdoc/newline-after-description': [ 'error' ],
+        // XXX Because the following plugin is not very smart about words which
+        // legitimately begin with uppercase characters mid-sentence, set it to
+        // warn only.
+        'jsdoc/require-description-complete-sentence': [ 'warn' ],
+        'jsdoc/require-hyphen-before-param-description': [ 'error' ],
+        // The following rules are covered by valid-jsdoc, so disable them.
+        'jsdoc/check-param-names': 0,
+        'jsdoc/check-types': 0,
+        'jsdoc/require-param': 0,
+        'jsdoc/require-param-description': 0,
+        'jsdoc/require-param-type': 0,
+        'jsdoc/require-returns-description': 0,
+        'jsdoc/require-returns-type': 0
     }
 };

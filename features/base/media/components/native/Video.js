@@ -22,10 +22,10 @@ export class Video extends Component {
     }
 
     /**
-     * React Component render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {*}
+     * @returns {ReactElement|null}
      */
     render() {
         let stream = this.props.stream;
@@ -46,6 +46,11 @@ export class Video extends Component {
     }
 }
 
+/**
+ * Video component's property types.
+ *
+ * @static
+ */
 Video.propTypes = {
     stream: React.PropTypes.object,
     muted: React.PropTypes.bool,

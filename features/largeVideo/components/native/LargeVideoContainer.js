@@ -8,10 +8,10 @@ import styles from './styles/Styles';
  */
 export class LargeVideoContainer extends Component {
     /**
-     * React component render method.
-     * 
+     * Implements React's {@link Component#render()}.
+     *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (
@@ -20,6 +20,11 @@ export class LargeVideoContainer extends Component {
     }
 }
 
+/**
+ * LargeVideoContainer component's property types.
+ *
+ * @static
+ */
 LargeVideoContainer.propTypes = {
     children: React.PropTypes.node
 };
