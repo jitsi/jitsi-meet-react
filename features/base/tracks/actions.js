@@ -158,3 +158,31 @@ export function trackRemoved(track) {
         track
     };
 }
+
+/**
+ * Removes all remote tracks.
+ *
+ * @returns {Function}
+ */
+export function removeRemoteTracks() {
+    return (dispatch, getState) => {
+        let remoteTracks = getState()['features/base/tracks']
+            .filter(t => !t.isLocal());
+        
+        return Promise.all(remoteTracks.map(t => dispatch(trackRemoved(t))));
+    };
+}
+
+/**
+ * Removes all local tracks.
+ *
+ * @returns {Function}
+ */
+export function removeLocalTracks() {
+    return (dispatch, getState) => {
+        let localTracks = getState()['features/base/tracks']
+            .filter(t => t.isLocal());
+
+        return Promise.all(localTracks.map(t => dispatch(trackRemoved(t))));
+    };
+}

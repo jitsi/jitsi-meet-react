@@ -1,7 +1,13 @@
 import { createLocalTracks } from '../base/tracks';
 
 import {
+    disconnectConnection,
+    leaveConference
+} from '../welcome';
+
+import {
     CHANGE_CAMERA_FACING_MODE,
+    RESET_TOOLBAR,
     TOGGLE_AUDIO_MUTED_STATE,
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
@@ -31,18 +37,9 @@ const MEDIA_TYPE = {
  * @returns {Function}
  */
 export function hangup() {
-    return (dispatch, getState) => {
-        const state = getState();
-        const stateFeaturesWelcome = state['features/welcome'];
-        const conference = stateFeaturesWelcome.conference;
-        const connection = stateFeaturesWelcome.connection;
-
-        if (conference) {
-            conference.leave()
-                .then(() => connection.disconnect());
-        } else if (connection) {
-            connection.disconnect();
-        }
+    return dispatch => {
+        return dispatch(leaveConference())
+            .then(() => dispatch(disconnectConnection()));
     };
 }
 
@@ -120,4 +117,15 @@ function toggleMedia(media) {
  */
 export function toggleVideo() {
     return toggleMedia(MEDIA_TYPE.VIDEO);
+}
+
+/**
+ * Resets toolbar to initial state.
+ * 
+ * @returns {{type: RESET_TOOLBAR}}
+ */
+export function resetToolbar() {
+    return {
+        type: RESET_TOOLBAR
+    };
 }

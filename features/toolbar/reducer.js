@@ -2,6 +2,7 @@ import { ReducerRegistry } from '../base/redux';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
+    RESET_TOOLBAR,
     TOGGLE_AUDIO_MUTED_STATE,
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
@@ -39,6 +40,9 @@ ReducerRegistry.register(
                 ...state,
                 videoMuted: !state.videoMuted
             };
+
+        case RESET_TOOLBAR:
+            return INITIAL_STATE;
 
         default:
             return state;

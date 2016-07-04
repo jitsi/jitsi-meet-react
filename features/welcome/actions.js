@@ -1,17 +1,25 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
+
 import {
     dominantSpeakerChanged,
     localParticipantJoined,
     participantLeft,
     participantRoleChanged,
     participantVideoTypeChanged,
-    remoteParticipantJoined
+    remoteParticipantJoined,
+    removeLocalParticipant
 } from '../base/participants';
+
 import {
     addTracksToConference,
     createLocalTracks,
-    trackAdded
+    removeLocalTracks,
+    removeRemoteTracks,
+    trackAdded,
+    trackRemoved
 } from '../base/tracks';
+
+import { resetToolbar } from '../toolbar';
 
 import {
     JITSI_CLIENT_CONNECTED,
@@ -19,8 +27,10 @@ import {
     JITSI_CLIENT_DISCONNECTED,
     JITSI_CLIENT_ERROR,
     JITSI_CONFERENCE_JOINED,
+    JITSI_CONFERENCE_LEFT,
     RTC_ERROR
 } from './actionTypes';
+
 import './reducer';
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
@@ -50,6 +60,15 @@ export function conferenceInitialized(conference) {
                     dispatch(participantVideoTypeChanged(
                         track.getParticipantId(), type));
                 });
+            });
+
+        conference.on(JitsiConferenceEvents.TRACK_REMOVED,
+            track => {
+                if (!track || track.isLocal()) {
+                    return;
+                }
+
+                dispatch(trackRemoved(track));
             });
 
         conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
@@ -97,13 +116,29 @@ export function conferenceJoined(conference) {
 /**
  * Create an action for when the signaling connection has been lost.
  *
- * @param {string} message - Error message.
+ * @param {string} [message] - Error message.
  * @returns {{type: JITSI_CLIENT_DISCONNECTED, message: string}}
  */
 export function connectionDisconnected(message) {
-    return {
-        type: JITSI_CLIENT_DISCONNECTED,
-        message
+    return dispatch => {
+        dispatch(removeLocalParticipant());
+
+        return dispatch(removeLocalTracks())
+            .then(() => dispatch({ type: JITSI_CLIENT_DISCONNECTED, message }));
+    };
+}
+
+/**
+ * Create an action for when the signaling conference was left.
+ *
+ * @returns {{type: JITSI_CONFERENCE_LEFT, message: string}}
+ */
+export function conferenceLeft() {
+    return dispatch => {
+        dispatch(resetToolbar());
+
+        return dispatch(removeRemoteTracks())
+            .then(() => dispatch({ type: JITSI_CONFERENCE_LEFT }));
     };
 }
 
@@ -143,10 +178,6 @@ export function connectionEstablished(id) {
  */
 export function connectionInitialized(connection, room) {
     return dispatch => {
-        connection.addEventListener(
-            JitsiConnectionEvents.CONNECTION_DISCONNECTED,
-            msg => dispatch(connectionDisconnected(msg)));
-
         connection.addEventListener(
             JitsiConnectionEvents.CONNECTION_ESTABLISHED,
             id => {
@@ -213,5 +244,40 @@ export function rtcError(error) {
     return {
         type: RTC_ERROR,
         error
+    };
+}
+
+/**
+ * Leave the conference.
+ *
+ * @returns {Function}
+ */
+export function leaveConference() {
+    return (dispatch, getState) => {
+        const conference = getState()['features/welcome'].conference;
+
+        if (conference) {
+            return conference.leave()
+                .then(() => dispatch(conferenceLeft()));
+        }
+
+        return Promise.resolve();
+    };
+}
+
+/**
+ * Disconnect from connection.
+ *
+ * @returns {Function}
+ */
+export function disconnectConnection() {
+    return (dispatch, getState) => {
+        const connection = getState()['features/welcome'].connection;
+
+        if (connection) {
+            connection.disconnect();
+
+            dispatch(connectionDisconnected());
+        }
     };
 }

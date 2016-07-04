@@ -64,11 +64,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleAudio());
         },
         onHangup: (navigator) => {
-            dispatch(hangup());
-            dispatch(navigate({
-                screen: 'home',
-                navigator
-            }));
+            dispatch(hangup())
+                .then(() => dispatch(navigate({ screen: 'home', navigator })));
         },
         onCameraChange: () => {
             dispatch(toggleCameraFacingMode());

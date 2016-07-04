@@ -250,3 +250,24 @@ export function remoteParticipantJoined(id, user = {}) {
         }
     };
 }
+
+/**
+ * Removes local participant.
+ *
+ * @returns {Function}
+ */
+export function removeLocalParticipant() {
+    return (dispatch, getState) => {
+        let localParticipant = getState()['features/base/participants']
+            .find(p => p.local);
+
+        if (localParticipant) {
+            dispatch({
+                type: PARTICIPANT_REMOVED,
+                participant: {
+                    id: localParticipant.id
+                }
+            });
+        }
+    };
+}
