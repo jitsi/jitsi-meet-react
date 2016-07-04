@@ -1,5 +1,7 @@
 import { ReducerRegistry } from '../base/redux';
 
+import { JITSI_CLIENT_DISCONNECTED } from '../welcome';
+
 import {
     CHANGE_CAMERA_FACING_MODE,
     TOGGLE_AUDIO_MUTED_STATE,
@@ -39,6 +41,12 @@ ReducerRegistry.register(
                 ...state,
                 videoMuted: !state.videoMuted
             };
+
+        /**
+         * Reset toolbar to initial state when connection is disconnected.
+         */
+        case JITSI_CLIENT_DISCONNECTED:
+            return INITIAL_STATE;
 
         default:
             return state;

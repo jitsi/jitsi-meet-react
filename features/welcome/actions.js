@@ -1,4 +1,5 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
+
 import {
     dominantSpeakerChanged,
     localParticipantJoined,
@@ -7,10 +8,12 @@ import {
     participantVideoTypeChanged,
     remoteParticipantJoined
 } from '../base/participants';
+
 import {
     addTracksToConference,
     createLocalTracks,
-    trackAdded
+    trackAdded,
+    trackRemoved
 } from '../base/tracks';
 
 import {
@@ -19,8 +22,10 @@ import {
     JITSI_CLIENT_DISCONNECTED,
     JITSI_CLIENT_ERROR,
     JITSI_CONFERENCE_JOINED,
+    JITSI_CONFERENCE_LEFT,
     RTC_ERROR
 } from './actionTypes';
+
 import './reducer';
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
@@ -38,6 +43,12 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
             () => dispatch(conferenceJoined(conference)));
 
+        // It seems that currently this event is not fired at all in
+        // lib-jitsi-meet. There is some mention that it should be fixed with
+        // "FIXME" comment in JitsiConference at line 1155.
+        conference.on(JitsiConferenceEvents.CONFERENCE_LEFT,
+            () => dispatch(conferenceLeft()));
+
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
                 if (!track || track.isLocal()) {
@@ -51,6 +62,9 @@ export function conferenceInitialized(conference) {
                         track.getParticipantId(), type));
                 });
             });
+
+        conference.on(JitsiConferenceEvents.TRACK_REMOVED,
+            track => dispatch(trackRemoved(track)));
 
         conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
             id => dispatch(dominantSpeakerChanged(id)));
@@ -91,6 +105,17 @@ export function conferenceJoined(conference) {
             type: JITSI_CONFERENCE_JOINED,
             conference
         });
+    };
+}
+
+/**
+ * Signal that we have left the conference.
+ *
+ * @returns {{ type: JITSI_CONFERENCE_LEFT }}
+ */
+export function conferenceLeft() {
+    return {
+        type: JITSI_CONFERENCE_LEFT
     };
 }
 

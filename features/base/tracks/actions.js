@@ -11,7 +11,6 @@ import {
 
 require('./reducer');
 
-
 /**
  * Attach a set of local tracks to a conference.
  *

@@ -1,3 +1,5 @@
+import JitsiMeetJS from '../base/lib-jitsi-meet';
+
 import { createLocalTracks } from '../base/tracks';
 
 import {
@@ -5,6 +7,7 @@ import {
     TOGGLE_AUDIO_MUTED_STATE,
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
+
 import './reducer';
 
 /**
@@ -25,6 +28,32 @@ const MEDIA_TYPE = {
     AUDIO: 'audio'
 };
 
+const TrackErrors = JitsiMeetJS.errors.track;
+
+/**
+ * Calls JitsiLocalTrack#dispose() on all local tracks ignoring errors when
+ * track is already disposed.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - All tracks.
+ * @private
+ * @returns {Promise}
+ */
+function disposeLocalTracks(tracks) {
+    return Promise.all(
+        tracks
+            .filter(t => t.isLocal())
+            .map(t => {
+                return t.dispose()
+                    .catch(err => {
+                        // Track might be already disposed, so we ignore
+                        // this error, but re-throw error in other cases.
+                        if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
+                            throw err;
+                        }
+                    });
+            }));
+}
+
 /**
  * Leaves the conference and closes the connection.
  *
@@ -34,15 +63,29 @@ export function hangup() {
     return (dispatch, getState) => {
         const state = getState();
         const stateFeaturesWelcome = state['features/welcome'];
+        const stateFeaturesTracks = state['features/base/tracks'];
         const conference = stateFeaturesWelcome.conference;
         const connection = stateFeaturesWelcome.connection;
 
+        // Actually order of calls is not quite correct here. Instead we should
+        // dispose local tracks after we left the conference. However due to bug
+        // in lib-jitsi-meet it creates a circular dependency. We should replace
+        // this with null when calling track._setConference() in
+        // JitsiConference.js at line 449. Then we will be able to call dispose
+        // after conference is left.
+        let promise = disposeLocalTracks(stateFeaturesTracks);
+
         if (conference) {
-            conference.leave()
-                .then(() => connection.disconnect());
-        } else if (connection) {
-            connection.disconnect();
+            promise = promise
+                .then(() => conference.leave());
         }
+
+        if (connection) {
+            promise = promise
+                .then(() => connection.disconnect());
+        }
+
+        return promise;
     };
 }
 

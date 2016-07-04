@@ -1,6 +1,11 @@
 import { ReducerRegistry } from '../redux';
 
 import {
+    JITSI_CLIENT_DISCONNECTED,
+    JITSI_CONFERENCE_LEFT
+} from '../../welcome';
+
+import {
     DOMINANT_SPEAKER_CHANGED,
     PARTICIPANT_ADDED,
     PARTICIPANT_FOCUSED,
@@ -134,6 +139,18 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
 
     case PARTICIPANT_REMOVED:
         return state.filter(p => p.id !== action.participant.id);
+
+    /**
+     * Remove all participants when connection is disconnected.
+     */
+    case JITSI_CLIENT_DISCONNECTED:
+        return [];
+
+    /**
+     * Remove remote participants when conference is left.
+     */
+    case JITSI_CONFERENCE_LEFT:
+        return state.filter(p => p.local);
 
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_FOCUSED:

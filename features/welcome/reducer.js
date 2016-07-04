@@ -3,7 +3,8 @@ import { ReducerRegistry } from '../base/redux';
 import {
     JITSI_CLIENT_CREATED,
     JITSI_CLIENT_DISCONNECTED,
-    JITSI_CONFERENCE_JOINED
+    JITSI_CONFERENCE_JOINED,
+    JITSI_CONFERENCE_LEFT
 } from './actionTypes';
 
 const INITIAL_STATE = {
@@ -27,12 +28,19 @@ ReducerRegistry.register('features/welcome',
             };
 
         case JITSI_CLIENT_DISCONNECTED:
-            return {};
+            return INITIAL_STATE;
 
         case JITSI_CONFERENCE_JOINED:
             return {
                 ...state,
                 conference: action.conference
+            };
+
+        case JITSI_CONFERENCE_LEFT:
+            return {
+                ...state,
+                conference: null,
+                room: ''
             };
 
         default:
