@@ -47,6 +47,9 @@ const store = createStore(reducer, applyMiddleware(
     routerMiddleware(browserHistory)
 ));
 
+// TODO: this is a temp solution until PR #36 is merged 
+window.store = store;
+
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render((

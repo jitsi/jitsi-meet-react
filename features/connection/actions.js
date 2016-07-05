@@ -1,9 +1,6 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
-import {
-    cameraDisabledStateChanged,
-    microphoneDisabledStateChanged
-} from '../base/media';
+import { initDeviceList } from '../base/media';
 
 import {
     localParticipantJoined,
@@ -208,16 +205,6 @@ export function init(config, room) {
             .then(([tracks, connection]) => {
                 dispatch(connectionEstablished(connection));
 
-                // If user didn't give access to mic or camera or doesn't have
-                // them at all, we disable corresponding toolbar buttons.
-                if (!tracks.find((t) => t.isAudioTrack())) {
-                    dispatch(microphoneDisabledStateChanged(true));
-                }
-
-                if (!tracks.find((t) => t.isVideoTrack())) {
-                    dispatch(cameraDisabledStateChanged(true));
-                }
-
                 return dispatch(setLocalTracks(tracks));
             })
             .then(() => {
@@ -234,6 +221,11 @@ export function init(config, room) {
                 if (config.iAmRecorder) {
                     // TODO: init recorder
                     //this.recorder = new Recorder();
+                }
+
+                if (JitsiMeetJS.mediaDevices.isDeviceListAvailable() &&
+                    JitsiMeetJS.mediaDevices.isDeviceChangeAvailable()) {
+                    dispatch(initDeviceList());
                 }
             });
     };

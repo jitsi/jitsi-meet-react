@@ -43,6 +43,9 @@ const router = store => next => action => {
 const reducer = ReducerRegistry.combineReducers();
 const store = createStore(reducer, applyMiddleware(Thunk, router));
 
+// TODO: this is a temp solution until PR #36 is merged
+window.store = store;
+
 /**
  * App root component.
  * @extends Component

@@ -30,7 +30,8 @@ import { CAMERA_FACING_MODE } from './constants';
  * @property {CAMERA_FACING_MODE} camera.facingMode='user' - Camera facing mode.
  * @property {boolean} camera.muted='user' - Camera facing mode.
  *
- * @property {MediaDeviceInfo[]} devices=[] - List of available media devices.
+ * @property {MediaDeviceInfo[]|null} devices=null - List of available
+ *      media devices.
  *
  * @property {Object} microphone - microphone device information.
  * @property {string} microphone.deviceId='' - ID of current microphone.
@@ -53,7 +54,7 @@ const INITIAL_STATE = {
         facingMode: CAMERA_FACING_MODE.USER,
         muted: false
     },
-    devices: [],
+    devices: null,
     microphone: {
         deviceId: '',
         disabled: false,

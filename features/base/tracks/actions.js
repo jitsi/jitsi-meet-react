@@ -3,7 +3,13 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 
 import { participantVideoTypeChanged } from '../../base/participants';
 
-import { CAMERA_FACING_MODE } from '../media';
+import { 
+    cameraDisabledStateChanged,
+    cameraMutedStateChanged,
+    CAMERA_FACING_MODE,
+    microphoneDisabledStateChanged,
+    microphoneMutedStateChanged
+} from '../media';
 
 import {
     TRACK_ADDED,
@@ -69,8 +75,6 @@ export function setLocalTracks(newLocalTracks = []) {
                 }
             });
 
-            // TODO: add various checks from original useVideo/AudioStream
-
             promise = Promise.all(tracksToRemove.map(t => t.dispose()))
                 .then(() => Promise.all(
                     tracksToRemove.map(t => dispatch(trackRemoved(t)))))
@@ -105,6 +109,28 @@ export function setLocalTracks(newLocalTracks = []) {
                 }
 
                 return promise;
+            })
+            .then(() => {
+                // This is an additional step to sync disabled and muted
+                // states of tracks and media.
+
+                let tracks = getState()['features/base/tracks'];
+                let localAudio = tracks.find(
+                    t => t.isLocal() && t.isAudioTrack());
+                let localVideo = tracks.find(
+                    t => t.isLocal() && t.isVideoTrack());
+
+                dispatch(microphoneDisabledStateChanged(!localAudio));
+                dispatch(cameraDisabledStateChanged(!localVideo));
+
+                dispatch(microphoneMutedStateChanged(localAudio
+                    ? localAudio.isMuted()
+                    : false));
+                dispatch(cameraMutedStateChanged(localVideo
+                    ? localVideo.isMuted()
+                    : false));
+
+                return Promise.resolve();
             });
     };
 }
