@@ -217,6 +217,6 @@ export default class ConferenceConnector {
     connect() {
         this._conference.join();
 
-        return this._promise();
+        return this._promise;
     }
 }
