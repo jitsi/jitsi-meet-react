@@ -1,6 +1,8 @@
 import config from '../../config';
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
+import { resetMedia } from '../base/media';
+
 import {
     dominantSpeakerChanged,
     participantLeft,
@@ -15,8 +17,6 @@ import {
     trackAdded,
     trackRemoved
 } from '../base/tracks';
-
-import { resetToolbar } from '../toolbar';
 
 import {
     CONFERENCE_CREATED,
@@ -200,7 +200,7 @@ export function leave() {
         if (conference) {
             return conference.leave()
                 .then(() => {
-                    dispatch(resetToolbar());
+                    dispatch(resetMedia());
                     dispatch(removeRemoteTracks());
 
                     return dispatch(conferenceLeft());

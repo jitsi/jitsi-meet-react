@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import {
+    toggleCameraFacingMode,
+    toggleMicrophoneMuted
+} from '../../base/media';
 import { navigate } from '../../base/navigation';
 
-import {
-    hangup,
-    toggleAudio,
-    toggleCameraFacingMode
-} from '../';
+import { hangup } from '../';
 import { ToolbarContainer } from './_';
 
 /**
@@ -23,8 +23,8 @@ class Toolbar extends Component {
     render() {
         return (
             <ToolbarContainer
-                audioMuted = { this.props.audioMuted }
-                videoMuted = { this.props.videoMuted }
+                microphoneMuted = { this.props.microphoneMuted }
+                cameraMuted = { this.props.cameraMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
                 onHangup = { () => this.props.onHangup(this.props.navigator) }
                 onCameraChange = { () => this.props.onCameraChange() }
@@ -40,10 +40,10 @@ class Toolbar extends Component {
  * @returns {{ audioMuted: boolean, videoMuted: boolean }}
  */
 const mapStateToProps = state => {
-    const stateFeaturesToolbar = state['features/toolbar'];
+    const stateFeaturesMedia = state['features/base/media'];
     return {
-        audioMuted: stateFeaturesToolbar.audioMuted,
-        videoMuted: stateFeaturesToolbar.videoMuted
+        microphoneMuted: stateFeaturesMedia.microphone.muted,
+        cameraMuted: stateFeaturesMedia.camera.muted
     };
 };
 
@@ -61,7 +61,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAudioMute: () => {
-            dispatch(toggleAudio());
+            dispatch(toggleMicrophoneMuted());
         },
         onHangup: (navigator) => {
             dispatch(hangup())
@@ -82,8 +82,8 @@ Toolbar.propTypes = {
     onAudioMute: React.PropTypes.func,
     onHangup: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
-    audioMuted: React.PropTypes.bool,
-    videoMuted: React.PropTypes.bool,
+    microphoneMuted: React.PropTypes.bool,
+    cameraMuted: React.PropTypes.bool,
     navigator: React.PropTypes.object
 };
 

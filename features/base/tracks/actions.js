@@ -1,19 +1,16 @@
 import config from '../../../config';
 import JitsiMeetJS from '../lib-jitsi-meet';
 
-import {
-    participantVideoTypeChanged
-} from '../../base/participants';
+import { participantVideoTypeChanged } from '../../base/participants';
+
+import { CAMERA_FACING_MODE } from '../media';
 
 import {
     TRACK_ADDED,
     TRACK_REMOVED
 } from './actionTypes';
 
-import {
-    CAMERA_FACING_MODE,
-    DEVICE_TYPE
-} from './constants';
+import { DEVICE_TYPE } from './constants';
 
 require('./reducer');
 

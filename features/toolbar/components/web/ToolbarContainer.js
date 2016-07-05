@@ -19,7 +19,7 @@ export class ToolbarContainer extends Component {
         var underlayColor = ColorPalette.buttonUnderlay;
         var micButtonStyle;
         var micButtonIcon;
-        if (this.props.audioMuted) {
+        if (this.props.microphoneMuted) {
             micButtonStyle = {
                 ...styles.toolbarButton,
                 backgroundColor: underlayColor
@@ -65,5 +65,6 @@ ToolbarContainer.propTypes = {
     onAudioMute: React.PropTypes.func,
     onHangup: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
-    audioMuted: React.PropTypes.bool
+    microphoneMuted: React.PropTypes.bool,
+    cameraMuted: React.PropTypes.bool
 };
