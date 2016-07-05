@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 
 /**
- * Display a user avatar.
+ * Display a participant avatar.
  */
 export class Avatar extends Component {
 

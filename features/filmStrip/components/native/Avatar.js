@@ -5,7 +5,7 @@ import styles from './styles/Styles';
 
 
 /**
- * Display a user avatar.
+ * Display a participant avatar.
  */
 export class Avatar extends Component {
 
