@@ -1,4 +1,3 @@
-import config from '../../config';
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
 import {
@@ -202,17 +201,7 @@ export function init(config, room) {
                 return Promise.all([ localTracksPromise, connectionPromise ]);
             })
             .then(([tracks, connection]) => {
-                dispatch(setLocalTracks(tracks));
                 dispatch(connectionEstablished(connection));
-                dispatch(create(room));
-
-                let conference = getState()['features/conference'];
-
-                dispatch(localParticipantJoined(conference.myUserId()));
-
-                // TODO: dispatch an action if desktop sharing is enabled or not
-                // this.isDesktopSharingEnabled =
-                //     JitsiMeetJS.isDesktopSharingEnabled();
 
                 // If user didn't give access to mic or camera or doesn't have
                 // them at all, we disable corresponding toolbar buttons.
@@ -225,6 +214,19 @@ export function init(config, room) {
                     // TODO: dispatch an action to disable camera icon
                     //APP.UI.disableCameraButton();
                 }
+
+                return dispatch(setLocalTracks(tracks));
+            })
+            .then(() => {
+                dispatch(create(room));
+
+                let conference = getState()['features/conference'];
+
+                dispatch(localParticipantJoined(conference.myUserId()));
+
+                // TODO: dispatch an action if desktop sharing is enabled or not
+                // this.isDesktopSharingEnabled =
+                //     JitsiMeetJS.isDesktopSharingEnabled();
 
                 if (config.iAmRecorder) {
                     // TODO: init recorder
