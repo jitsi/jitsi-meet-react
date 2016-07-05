@@ -1,3 +1,6 @@
+// TODO: this is temp solution until PR #36 is merged. Import after.
+/* global store */
+
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
 import { leave } from './actions';
@@ -12,19 +15,8 @@ const ConferenceErrors = JitsiMeetJS.errors.conference;
 export default class ConferenceConnector {
     /**
      * Constructs new instance.
-     *
-     * @param {Function} dispatch - Redux dispatch function.
-     * @param {Function} getState - Redux getState function.
      */
-    constructor(dispatch, getState) {
-        /**
-         * Internal reference to Redux dispatch function.
-         *
-         * @type {Function}
-         * @private
-         */
-        this._dispatch = dispatch;
-
+    constructor() {
         /**
          * Internal promise to be resolved or rejected after
          * ConferenceConnector#connect() is called.
@@ -43,7 +35,7 @@ export default class ConferenceConnector {
          * @type {JitsiConference}
          * @private
          */
-        this._conference = getState()['features/conference'];
+        this._conference = store.getState()['features/conference'];
 
         /**
          * Timeout interval to call reconnect.
@@ -154,8 +146,8 @@ export default class ConferenceConnector {
             break;
 
         case ConferenceErrors.FOCUS_LEFT:
-            this._dispatch(leave())
-                .then(() => this._dispatch(disconnect()));
+            store.dispatch(leave())
+                .then(() => store.dispatch(disconnect()));
             // APP.UI.notifyFocusLeft();
             break;
         case ConferenceErrors.CONFERENCE_MAX_USERS:

@@ -184,7 +184,7 @@ export function create(room) {
         // }
         // nick && room.setDisplayName(nick);
 
-        return (new ConferenceConnector(dispatch, getState)).connect();
+        return (new ConferenceConnector()).connect();
     };
 }
 
