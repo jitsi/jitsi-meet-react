@@ -108,7 +108,7 @@ function connect(id, password, roomName) {
 
         // TODO: currently external connect feature is not available
         //checkForAttachParametersAndConnect(id, password, connection);
-        
+
         connection.connect();
     });
 }
@@ -160,10 +160,11 @@ export function openConnection(options) {
     options || (options = {});
 
     let { id, password, retry, roomName } = options;
-    let usernameOverride
-        = window.localStorage.getItem('xmpp_username_override');
-    let passwordOverride
-        = window.localStorage.getItem('xmpp_password_override');
+    let usernameOverride;
+    // TODO: React-Native doesn't support local storage. Need polyfill.
+        //= window.localStorage.getItem('xmpp_username_override');
+    let passwordOverride;
+        //= window.localStorage.getItem('xmpp_password_override');
 
     if (usernameOverride && usernameOverride.length > 0) {
         id = usernameOverride;
