@@ -5,10 +5,12 @@ import {
 } from '../tracks';
 
 import {
-    MICROPHONE_MUTED_STATE_CHANGED,
+    CAMERA_DISABLED_STATE_CHANGED,
     CAMERA_FACING_MODE_CHANGED,
+    CAMERA_MUTED_STATE_CHANGED,
     MEDIA_RESET,
-    CAMERA_MUTED_STATE_CHANGED
+    MICROPHONE_MUTED_STATE_CHANGED,
+    MICROPHONE_DISABLED_STATE_CHANGED
 } from './actionTypes';
 
 import { CAMERA_FACING_MODE } from './constants';
@@ -108,6 +110,54 @@ function toggleMediaMuted(media) {
                                 ? cameraMutedStateChanged(!isMuted)
                                 : microphoneMutedStateChanged(!isMuted)));
                 }));
+    };
+}
+
+/**
+ * Action to signal the change in camera disabled state.
+ *
+ * @param {boolean} disabled - If camera is disabled.
+ * @returns {{
+ *      type: CAMERA_DISABLED_STATE_CHANGED,
+ *      media: {
+ *          camera: {
+ *              disabled: boolean
+ *          }
+ *      }
+ *  }}
+ */
+export function cameraDisabledStateChanged(disabled) {
+    return {
+        type: CAMERA_DISABLED_STATE_CHANGED,
+        media: {
+            camera: {
+                disabled
+            }
+        }
+    };
+}
+
+/**
+ * Action to signal the change in microphone disabled state.
+ *
+ * @param {boolean} disabled - If microphone is disabled.
+ * @returns {{
+ *      type: MICROPHONE_DISABLED_STATE_CHANGED,
+ *      media: {
+ *          microphone: {
+ *              disabled: boolean
+ *          }
+ *      }
+ *  }}
+ */
+export function microphoneDisabledStateChanged(disabled) {
+    return {
+        type: MICROPHONE_DISABLED_STATE_CHANGED,
+        media: {
+            microphone: {
+                disabled
+            }
+        }
     };
 }
 

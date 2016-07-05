@@ -1,6 +1,11 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
 import {
+    cameraDisabledStateChanged,
+    microphoneDisabledStateChanged
+} from '../base/media';
+
+import {
     localParticipantJoined,
     removeLocalParticipant
 } from '../base/participants';
@@ -206,13 +211,11 @@ export function init(config, room) {
                 // If user didn't give access to mic or camera or doesn't have
                 // them at all, we disable corresponding toolbar buttons.
                 if (!tracks.find((t) => t.isAudioTrack())) {
-                    // TODO: dispatch an action to disable microphone icon
-                    //APP.UI.disableMicrophoneButton();
+                    dispatch(microphoneDisabledStateChanged(true));
                 }
 
                 if (!tracks.find((t) => t.isVideoTrack())) {
-                    // TODO: dispatch an action to disable camera icon
-                    //APP.UI.disableCameraButton();
+                    dispatch(cameraDisabledStateChanged(true));
                 }
 
                 return dispatch(setLocalTracks(tracks));
