@@ -1,8 +1,8 @@
 import { ReducerRegistry } from '../base/redux';
 
 import {
-    JITSI_CONFERENCE_JOINED,
-    JITSI_CONFERENCE_LEFT
+    CONFERENCE_CREATED,
+    CONFERENCE_LEFT
 } from './actionTypes';
 
 /**
@@ -11,10 +11,10 @@ import {
  */
 ReducerRegistry.register('features/conference', (state = null, action) => {
     switch (action.type) {
-    case JITSI_CONFERENCE_JOINED:
+    case CONFERENCE_CREATED:
         return action.conference;
 
-    case JITSI_CONFERENCE_LEFT:
+    case CONFERENCE_LEFT:
         return null;
 
     default:

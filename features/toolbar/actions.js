@@ -1,10 +1,10 @@
+import { CAMERA_FACING_MODE } from '../base/media';
 import {
-    CAMERA_FACING_MODE,
     createLocalTracks,
     DEVICE_TYPE,
     setLocalTracks
 } from '../base/tracks';
-import { leaveConference } from '../conference';
+import { leave } from '../conference';
 import { disconnect } from '../connection';
 
 import {
@@ -23,7 +23,7 @@ import './reducer';
  */
 export function hangup() {
     return dispatch => {
-        return dispatch(leaveConference())
+        return dispatch(leave())
             .then(() => dispatch(disconnect()));
     };
 }

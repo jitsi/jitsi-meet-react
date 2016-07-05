@@ -3,11 +3,18 @@
  *
  * @type {string}
  */
-export const JITSI_CONFERENCE_JOINED = 'JITSI_CONFERENCE_JOINED';
+export const CONFERENCE_CREATED = 'CONFERENCE_CREATED';
+
+/**
+ * Action type to signal that we are joining the conference.
+ *
+ * @type {string}
+ */
+export const CONFERENCE_JOINED = 'CONFERENCE_JOINED';
 
 /**
  * Action type to signal that we are leaving the conference.
  *
  * @type {string}
  */
-export const JITSI_CONFERENCE_LEFT = 'JITSI_CONFERENCE_LEFT';
+export const CONFERENCE_LEFT = 'CONFERENCE_LEFT';

@@ -1,3 +1,4 @@
+import config from '../../config';
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
 import {
@@ -12,9 +13,7 @@ import {
     setLocalTracks
 } from '../base/tracks';
 
-import {
-    conferenceInitialized
-} from '../conference';
+import { create } from '../conference';
 
 import {
     CONNECTION_DISCONNECTED,
@@ -31,6 +30,7 @@ import './reducer';
  * local microphone and/or camera failed. Will show guidance overlay for users
  * on how to give access to camera and/or microphone.
  *
+ * @private
  * @returns {Promise<JitsiLocalTrack[]>}
  */
 function createInitialLocalTracks() {
@@ -85,6 +85,7 @@ function createInitialLocalTracks() {
 /**
  * Open Connection. When authentication failed it shows auth dialog.
  *
+ * @private
  * @param {string} roomName - The room name to use.
  * @returns {Promise<JitsiConnection>}
  */
@@ -105,12 +106,41 @@ function connect(roomName) {
 }
 
 /**
+ * Sets up global error handlers.
+ *
+ * @private
+ * @returns {void}
+ */
+function setupGlobalErrorHandler() {
+    let oldOnErrorHandler = window.onerror;
+    let oldOnUnhandledRejection = window.onunhandledrejection;
+
+    window.onerror = function (message, source, lineno, colno, error) {
+        JitsiMeetJS.getGlobalOnErrorHandler(
+            message, source, lineno, colno, error);
+
+        if (oldOnErrorHandler) {
+            oldOnErrorHandler(message, source, lineno, colno, error);
+        }
+    };
+
+    window.onunhandledrejection = function(event) {
+        JitsiMeetJS.getGlobalOnErrorHandler(
+            null, null, null, null, event.reason);
+
+        if (oldOnUnhandledRejection) {
+            oldOnUnhandledRejection(event);
+        }
+    };
+}
+
+/**
  * Create an action for when the signaling connection has been lost.
  *
  * @param {string} [message] - Error message.
  * @returns {{type: CONNECTION_DISCONNECTED, message: string}}
  */
-export function connectionDisconnected(message) {
+function connectionDisconnected(message) {
     return {
         type: CONNECTION_DISCONNECTED,
         message
@@ -123,7 +153,7 @@ export function connectionDisconnected(message) {
  * @param {string} error - Error message.
  * @returns {{type: CONNECTION_ERROR, error: string}}
  */
-export function connectionFailed(error) {
+function connectionFailed(error) {
     return {
         type: CONNECTION_ERROR,
         error
@@ -136,7 +166,7 @@ export function connectionFailed(error) {
  * @param {JitsiConnection} connection - JitsiConnection instance.
  * @returns {{type: CONNECTION_ESTABLISHED, connection: JitsiConnection}}
  */
-export function connectionEstablished(connection) {
+function connectionEstablished(connection) {
     return {
         type: CONNECTION_ESTABLISHED,
         connection
@@ -152,8 +182,15 @@ export function connectionEstablished(connection) {
  * @returns {Function}
  */
 export function init(config, room) {
-    return dispatch => {
-        JitsiMeetJS.init(config)
+    return (dispatch, getState)  => {
+        JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.TRACE);
+
+        // Attaches global error handler, if there is already one, respect it.
+        if (JitsiMeetJS.getGlobalOnErrorHandler) {
+            setupGlobalErrorHandler();
+        }
+
+        return JitsiMeetJS.init(config)
             .then(() => {
                 let localTracksPromise = createInitialLocalTracks();
                 let connectionPromise = connect(room)
@@ -167,13 +204,32 @@ export function init(config, room) {
             .then(([tracks, connection]) => {
                 dispatch(setLocalTracks(tracks));
                 dispatch(connectionEstablished(connection));
+                dispatch(create(room));
 
-                let conference = connection.initJitsiConference(room, {
-                    openSctp: true
-                });
+                let conference = getState()['features/conference'];
 
                 dispatch(localParticipantJoined(conference.myUserId()));
-                dispatch(conferenceInitialized(conference));
+
+                // TODO: dispatch an action if desktop sharing is enabled or not
+                // this.isDesktopSharingEnabled =
+                //     JitsiMeetJS.isDesktopSharingEnabled();
+
+                // If user didn't give access to mic or camera or doesn't have
+                // them at all, we disable corresponding toolbar buttons.
+                if (!tracks.find((t) => t.isAudioTrack())) {
+                    // TODO: dispatch an action to disable microphone icon
+                    //APP.UI.disableMicrophoneButton();
+                }
+
+                if (!tracks.find((t) => t.isVideoTrack())) {
+                    // TODO: dispatch an action to disable camera icon
+                    //APP.UI.disableCameraButton();
+                }
+
+                if (config.iAmRecorder) {
+                    // TODO: init recorder
+                    //this.recorder = new Recorder();
+                }
             });
     };
 }
