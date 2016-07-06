@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { Video } from '../../base/media';
-import { participantSelected } from '../../base/participants';
+import { selectParticipant } from '../../conference';
 
 import { LargeVideoContainer } from './_';
 
@@ -60,7 +60,7 @@ class LargeVideo extends Component {
             videoTrack &&
             !activeParticipant.selected &&
             activeParticipant.videoType === 'camera') {
-            this.props.dispatch(participantSelected(activeParticipant.id));
+            this.props.dispatch(selectParticipant(activeParticipant.id));
         }
 
         this.setState({

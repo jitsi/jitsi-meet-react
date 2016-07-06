@@ -36,7 +36,7 @@ import './reducer';
  * @param {MediaDeviceInfo[]} devices - New list of devices.
  * @returns {Function}
  */
-function onDeviceListChanged(devices) {
+export function onDeviceListChanged(devices) {
     return (dispatch, getState) => {
         let mediaState = getState()['features/base/media'];
         let currentDevices = mediaDeviceHelper.getCurrentMediaDevicesByKind();
@@ -437,35 +437,28 @@ export function setCameraMuted(muted) {
 /**
  * Inits list of current devices and event listener for device change.
  *
+ * @param {MediaDeviceInfo[]} devices - List of devices.
  * @returns {Function}
  */
-export function initDeviceList() {
+export function initDeviceList(devices) {
     return (dispatch, getState) => {
-        JitsiMeetJS.mediaDevices.enumerateDevices(devices => {
-            let tracks = getState()['features/base/tracks'];
-            let localAudio = tracks.find(t => t.isLocal() && t.isAudioTrack());
-            let localVideo = tracks.find(t => t.isLocal() && t.isVideoTrack());
+        let tracks = getState()['features/base/tracks'];
+        let localAudio = tracks.find(t => t.isLocal() && t.isAudioTrack());
+        let localVideo = tracks.find(t => t.isLocal() && t.isVideoTrack());
 
-            // Ugly way to synchronize real device IDs with local
-            // storage and settings menu. This is a workaround until
-            // getConstraints() method will be implemented in browsers.
-            if (localAudio) {
-                localAudio._setRealDeviceIdFromDeviceList(devices);
-                dispatch(microphoneDeviceChanged(localAudio.getDeviceId()));
-            }
+        // Ugly way to synchronize real device IDs with local
+        // storage and settings menu. This is a workaround until
+        // getConstraints() method will be implemented in browsers.
+        if (localAudio) {
+            localAudio._setRealDeviceIdFromDeviceList(devices);
+            dispatch(microphoneDeviceChanged(localAudio.getDeviceId()));
+        }
 
-            if (localVideo) {
-                localVideo._setRealDeviceIdFromDeviceList(devices);
-                dispatch(cameraDeviceChanged(localVideo.getDeviceId()));
-            }
+        if (localVideo) {
+            localVideo._setRealDeviceIdFromDeviceList(devices);
+            dispatch(cameraDeviceChanged(localVideo.getDeviceId()));
+        }
 
-            dispatch(deviceListChanged(devices));
-        });
-
-        JitsiMeetJS.mediaDevices.addEventListener(
-            JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED,
-            (devices) =>
-                window.setTimeout(
-                    () => dispatch(onDeviceListChanged(devices)), 0));
+        dispatch(deviceListChanged(devices));
     };
 }

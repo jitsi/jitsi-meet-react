@@ -1,18 +1,25 @@
 import config from '../../config';
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
-import { resetMedia } from '../base/media';
+import {
+    initDeviceList,
+    onDeviceListChanged,
+    resetMedia
+} from '../base/media';
 
 import {
     dominantSpeakerChanged,
+    localParticipantJoined,
     participantLeft,
+    participantPinned,
     participantRoleChanged,
+    participantSelected,
     participantVideoTypeChanged,
-    remoteParticipantJoined
+    remoteParticipantJoined,
+    removeLocalParticipant
 } from '../base/participants';
 
 import {
-    addTracksToConference,
     removeRemoteTracks,
     trackAdded,
     trackRemoved
@@ -30,6 +37,7 @@ import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 const JitsiTrackEvents = JitsiMeetJS.events.track;
+const JitsiMediaDevicesEvents = JitsiMeetJS.events.mediaDevices;
 
 /**
  * Returns conference options.
@@ -156,14 +164,33 @@ export function create(room) {
             room, getConferenceOptions());
 
         dispatch(conferenceCreated(conference));
+        dispatch(localParticipantJoined(conference.myUserId()));
 
         setupConferenceListeners(conference, dispatch);
 
-        let localTracks = getState()['features/base/tracks']
-            .filter(t => t.isLocal());
+        dispatch(updateConferenceLocalTracks());
 
-        if (localTracks.length) {
-            addTracksToConference(conference, localTracks);
+        if (JitsiMeetJS.mediaDevices.isDeviceListAvailable() &&
+            JitsiMeetJS.mediaDevices.isDeviceChangeAvailable()) {
+            JitsiMeetJS.mediaDevices.enumerateDevices(
+                devices => dispatch(initDeviceList(devices)));
+
+            JitsiMeetJS.mediaDevices.addEventListener(
+                JitsiMediaDevicesEvents.DEVICE_LIST_CHANGED,
+                (devices) => window.setTimeout(() => {
+                    dispatch(onDeviceListChanged(devices))
+                        .then(() => dispatch(updateConferenceLocalTracks()));
+                }, 0)
+            );
+        }
+
+        // TODO: dispatch an action if desktop sharing is enabled or not
+        // this.isDesktopSharingEnabled =
+        //     JitsiMeetJS.isDesktopSharingEnabled();
+
+        if (config.iAmRecorder) {
+            // TODO: init recorder
+            //this.recorder = new Recorder();
         }
 
         // TODO: currently this is not available
@@ -202,11 +229,77 @@ export function leave() {
                 .then(() => {
                     dispatch(resetMedia());
                     dispatch(removeRemoteTracks());
+                    dispatch(removeLocalParticipant());
 
                     return dispatch(conferenceLeft());
                 });
         }
 
         return Promise.resolve();
+    };
+}
+
+/**
+ * Attach a current local tracks to a conference.
+ *
+ * @returns {Function}
+ */
+export function updateConferenceLocalTracks() {
+    return (dispatch, getState) => {
+        let conference = getState()['features/conference'];
+        let localTracks = getState()['features/base/tracks']
+            .filter(t => t.isLocal());
+        let conferenceLocalTracks = conference.getLocalTracks();
+
+        for (let track of localTracks) {
+            // XXX The library lib-jitsi-meet may be draconian, for example,
+            // when adding one and the same video track multiple times.
+            if (-1 === conferenceLocalTracks.indexOf(track)) {
+                conference.addTrack(track);
+            }
+        }
+    };
+}
+
+/**
+ * Create an action for when the user in conference is selected.
+ *
+ * @param {string|null} id - User id. If null, no one is selected.
+ * @returns {Function}
+ */
+export function selectParticipant(id) {
+    return (dispatch, getState) => {
+        let conference = getState()['features/conference'];
+
+        conference && conference.selectParticipant(id);
+
+        return dispatch(participantSelected(id));
+    };
+}
+
+/**
+ * Create an action for when the user in conference is pinned.
+ *
+ * @param {string|null} id - User id or null if no one is currently pinned.
+ * @returns {Function}
+ */
+export function pinParticipant(id) {
+    return (dispatch, getState) => {
+        let conference = getState()['features/conference'];
+        let participants = getState()['features/base/participants'];
+        let participant = participants.find(p => p.id === id);
+        let localParticipant = participants.find(p => p.local);
+
+        // This condition prevents signaling to pin local participant. Here is
+        // the logic: if we have ID, then we check if participant by that ID is
+        // local. If we don't have ID and thus no participant by ID, we check
+        // for local participant. If it's currently pinned, then this action
+        // will unpin him and that's why we won't signal here too.
+        if ((participant && !participant.local) ||
+            (!participant && (!localParticipant || !localParticipant.pinned))) {
+            conference.pinParticipant(id);
+        }
+
+        return dispatch(participantPinned(id));
     };
 }

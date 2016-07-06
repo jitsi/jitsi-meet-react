@@ -1,12 +1,5 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
-import { initDeviceList } from '../base/media';
-
-import {
-    localParticipantJoined,
-    removeLocalParticipant
-} from '../base/participants';
-
 import {
     createLocalTracks,
     DEVICE_TYPE,
@@ -183,7 +176,7 @@ function connectionEstablished(connection) {
  * @returns {Function}
  */
 export function init(config, room) {
-    return (dispatch, getState)  => {
+    return dispatch  => {
         JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.TRACE);
 
         // Attaches global error handler, if there is already one, respect it.
@@ -205,28 +198,8 @@ export function init(config, room) {
             .then(([tracks, connection]) => {
                 dispatch(connectionEstablished(connection));
 
-                return dispatch(setLocalTracks(tracks));
-            })
-            .then(() => {
-                dispatch(create(room));
-
-                let conference = getState()['features/conference'];
-
-                dispatch(localParticipantJoined(conference.myUserId()));
-
-                // TODO: dispatch an action if desktop sharing is enabled or not
-                // this.isDesktopSharingEnabled =
-                //     JitsiMeetJS.isDesktopSharingEnabled();
-
-                if (config.iAmRecorder) {
-                    // TODO: init recorder
-                    //this.recorder = new Recorder();
-                }
-
-                if (JitsiMeetJS.mediaDevices.isDeviceListAvailable() &&
-                    JitsiMeetJS.mediaDevices.isDeviceChangeAvailable()) {
-                    dispatch(initDeviceList());
-                }
+                return dispatch(setLocalTracks(tracks))
+                    .then(() => dispatch(create(room)));
             });
     };
 }
@@ -243,7 +216,6 @@ export function disconnect() {
         if (connection) {
             connection.disconnect();
 
-            dispatch(removeLocalParticipant());
             dispatch(removeLocalTracks());
             dispatch(connectionDisconnected());
         }

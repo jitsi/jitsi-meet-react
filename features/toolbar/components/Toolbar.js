@@ -7,6 +7,8 @@ import {
 } from '../../base/media';
 import { navigate } from '../../base/navigation';
 
+import { updateConferenceLocalTracks } from '../../conference';
+
 import { hangup } from '../';
 import { ToolbarContainer } from './_';
 
@@ -68,7 +70,8 @@ const mapDispatchToProps = dispatch => {
                 .then(() => dispatch(navigate({ screen: 'home', navigator })));
         },
         onCameraChange: () => {
-            dispatch(toggleCameraFacingMode());
+            dispatch(toggleCameraFacingMode())
+                .then(() => dispatch(updateConferenceLocalTracks()));
         }
     };
 };
