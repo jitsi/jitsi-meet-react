@@ -15,7 +15,8 @@ import Config from './config';
 import { APP_NAVIGATE } from './features/base/navigation';
 import { ReducerRegistry } from './features/base/redux';
 import { Conference } from './features/conference';
-import { init, WelcomePage } from './features/welcome';
+import { init } from './features/connection';
+import { WelcomePage } from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both
@@ -45,6 +46,9 @@ const store = createStore(reducer, applyMiddleware(
     router,
     routerMiddleware(browserHistory)
 ));
+
+// TODO: this is a temp solution until PR #36 is merged 
+window.store = store;
 
 const history = syncHistoryWithStore(browserHistory, store);
 

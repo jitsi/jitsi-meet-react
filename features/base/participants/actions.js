@@ -99,38 +99,6 @@ export function participantLeft(id) {
 }
 
 /**
- * Create an action for when the user in conference is pinned.
- *
- * @param {string|null} id - User id or null if no one is currently pinned.
- * @returns {Function}
- */
-export function participantPinned(id) {
-    return (dispatch, getState) => {
-        let conference = getState()['features/welcome'].conference;
-        let participants = getState()['features/base/participants'];
-        let participant = participants.find(p => p.id === id);
-        let localParticipant = participants.find(p => p.local);
-
-        // This condition prevents signaling to pin local participant. Here is
-        // the logic: if we have ID, then we check if participant by that ID is
-        // local. If we don't have ID and thus no participant by ID, we check
-        // for local participant. If it's currently pinned, then this action
-        // will unpin him and that's why we won't signal here too.
-        if ((participant && !participant.local) ||
-            (!participant && (!localParticipant || !localParticipant.pinned))) {
-            conference.pinParticipant(id);
-        }
-
-        return dispatch({
-            type: PARTICIPANT_PINNED,
-            participant: {
-                id
-            }
-        });
-    };
-}
-
-/**
  * Action to handle case when participant's role changes.
  *
  * @param {string} id - User id.
@@ -150,27 +118,6 @@ export function participantRoleChanged(id, role) {
             id,
             role
         }
-    };
-}
-
-/**
- * Create an action for when the user in conference is selected.
- *
- * @param {string|null} id - User id. If null, no one is selected.
- * @returns {Function}
- */
-export function participantSelected(id) {
-    return (dispatch, getState) => {
-        let conference = getState()['features/welcome'].conference;
-
-        conference && conference.selectParticipant(id);
-
-        return dispatch({
-            type: PARTICIPANT_SELECTED,
-            participant: {
-                id
-            }
-        });
     };
 }
 
@@ -247,6 +194,67 @@ export function remoteParticipantJoined(id, user = {}) {
             // TODO: get avatar
             avatar: user.avatar || '',
             role: user.role || 'none'
+        }
+    };
+}
+
+/**
+ * Removes local participant.
+ *
+ * @returns {Function}
+ */
+export function removeLocalParticipant() {
+    return (dispatch, getState) => {
+        let localParticipant = getState()['features/base/participants']
+            .find(p => p.local);
+
+        if (localParticipant) {
+            dispatch({
+                type: PARTICIPANT_REMOVED,
+                participant: {
+                    id: localParticipant.id
+                }
+            });
+        }
+    };
+}
+
+/**
+ * Action to signal that participant was pinned.
+ *
+ * @param {string} id - Participant id.
+ * @returns {{
+ *      type: PARTICIPANT_PINNED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
+ */
+export function participantPinned(id) {
+    return {
+        type: PARTICIPANT_PINNED,
+        participant: {
+            id
+        }
+    };
+}
+
+/**
+ * Action to signal that participant was selected.
+ *
+ * @param {string} id - Participant id.
+ * @returns {{
+ *      type: PARTICIPANT_SELECTED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
+ */
+export function participantSelected(id) {
+    return {
+        type: PARTICIPANT_SELECTED,
+        participant: {
+            id
         }
     };
 }

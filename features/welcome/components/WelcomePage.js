@@ -10,8 +10,36 @@ import { WelcomePageContainer } from './_';
  */
 class WelcomePage extends Component {
     /**
-     * Implements React's {@link Component#render()}. Renders a
-     * WelcomePageContainer which is to show the room name prompt appropriate
+     * Constructs new WelcomePage Component.
+     *
+     * @param {Object} props - React props.
+     */
+    constructor(props) {
+        super(props);
+
+        this._onJoin = this._onJoin.bind(this);
+    }
+
+    /**
+     * Dispatches navigation action when "Join" button is clicked to join a
+     * new conference with provided room name.
+     *
+     * @param {string} roomName - Name of conference room.
+     * @param {Navigator} navigator - Navigator instance.
+     * @private
+     * @returns {void}
+     */
+    _onJoin(roomName, navigator) {
+        this.props.dispatch(navigate({
+            screen: 'conference',
+            room: roomName,
+            navigator
+        }));
+    }
+
+    /**
+     * Implements React's {@link Component#render()}. Renders
+     * a WelcomePageContainer which is to show the room name prompt appropriate
      * for mobile or web.
      *
      * @inheritdoc
@@ -20,43 +48,12 @@ class WelcomePage extends Component {
     render() {
         return (
             <WelcomePageContainer
-                room={ this.props.room }
                 onJoin={ roomName =>
-                        this.props.onJoin(roomName, this.props.navigator)
+                    this._onJoin(roomName, this.props.navigator)
                 }/>
         );
     }
 }
-
-/**
- * Maps the state room property to component props.
- *
- * @param {Object} state - Redux state.
- * @returns {{ room: string }}
- */
-const mapStateToProps = state => {
-    return {
-        room: state['features/welcome'].room
-    };
-};
-
-/**
- * Maps the onJoin action.
- *
- * @param {Function} dispatch - Redux dispatch function.
- * @returns {{ onJoin: Function }}
- */
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onJoin: (roomName, navigator) => {
-            dispatch(navigate({
-                screen: 'conference',
-                room: roomName,
-                navigator
-            }));
-        }
-    };
-};
 
 /**
  * WelcomePage component's property types.
@@ -64,9 +61,8 @@ const mapDispatchToProps = (dispatch) => {
  * @static
  */
 WelcomePage.propTypes = {
-    onJoin: React.PropTypes.func,
-    room: React.PropTypes.string,
+    dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
+export default connect()(WelcomePage);

@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Audio, Video } from '../../base/media';
 import {
     participantFocused,
-    participantPinned,
     participantVideoStarted
 } from '../../base/participants';
+import { pinParticipant } from '../../conference';
 
 import { VideoThumbnailContainer } from './_';
 
@@ -56,7 +56,7 @@ class VideoThumbnail extends Component {
                 ? null
                 : this.props.participant.id));
 
-        this.props.dispatch(participantPinned(
+        this.props.dispatch(pinParticipant(
             this.props.participant.pinned
                 ? null
                 : this.props.participant.id));
