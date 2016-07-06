@@ -1,8 +1,6 @@
 import config from '../../../config';
 import JitsiMeetJS from '../lib-jitsi-meet';
 
-import { participantVideoTypeChanged } from '../../base/participants';
-
 import { 
     cameraDisabledStateChanged,
     cameraMutedStateChanged,
@@ -10,6 +8,8 @@ import {
     microphoneDisabledStateChanged,
     microphoneMutedStateChanged
 } from '../media';
+
+import { participantVideoTypeChanged } from '../participants';
 
 import {
     TRACK_ADDED,
