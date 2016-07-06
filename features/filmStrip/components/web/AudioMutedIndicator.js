@@ -5,9 +5,8 @@ import Icon from 'react-fontawesome';
  * Thumbnail badge for displaying the audio mute status of a participant.
  */
 export class AudioMutedIndicator extends Component {
-
     /**
-     * React render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      */

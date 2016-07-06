@@ -7,9 +7,8 @@ import styles from './styles/Styles';
  * Thumbnail badge for displaying the video mute status of a participant.
  */
 export class VideoMutedIndicator extends Component {
-
     /**
-     * React render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      */

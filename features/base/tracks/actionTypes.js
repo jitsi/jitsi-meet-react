@@ -29,4 +29,3 @@ export const TRACK_MUTE_CHANGED = 'TRACK_MUTE_CHANGED';
  * }
  */
 export const TRACK_REMOVED = 'TRACK_REMOVED';
-

@@ -6,9 +6,8 @@ import Icon from 'react-fontawesome';
  * the conference.
  */
 export class DominantSpeakerIndicator extends Component {
-
     /**
-     * React render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      */

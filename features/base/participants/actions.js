@@ -1,9 +1,11 @@
+/* global MD5 */
+
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_ADDED,
     PARTICIPANT_FOCUSED,
+    PARTICIPANT_JOINED,
+    PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
-    PARTICIPANT_REMOVED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -11,9 +13,34 @@ import { PARTICIPANT_ROLE } from './constants';
 import './reducer';
 
 /**
+ * Action to update a participant's email.
+ *
+ * @param {string} id - Participant's id
+ * @param {string} email - Participant's email
+ * @returns {{
+ *      type: PARTICIPANT_UPDATED,
+ *      participant: {
+ *          id: string,
+ *          avatar: string,
+ *          email: string
+ *      }
+ * }}
+ */
+export function changeParticipantEmail(id, email) {
+    return {
+        type: PARTICIPANT_UPDATED,
+        participant: {
+            id,
+            avatar: _getAvatarURL(id, email),
+            email
+        }
+    };
+}
+
+/**
  * Create an action for when dominant speaker changes.
  *
- * @param {string} id - User id.
+ * @param {string} id - Participant id.
  * @returns {{
  *      type: DOMINANT_SPEAKER_CHANGED,
  *      participant: {
@@ -31,16 +58,16 @@ export function dominantSpeakerChanged(id) {
 }
 
 /**
- * Action to create a local user.
+ * Action to create a local participant.
  *
- * @param {string} id - User id.
- * @param {Object} [user={}] - Additional information about user.
- * @param {string} [user.displayName='me'] - User's display name.
- * @param {string} [user.avatar=''] - User's avatar.
- * @param {string} [user.role='none'] - User's role.
+ * @param {string} id - Participant id.
+ * @param {Object} [participant={}] - Additional information about participant.
+ * @param {string} [participant.displayName='me'] - Participant's display name.
+ * @param {string} [participant.avatar=''] - Participant's avatar.
+ * @param {string} [participant.role='none'] - Participant's role.
  * @returns {Function}
  */
-export function localParticipantJoined(id, user = {}) {
+export function localParticipantJoined(id, participant = {}) {
     return (dispatch, getState) => {
         // Local media tracks might be already created by this moment, so
         // we try to take videoType from current video track.
@@ -48,13 +75,14 @@ export function localParticipantJoined(id, user = {}) {
         let localVideoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
 
         return dispatch({
-            type: PARTICIPANT_ADDED,
+            type: PARTICIPANT_JOINED,
             participant: {
                 id,
-                avatar: user.avatar || '',
+                avatar: _getAvatarURL(id, participant.email),
+                email: participant.email,
                 local: true,
-                name: user.displayName || 'me',
-                role: user.role || PARTICIPANT_ROLE.NONE,
+                name: participant.displayName || 'me',
+                role: participant.role || PARTICIPANT_ROLE.NONE,
                 videoType: localVideoTrack
                     ? localVideoTrack.videoType
                     : undefined
@@ -64,9 +92,10 @@ export function localParticipantJoined(id, user = {}) {
 }
 
 /**
- * Create an action for when the user in conference is focused.
+ * Create an action for when the participant in conference is focused.
  *
- * @param {string|null} id - User id or null if no one is currently focused.
+ * @param {string|null} id - Participant id or null if no one is currently
+ *     focused.
  * @returns {{
  *      type: PARTICIPANT_FOCUSED,
  *      participant: {
@@ -86,9 +115,9 @@ export function participantFocused(id) {
 /**
  * Action to handle case when participant lefts.
  *
- * @param {string} id - User id.
+ * @param {string} id - Participant id.
  * @returns {{
- *      type: PARTICIPANT_REMOVED,
+ *      type: PARTICIPANT_LEFT,
  *      participant: {
  *          id: string
  *      }
@@ -96,7 +125,7 @@ export function participantFocused(id) {
  */
 export function participantLeft(id) {
     return {
-        type: PARTICIPANT_REMOVED,
+        type: PARTICIPANT_LEFT,
         participant: {
             id
         }
@@ -104,9 +133,10 @@ export function participantLeft(id) {
 }
 
 /**
- * Create an action for when the user in conference is pinned.
+ * Create an action for when the participant in conference is pinned.
  *
- * @param {string|null} id - User id or null if no one is currently pinned.
+ * @param {string|null} id - Participant id or null if no one is currently
+ *     pinned.
  * @returns {Function}
  */
 export function participantPinned(id) {
@@ -138,8 +168,8 @@ export function participantPinned(id) {
 /**
  * Action to handle case when participant's role changes.
  *
- * @param {string} id - User id.
- * @param {PARTICIPANT_ROLE} role - User's new role
+ * @param {string} id - Participant id.
+ * @param {PARTICIPANT_ROLE} role - Participant's new role
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
@@ -159,9 +189,9 @@ export function participantRoleChanged(id, role) {
 }
 
 /**
- * Create an action for when the user in conference is selected.
+ * Create an action for when the participant in conference is selected.
  *
- * @param {string|null} id - User id. If null, no one is selected.
+ * @param {string|null} id - Participant id. If null, no one is selected.
  * @returns {Function}
  */
 export function participantSelected(id) {
@@ -180,9 +210,9 @@ export function participantSelected(id) {
 }
 
 /**
- * Create an action for when the user's video started to play.
+ * Create an action for when the participant's video started to play.
  *
- * @param {string} id - User id.
+ * @param {string} id - Participant id.
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
@@ -204,7 +234,7 @@ export function participantVideoStarted(id) {
 /**
  * Create an action for when participant video type changes.
  *
- * @param {string} id - User id.
+ * @param {string} id - Participant id.
  * @param {string} videoType - Video type ('desktop' or 'camera').
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
@@ -225,15 +255,16 @@ export function participantVideoTypeChanged(id, videoType) {
 }
 
 /**
- * Action to create a remote user.
+ * Action to create a remote participant.
  *
- * @param {string} id - User id.
- * @param {Object} [user={}] - Additional information about user.
- * @param {string} [user.avatar=''] - User's avatar.
- * @param {string} [user.displayName='Fellow Jitster'] - User's display name.
- * @param {string} [user.role='none'] - User's role.
+ * @param {string} id - Participant id.
+ * @param {Object} [participant={}] - Additional information about participant.
+ * @param {string} [participant.avatar=''] - Participant's avatar.
+ * @param {string} [participant.displayName='Fellow Jitster'] - Participant's
+ * display name.
+ * @param {string} [participant.role='none'] - Participant's role.
  * @returns {{
- *      type: PARTICIPANT_ADDED,
+ *      type: PARTICIPANT_JOINED,
  *      participant: {
  *          id: string,
  *          avatar: string,
@@ -242,16 +273,55 @@ export function participantVideoTypeChanged(id, videoType) {
  *      }
  * }}
  */
-export function remoteParticipantJoined(id, user = {}) {
+export function remoteParticipantJoined(id, participant = {}) {
     return {
-        type: PARTICIPANT_ADDED,
+        type: PARTICIPANT_JOINED,
         participant: {
             id,
-            // TODO: get avatar
-            avatar: user.avatar || '',
+            avatar: _getAvatarURL(id),
             // TODO: get default value from interface config
-            name: user.displayName || 'Fellow Jitster',
-            role: user.role || 'none'
+            name: participant.displayName || 'Fellow Jitster',
+            role: participant.role || 'none'
         }
     };
+}
+
+/**
+ * Returns the URL of the image for the avatar of a particular participant
+ * identified by their id and/or e-mail address.
+ *
+ * @param {string} participantId - Participant's id.
+ * @param {string} email - Participant's email.
+ * @returns {string} The URL of the image for the avatar of the participant
+ * identified by the specified participantId and/or email.
+ */
+function _getAvatarURL(participantId, email) {
+    // TODO: Use disableThirdPartyRequests config
+
+    let avatarId = email || participantId;
+
+    // If the ID looks like an email, we'll use gravatar.
+    // Otherwise, it's a random avatar, and we'll use the configured
+    // URL.
+    let random = !avatarId || avatarId.indexOf('@') < 0;
+
+    if (!avatarId) {
+        avatarId = participantId;
+    }
+    // MD5 is provided by Strophe
+    avatarId = MD5.hexdigest(avatarId.trim().toLowerCase());
+
+    let urlPref = null;
+    let urlSuf = null;
+    if (!random) {
+        urlPref = 'https://www.gravatar.com/avatar/';
+        urlSuf = '?d=wavatar&size=200';
+    }
+    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
+    else {
+        urlPref = 'https://robohash.org/';
+        urlSuf = '.png?size=200x200';
+    }
+
+    return urlPref + avatarId + urlSuf;
 }

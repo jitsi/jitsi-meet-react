@@ -11,6 +11,7 @@ import {
 
 import {
     AudioMutedIndicator,
+    Avatar,
     DominantSpeakerIndicator,
     ModeratorIndicator,
     VideoMutedIndicator,
@@ -123,6 +124,9 @@ class VideoThumbnail extends Component {
                         stream={streams.video}
                         onPlaying={this._onVideoPlaying}/>}
 
+                {(!streams.video || this.props.videoMuted) &&
+                    <Avatar uri={this.props.participant.avatar} />}
+
                 {this.props.participant.role === PARTICIPANT_ROLE.MODERATOR &&
                     <ModeratorIndicator />}
 
@@ -139,7 +143,6 @@ class VideoThumbnail extends Component {
         );
     }
 }
-
 
 /**
  * VideoThumbnail component's property types.

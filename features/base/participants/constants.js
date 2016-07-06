@@ -6,4 +6,3 @@ export const PARTICIPANT_ROLE = {
     NONE: 'none',
     PARTICIPANT: 'participant'
 };
-

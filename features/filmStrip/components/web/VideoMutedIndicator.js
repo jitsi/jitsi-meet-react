@@ -5,9 +5,8 @@ import Icon from 'react-fontawesome';
  * Thumbnail badge for displaying the video mute status of a participant.
  */
 export class VideoMutedIndicator extends Component {
-
     /**
-     * React render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      */

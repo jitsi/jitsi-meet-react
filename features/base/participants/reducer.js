@@ -2,10 +2,10 @@ import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_ADDED,
     PARTICIPANT_FOCUSED,
+    PARTICIPANT_JOINED,
+    PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
-    PARTICIPANT_REMOVED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -30,6 +30,7 @@ import {
  *      already started.
  * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
  *      current video stream if any.
+ * @property {string} email - participant email.
  */
 
 /**
@@ -58,7 +59,7 @@ function participant(state, action) {
             speaking: state.id === action.participant.id
         });
 
-    case PARTICIPANT_ADDED:
+    case PARTICIPANT_JOINED:
         return {
             id: action.participant.id,
             avatar: action.participant.avatar,
@@ -124,10 +125,10 @@ function participant(state, action) {
  */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
-    case PARTICIPANT_ADDED:
+    case PARTICIPANT_JOINED:
         return [ ...state, participant(undefined, action) ];
 
-    case PARTICIPANT_REMOVED:
+    case PARTICIPANT_LEFT:
         return state.filter(p => p.id !== action.participant.id);
 
     case DOMINANT_SPEAKER_CHANGED:
