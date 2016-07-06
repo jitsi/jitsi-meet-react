@@ -3,6 +3,15 @@ import { StyleSheet } from 'react-native';
 import { ColorPalette } from '../../../../base/styles';
 
 const styles = StyleSheet.create({
+
+    /**
+     * Avatar style.
+     */
+    avatar: {
+        flex: 1,
+        alignSelf: 'stretch'
+    },
+
     /**
      * Audio muted indicator style.
      */

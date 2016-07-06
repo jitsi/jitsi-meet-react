@@ -37,12 +37,12 @@ class FilmStrip extends Component {
                         // (re)renders.
                         return (
                             <VideoThumbnail
-                                audioTrack={audioTrack}
                                 audioMuted={!audioTrack || audioTrack.isMuted()}
+                                audioTrack={audioTrack}
                                 key={p.id}
                                 participant={p}
-                                videoTrack={videoTrack}
                                 videoMuted={!videoTrack || videoTrack.isMuted()}
+                                videoTrack={videoTrack}
                             />
                         );
                     })
