@@ -15,7 +15,7 @@ import Config from './config';
 import { ReducerRegistry } from './features/base/redux';
 import {
     App,
-    routerMiddleware as router
+    navigationMiddleware
 } from './features/app';
 
 // Create combined reducer from all reducers in registry + routerReducer from
@@ -31,14 +31,15 @@ const reducer = ReducerRegistry.combineReducers({
 // Here we have following middleware:
 // - Thunk - allows us to dispatch async actions easily. For more info
 // @see https://github.com/gaearon/redux-thunk.
-// - router - custom middleware to intercept routing actions. See implementation
-// for more details.
+// - navigationMiddleware - custom middleware to intercept routing actions.
+// See implementation for more details.
 // - routerMiddleware - middleware from 'react-router-redux' module to track
 // changes in browser history inside Redux state. For more information
 // @see https://github.com/reactjs/react-router-redux.
 const store = createStore(
     reducer,
-    applyMiddleware(Thunk, router, routerMiddleware(browserHistory)));
+    applyMiddleware(
+        Thunk, navigationMiddleware, routerMiddleware(browserHistory)));
 
 // Render the root component.
-ReactDOM.render((<App store={store} config={Config}/>), document.body);
+ReactDOM.render(<App store={store} config={Config}/>, document.body);

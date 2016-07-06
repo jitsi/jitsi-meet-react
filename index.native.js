@@ -7,7 +7,7 @@ import Config from './config';
 import { ReducerRegistry } from './features/base/redux';
 import {
     App,
-    routerMiddleware as router
+    navigationMiddleware
 } from './features/app';
 
 // Create combined reducer from all reducers in registry.
@@ -21,7 +21,8 @@ const reducer = ReducerRegistry.combineReducers();
 // @see https://github.com/gaearon/redux-thunk.
 // - router - custom middleware to intercept routing actions. See implementation
 // for more details.
-const store = createStore(reducer, applyMiddleware(Thunk, router));
+const store = createStore(
+    reducer, applyMiddleware(Thunk, navigationMiddleware));
 
 /**
  * React-Native doesn't support passing props to root component, so create
