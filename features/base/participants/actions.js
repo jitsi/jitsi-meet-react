@@ -2,10 +2,10 @@
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_ADDED,
+    PARTICIPANT_JOINED,
     PARTICIPANT_FOCUSED,
     PARTICIPANT_PINNED,
-    PARTICIPANT_REMOVED,
+    PARTICIPANT_LEFT,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -90,7 +90,7 @@ export function localParticipantJoined(id, participant = {}) {
         let localVideoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
 
         return dispatch({
-            type: PARTICIPANT_ADDED,
+            type: PARTICIPANT_JOINED,
             participant: {
                 id,
                 name: participant.displayName || 'me',
@@ -132,7 +132,7 @@ export function participantFocused(id) {
  *
  * @param {string} id - Participant id.
  * @returns {{
- *      type: PARTICIPANT_REMOVED,
+ *      type: PARTICIPANT_LEFT,
  *      participant: {
  *          id: string
  *      }
@@ -140,7 +140,7 @@ export function participantFocused(id) {
  */
 export function participantLeft(id) {
     return {
-        type: PARTICIPANT_REMOVED,
+        type: PARTICIPANT_LEFT,
         participant: {
             id
         }
@@ -279,7 +279,7 @@ export function participantVideoTypeChanged(id, videoType) {
  * @param {string} [participant.avatar=''] - Participant's avatar.
  * @param {string} [participant.role='none'] - Participant's role.
  * @returns {{
- *      type: PARTICIPANT_ADDED,
+ *      type: PARTICIPANT_JOINED,
  *      participant: {
  *          id: string,
  *          name: string,
@@ -290,7 +290,7 @@ export function participantVideoTypeChanged(id, videoType) {
  */
 export function remoteParticipantJoined(id, participant = {}) {
     return {
-        type: PARTICIPANT_ADDED,
+        type: PARTICIPANT_JOINED,
         participant: {
             id,
             // TODO: get default value from interface config

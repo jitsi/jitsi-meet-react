@@ -2,10 +2,10 @@ import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_ADDED,
+    PARTICIPANT_JOINED,
     PARTICIPANT_FOCUSED,
     PARTICIPANT_PINNED,
-    PARTICIPANT_REMOVED,
+    PARTICIPANT_LEFT,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -59,7 +59,7 @@ function participant(state, action) {
             speaking: state.id === action.participant.id
         });
 
-    case PARTICIPANT_ADDED:
+    case PARTICIPANT_JOINED:
         return {
             id: action.participant.id,
             name: action.participant.name,
@@ -125,10 +125,10 @@ function participant(state, action) {
  */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
-    case PARTICIPANT_ADDED:
+    case PARTICIPANT_JOINED:
         return [ ...state, participant(undefined, action) ];
 
-    case PARTICIPANT_REMOVED:
+    case PARTICIPANT_LEFT:
         return state.filter(p => p.id !== action.participant.id);
 
     case DOMINANT_SPEAKER_CHANGED:
