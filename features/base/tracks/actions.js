@@ -1,16 +1,15 @@
 import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
-    TRACK_ADDED,
-    TRACK_REMOVED
-} from './actionTypes';
-
-import {
     participantVideoTypeChanged
 } from '../../base/participants';
 
-require('./reducer');
-
+import {
+    TRACK_ADDED,
+    TRACK_MUTE_CHANGED,
+    TRACK_REMOVED
+} from './actionTypes';
+import './reducer';
 
 /**
  * Attach a set of local tracks to a conference.
@@ -148,6 +147,20 @@ export function trackAdded(track) {
 /**
  * Create an action for when a track has been signaled for removal from the
  * conference.
+ *
+ * @param {JitsiTrack} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_MUTE_CHANGED, track: JitsiTrack }}
+ */
+export function trackMuteChanged(track) {
+    return {
+        type: TRACK_MUTE_CHANGED,
+        track
+    };
+}
+
+/**
+ * Create an action for when a track has been signaled for
+ * removal from the conference.
  *
  * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}

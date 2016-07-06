@@ -6,7 +6,6 @@ import {
     PARTICIPANT_FOCUSED,
     PARTICIPANT_PINNED,
     PARTICIPANT_REMOVED,
-    PARTICIPANT_ROLE_CHANGED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -62,16 +61,16 @@ function participant(state, action) {
     case PARTICIPANT_ADDED:
         return {
             id: action.participant.id,
-            name: action.participant.name,
             avatar: action.participant.avatar,
-            role: action.participant.role,
-            local: action.participant.local || false,
-            pinned: action.participant.pinned || false,
-            speaking: action.participant.speaking || false,
             focused: action.participant.focused || false,
+            local: action.participant.local || false,
+            name: action.participant.name,
+            pinned: action.participant.pinned || false,
+            role: action.participant.role,
             selected: action.participant.selected || false,
-            videoType: action.participant.videoType || undefined,
-            videoStarted: false
+            speaking: action.participant.speaking || false,
+            videoStarted: false,
+            videoType: action.participant.videoType || undefined
         };
 
     case PARTICIPANT_FOCUSED:
@@ -107,10 +106,6 @@ function participant(state, action) {
         }
         return state;
 
-    case PARTICIPANT_ROLE_CHANGED:
-        // TODO: check how actually roles change!!
-        return state;
-
     default:
         return state;
     }
@@ -138,7 +133,6 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_FOCUSED:
     case PARTICIPANT_PINNED:
-    case PARTICIPANT_ROLE_CHANGED:
     case PARTICIPANT_SELECTED:
     case PARTICIPANT_UPDATED:
         return state.map(p => participant(p, action));

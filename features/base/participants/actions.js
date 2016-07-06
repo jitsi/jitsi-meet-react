@@ -4,17 +4,22 @@ import {
     PARTICIPANT_FOCUSED,
     PARTICIPANT_PINNED,
     PARTICIPANT_REMOVED,
-    PARTICIPANT_ROLE_CHANGED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
+import { PARTICIPANT_ROLE } from './constants';
 import './reducer';
 
 /**
  * Create an action for when dominant speaker changes.
  *
  * @param {string} id - User id.
- * @returns {Object}
+ * @returns {{
+ *      type: DOMINANT_SPEAKER_CHANGED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
  */
 export function dominantSpeakerChanged(id) {
     return {
@@ -46,10 +51,10 @@ export function localParticipantJoined(id, user = {}) {
             type: PARTICIPANT_ADDED,
             participant: {
                 id,
-                name: user.displayName || 'me',
                 avatar: user.avatar || '',
-                role: user.role || 'none',
                 local: true,
+                name: user.displayName || 'me',
+                role: user.role || PARTICIPANT_ROLE.NONE,
                 videoType: localVideoTrack
                     ? localVideoTrack.videoType
                     : undefined
@@ -134,18 +139,18 @@ export function participantPinned(id) {
  * Action to handle case when participant's role changes.
  *
  * @param {string} id - User id.
- * @param {string} role - User's new role.
+ * @param {PARTICIPANT_ROLE} role - User's new role
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
  *          id: string,
- *          role: string
+ *          role: PARTICIPANT_ROLE
  *      }
  * }}
  */
 export function participantRoleChanged(id, role) {
     return {
-        type: PARTICIPANT_ROLE_CHANGED,
+        type: PARTICIPANT_UPDATED,
         participant: {
             id,
             role
@@ -224,28 +229,28 @@ export function participantVideoTypeChanged(id, videoType) {
  *
  * @param {string} id - User id.
  * @param {Object} [user={}] - Additional information about user.
- * @param {string} [user.displayName='Fellow Jitster'] - User's display name.
  * @param {string} [user.avatar=''] - User's avatar.
+ * @param {string} [user.displayName='Fellow Jitster'] - User's display name.
  * @param {string} [user.role='none'] - User's role.
  * @returns {{
  *      type: PARTICIPANT_ADDED,
  *      participant: {
  *          id: string,
- *          name: string,
  *          avatar: string,
- *          role: string
+ *          name: string,
+ *          role: PARTICIPANT_ROLE
  *      }
- *  }}
+ * }}
  */
 export function remoteParticipantJoined(id, user = {}) {
     return {
         type: PARTICIPANT_ADDED,
         participant: {
             id,
-            // TODO: get default value from interface config
-            name: user.displayName || 'Fellow Jitster',
             // TODO: get avatar
             avatar: user.avatar || '',
+            // TODO: get default value from interface config
+            name: user.displayName || 'Fellow Jitster',
             role: user.role || 'none'
         }
     };

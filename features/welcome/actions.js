@@ -10,7 +10,8 @@ import {
 import {
     addTracksToConference,
     createLocalTracks,
-    trackAdded
+    trackAdded,
+    trackMuteChanged
 } from '../base/tracks';
 
 import {
@@ -38,6 +39,9 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
             () => dispatch(conferenceJoined(conference)));
 
+        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
+            id => dispatch(dominantSpeakerChanged(id)));
+
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
                 if (!track || track.isLocal()) {
@@ -51,21 +55,18 @@ export function conferenceInitialized(conference) {
                         track.getParticipantId(), type));
                 });
             });
-
-        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
-            id => dispatch(dominantSpeakerChanged(id)));
-
-        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
-            (id, role) => dispatch(participantRoleChanged(id, role)));
+        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
+            track => dispatch(trackMuteChanged(track)));
 
         conference.on(JitsiConferenceEvents.USER_JOINED,
             (id, user) => dispatch(remoteParticipantJoined(id, {
                 role: user.getRole(),
                 displayName: user.getDisplayName()
             })));
-
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));
+        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
+            (id, role) => dispatch(participantRoleChanged(id, role)));
 
         conference.join();
     };
@@ -146,7 +147,6 @@ export function connectionInitialized(connection, room) {
         connection.addEventListener(
             JitsiConnectionEvents.CONNECTION_DISCONNECTED,
             msg => dispatch(connectionDisconnected(msg)));
-
         connection.addEventListener(
             JitsiConnectionEvents.CONNECTION_ESTABLISHED,
             id => {
@@ -157,7 +157,6 @@ export function connectionInitialized(connection, room) {
                 dispatch(connectionEstablished(id));
                 dispatch(conferenceInitialized(conference));
             });
-
         connection.addEventListener(
             JitsiConnectionEvents.CONNECTION_FAILED,
             err => dispatch(connectionError(err)));
