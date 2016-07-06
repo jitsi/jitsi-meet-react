@@ -20,6 +20,39 @@ import { DEVICE_TYPE } from './constants';
 
 require('./reducer');
 
+const JitsiTrackErrors = JitsiMeetJS.errors.track;
+
+/**
+ * Function to remove tracks that fall under specific filter condition.
+ *
+ * @param {Function} filter - Filtering  function, receives JitsiTrack instance
+ *      as an argument.
+ * @returns {Function}
+ */
+function removeTracks(filter) {
+    return (dispatch, getState) => {
+        let tracks = getState()['features/base/tracks'].filter(filter);
+
+        return Promise.all(tracks.map(track => {
+            let promise = Promise.resolve();
+
+            // Dispose local track.
+            if (track.isLocal()) {
+                promise = track.dispose()
+                    .catch(err => {
+                        // Track might be already disposed, so we ignore this
+                        // error, but re-throw error in other cases.
+                        if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
+                            throw err;
+                        }
+                    });
+            }
+
+            return promise
+                .then(() => dispatch(trackRemoved(track)));
+        }));
+    };
+}
 
 /**
  * Attach a set of local tracks to a conference.
@@ -206,12 +239,7 @@ export function trackRemoved(track) {
  * @returns {Function}
  */
 export function removeRemoteTracks() {
-    return (dispatch, getState) => {
-        let remoteTracks = getState()['features/base/tracks']
-            .filter(t => !t.isLocal());
-        
-        return Promise.all(remoteTracks.map(t => dispatch(trackRemoved(t))));
-    };
+    return dispatch => dispatch(removeTracks(t => !t.isLocal()));
 }
 
 /**
@@ -220,10 +248,5 @@ export function removeRemoteTracks() {
  * @returns {Function}
  */
 export function removeLocalTracks() {
-    return (dispatch, getState) => {
-        let localTracks = getState()['features/base/tracks']
-            .filter(t => t.isLocal());
-
-        return Promise.all(localTracks.map(t => dispatch(trackRemoved(t))));
-    };
+    return dispatch => dispatch(removeTracks(t => t.isLocal()));
 }
