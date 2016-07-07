@@ -1,6 +1,7 @@
 import JitsiMeetJS from '../base/lib-jitsi-meet';
 
 import {
+    changeParticipantEmail,
     dominantSpeakerChanged,
     localParticipantJoined,
     participantLeft,
@@ -13,6 +14,7 @@ import {
     addTracksToConference,
     createLocalTracks,
     trackAdded,
+    trackMuteChanged,
     trackRemoved
 } from '../base/tracks';
 
@@ -25,6 +27,8 @@ import {
     JITSI_CONFERENCE_LEFT,
     RTC_ERROR
 } from './actionTypes';
+
+import { EMAIL_COMMAND } from './constants';
 
 import './reducer';
 
@@ -49,6 +53,9 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.CONFERENCE_LEFT,
             () => dispatch(conferenceLeft()));
 
+        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
+            id => dispatch(dominantSpeakerChanged(id)));
+
         conference.on(JitsiConferenceEvents.TRACK_ADDED,
             track => {
                 if (!track || track.isLocal()) {
@@ -62,24 +69,27 @@ export function conferenceInitialized(conference) {
                         track.getParticipantId(), type));
                 });
             });
+        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
+            track => dispatch(trackMuteChanged(track)));
 
         conference.on(JitsiConferenceEvents.TRACK_REMOVED,
             track => dispatch(trackRemoved(track)));
-
-        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
-            id => dispatch(dominantSpeakerChanged(id)));
-
-        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
-            (id, role) => dispatch(participantRoleChanged(id, role)));
 
         conference.on(JitsiConferenceEvents.USER_JOINED,
             (id, user) => dispatch(remoteParticipantJoined(id, {
                 role: user.getRole(),
                 displayName: user.getDisplayName()
             })));
-
+        
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));
+        
+        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
+            (id, role) => dispatch(participantRoleChanged(id, role)));
+
+        conference.addCommandListener(EMAIL_COMMAND, (data, id) => {
+            dispatch(changeParticipantEmail(id, data.value));
+        });
 
         conference.join();
     };

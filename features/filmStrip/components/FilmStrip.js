@@ -6,6 +6,7 @@ import { FilmStripContainer } from './_';
 
 /**
  * React component for film strip.
+ *
  * @extends Component
  */
 class FilmStrip extends Component {
@@ -17,37 +18,53 @@ class FilmStrip extends Component {
     render() {
         return (
             <FilmStripContainer>
-                {
-                    this.props.participants
-                        .sort((a,b) => b.local - a.local)
-                        .map(p => {
-                            let videoTrack = this.props.tracks.find(t => {
-                                return t.isVideoTrack() &&
-                                    ((p.local && t.isLocal()) ||
-                                    (!p.local && !t.isLocal() &&
-                                        t.getParticipantId() === p.id));
-                            });
+            {
+                this.props.participants
+                    .sort((a, b) => b.local - a.local)
+                    .map(p => {
+                        let audioTrack = this.props.tracks.find(t => (
+                            t.isAudioTrack() && _isParticipantTrack(p, t)
+                        ));
+                        let videoTrack = this.props.tracks.find(t => (
+                            t.isVideoTrack() && _isParticipantTrack(p, t)
+                        ));
 
-                            let audioTrack = this.props.tracks.find(t => {
-                                return t.isAudioTrack() &&
-                                    ((p.local && t.isLocal()) ||
-                                    (!p.local && !t.isLocal() &&
-                                        t.getParticipantId() === p.id));
-                            });
-
-                            return (
-                                <VideoThumbnail
-                                    key={p.id}
-                                    participant={p}
-                                    videoTrack={videoTrack}
-                                    audioTrack={audioTrack}
-                                />
-                            );
-                        })
-                }
+                        // XXX The props audioMuted and videoMuted would,
+                        // generally, be computed inside VideoThumbain because
+                        // their values are derived through audioTrack and
+                        // videoTrack, respectively. However, changes to the
+                        // values of audioMuted or videoMuted should trigger
+                        // (re)renders.
+                        return (
+                            <VideoThumbnail
+                                audioMuted={!audioTrack || audioTrack.isMuted()}
+                                audioTrack={audioTrack}
+                                key={p.id}
+                                participant={p}
+                                videoMuted={!videoTrack || videoTrack.isMuted()}
+                                videoTrack={videoTrack}
+                            />
+                        );
+                    })
+            }
             </FilmStripContainer>
         );
     }
+}
+
+/**
+ * Determines whether a specific JitsiTrack belongs to a specific participant.
+ *
+ * @param {Object} p - The participant who is the possible owner of the
+ * specified JitsiTrack.
+ * @param {JitsiTrack} t - The JitsiTrack which is to be determined whether it
+ * belongs to the specified participant
+ * @returns {boolean} True if the specified JitsiTrack belongs to the specified
+ * participant; otherwise, false.
+ */
+function _isParticipantTrack(p, t) {
+    // XXX The method getParticipantId() is defined on JitsiRemoteTrack only.
+    return t.isLocal() ? p.local : (t.getParticipantId() === p.id);
 }
 
 /**

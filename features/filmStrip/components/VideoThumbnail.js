@@ -3,12 +3,20 @@ import { connect } from 'react-redux';
 
 import { Audio, Video } from '../../base/media';
 import {
+    PARTICIPANT_ROLE,
     participantFocused,
     participantPinned,
     participantVideoStarted
 } from '../../base/participants';
 
-import { VideoThumbnailContainer } from './_';
+import {
+    AudioMutedIndicator,
+    Avatar,
+    DominantSpeakerIndicator,
+    ModeratorIndicator,
+    VideoMutedIndicator,
+    VideoThumbnailContainer
+} from './_';
 
 /**
  * React component for video thumbnail.
@@ -49,7 +57,7 @@ class VideoThumbnail extends Component {
      *
      * @returns {void}
      */
-    handleVideoThumbClicked () {
+    handleVideoThumbClicked() {
         // TODO: this currently ignores interfaceConfig.filmStripOnly
         this.props.dispatch(participantFocused(
             this.props.participant.focused
@@ -107,11 +115,30 @@ class VideoThumbnail extends Component {
             <VideoThumbnailContainer
                 focused={this.props.participant.focused}
                 onClick={this._onClick}>
-                {streams.video && <Video
-                    stream={streams.video}
-                    onPlaying={this._onVideoPlaying}/>}
-                {streams.audio && <Audio
-                    stream={streams.audio}/>}
+
+                {streams.audio &&
+                    <Audio stream={streams.audio}/>}
+
+                {streams.video && !this.props.videoMuted &&
+                    <Video
+                        stream={streams.video}
+                        onPlaying={this._onVideoPlaying}/>}
+
+                {(!streams.video || this.props.videoMuted) &&
+                    <Avatar uri={this.props.participant.avatar} />}
+
+                {this.props.participant.role === PARTICIPANT_ROLE.MODERATOR &&
+                    <ModeratorIndicator />}
+
+                {this.props.participant.speaking &&
+                    <DominantSpeakerIndicator />}
+
+                {this.props.audioMuted &&
+                    <AudioMutedIndicator />}
+
+                {this.props.videoMuted &&
+                    <VideoMutedIndicator />}
+
             </VideoThumbnailContainer>
         );
     }
@@ -123,9 +150,11 @@ class VideoThumbnail extends Component {
  * @static
  */
 VideoThumbnail.propTypes = {
+    audioMuted: React.PropTypes.bool,
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     participant: React.PropTypes.object,
+    videoMuted: React.PropTypes.bool,
     videoTrack: React.PropTypes.object
 };
 
