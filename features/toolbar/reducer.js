@@ -1,6 +1,5 @@
+import { CONNECTION_DISCONNECTED } from '../base/connection';
 import { ReducerRegistry } from '../base/redux';
-
-import { JITSI_CLIENT_DISCONNECTED } from '../welcome';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -45,7 +44,7 @@ ReducerRegistry.register(
         /**
          * Reset toolbar to initial state when connection is disconnected.
          */
-        case JITSI_CLIENT_DISCONNECTED:
+        case CONNECTION_DISCONNECTED:
             return INITIAL_STATE;
 
         default:

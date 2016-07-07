@@ -5,12 +5,13 @@ import { applyMiddleware, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
+import { init } from './features/base/connection';
 import { APP_NAVIGATE } from './features/base/navigation';
 import { ReducerRegistry } from './features/base/redux';
-import { Conference } from './features/conference';
+import { Conference } from './features/conferenceUI';
 // FIXME Don't import private styles. Move common/shared styles to a feature in
 // base.
-import { init, styles, WelcomePage } from './features/welcome';
+import { styles, WelcomePage } from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both

@@ -141,7 +141,7 @@ export function participantLeft(id) {
  */
 export function participantPinned(id) {
     return (dispatch, getState) => {
-        let conference = getState()['features/welcome'].conference;
+        let conference = getState()['features/base/conference'];
         let participants = getState()['features/base/participants'];
         let participant = participants.find(p => p.id === id);
         let localParticipant = participants.find(p => p.local);
@@ -196,7 +196,7 @@ export function participantRoleChanged(id, role) {
  */
 export function participantSelected(id) {
     return (dispatch, getState) => {
-        let conference = getState()['features/welcome'].conference;
+        let conference = getState()['features/base/conference'];
 
         conference && conference.selectParticipant(id);
 

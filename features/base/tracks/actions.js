@@ -40,7 +40,7 @@ export function addTracksToConference(conference, localTracks) {
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
-        const conference = getState()['features/welcome'].conference;
+        const conference = getState()['features/base/conference'];
         let tracksToAdd = [];
         let tracksToRemove = [];
         let newAudioTrack;

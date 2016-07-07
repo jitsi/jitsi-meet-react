@@ -62,23 +62,19 @@ function disposeLocalTracks(tracks) {
 export function hangup() {
     return (dispatch, getState) => {
         const state = getState();
-        const stateFeaturesWelcome = state['features/welcome'];
-        const stateFeaturesTracks = state['features/base/tracks'];
-        const conference = stateFeaturesWelcome.conference;
-        const connection = stateFeaturesWelcome.connection;
-
-        // Actually order of calls is not quite correct here. Instead we should
-        // dispose local tracks after we left the conference. However due to bug
-        // in lib-jitsi-meet it creates a circular dependency. We should replace
-        // this with null when calling track._setConference() in
-        // JitsiConference.js at line 449. Then we will be able to call dispose
-        // after conference is left.
-        let promise = disposeLocalTracks(stateFeaturesTracks);
+        const tracks = state['features/base/tracks'];
+        const conference = state['features/base/conference'];
+        const connection = state['features/base/connection'];
+        
+        let promise = Promise.resolve();
 
         if (conference) {
             promise = promise
                 .then(() => conference.leave());
         }
+
+        promise = promise
+            .then(() => disposeLocalTracks(tracks));
 
         if (connection) {
             promise = promise

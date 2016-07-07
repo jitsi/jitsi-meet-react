@@ -1,11 +1,7 @@
+import { CONFERENCE_LEFT } from '../conference';
+import { CONNECTION_DISCONNECTED } from '../connection';
+import { PARTICIPANT_LEFT } from '../participants';
 import { ReducerRegistry } from '../redux';
-
-import { PARTICIPANT_REMOVED } from '../participants';
-
-import {
-    JITSI_CLIENT_DISCONNECTED,
-    JITSI_CONFERENCE_LEFT
-} from '../../welcome';
 
 import {
     TRACK_ADDED,
@@ -14,26 +10,26 @@ import {
 } from './actionTypes';
 
 /**
- * Listen for actions that add or remove remote tracks.
+ * Listen for actions that add or remove remote and local tracks.
  */
 ReducerRegistry.register('features/base/tracks', (state = [], action) => {
     switch (action.type) {
     /**
      * Remove all tracks when connection is disconnected.
      */
-    case JITSI_CLIENT_DISCONNECTED:
+    case CONNECTION_DISCONNECTED:
         return [];
 
     /**
      * Remove remote tracks when conference is left.
      */
-    case JITSI_CONFERENCE_LEFT:
+    case CONFERENCE_LEFT:
         return state.filter(track => track.isLocal());
 
     /**
-     * Remove participant's tracks when participant is removed.
+     * Remove participant's tracks when participant is left.
      */
-    case PARTICIPANT_REMOVED:
+    case PARTICIPANT_LEFT:
         return state.filter(track => action.participant.local
             ? !track.isLocal()
             : track.isLocal() || (!track.isLocal() &&
