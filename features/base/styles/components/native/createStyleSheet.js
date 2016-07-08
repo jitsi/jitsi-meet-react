@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 
-
 /**
  * Create a native style sheet using the provided style definitions.
  *
@@ -10,4 +9,3 @@ import { StyleSheet } from 'react-native';
 export function createStyleSheet(styles) {
     return StyleSheet.create(styles);
 }
-

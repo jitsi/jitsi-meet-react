@@ -2,24 +2,19 @@ import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
 /**
  * The toolbar related styles.
- * TODO: Make styles more generic and reusable. Use color palette for all
- * colors.
+ * TODO Make styles more generic and reusable. Use ColorPalette for all colors.
  */
-var styles = createStyleSheet({
+const styles = createStyleSheet({  
     /**
-     * The toolbar container style.
+     * The toolbar button icon style.
      */
-    toolbarContainer: {
-        bottom: 30,
-        flex: 1,
-        flexDirection: 'row',
-        height: 70,
-        justifyContent: 'center',
-        left: 0,
-        position: 'absolute',
-        right: 0,
+    icon: {
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 24,
         textAlign: 'center'
     },
+
     /**
      * The toolbar button style.
      */
@@ -35,13 +30,19 @@ var styles = createStyleSheet({
         marginRight: 20,
         width: 70
     },
+
     /**
-     * The toolbar button icon style.
+     * The toolbar container style.
      */
-    icon: {
-        alignSelf: 'center',
-        color: 'white',
-        fontSize: 24,
+    toolbarContainer: {
+        bottom: 30,
+        flex: 1,
+        flexDirection: 'row',
+        height: 70,
+        justifyContent: 'center',
+        left: 0,
+        position: 'absolute',
+        right: 0,
         textAlign: 'center'
     }
 });

@@ -18,8 +18,9 @@ export class VideoThumbnailContainer extends Component {
             : styles.thumbnail;
 
         return (
-          <div onClick={this.props.onClick}
-               style = { containerStyle }>
+          <div
+              onClick={ this.props.onClick }
+              style={ containerStyle }>
               { this.props.children }
           </div>
         );
@@ -32,7 +33,7 @@ export class VideoThumbnailContainer extends Component {
  * @static
  */
 VideoThumbnailContainer.propTypes = {
-    onClick: React.PropTypes.func,
+    children: React.PropTypes.node,
     focused: React.PropTypes.bool,
-    children: React.PropTypes.node
+    onClick: React.PropTypes.func
 };

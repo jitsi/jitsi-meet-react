@@ -1,11 +1,10 @@
 import { createStyleSheet } from '../../../base/styles';
 
 /**
- * The video screen style.
- * TODO: Make styles more generic and reusable. Use color palette for all
- * colors.
+ * The style of the conference UI (component).
+ * TODO Make styles more generic and reusable. Use ColorPalette for all colors.
  */
-var styles = createStyleSheet({
+const styles = createStyleSheet({
     /**
      * Conference container style.
      */

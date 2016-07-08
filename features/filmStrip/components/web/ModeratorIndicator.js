@@ -3,7 +3,6 @@ import Icon from 'react-fontawesome';
 
 import styles from '../styles/Styles';
 
-
 /**
  * Thumbnail badge showing that the participant is a conference moderator.
  */
@@ -15,7 +14,10 @@ export class ModeratorIndicator extends Component {
      */
     render() {
         return (
-            <Icon style={styles.moderatorIndicator} name='star' />
+            <Icon
+                name='star'
+                style={ styles.moderatorIndicator }
+            />
         );
     }
 }

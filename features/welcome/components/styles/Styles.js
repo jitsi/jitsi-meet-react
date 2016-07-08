@@ -7,20 +7,25 @@ import { ColorPalette, createStyleSheet } from '../../../base/styles';
  */
 var styles = createStyleSheet({
     /**
-     * Navigator container style.
+     * Join button text style.
      */
-    navContainer: {
-        backgroundColor: '#111111',
-        flex: 1
+    button: {
+        backgroundColor: 'white',
+        borderColor: 'white',
+        borderRadius: 8,
+        borderWidth: 1,
+        height: 45,
+        justifyContent: 'center',
+        marginBottom: 10,
+        marginTop: 10
     },
     /**
-     * Application title style.
+     * Join button text style.
      */
-    title: {
-        color: '#fff',
-        fontSize: 25,
-        marginBottom: 20,
-        textAlign: 'center'
+    buttonText: {
+        alignSelf: 'center',
+        color: '#00ccff',
+        fontSize: 18
     },
     /**
      * Welcome page container style.
@@ -39,6 +44,13 @@ var styles = createStyleSheet({
         top: 0
     },
     /**
+     * Navigator container style.
+     */
+    navContainer: {
+        backgroundColor: '#111111',
+        flex: 1
+    },
+    /**
      * Room input style.
      */
     textInput: {
@@ -54,25 +66,13 @@ var styles = createStyleSheet({
         textAlign: 'center'
     },
     /**
-     * Join button text style.
+     * Application title style.
      */
-    buttonText: {
-        alignSelf: 'center',
-        color: '#00ccff',
-        fontSize: 18
-    },
-    /**
-     * Join button text style.
-     */
-    button: {
-        backgroundColor: 'white',
-        borderColor: 'white',
-        borderRadius: 8,
-        borderWidth: 1,
-        height: 45,
-        justifyContent: 'center',
-        marginBottom: 10,
-        marginTop: 10
+    title: {
+        color: '#fff',
+        fontSize: 25,
+        marginBottom: 20,
+        textAlign: 'center'
     }
 });
 

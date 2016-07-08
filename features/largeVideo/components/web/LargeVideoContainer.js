@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import styles from '../styles/Styles';
 
 /**
@@ -13,7 +14,7 @@ export class LargeVideoContainer extends Component {
      */
     render() {
         return (
-          <div style={styles.container}>{this.props.children}</div>
+          <div style={ styles.container }>{ this.props.children }</div>
         );
     }
 }

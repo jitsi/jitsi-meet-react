@@ -1,6 +1,5 @@
 import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
-
 const styles = createStyleSheet({
     /**
      * Avatar style.

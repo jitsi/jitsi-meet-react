@@ -8,9 +8,7 @@
     "eslint": "node_modules/eslint/bin/eslint.js \"config.js\" \"features/**/*.js\" \"index.*.js\"",
     "start:android": "npm run clean; react-native run-android",
     "start:ios": "npm run clean; react-native run-ios",
-    "start:web": "webpack-dev-server --inline --hot --colors --port 5000 --https --history-api-fallback --open",
-    "lint": "eslint .",
-    "validate": "npm ls"
+    "start:web": "webpack-dev-server --inline --hot --colors --port 5000 --https --history-api-fallback --open"
   },
   "dependencies": {
     "getconfig": "^3.0.0",

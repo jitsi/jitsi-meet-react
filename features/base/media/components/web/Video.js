@@ -32,12 +32,13 @@ export class Video extends Component {
             : '';
 
         return (
-            <video autoPlay
-                style={styles.video}
-                onPlaying={this.props.onPlaying}
-                muted={this.props.muted}
-                src={src}
-            ></video>
+            <video
+                autoPlay
+                muted={ this.props.muted }
+                onPlaying={ this.props.onPlaying }
+                src={ src }
+                style={ styles.video }
+            />
         );
     }
 }

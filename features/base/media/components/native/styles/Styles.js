@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 /**
- * Native specific styles for media components.
+ * Native-specific styles for media components.
  */
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
     /**
      * Make video element fill its container.
      */

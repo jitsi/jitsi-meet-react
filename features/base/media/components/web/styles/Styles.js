@@ -1,7 +1,7 @@
 /**
- * Web specific styles for media components.
+ * Web-specific styles for media components.
  */
-var styles = {
+const styles = {
     /**
      * Make video element fill its container.
      */

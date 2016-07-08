@@ -34,7 +34,10 @@ export class Video extends Component {
             let streamURL = stream.toURL();
 
             return (
-                <RTCView style={ styles.video } streamURL={ streamURL }/>
+                <RTCView
+                    streamURL={ streamURL }
+                    style={ styles.video }
+                />
             );
         }
 
@@ -52,7 +55,7 @@ export class Video extends Component {
  * @static
  */
 Video.propTypes = {
-    stream: React.PropTypes.object,
     muted: React.PropTypes.bool,
-    onPlaying: React.PropTypes.func
+    onPlaying: React.PropTypes.func,
+    stream: React.PropTypes.object
 };

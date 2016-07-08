@@ -15,7 +15,7 @@ export class ConferenceContainer extends Component {
      */
     render() {
         return (
-            <View style = { styles.conference }>{ this.props.children }</View>
+            <View style={ styles.conference }>{ this.props.children }</View>
         );
     }
 }

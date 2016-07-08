@@ -7,4 +7,3 @@ export const ColorPalette = {
     jitsiRed: '#ff0000',
     jitsiToggled: '#495258'
 };
-

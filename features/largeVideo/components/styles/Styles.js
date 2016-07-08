@@ -1,14 +1,6 @@
 import { createStyleSheet } from '../../../base/styles';
 
-var styles = createStyleSheet({
-    /**
-     * Large video container style.
-     */
-    largeVideo: {
-        alignSelf: 'stretch',
-        flex: 1
-    },
-
+const styles = createStyleSheet({
     container: {
         alignSelf: 'stretch',
         backgroundColor: 'black',
@@ -18,6 +10,14 @@ var styles = createStyleSheet({
         position: 'absolute',
         right: 0,
         top: 0
+    },
+
+    /**
+     * Large video container style.
+     */
+    largeVideo: {
+        alignSelf: 'stretch',
+        flex: 1
     }
 });
 
