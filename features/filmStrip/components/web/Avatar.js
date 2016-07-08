@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import styles from './styles/Styles';
+
 /**
  * Display a participant avatar.
  */
@@ -11,7 +13,7 @@ export class Avatar extends Component {
      */
     render() {
         return (
-            <img src={ this.props.uri } />
+            <img style={styles.avatar} src={ this.props.uri } />
         );
     }
 }

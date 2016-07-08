@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableHighlight, View } from 'react-native';
 
-import styles from './styles/Styles';
+import styles from '../styles/Styles';
 
 /**
  * Web version of Video Thumbnail Container component.
