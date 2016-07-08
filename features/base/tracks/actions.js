@@ -9,7 +9,10 @@ import {
     TRACK_MUTE_CHANGED,
     TRACK_REMOVED
 } from './actionTypes';
+
 import './reducer';
+
+const TrackErrors = JitsiMeetJS.errors.track;
 
 /**
  * Attach a set of local tracks to a conference.
@@ -30,6 +33,32 @@ export function addTracksToConference(conference, localTracks) {
 }
 
 /**
+ * Calls JitsiLocalTrack#dispose() on all local tracks ignoring errors when
+ * track is already disposed.
+ *
+ * @returns {Function}
+ */
+export function disposeLocalTracks() {
+    return (dispatch, getState) => {
+        const tracks = getState()['features/base/tracks'];
+        
+        return Promise.all(
+            tracks
+                .filter(t => t.isLocal())
+                .map(t => {
+                    return t.dispose()
+                        .catch(err => {
+                            // Track might be already disposed, so we ignore
+                            // this error, but re-throw error in other cases.
+                            if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
+                                throw err;
+                            }
+                        });
+                }));
+    };
+}
+
+/**
  * Add new local tracks to the conference, replacing any existing tracks that
  * were previously attached.
  *
@@ -39,7 +68,7 @@ export function addTracksToConference(conference, localTracks) {
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
-        const conference = getState()['features/welcome'].conference;
+        const conference = getState()['features/base/conference'];
         let tracksToAdd = [];
         let tracksToRemove = [];
         let newAudioTrack;

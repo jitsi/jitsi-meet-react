@@ -1,3 +1,4 @@
+import { CONNECTION_DISCONNECTED } from '../base/connection';
 import { ReducerRegistry } from '../base/redux';
 
 import {
@@ -39,6 +40,12 @@ ReducerRegistry.register(
                 ...state,
                 videoMuted: !state.videoMuted
             };
+
+        /**
+         * Reset toolbar to initial state when connection is disconnected.
+         */
+        case CONNECTION_DISCONNECTED:
+            return INITIAL_STATE;
 
         default:
             return state;
