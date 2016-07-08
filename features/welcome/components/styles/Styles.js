@@ -1,72 +1,79 @@
-import { ColorPalette } from '../../../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
 /**
  * The welcome page style.
  * TODO: Make styles more generic and reusable. Use color palette for all
  * colors.
  */
-var styles = {
+var styles = createStyleSheet({
     /**
      * Navigator container style.
      */
     navContainer: {
-        flex: 1,
-        backgroundColor: '#111111'
+        backgroundColor: '#111111',
+        flex: 1
     },
     /**
      * Application title style.
      */
     title: {
-        marginBottom: 20,
+        color: '#fff',
         fontSize: 25,
-        textAlign: 'center',
-        color: '#fff'
+        marginBottom: 20,
+        textAlign: 'center'
     },
     /**
      * Welcome page container style.
      */
     container: {
+        alignSelf: 'stretch',
+        backgroundColor: ColorPalette.jitsiBlue,
+        bottom: 0,
         flex: 1,
-        padding: 30,
+        flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: ColorPalette.jitsiBlue
+        left: 0,
+        padding: 30,
+        position: 'absolute',
+        right: 0,
+        top: 0
     },
     /**
      * Room input style.
      */
     textInput: {
-        height: 50,
-        padding: 4,
-        fontSize: 23,
-        borderWidth: 1,
+        backgroundColor: ColorPalette.jitsiBlue,
         borderColor: 'white',
         borderRadius: 8,
-        color: 'black'
+        borderStyle: 'solid',
+        borderWidth: 1,
+        color: 'white',
+        fontSize: 23,
+        height: 50,
+        padding: 4,
+        textAlign: 'center'
     },
     /**
      * Join button text style.
      */
     buttonText: {
-        fontSize: 18,
+        alignSelf: 'center',
         color: '#00ccff',
-        alignSelf: 'center'
+        fontSize: 18
     },
     /**
      * Join button text style.
      */
     button: {
-        height: 45,
-        flexDirection: 'row',
         backgroundColor: 'white',
         borderColor: 'white',
-        borderWidth: 1,
         borderRadius: 8,
+        borderWidth: 1,
+        height: 45,
+        justifyContent: 'center',
         marginBottom: 10,
-        marginTop: 10,
-        alignSelf: 'stretch',
-        justifyContent: 'center'
+        marginTop: 10
     }
-};
+});
 
 export default styles;

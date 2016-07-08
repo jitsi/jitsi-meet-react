@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Icon from 'react-fontawesome';
 
+import styles from '../styles/Styles';
+
 /**
  * Thumbnail badge showing that the participant is the dominant speaker in
  * the conference.
@@ -13,8 +15,8 @@ export class DominantSpeakerIndicator extends Component {
      */
     render() {
         return (
-            <div>
-                <Icon name='bullhorn' />
+            <div style={styles.dominantSpeakerIndicatorBackground}>
+                <Icon style={styles.dominantSpeakerIndicator} name='bullhorn' />
             </div>
         );
     }

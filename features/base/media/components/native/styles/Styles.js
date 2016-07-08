@@ -1,8 +1,11 @@
 import { StyleSheet } from 'react-native';
 
+/**
+ * Native specific styles for media components.
+ */
 var styles = StyleSheet.create({
     /**
-     * Conference container style.
+     * Make video element fill its container.
      */
     video: {
         alignSelf: 'stretch',

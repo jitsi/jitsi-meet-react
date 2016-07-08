@@ -24,6 +24,8 @@ module.exports = {
     ],
     module: {
         loaders: [
+            // Process all JavaScript files as ECMAScript2015, along with
+            // accepting the JSX syntax used by React.
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
@@ -31,6 +33,23 @@ module.exports = {
                 query: {
                     presets: ['es2015', 'react', 'stage-1']
                 }
+            },
+            // Load CSS files that are required in modules.
+            {
+                test: /\.css$/,
+                exclude: /node_modules/,
+                loader: 'style-loader!css-loader',
+            },
+            // Load font files for font-awesome. It uses a trailing version
+            // number in the names when requiring so we have to accept them
+            // in our test regex.
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'url-loader?limit=10000&minetype=application/font-woff'
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'file-loader'
             },
             // Disable AMD for Strophe and its plugins because we don't know how
             // to require them successfully.

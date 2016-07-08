@@ -18,6 +18,7 @@ import {
     VideoThumbnailContainer
 } from './_';
 
+
 /**
  * React component for video thumbnail.
  * @extends Component
