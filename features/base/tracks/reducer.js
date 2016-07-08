@@ -1,5 +1,3 @@
-import { CONFERENCE_LEFT } from '../conference';
-import { CONNECTION_DISCONNECTED } from '../connection';
 import { PARTICIPANT_LEFT } from '../participants';
 import { ReducerRegistry } from '../redux';
 
@@ -14,18 +12,6 @@ import {
  */
 ReducerRegistry.register('features/base/tracks', (state = [], action) => {
     switch (action.type) {
-    /**
-     * Remove all tracks when connection is disconnected.
-     */
-    case CONNECTION_DISCONNECTED:
-        return [];
-
-    /**
-     * Remove remote tracks when conference is left.
-     */
-    case CONFERENCE_LEFT:
-        return state.filter(track => track.isLocal());
-
     /**
      * Remove participant's tracks when participant is left.
      */

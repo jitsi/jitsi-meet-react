@@ -127,23 +127,23 @@ function participant(state, action) {
  */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
-    case PARTICIPANT_JOINED:
-        return [ ...state, participant(undefined, action) ];
-
-    case PARTICIPANT_LEFT:
-        return state.filter(p => p.id !== action.participant.id);
-
-    /**
-     * Remove all participants when connection is disconnected.
-     */
-    case CONNECTION_DISCONNECTED:
-        return [];
-
     /**
      * Remove remote participants when conference is left.
      */
     case CONFERENCE_LEFT:
         return state.filter(p => p.local);
+
+    /**
+     * Remove local participants when connection is disconnected.
+     */
+    case CONNECTION_DISCONNECTED:
+        return state.filter(p => !p.local);
+    
+    case PARTICIPANT_JOINED:
+        return [ ...state, participant(undefined, action) ];
+
+    case PARTICIPANT_LEFT:
+        return state.filter(p => p.id !== action.participant.id);
 
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_FOCUSED:

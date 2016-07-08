@@ -1,4 +1,3 @@
-import { CONNECTION_DISCONNECTED } from '../connection';
 import { ReducerRegistry } from '../redux';
 
 import {
@@ -15,7 +14,6 @@ ReducerRegistry.register('features/base/conference', (state = null, action) => {
     case CONFERENCE_JOINED:
         return action.conference;
 
-    case CONNECTION_DISCONNECTED:
     case CONFERENCE_LEFT:
         return null;
 

@@ -1,6 +1,7 @@
-import JitsiMeetJS from '../base/lib-jitsi-meet';
-
-import { createLocalTracks } from '../base/tracks';
+import {
+    createLocalTracks,
+    disposeLocalTracks
+} from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -28,32 +29,6 @@ const MEDIA_TYPE = {
     AUDIO: 'audio'
 };
 
-const TrackErrors = JitsiMeetJS.errors.track;
-
-/**
- * Calls JitsiLocalTrack#dispose() on all local tracks ignoring errors when
- * track is already disposed.
- *
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - All tracks.
- * @private
- * @returns {Promise}
- */
-function disposeLocalTracks(tracks) {
-    return Promise.all(
-        tracks
-            .filter(t => t.isLocal())
-            .map(t => {
-                return t.dispose()
-                    .catch(err => {
-                        // Track might be already disposed, so we ignore
-                        // this error, but re-throw error in other cases.
-                        if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
-                            throw err;
-                        }
-                    });
-            }));
-}
-
 /**
  * Leaves the conference and closes the connection.
  *
@@ -62,7 +37,6 @@ function disposeLocalTracks(tracks) {
 export function hangup() {
     return (dispatch, getState) => {
         const state = getState();
-        const tracks = state['features/base/tracks'];
         const conference = state['features/base/conference'];
         const connection = state['features/base/connection'];
         
@@ -74,7 +48,7 @@ export function hangup() {
         }
 
         promise = promise
-            .then(() => disposeLocalTracks(tracks));
+            .then(() => dispatch(disposeLocalTracks()));
 
         if (connection) {
             promise = promise
