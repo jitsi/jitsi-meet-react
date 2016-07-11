@@ -1,38 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 
+import { WelcomePageContainer as BaseWelcomePageContainer } from '../base';
 import styles from './styles/Styles';
 
 /**
  * The web container rendering the welcome page.
+ * 
+ * @extends BaseWelcomePageContainer
  */
-export class WelcomePageContainer extends Component {
+export class WelcomePageContainer extends BaseWelcomePageContainer {
     /**
-     * Initialize the WelcomePageContainer, including the initial
-     * state of the room name input.
+     * Renders a prompt for entering a room name.
      *
-     * @param {Object} props - Component properties.
-     */
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            roomName: ''
-        };
-
-        this.handleChange = event => {
-            this.setState({ roomName: event.target.value });
-        };
-
-        this.handleSubmit = () => {
-            this.props.onJoin(this.state.roomName);
-        };
-    }
-
-    /**
-     * Implements React's {@link Component#render()}. Renders a prompt for
-     * entering a room name.
-     *
-     * @inheritdoc
+     * @override BaseWelcomePageContainer#render()
      * @returns {ReactElement}
      */
     render() {
@@ -42,21 +22,16 @@ export class WelcomePageContainer extends Component {
                 <input
                     type="text"
                     style = { styles.textInput }
-                    onChange= { this.handleChange }
+                    onChange= {
+                        event => this._onRoomNameChange(event.target.value) }
                     value= { this.state.roomName }  />
                 <button
+                    disabled = { this.state.roomName === '' }
                     style = { styles.button }
-                    onClick = { this.handleSubmit }>JOIN</button>
+                    onClick = { this._onJoinPress }>JOIN</button>
             </div>
         );
     }
 }
 
-/**
- * WelcomePageContainer component's property types.
- *
- * @static
- */
-WelcomePageContainer.propTypes = {
-    onJoin: React.PropTypes.func
-};
+WelcomePageContainer.propTypes = BaseWelcomePageContainer.propTypes;

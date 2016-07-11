@@ -1,17 +1,19 @@
 import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 
+import { WelcomePageContainer as BaseWelcomePageContainer } from '../base';
 import styles from './styles/Styles';
 
 /**
  * The native container rendering the welcome page.
+ *
+ * @extends BaseWelcomePageContainer
  */
-export class WelcomePageContainer extends React.Component {
+export class WelcomePageContainer extends BaseWelcomePageContainer {
     /**
-     * Implements React's {@link Component#render()}. Renders a prompt for
-     * entering a room name.
+     * Renders a prompt for entering a room name.
      *
-     * @inheritdoc
+     * @override BaseWelcomePageContainer#render()
      * @returns {ReactElement}
      */
     render() {
@@ -24,13 +26,12 @@ export class WelcomePageContainer extends React.Component {
                     autoCorrect = { false }
                     autoCapitalize = "none"
                     placeholder = "room name"
-                    onChangeText = { (text) => this.setState({
-                        roomName: text
-                    }) }
+                    onChangeText = { this._onRoomNameChange }
                     />
                 <TouchableHighlight
+                    disabled = { this.state.roomName === '' }
                     style = { styles.button }
-                    onPress = { () => this.props.onJoin(this.state.roomName) }
+                    onPress = { this._onJoinPress }
                     underlayColor = "white">
                     <Text style = { styles.buttonText }> JOIN </Text>
                 </TouchableHighlight>
@@ -39,11 +40,4 @@ export class WelcomePageContainer extends React.Component {
     }
 }
 
-/**
- * WelcomePageContainer component's property types.
- *
- * @static
- */
-WelcomePageContainer.propTypes = {
-    onJoin: React.PropTypes.func
-};
+WelcomePageContainer.propTypes = BaseWelcomePageContainer.propTypes;
