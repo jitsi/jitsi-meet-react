@@ -33,10 +33,20 @@ export class Video extends Component {
         if (stream) {
             let streamURL = stream.toURL();
 
+            // XXX The CSS style object-fit that we utilize on Web is not
+            // supported on React Native. Adding objectFit to React Native's
+            // StyleSheet appears to be impossible without hacking and an
+            // unjustified amount of effort. Consequently, I've chosen to define
+            // objectFit on RTCView itself. Anyway, prepare to accommodate a
+            // future definition of objectFit in React Native's StyleSheet.
+            let style = styles.video;
+            let objectFit = (style && style.objectFit) || 'cover';
+
             return (
                 <RTCView
+                    objectFit={ objectFit }
                     streamURL={ streamURL }
-                    style={ styles.video }
+                    style={ style }
                 />
             );
         }
