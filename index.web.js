@@ -12,10 +12,11 @@ import { applyMiddleware, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
+import { init } from './features/base/connection';
 import { APP_NAVIGATE } from './features/base/navigation';
 import { ReducerRegistry } from './features/base/redux';
 import { Conference } from './features/conference';
-import { init, WelcomePage } from './features/welcome';
+import { WelcomePage } from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both
