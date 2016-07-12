@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ColorPalette } from '../../../base/styles';
+import styles from '../styles/Styles';
 
 /**
  * The video thumbnail web container.
@@ -13,29 +13,15 @@ export class VideoThumbnailContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let styles = {};
-
-        // TODO: this is temporary solution, discuss UI
-        if (this.props.focused) {
-            styles.border = '5px solid ' + ColorPalette.jitsiBlue;
-            /*
-             .videoContainerFocused
-             cursor: hand;
-             transition-duration: .5s;
-             -webkit-transition-duration: .5s;
-             -webkit-animation-name: greyPulse;
-             -webkit-animation-duration: 2s;
-             -webkit-animation-iteration-count: 1;
-             overflow: visible!important;
-             box-shadow: inset 0 0 28px #006d91;
-             border: 1px solid #006d91;
-             */
-        }
+        const containerStyle = this.props.focused
+            ? Object.assign({}, styles.thumbnail, styles.thumbnailFocused)
+            : styles.thumbnail;
 
         return (
-          <div style = {styles}
-              onClick={this.props.onClick}>
-              {this.props.children}
+          <div
+              onClick={ this.props.onClick }
+              style={ containerStyle }>
+              { this.props.children }
           </div>
         );
     }
@@ -47,7 +33,7 @@ export class VideoThumbnailContainer extends Component {
  * @static
  */
 VideoThumbnailContainer.propTypes = {
-    onClick: React.PropTypes.func,
+    children: React.PropTypes.node,
     focused: React.PropTypes.bool,
-    children: React.PropTypes.node
+    onClick: React.PropTypes.func
 };

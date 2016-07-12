@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import styles from '../styles/Styles';
+
 /**
  * The web container rendering the person "on stage".
  */
@@ -12,7 +14,7 @@ export class LargeVideoContainer extends Component {
      */
     render() {
         return (
-          <div>{this.props.children}</div>
+          <div style={ styles.container }>{ this.props.children }</div>
         );
     }
 }

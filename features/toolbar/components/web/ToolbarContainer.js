@@ -3,7 +3,7 @@ import Icon from 'react-fontawesome';
 
 import { ColorPalette } from '../../../base/styles';
 
-import styles from './styles/Styles';
+import styles from '../styles/Styles';
 
 /**
  * The web container rendering the toolbar.

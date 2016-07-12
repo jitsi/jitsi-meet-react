@@ -1,3 +1,4 @@
+import { CONNECTION_DISCONNECTED } from '../base/connection';
 import { ReducerRegistry } from '../base/redux';
 
 import {
@@ -27,6 +28,12 @@ ReducerRegistry.register(
                 ...state,
                 cameraFacingMode: action.cameraFacingMode
             };
+
+        /**
+         * Reset toolbar to initial state when connection is disconnected.
+         */
+        case CONNECTION_DISCONNECTED:
+            return INITIAL_STATE;
 
         case TOGGLE_AUDIO_MUTED_STATE:
             return {

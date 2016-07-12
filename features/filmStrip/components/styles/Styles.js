@@ -1,9 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
-import { ColorPalette } from '../../../../base/styles';
-
-const styles = StyleSheet.create({
-
+const styles = createStyleSheet({
     /**
      * Avatar style.
      */
@@ -29,7 +26,8 @@ const styles = StyleSheet.create({
      * Dominant speaker indicator style.
      */
     dominantSpeakerIndicator: {
-        color: 'white'
+        color: 'white',
+        fontSize: 15
     },
 
     /**
@@ -37,11 +35,13 @@ const styles = StyleSheet.create({
      */
     dominantSpeakerIndicatorBackground: {
         backgroundColor: ColorPalette.jitsiBlue,
-        borderRadius: 10,
+        borderRadius: 15,
         bottom: 2,
+        height: 15,
         left: 1,
         padding: 5,
-        position: 'absolute'
+        position: 'absolute',
+        width: 15
     },
 
     /**
@@ -75,13 +75,15 @@ const styles = StyleSheet.create({
     thumbnail: {
         alignItems: 'center',
         backgroundColor: 'black',
-        // TODO: This should go into the color palette
         borderColor: '#424242',
+        borderStyle: 'solid',
         borderWidth: 1,
         flex: 1,
-        height: 80,
+        height: 120,
         justifyContent: 'center',
-        width: 80
+        overflow: 'hidden',
+        position: 'relative',
+        width: 120
     },
 
     /**

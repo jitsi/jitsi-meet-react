@@ -1,1 +1,3 @@
-export * from './styles/ColorPalette';
+export * from './createStyleSheet';
+
+require('style!./FontAwesome.css');
