@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableHighlight, View } from 'react-native';
 
-import styles from './styles/Styles';
+import styles from '../styles/Styles';
 
 /**
  * Web version of Video Thumbnail Container component.
@@ -16,9 +16,9 @@ export class VideoThumbnailContainer extends Component {
      */
     render() {
         return (
-            <TouchableHighlight onPress={this.props.onClick}>
+            <TouchableHighlight onPress={ this.props.onClick }>
                 <View
-                    style = { this.props.focused
+                    style={ this.props.focused
                         ? [ styles.thumbnail, styles.thumbnailFocused ]
                         : [ styles.thumbnail ] }>
                     { this.props.children }
@@ -34,7 +34,7 @@ export class VideoThumbnailContainer extends Component {
  * @static
  */
 VideoThumbnailContainer.propTypes = {
-    onClick: React.PropTypes.func,
+    children: React.PropTypes.node,
     focused: React.PropTypes.bool,
-    children: React.PropTypes.node
+    onClick: React.PropTypes.func
 };

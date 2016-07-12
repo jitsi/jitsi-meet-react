@@ -1,16 +1,17 @@
 import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
-    TRACK_ADDED,
-    TRACK_REMOVED
-} from './actionTypes';
-
-import {
     participantVideoTypeChanged
 } from '../../base/participants';
 
-require('./reducer');
+import {
+    TRACK_ADDED,
+    TRACK_MUTE_CHANGED,
+    TRACK_REMOVED
+} from './actionTypes';
+import './reducer';
 
+const TrackErrors = JitsiMeetJS.errors.track;
 
 /**
  * Attach a set of local tracks to a conference.
@@ -40,7 +41,7 @@ export function addTracksToConference(conference, localTracks) {
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
-        const conference = getState()['features/welcome'].conference;
+        const conference = getState()['features/base/conference'];
         let tracksToAdd = [];
         let tracksToRemove = [];
         let newAudioTrack;
@@ -132,6 +133,32 @@ export function createLocalTracks(options) {
 }
 
 /**
+ * Calls JitsiLocalTrack#dispose() on all local tracks ignoring errors when
+ * track is already disposed.
+ *
+ * @returns {Function}
+ */
+export function disposeLocalTracks() {
+    return (dispatch, getState) => {
+        const tracks = getState()['features/base/tracks'];
+
+        return Promise.all(
+            tracks
+                .filter(t => t.isLocal())
+                .map(t => {
+                    return t.dispose()
+                        .catch(err => {
+                            // Track might be already disposed, so we ignore
+                            // this error, but re-throw error in other cases.
+                            if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
+                                throw err;
+                            }
+                        });
+                }));
+    };
+}
+
+/**
  * Create an action for when a new track has been signaled to be added to the
  * conference.
  *
@@ -148,6 +175,20 @@ export function trackAdded(track) {
 /**
  * Create an action for when a track has been signaled for removal from the
  * conference.
+ *
+ * @param {JitsiTrack} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_MUTE_CHANGED, track: JitsiTrack }}
+ */
+export function trackMuteChanged(track) {
+    return {
+        type: TRACK_MUTE_CHANGED,
+        track
+    };
+}
+
+/**
+ * Create an action for when a track has been signaled for
+ * removal from the conference.
  *
  * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}

@@ -1,4 +1,7 @@
-import { createLocalTracks } from '../base/tracks';
+import {
+    createLocalTracks,
+    disposeLocalTracks
+} from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -33,16 +36,25 @@ const MEDIA_TYPE = {
 export function hangup() {
     return (dispatch, getState) => {
         const state = getState();
-        const stateFeaturesWelcome = state['features/welcome'];
-        const conference = stateFeaturesWelcome.conference;
-        const connection = stateFeaturesWelcome.connection;
+        const conference = state['features/base/conference'];
+        const connection = state['features/base/connection'];
+
+        let promise = Promise.resolve();
 
         if (conference) {
-            conference.leave()
-                .then(() => connection.disconnect());
-        } else if (connection) {
-            connection.disconnect();
+            promise = promise
+                .then(() => conference.leave());
         }
+
+        promise = promise
+            .then(() => dispatch(disposeLocalTracks()));
+
+        if (connection) {
+            promise = promise
+                .then(() => connection.disconnect());
+        }
+
+        return promise;
     };
 }
 

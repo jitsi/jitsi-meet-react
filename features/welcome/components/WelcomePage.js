@@ -20,25 +20,12 @@ class WelcomePage extends Component {
     render() {
         return (
             <WelcomePageContainer
-                room={ this.props.room }
                 onJoin={ roomName =>
                         this.props.onJoin(roomName, this.props.navigator)
                 }/>
         );
     }
 }
-
-/**
- * Maps the state room property to component props.
- *
- * @param {Object} state - Redux state.
- * @returns {{ room: string }}
- */
-const mapStateToProps = state => {
-    return {
-        room: state['features/welcome'].room
-    };
-};
 
 /**
  * Maps the onJoin action.
@@ -64,9 +51,8 @@ const mapDispatchToProps = (dispatch) => {
  * @static
  */
 WelcomePage.propTypes = {
-    onJoin: React.PropTypes.func,
-    room: React.PropTypes.string,
-    navigator: React.PropTypes.object
+    navigator: React.PropTypes.object,
+    onJoin: React.PropTypes.func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
+export default connect(null, mapDispatchToProps)(WelcomePage);

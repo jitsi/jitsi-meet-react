@@ -1,12 +1,13 @@
+import { CONFERENCE_LEFT } from '../conference';
+import { CONNECTION_DISCONNECTED } from '../connection';
 import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_ADDED,
     PARTICIPANT_FOCUSED,
+    PARTICIPANT_JOINED,
+    PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
-    PARTICIPANT_REMOVED,
-    PARTICIPANT_ROLE_CHANGED,
     PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
@@ -31,6 +32,7 @@ import {
  *      already started.
  * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
  *      current video stream if any.
+ * @property {string} email - participant email.
  */
 
 /**
@@ -59,19 +61,19 @@ function participant(state, action) {
             speaking: state.id === action.participant.id
         });
 
-    case PARTICIPANT_ADDED:
+    case PARTICIPANT_JOINED:
         return {
             id: action.participant.id,
-            name: action.participant.name,
             avatar: action.participant.avatar,
-            role: action.participant.role,
-            local: action.participant.local || false,
-            pinned: action.participant.pinned || false,
-            speaking: action.participant.speaking || false,
             focused: action.participant.focused || false,
+            local: action.participant.local || false,
+            name: action.participant.name,
+            pinned: action.participant.pinned || false,
+            role: action.participant.role,
             selected: action.participant.selected || false,
-            videoType: action.participant.videoType || undefined,
-            videoStarted: false
+            speaking: action.participant.speaking || false,
+            videoStarted: false,
+            videoType: action.participant.videoType || undefined
         };
 
     case PARTICIPANT_FOCUSED:
@@ -107,10 +109,6 @@ function participant(state, action) {
         }
         return state;
 
-    case PARTICIPANT_ROLE_CHANGED:
-        // TODO: check how actually roles change!!
-        return state;
-
     default:
         return state;
     }
@@ -129,16 +127,27 @@ function participant(state, action) {
  */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
-    case PARTICIPANT_ADDED:
+    /**
+     * Remove local participants when connection is disconnected.
+     */
+    case CONNECTION_DISCONNECTED:
+        return state.filter(p => !p.local);
+
+    /**
+     * Remove remote participants when conference is left.
+     */
+    case CONFERENCE_LEFT:
+        return state.filter(p => p.local);
+
+    case PARTICIPANT_JOINED:
         return [ ...state, participant(undefined, action) ];
 
-    case PARTICIPANT_REMOVED:
+    case PARTICIPANT_LEFT:
         return state.filter(p => p.id !== action.participant.id);
 
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_FOCUSED:
     case PARTICIPANT_PINNED:
-    case PARTICIPANT_ROLE_CHANGED:
     case PARTICIPANT_SELECTED:
     case PARTICIPANT_UPDATED:
         return state.map(p => participant(p, action));

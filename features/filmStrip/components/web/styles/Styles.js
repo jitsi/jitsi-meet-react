@@ -1,26 +1,14 @@
-var styles = {
+/**
+ * Web specific styles for the film strip.
+ */
+const styles = {
     /**
-     * Video thumbnail style.
+     * Make avatars expand to fill their container.
      */
-    thumbnail: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 80,
-        height: 80,
-        borderWidth: 1,
-        flex: 1
-    },
-
-    /**
-     * Participants container style.
-     */
-    filmStrip: {
-        alignSelf: 'stretch',
-        flex: 1,
-        right: 5,
-        bottom: 110,
-        position: 'absolute',
-        flexDirection: 'row'
+    avatar: {
+        height: '100%',
+        objectFit: 'cover',
+        width: '100%'
     }
 };
 

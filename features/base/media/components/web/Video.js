@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import styles from './styles/Styles';
+
 /**
  * Web version of Audio component.
  * @extends Component
@@ -30,11 +32,13 @@ export class Video extends Component {
             : '';
 
         return (
-            <video autoPlay
-                onPlaying={this.props.onPlaying}
-                muted={this.props.muted}
-                src={src}
-            ></video>
+            <video
+                autoPlay
+                muted={ this.props.muted }
+                onPlaying={ this.props.onPlaying }
+                src={ src }
+                style={ styles.video }
+            />
         );
     }
 }

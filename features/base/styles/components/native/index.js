@@ -1,1 +1,1 @@
-export * from './styles/ColorPalette';
+export * from './createStyleSheet';

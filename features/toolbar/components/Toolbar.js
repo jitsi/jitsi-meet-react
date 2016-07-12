@@ -26,10 +26,10 @@ class Toolbar extends Component {
         return (
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
-                videoMuted = { this.props.videoMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
                 onHangup = { () => this.props.onHangup(this.props.navigator) }
                 onCameraChange = { () => this.props.onCameraChange() }
+                videoMuted = { this.props.videoMuted }
                 />
         );
     }
@@ -65,15 +65,15 @@ const mapDispatchToProps = dispatch => {
         onAudioMute: () => {
             dispatch(toggleAudio());
         },
-        onHangup: (navigator) => {
-            dispatch(hangup());
-            dispatch(navigate({
-                screen: APP_SCREEN.WELCOME,
-                navigator
-            }));
-        },
         onCameraChange: () => {
             dispatch(toggleCameraFacingMode());
+        },
+        onHangup: navigator => {
+            dispatch(hangup())
+                .then(() => dispatch(navigate({ 
+                    screen: APP_SCREEN.WELCOME, 
+                    navigator 
+                })));
         }
     };
 };
@@ -84,12 +84,12 @@ const mapDispatchToProps = dispatch => {
  * @static
  */
 Toolbar.propTypes = {
-    onAudioMute: React.PropTypes.func,
-    onHangup: React.PropTypes.func,
-    onCameraChange: React.PropTypes.func,
     audioMuted: React.PropTypes.bool,
-    videoMuted: React.PropTypes.bool,
-    navigator: React.PropTypes.object
+    navigator: React.PropTypes.object,
+    onAudioMute: React.PropTypes.func,
+    onCameraChange: React.PropTypes.func,
+    onHangup: React.PropTypes.func,
+    videoMuted: React.PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);
