@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import { Audio, Video } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
-    participantFocused,
-    participantPinned,
-    participantVideoStarted
+    participantVideoStarted,
+    pinParticipant
 } from '../../base/participants';
 
 import {
@@ -59,12 +58,7 @@ class VideoThumbnail extends Component {
      */
     handleVideoThumbClicked() {
         // TODO: this currently ignores interfaceConfig.filmStripOnly
-        this.props.dispatch(participantFocused(
-            this.props.participant.focused
-                ? null
-                : this.props.participant.id));
-
-        this.props.dispatch(participantPinned(
+        this.props.dispatch(pinParticipant(
             this.props.participant.pinned
                 ? null
                 : this.props.participant.id));
@@ -110,21 +104,27 @@ class VideoThumbnail extends Component {
      */
     render() {
         let streams = this.getMediaStreams();
+        let showVideo = streams.video &&
+            !this.props.videoMuted &&
+            (!this.props.participant.videoStarted ||
+                (this.props.participant.videoStarted &&
+                this.props.participant.id !==
+                    this.props.largeVideo.onStageParticipantId));
 
         return (
             <VideoThumbnailContainer
-                focused={this.props.participant.focused}
+                pinned={this.props.participant.pinned}
                 onClick={this._onClick}>
 
                 {streams.audio &&
                     <Audio stream={streams.audio}/>}
 
-                {streams.video && !this.props.videoMuted &&
+                {showVideo &&
                     <Video
                         stream={streams.video}
                         onPlaying={this._onVideoPlaying}/>}
 
-                {(!streams.video || this.props.videoMuted) &&
+                {!showVideo &&
                     <Avatar uri={this.props.participant.avatar} />}
 
                 {this.props.participant.role === PARTICIPANT_ROLE.MODERATOR &&
@@ -142,7 +142,23 @@ class VideoThumbnail extends Component {
             </VideoThumbnailContainer>
         );
     }
+
+
 }
+
+/**
+ * Function that maps parts of Redux state tree into component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{
+ *      largeVideo: Object
+ *  }}
+ */
+const mapStateToProps = state => {
+    return {
+        largeVideo: state['features/largeVideo']
+    };
+};
 
 /**
  * VideoThumbnail component's property types.
@@ -153,9 +169,10 @@ VideoThumbnail.propTypes = {
     audioMuted: React.PropTypes.bool,
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
+    largeVideo: React.PropTypes.object,
     participant: React.PropTypes.object,
     videoMuted: React.PropTypes.bool,
     videoTrack: React.PropTypes.object
 };
 
-export default connect()(VideoThumbnail);
+export default connect(mapStateToProps)(VideoThumbnail);
