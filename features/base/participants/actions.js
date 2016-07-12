@@ -15,8 +15,8 @@ import './reducer';
 /**
  * Action to update a participant's email.
  *
- * @param {string} id - Participant's id
- * @param {string} email - Participant's email
+ * @param {string} id - Participant's id.
+ * @param {string} email - Participant's email.
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {
@@ -170,7 +170,7 @@ export function participantPinned(id) {
  * Action to handle case when participant's role changes.
  *
  * @param {string} id - Participant id.
- * @param {PARTICIPANT_ROLE} role - Participant's new role
+ * @param {PARTICIPANT_ROLE} role - Participant's new role.
  * @returns {{
  *      type: PARTICIPANT_UPDATED,
  *      participant: {

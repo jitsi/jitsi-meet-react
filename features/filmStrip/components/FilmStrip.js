@@ -58,7 +58,7 @@ class FilmStrip extends Component {
  * @param {Object} p - The participant who is the possible owner of the
  * specified JitsiTrack.
  * @param {JitsiTrack} t - The JitsiTrack which is to be determined whether it
- * belongs to the specified participant
+ * belongs to the specified participant.
  * @returns {boolean} True if the specified JitsiTrack belongs to the specified
  * participant; otherwise, false.
  */
