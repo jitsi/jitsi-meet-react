@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build:web": "mkdir -p dist/; cp -r static/* dist/; webpack",
+    "build:web": "mkdir -p dist/; cp -r static/* dist/; webpack --progress --colors",
     "clean": "rm -rf dist",
     "eslint": "node_modules/eslint/bin/eslint.js \"config.js\" \"features/**/*.js\" \"index.*.js\"",
     "start:android": "npm run clean; react-native run-android",

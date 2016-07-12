@@ -5,7 +5,7 @@ var HasteResolver = require('haste-resolver-webpack-plugin');
 module.exports = {
     output: {
         filename: 'bundle.js',
-        path: __dirname,
+        path: __dirname + '/dist',
         publicPath: '/'
     },
     cache: true,
