@@ -1,7 +1,7 @@
 let domain = 'meet.jit.si';
 
 module.exports = {
-    connection: {
+    connection: config || {
         bosh: 'https://' + domain + '/http-bind',
         hosts: {
             domain,
