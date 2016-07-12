@@ -27,8 +27,8 @@ class Toolbar extends Component {
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
-                onHangup = { () => this.props.onHangup(this.props.navigator) }
                 onCameraChange = { () => this.props.onCameraChange() }
+                onHangup = { () => this.props.onHangup(this.props.navigator) }
                 videoMuted = { this.props.videoMuted }
                 />
         );
@@ -70,7 +70,7 @@ const mapDispatchToProps = dispatch => {
         },
         onHangup: navigator => {
             dispatch(hangup())
-                .then(() => dispatch(navigate({ 
+                .then(() => dispatch(navigate({
                     screen: APP_SCREEN.WELCOME, 
                     navigator 
                 })));

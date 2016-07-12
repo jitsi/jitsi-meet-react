@@ -7,11 +7,9 @@ import {
 } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
+import { init } from '../../../base/connection';
 import { Conference } from '../../../conference';
-import {
-    init,
-    WelcomePage
-} from '../../../welcome';
+import { WelcomePage } from '../../../welcome';
 
 /**
  * Root application component.
@@ -37,10 +35,10 @@ export class App extends Component {
     }
 
     /**
-     * React component render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML}
+     * @returns {ReactElement}
      */
     render() {
         return (

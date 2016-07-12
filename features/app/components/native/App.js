@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
 import { Navigator } from 'react-native';
+import { Provider } from 'react-redux';
 
+import { init } from '../../../base/connection';
 import { Conference } from '../../../conference';
-import {
-    init,
-    WelcomePage
-} from '../../../welcome';
+import { WelcomePage } from '../../../welcome';
 
 /**
  * Root application component.
@@ -28,10 +26,10 @@ export class App extends Component {
     }
 
     /**
-     * Implements React Component's render method.
+     * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {XML} - JSX markup.
+     * @returns {ReactElement}
      */
     render() {
         return (
