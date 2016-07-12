@@ -17,6 +17,7 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 /**
  * Create an action for when the signaling connection has been lost.
  *
+ * @param {JitsiConnection} connection - Jitsi connection object.
  * @param {string} message - Error message.
  * @returns {{
  *     type: CONNECTION_DISCONNECTED,

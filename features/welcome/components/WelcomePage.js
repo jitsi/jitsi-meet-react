@@ -10,9 +10,10 @@ import { WelcomePageContainer } from './_';
  */
 class WelcomePage extends Component {
     /**
-     * Implements React's {@link Component#render()}. Renders a
-     * WelcomePageContainer which is to show the room name prompt appropriate
-     * for mobile or web.
+     * Implements React's {@link Component#render()}.
+     *
+     * Renders a WelcomePageContainer which is to show the room name prompt
+     * appropriate for mobile or web.
      *
      * @inheritdoc
      * @returns {ReactElement}
