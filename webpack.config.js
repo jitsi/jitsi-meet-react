@@ -19,7 +19,8 @@ module.exports = {
             platform: 'web'
         }),
         new HtmlPlugin({
-            filename: 'index.html'
+            filename: 'index.html',
+            template: __dirname + '/index-template.html'
         })
     ],
     module: {
