@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-import styles from '../styles/Styles';
+import styles from '../../styles';
 
 /**
  * The native container rendering the conference view.

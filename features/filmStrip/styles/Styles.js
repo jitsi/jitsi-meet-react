@@ -1,4 +1,7 @@
-import { ColorPalette, createStyleSheet } from '../../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../base/styles';
+
+import { styles as PlatformStyles } from './_';
+
 
 const styles = createStyleSheet({
     /**
@@ -17,8 +20,6 @@ const styles = createStyleSheet({
         color: 'white',
         left: 20,
         position: 'absolute',
-        textShadowColor: 'black',
-        textShadowOffset: { width: 0, height: -1},
         top: 1
     },
 
@@ -37,11 +38,9 @@ const styles = createStyleSheet({
         backgroundColor: ColorPalette.jitsiBlue,
         borderRadius: 15,
         bottom: 2,
-        height: 15,
         left: 1,
         padding: 5,
-        position: 'absolute',
-        width: 15
+        position: 'absolute'
     },
 
     /**
@@ -64,8 +63,6 @@ const styles = createStyleSheet({
         color: 'white',
         left: 1,
         position: 'absolute',
-        textShadowColor: 'black',
-        textShadowOffset: { width: 0, height: -1},
         top: 1
     },
 
@@ -79,11 +76,9 @@ const styles = createStyleSheet({
         borderStyle: 'solid',
         borderWidth: 1,
         flex: 1,
-        height: 120,
         justifyContent: 'center',
         overflow: 'hidden',
-        position: 'relative',
-        width: 120
+        position: 'relative'
     },
 
     /**
@@ -107,10 +102,8 @@ const styles = createStyleSheet({
         color: 'white',
         left: 35,
         position: 'absolute',
-        textShadowColor: 'black',
-        textShadowOffset: { width: 0, height: -1},
         top: 1
     }
-});
+}, PlatformStyles);
 
 export default styles;

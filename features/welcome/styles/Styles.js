@@ -1,4 +1,4 @@
-import { ColorPalette, createStyleSheet } from '../../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../base/styles';
 
 /**
  * The welcome page style.

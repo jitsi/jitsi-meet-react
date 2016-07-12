@@ -1,4 +1,4 @@
-import { createStyleSheet } from '../../../base/styles';
+import { createStyleSheet } from '../../base/styles';
 
 /**
  * The style of the conference UI (component).
@@ -11,7 +11,8 @@ const styles = createStyleSheet({
     conference: {
         alignSelf: 'stretch',
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: '#111111'
     }
 });
 

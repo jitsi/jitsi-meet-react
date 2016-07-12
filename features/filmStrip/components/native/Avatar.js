@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 
-import styles from '../styles/Styles';
+import styles from '../../styles';
 
 /**
  * Display a participant avatar.

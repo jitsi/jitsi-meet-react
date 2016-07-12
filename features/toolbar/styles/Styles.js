@@ -1,4 +1,4 @@
-import { ColorPalette, createStyleSheet } from '../../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../base/styles';
 
 /**
  * The toolbar related styles.
@@ -11,8 +11,7 @@ const styles = createStyleSheet({
     icon: {
         alignSelf: 'center',
         color: 'white',
-        fontSize: 24,
-        textAlign: 'center'
+        fontSize: 24
     },
 
     /**
@@ -42,8 +41,7 @@ const styles = createStyleSheet({
         justifyContent: 'center',
         left: 0,
         position: 'absolute',
-        right: 0,
-        textAlign: 'center'
+        right: 0
     }
 });
 

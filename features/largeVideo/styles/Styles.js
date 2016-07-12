@@ -1,4 +1,4 @@
-import { createStyleSheet } from '../../../base/styles';
+import { createStyleSheet } from '../../base/styles';
 
 const styles = createStyleSheet({
     container: {
