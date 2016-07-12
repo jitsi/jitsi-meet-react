@@ -1,6 +1,7 @@
+import { localParticipantLeft } from '../base/participants';
 import {
     createLocalTracks,
-    disposeLocalTracks
+    destroyLocalTracks
 } from '../base/tracks';
 
 import {
@@ -46,15 +47,19 @@ export function hangup() {
                 .then(() => conference.leave());
         }
 
-        promise = promise
-            .then(() => dispatch(disposeLocalTracks()));
-
         if (connection) {
             promise = promise
                 .then(() => connection.disconnect());
         }
 
-        return promise;
+        // XXX Local tracks and local participant might exist without conference
+        // and connection initialized, so we need to explicitly clean them here.
+        // Furthermore, currently local tracks can be initialized before local
+        // participant is created, so we cannot hope that they will be destroyed
+        // when (and if) local participant leaves.
+        return promise
+            .then(() => dispatch(destroyLocalTracks()))
+            .then(() => dispatch(localParticipantLeft()));
     };
 }
 

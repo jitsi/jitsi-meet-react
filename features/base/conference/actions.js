@@ -56,7 +56,13 @@ export function conferenceInitialized(conference) {
         conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
             track => dispatch(trackMuteChanged(track)));
         conference.on(JitsiConferenceEvents.TRACK_REMOVED,
-            track => dispatch(trackRemoved(track)));
+            track => {
+                if (!track || track.isLocal()) {
+                    return;
+                }
+
+                dispatch(trackRemoved(track));
+            });
 
         conference.on(JitsiConferenceEvents.USER_JOINED,
             (id, user) => dispatch(remoteParticipantJoined(id, {

@@ -69,9 +69,7 @@ export function changeLocalTracks(newLocalTracks = []) {
 
             // TODO: add various checks from original useVideo/AudioStream
 
-            promise = Promise.all(tracksToRemove.map(t => t.dispose()))
-                .then(() => Promise.all(
-                    tracksToRemove.map(t => dispatch(trackRemoved(t)))))
+            promise = dispatch(disposeAndRemoveTracks(tracksToRemove))
                 .then(() => addTracksToConference(conference, tracksToAdd));
         } else {
             tracksToAdd = newLocalTracks;
@@ -134,27 +132,14 @@ export function createLocalTracks(options) {
 
 /**
  * Calls JitsiLocalTrack#dispose() on all local tracks ignoring errors when
- * track is already disposed.
+ * track is already disposed. After that signals tracks to be removed.
  *
  * @returns {Function}
  */
-export function disposeLocalTracks() {
+export function destroyLocalTracks() {
     return (dispatch, getState) => {
-        const tracks = getState()['features/base/tracks'];
-
-        return Promise.all(
-            tracks
-                .filter(t => t.isLocal())
-                .map(t => {
-                    return t.dispose()
-                        .catch(err => {
-                            // Track might be already disposed, so we ignore
-                            // this error, but re-throw error in other cases.
-                            if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
-                                throw err;
-                            }
-                        });
-                }));
+        return disposeAndRemoveTracks(
+            getState()['features/base/tracks'].filter(t => t.isLocal()));
     };
 }
 
@@ -197,5 +182,28 @@ export function trackRemoved(track) {
     return {
         type: TRACK_REMOVED,
         track
+    };
+}
+
+/**
+ * Disposes passed tracks and signals them to be removed.
+ *
+ * @param {JitsiTrack[]} tracks - List of tracks.
+ * @returns {Function}
+ */
+function disposeAndRemoveTracks(tracks) {
+    return dispatch => {
+        return Promise.all(
+            tracks.map(t => {
+                return t.dispose()
+                    .catch(err => {
+                        // Track might be already disposed, so we ignore
+                        // this error, but re-throw error in other cases.
+                        if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
+                            throw err;
+                        }
+                    });
+            }))
+            .then(Promise.all(tracks.map(t => dispatch(trackRemoved(t)))));
     };
 }
