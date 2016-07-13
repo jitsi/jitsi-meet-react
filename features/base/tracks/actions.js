@@ -138,8 +138,8 @@ export function createLocalTracks(options) {
  */
 export function destroyLocalTracks() {
     return (dispatch, getState) => {
-        return disposeAndRemoveTracks(
-            getState()['features/base/tracks'].filter(t => t.isLocal()));
+        return dispatch(disposeAndRemoveTracks(
+            getState()['features/base/tracks'].filter(t => t.isLocal())));
     };
 }
 

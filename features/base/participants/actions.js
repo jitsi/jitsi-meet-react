@@ -92,28 +92,6 @@ export function localParticipantJoined(id, participant = {}) {
 }
 
 /**
- * Action to remove a local participant.
- *
- * @returns {Function}
- */
-export function localParticipantLeft() {
-    return (dispatch, getState) => {
-        let localParticipant = getState()['features/base/participants']
-            .find(p => p.local);
-
-        if (localParticipant) {
-            return dispatch({
-                type: PARTICIPANT_LEFT,
-                participant: {
-                    id: localParticipant.id,
-                    local: true
-                }
-            });
-        }
-    };
-}
-
-/**
  * Create an action for when the participant in conference is focused.
  *
  * @param {string|null} id - Participant id or null if no one is currently

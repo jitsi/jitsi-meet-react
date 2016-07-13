@@ -1,8 +1,4 @@
-import { localParticipantLeft } from '../base/participants';
-import {
-    createLocalTracks,
-    destroyLocalTracks
-} from '../base/tracks';
+import { createLocalTracks } from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -28,40 +24,6 @@ const MEDIA_TYPE = {
     VIDEO: 'video',
     AUDIO: 'audio'
 };
-
-/**
- * Leaves the conference and closes the connection.
- *
- * @returns {Function}
- */
-export function hangup() {
-    return (dispatch, getState) => {
-        const state = getState();
-        const conference = state['features/base/conference'];
-        const connection = state['features/base/connection'];
-
-        let promise = Promise.resolve();
-
-        if (conference) {
-            promise = promise
-                .then(() => conference.leave());
-        }
-
-        if (connection) {
-            promise = promise
-                .then(() => connection.disconnect());
-        }
-
-        // XXX Local tracks and local participant might exist without conference
-        // and connection initialized, so we need to explicitly clean them here.
-        // Furthermore, currently local tracks can be initialized before local
-        // participant is created, so we cannot hope that they will be destroyed
-        // when (and if) local participant leaves.
-        return promise
-            .then(() => dispatch(destroyLocalTracks()))
-            .then(() => dispatch(localParticipantLeft()));
-    };
-}
 
 /**
  * Toggles the mute state of the local audio track(s).
