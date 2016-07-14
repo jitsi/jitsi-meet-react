@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { AppRegistry } from 'react-native';
 import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
@@ -24,19 +24,11 @@ const store = createStore(reducer, middleware);
 
 /**
  * React-Native doesn't support passing props to root component, so create
- * a wrapper class instead.
+ * a wrapper class instead in form of stateless function.
+ *
+ * @returns {ReactElement}
  */
-class Root extends Component {
-    /**
-     * Implements React's {@link Component#render()}.
-     *
-     * @inheritdoc
-     * @returns {ReactElement}
-     */
-    render() {
-        return <App store={store} config={Config}/>;
-    }
-}
+const Root = () => <App store={store} config={Config}/>;
 
 // Register the root component.
 AppRegistry.registerComponent('JitsiMeetApp', () => Root);
