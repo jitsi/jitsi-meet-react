@@ -12,7 +12,10 @@ import { applyMiddleware, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import { init } from './features/base/connection';
+import {
+    destroy,
+    init
+} from './features/base/connection';
 import { APP_NAVIGATE } from './features/base/navigation';
 import { ReducerRegistry } from './features/base/redux';
 import { Conference } from './features/conference';
@@ -50,13 +53,19 @@ const store = createStore(reducer, applyMiddleware(
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render((
-  <Provider store={store}>
-    <Router history={history}>
-      <Route path='/' component={WelcomePage} />
-      <Route path='*' component={Conference} onEnter={route => {
-          const room = route.location.pathname.substr(1).toLowerCase();
-          store.dispatch(init(Config, room));
-      }} />
-    </Router>
-  </Provider>
+    <Provider store={store}>
+        <Router history={history}>
+            <Route
+                path='/'
+                component={WelcomePage} />
+            <Route
+                path='*'
+                component={Conference}
+                onEnter={route => {
+                    const room =
+                        route.location.pathname.substr(1).toLowerCase();
+                    store.dispatch(init(Config, room)); }}
+                onLeave={() => store.dispatch(destroy())} />
+        </Router>
+    </Provider>
 ), document.body);
