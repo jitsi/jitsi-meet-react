@@ -1,3 +1,2 @@
 export * from './shimStyles';
-
-require('style!./FontAwesome.css');
+export * from './styles';

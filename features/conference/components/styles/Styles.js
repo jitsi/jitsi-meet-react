@@ -10,8 +10,8 @@ export const styles = createStyleSheet({
      */
     conference: {
         alignSelf: 'stretch',
+        backgroundColor: '#111111',
         flex: 1,
-        flexDirection: 'column',
-        backgroundColor: '#111111'
+        flexDirection: 'column'
     }
 });

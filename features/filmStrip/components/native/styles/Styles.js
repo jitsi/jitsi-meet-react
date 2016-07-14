@@ -1,18 +1,18 @@
 import { createStyleSheet } from '../../../../base/styles';
-import { styles as SharedStyles } from '../../styles';
 
+import { styles as platformIndependentStyles } from '../../styles';
 
 /**
  * Native-specific styles for the film strip.
  */
-export const styles = createStyleSheet(SharedStyles, {
+export const styles = createStyleSheet(platformIndependentStyles, {
 
     /**
      * Audio muted indicator style.
      */
     audioMutedIndicator: {
         textShadowColor: 'black',
-        textShadowOffset: { width: 0, height: -1}
+        textShadowOffset: { height: -1, width: 0 }
     },
 
     /**
@@ -28,7 +28,7 @@ export const styles = createStyleSheet(SharedStyles, {
      */
     moderatorIndicator: {
         textShadowColor: 'black',
-        textShadowOffset: { width: 0, height: -1}
+        textShadowOffset: { height: -1, width: 0 }
     },
 
     /**
@@ -44,6 +44,6 @@ export const styles = createStyleSheet(SharedStyles, {
      */
     videoMutedIndicator: {
         textShadowColor: 'black',
-        textShadowOffset: { width: 0, height: -1}
+        textShadowOffset: { height: -1, width: 0 }
     }
 });

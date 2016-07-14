@@ -1,11 +1,11 @@
 import { createStyleSheet } from '../../../../base/styles';
-import { styles as SharedStyles } from '../../styles';
 
+import { styles as platformIndependentStyles } from '../../styles';
 
 /**
  * Web-specific styles for the film strip.
  */
-export const styles = createStyleSheet(SharedStyles, {
+export const styles = createStyleSheet(platformIndependentStyles, {
 
     /**
      * Audio muted indicator style.
