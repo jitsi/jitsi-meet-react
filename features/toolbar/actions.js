@@ -1,7 +1,4 @@
-import {
-    createLocalTracks,
-    disposeLocalTracks
-} from '../base/tracks';
+import { createLocalTracks } from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,
@@ -27,36 +24,6 @@ const MEDIA_TYPE = {
     VIDEO: 'video',
     AUDIO: 'audio'
 };
-
-/**
- * Leaves the conference and closes the connection.
- *
- * @returns {Function}
- */
-export function hangup() {
-    return (dispatch, getState) => {
-        const state = getState();
-        const conference = state['features/base/conference'];
-        const connection = state['features/base/connection'];
-
-        let promise = Promise.resolve();
-
-        if (conference) {
-            promise = promise
-                .then(() => conference.leave());
-        }
-
-        promise = promise
-            .then(() => dispatch(disposeLocalTracks()));
-
-        if (connection) {
-            promise = promise
-                .then(() => connection.disconnect());
-        }
-
-        return promise;
-    };
-}
 
 /**
  * Toggles the mute state of the local audio track(s).
