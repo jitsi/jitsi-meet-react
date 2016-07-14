@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { init } from '../../../base/connection';
-import { Conference } from '../../../conference';
 import { WelcomePage } from '../../../welcome';
 
 /**
@@ -57,13 +55,6 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     _navigatorRenderScene(route, navigator) {
-        // To be more consistent with how routing for web version works,
-        // we dispatch init event here and not inside the router middleware.
-        // Room name is actually route's title here.
-        if (route.component === Conference) {
-            this.props.store.dispatch(init(this.props.config, route.title));
-        }
-
         // We started with NavigatorIOS and then switched to Navigator in order
         // to support Android as well. In order to reduce the number of
         // modifications, accept the same format of route definition.

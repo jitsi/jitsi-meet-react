@@ -1,3 +1,6 @@
+import Config from '../../../config';
+
+import { init } from '../../base/connection';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
 
@@ -11,10 +14,10 @@ const navigationHandlers = {};
  * @param {Store} store - Redux store.
  * @param {Object} action - Action object.
  * @param {Navigator} action.navigator - Navigator instance.
- * @returns {Object}
+ * @returns {void}
  */
 navigationHandlers[APP_SCREEN.WELCOME] = (store, action) => {
-    return action.navigator.push({
+    action.navigator.push({
         title: 'Jitsi Meet',
         component: WelcomePage
     });
@@ -28,13 +31,14 @@ navigationHandlers[APP_SCREEN.WELCOME] = (store, action) => {
  * @param {Object} action - Action object.
  * @param {Navigator} action.navigator - Navigator instance.
  * @param {string} action.room - Room name.
- * @returns {Object}
+ * @returns {void}
  */
 navigationHandlers[APP_SCREEN.CONFERENCE] = (store, action) => {
-    return action.navigator.push({
+    action.navigator.push({
         title: action.room,
         component: Conference
     });
+    store.dispatch(init(Config, action.room));
 };
 
 export { navigationHandlers };
