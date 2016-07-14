@@ -5,7 +5,10 @@ import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import { init } from './features/base/connection';
+import {
+    destroy,
+    init
+} from './features/base/connection';
 import { APP_NAVIGATE } from './features/base/navigation';
 import {
     MiddlewareRegistry,
@@ -25,10 +28,12 @@ const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
         case 'home':
-            return action.navigator.push({
+            action.navigator.push({
                 title: 'Jitsi Meet',
                 component: WelcomePage
             });
+            store.dispatch(destroy());
+            return;
         case 'conference':
             action.navigator.push({
                 title: action.room,
