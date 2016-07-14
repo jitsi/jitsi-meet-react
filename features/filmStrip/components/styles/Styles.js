@@ -1,9 +1,9 @@
-import { ColorPalette, createStyleSheet } from '../../base/styles';
+import { ColorPalette } from '../../../base/styles';
 
-import { styles as PlatformStyles } from './_';
-
-
-const styles = createStyleSheet({
+/**
+ * Film strip related styles common to both Web and native.
+ */
+export const styles = {
     /**
      * Avatar style.
      */
@@ -104,6 +104,4 @@ const styles = createStyleSheet({
         position: 'absolute',
         top: 1
     }
-}, PlatformStyles);
-
-export default styles;
+};

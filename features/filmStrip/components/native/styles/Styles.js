@@ -1,7 +1,11 @@
+import { createStyleSheet } from '../../../../base/styles';
+import { styles as SharedStyles } from '../../styles';
+
+
 /**
  * Native-specific styles for the film strip.
  */
-const styles = {
+export const styles = createStyleSheet(SharedStyles, {
 
     /**
      * Audio muted indicator style.
@@ -42,6 +46,4 @@ const styles = {
         textShadowColor: 'black',
         textShadowOffset: { width: 0, height: -1}
     }
-};
-
-export default styles;
+});

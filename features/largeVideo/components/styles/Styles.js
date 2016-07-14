@@ -1,6 +1,6 @@
-import { createStyleSheet } from '../../base/styles';
+import { createStyleSheet } from '../../../base/styles';
 
-const styles = createStyleSheet({
+export const styles = createStyleSheet({
     container: {
         alignSelf: 'stretch',
         backgroundColor: 'black',
@@ -20,5 +20,3 @@ const styles = createStyleSheet({
         flex: 1
     }
 });
-
-export default styles;

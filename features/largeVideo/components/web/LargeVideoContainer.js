@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import styles from '../../styles';
+import { styles } from '../styles';
 
 /**
  * The web container rendering the person "on stage".

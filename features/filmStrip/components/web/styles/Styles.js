@@ -1,7 +1,11 @@
+import { createStyleSheet } from '../../../../base/styles';
+import { styles as SharedStyles } from '../../styles';
+
+
 /**
  * Web-specific styles for the film strip.
  */
-const styles = {
+export const styles = createStyleSheet(SharedStyles, {
 
     /**
      * Audio muted indicator style.
@@ -48,6 +52,4 @@ const styles = {
     videoMutedIndicator: {
         textShadow: '1px 1px 2px black'
     }
-};
-
-export default styles;
+});

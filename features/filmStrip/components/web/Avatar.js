@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import styles from '../../styles';
+import { styles } from './styles';
 
 /**
  * Display a participant avatar.
