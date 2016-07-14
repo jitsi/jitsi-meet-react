@@ -3,7 +3,7 @@ import { createStyleSheet } from '../../../../base/styles';
 import { styles as platformIndependentStyles } from '../../styles';
 
 /**
- * Web-specific styles for the film strip.
+ * Native-specific styles for the film strip.
  */
 export const styles = createStyleSheet(platformIndependentStyles, {
 
@@ -11,45 +11,39 @@ export const styles = createStyleSheet(platformIndependentStyles, {
      * Audio muted indicator style.
      */
     audioMutedIndicator: {
-        textShadow: '1px 1px 2px black'
-    },
-
-    /**
-     * Make avatars expand to fill their container.
-     */
-    avatar: {
-        height: '100%',
-        objectFit: 'cover',
-        width: '100%'
+        textShadowColor: 'black',
+        textShadowOffset: { height: -1, width: 0 }
     },
 
     /**
      * Dominant speaker indicator background style.
      */
     dominantSpeakerIndicatorBackground: {
-        height: 15,
-        width: 15
+        borderRadius: 15,
+        padding: 5
     },
 
     /**
      * Moderator indicator style.
      */
     moderatorIndicator: {
-        textShadow: '1px 1px 2px black'
+        textShadowColor: 'black',
+        textShadowOffset: { height: -1, width: 0 }
     },
 
     /**
      * Video thumbnail style.
      */
     thumbnail: {
-        height: 120,
-        width: 120
+        height: 80,
+        width: 80
     },
 
-    /**
+   /**
      * Video muted indicator style.
      */
     videoMutedIndicator: {
-        textShadow: '1px 1px 2px black'
+        textShadowColor: 'black',
+        textShadowOffset: { height: -1, width: 0 }
     }
 });
