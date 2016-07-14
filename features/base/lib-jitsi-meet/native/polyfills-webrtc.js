@@ -27,9 +27,9 @@
          * The RTCPeerConnection provided by react-native-webrtc fires
          * onaddstream before it remembers remotedescription (and thus makes it
          * available to API clients). Because that appears to be a problem for
-         * lib-jitsi-meet which has been successfully running on Chrome,
-         * Firefox, Temasys, etc. for a very long time, attempt to meets its
-         * expectations (by extending RTCPPeerConnection).
+         * lib-jitsi-meet which has been successfully running
+         * on Chrome, Firefox, Temasys, etc. for a very long time, attempt to
+         * meets its expectations (by extending RTCPPeerConnection).
          *
          * @class
          */

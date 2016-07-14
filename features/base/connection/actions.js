@@ -17,6 +17,8 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 /**
  * Create an action for when the signaling connection has been lost.
  *
+ * @param {JitsiConnection} connection - The JitsiConnection which was
+ * disconnected.
  * @param {string} message - Error message.
  * @returns {{
  *     type: CONNECTION_DISCONNECTED,
@@ -36,7 +38,7 @@ export function connectionDisconnected(connection, message) {
  * Create an action for when the signaling connection has been established.
  *
  * @param {string} id - The ID of the local endpoint/participant/peer (within
- *      the context of the established connection).
+ * the context of the established connection).
  * @returns {{type: CONNECTION_ESTABLISHED, id: string}}
  */
 export function connectionEstablished(id) {

@@ -5,18 +5,15 @@ import {
     routerMiddleware,
     routerReducer
 } from 'react-router-redux';
-import {
-    applyMiddleware,
-    createStore
-} from 'redux';
+import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import { ReducerRegistry } from './features/base/redux';
+import { App } from './features/app';
 import {
-    App,
-    navigationMiddleware
-} from './features/app';
+    MiddlewareRegistry,
+    ReducerRegistry 
+} from './features/base/redux';
 
 // Create combined reducer from all reducers in registry + routerReducer from
 // 'react-router-redux' module (stores location updates from history).
@@ -24,6 +21,9 @@ import {
 const reducer = ReducerRegistry.combineReducers({
     routing: routerReducer
 });
+
+const middleware = MiddlewareRegistry.applyMiddleware(
+    Thunk, routerMiddleware(browserHistory));
 
 // Create Redux store with our reducer and additional middleware.
 // For more information on Redux middleware
@@ -36,10 +36,7 @@ const reducer = ReducerRegistry.combineReducers({
 // - routerMiddleware - middleware from 'react-router-redux' module to track
 // changes in browser history inside Redux state. For more information
 // @see https://github.com/reactjs/react-router-redux.
-const store = createStore(
-    reducer,
-    applyMiddleware(
-        Thunk, navigationMiddleware, routerMiddleware(browserHistory)));
+const store = createStore(reducer, middleware);
 
 // Render the root component.
 ReactDOM.render(<App store={store} config={Config}/>, document.body);

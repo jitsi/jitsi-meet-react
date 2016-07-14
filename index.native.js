@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
-import { applyMiddleware, createStore } from 'redux';
+import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import { ReducerRegistry } from './features/base/redux';
+import { App } from './features/app';
 import {
-    App,
-    navigationMiddleware
-} from './features/app';
+    MiddlewareRegistry,
+    ReducerRegistry
+} from './features/base/redux';
 
 // Create combined reducer from all reducers in registry.
 const reducer = ReducerRegistry.combineReducers();
+
+const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
 
 // Create Redux store with our reducer and additional middleware.
 // For more information on Redux middleware
