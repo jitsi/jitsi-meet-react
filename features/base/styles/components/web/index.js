@@ -1,3 +1,3 @@
-export * from './createStyleSheet';
+export * from './shimStyles';
 
 require('style!./FontAwesome.css');

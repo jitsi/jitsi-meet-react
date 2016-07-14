@@ -1,1 +1,1 @@
-export * from './createStyleSheet';
+export * from './shimStyles';

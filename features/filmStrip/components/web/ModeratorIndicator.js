@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Icon from 'react-fontawesome';
 
-import styles from '../styles/Styles';
+import { styles } from './styles';
 
 /**
  * Thumbnail badge showing that the participant is a conference moderator.

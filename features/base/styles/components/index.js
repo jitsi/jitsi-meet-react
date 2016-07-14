@@ -1,2 +1,3 @@
 export * from './_';
-export * from './styles';
+export * from './ColorPalette';
+export * from './createStyleSheet';
