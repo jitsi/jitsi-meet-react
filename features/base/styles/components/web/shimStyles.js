@@ -10,7 +10,7 @@
  * declarations that need to be set or overridden for specific platforms.
  *
  * @param {Object} styles - A dictionary of named style definitions.
- * @returns {Object}i
+ * @returns {Object}
  */
 export function shimStyles(styles) {
     // The `display` field only applies to web, so we stamp the necessary
