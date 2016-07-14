@@ -1,3 +1,5 @@
+/* global config */
+
 let domain = 'meet.jit.si';
 
 module.exports = {
