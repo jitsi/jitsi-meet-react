@@ -12,18 +12,13 @@ import {
  */
 ReducerRegistry.register('features/base/tracks', (state = [], action) => {
     switch (action.type) {
-    /**
-     * Remove participant's tracks after/when participant leaves.
-     */
+    // Remove remote participant's tracks after/when participant leaves.
+    // TODO Removed after/when https://github.com/jitsi/lib-jitsi-meet/pull/174
+    // is merged.
     case PARTICIPANT_LEFT:
-        return (
-            state.filter(
-                track => action.participant.local
-                    ? !track.isLocal()
-                    : (track.isLocal()
-                        || track.getParticipantId() !== action.participant.id)
-            )
-        );
+        return state.filter(
+            track => track.isLocal() ||
+                track.getParticipantId() !== action.participant.id);
 
     case TRACK_ADDED:
         return [...state, action.track];
