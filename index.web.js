@@ -22,20 +22,17 @@ const reducer = ReducerRegistry.combineReducers({
     routing: routerReducer
 });
 
-const middleware = MiddlewareRegistry.applyMiddleware(
-    Thunk, routerMiddleware(browserHistory));
-
-// Create Redux store with our reducer and additional middleware.
-// For more information on Redux middleware
-// @see http://redux.js.org/docs/advanced/Middleware.html.
-// Here we have following middleware:
+// Apply all registered middleware from the MiddlewareRegistry + additional
+// 3rd party middleware:
 // - Thunk - allows us to dispatch async actions easily. For more info
 // @see https://github.com/gaearon/redux-thunk.
-// - navigationMiddleware - custom middleware to intercept routing actions.
-// See implementation for more details.
 // - routerMiddleware - middleware from 'react-router-redux' module to track
 // changes in browser history inside Redux state. For more information
 // @see https://github.com/reactjs/react-router-redux.
+const middleware = MiddlewareRegistry.applyMiddleware(
+    Thunk, routerMiddleware(browserHistory));
+
+// Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
 
 // Render the root component.

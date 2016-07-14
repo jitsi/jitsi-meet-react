@@ -1,4 +1,5 @@
 import { APP_NAVIGATE } from './actionTypes';
+import './middleware';
 
 /**
  * Trigger an in-app navigation to a different screen. Allows navigation to be

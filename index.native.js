@@ -13,18 +13,14 @@ import {
 // Create combined reducer from all reducers in registry.
 const reducer = ReducerRegistry.combineReducers();
 
-const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
-
-// Create Redux store with our reducer and additional middleware.
-// For more information on Redux middleware
-// @see http://redux.js.org/docs/advanced/Middleware.html.
-// Here we have following middleware:
+// Apply all registered middleware from the MiddlewareRegistry + additional
+// 3rd party middleware:
 // - Thunk - allows us to dispatch async actions easily. For more info
 // @see https://github.com/gaearon/redux-thunk.
-// - router - custom middleware to intercept routing actions. See implementation
-// for more details.
-const store = createStore(
-    reducer, applyMiddleware(Thunk, navigationMiddleware));
+const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
+
+// Create Redux store with our reducer and middleware.
+const store = createStore(reducer, middleware);
 
 /**
  * React-Native doesn't support passing props to root component, so create

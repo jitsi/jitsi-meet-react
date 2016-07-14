@@ -1,24 +1,25 @@
-// ==========================================================
-//  Title: middleware.js
-//  Description: 
-//  Copyright (c) 2004-2015 Modular Mining Systems, Inc.
-//  All Rights Reserved
-// ==========================================================
-//  The information described in this document is furnished as proprietary
-//  information and may not be copied or sold without the written permission
-//  of Modular Mining Systems, Inc.
-// ==========================================================
+import { MiddlewareRegistry } from '../base/redux';
 
-(function (angular) {
-    'use strict';
+import { navigationHandlers } from './_';
+import { APP_NAVIGATE } from './actionTypes';
 
-    /**
-     * @ngdoc module
-     * @name
-     *
-     * @description
-     *
-     */
-    angular
-        .module('', []);
-})(window.angular);
+/**
+ * This router middleware is used to abstract navigation inside the app for both
+ * native and web.
+ *
+ * @param {Store} store - Redux store.
+ * @returns {Function}
+ */
+const router = store => next => action => {
+    if (action.type === APP_NAVIGATE) {
+        let handler = navigationHandlers[action.screen];
+
+        if (handler) {
+            return handler(store, action);
+        }
+    }
+
+    return next(action);
+};
+
+MiddlewareRegistry.register(router);
