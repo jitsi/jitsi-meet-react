@@ -7,7 +7,10 @@ import {
 } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-import { init } from '../../../base/connection';
+import {
+    destroy,
+    init
+} from '../../../base/connection';
 import { Conference } from '../../../conference';
 import { WelcomePage } from '../../../welcome';
 
@@ -25,13 +28,16 @@ export class App extends Component {
     constructor(props) {
         super(props);
 
-        // Create an enhanced history that syncs navigation events with the
-        // store.
-        // @see https://github.com/reactjs/react-router-redux#how-it-works
+        /**
+         * Create an enhanced history that syncs navigation events with the
+         * store.
+         * @link https://github.com/reactjs/react-router-redux#how-it-works
+         */
         this.history = syncHistoryWithStore(browserHistory, props.store);
 
         // Bind event handlers so they are only bound once for every instance.
         this._onConferenceRouteEnter = this._onConferenceRouteEnter.bind(this);
+        this._onConferenceRouteLeave = this._onConferenceRouteLeave.bind(this);
     }
 
     /**
@@ -50,7 +56,8 @@ export class App extends Component {
                     <Route
                         path='*'
                         component={Conference}
-                        onEnter={this._onConferenceRouteEnter}/>
+                        onEnter={this._onConferenceRouteEnter}
+                        onLeave={this._onConferenceRouteLeave}/>
                 </Router>
             </Provider>
         );
@@ -66,6 +73,17 @@ export class App extends Component {
     _onConferenceRouteEnter(route) {
         const room = route.location.pathname.substr(1).toLowerCase();
         this.props.store.dispatch(init(this.props.config, room));
+    }
+
+    /**
+     * Destroy connection, conference and local tracks when we leave the
+     * "conference" route.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onConferenceRouteLeave() {
+        this.props.store.dispatch(destroy());
     }
 }
 

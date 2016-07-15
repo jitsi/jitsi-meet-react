@@ -1,6 +1,9 @@
 import Config from '../../../config';
 
-import { init } from '../../base/connection';
+import {
+    destroy,
+    init
+} from '../../base/connection';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
 
@@ -10,6 +13,7 @@ const navigationHandlers = {};
 
 /**
  * Handler for APP_SCREEN.WELCOME screen route. Saves root route in navigation.
+ * Destroy connection, conference and local tracks.
  *
  * @param {Store} store - Redux store.
  * @param {Object} action - Action object.
@@ -21,11 +25,12 @@ navigationHandlers[APP_SCREEN.WELCOME] = (store, action) => {
         title: 'Jitsi Meet',
         component: WelcomePage
     });
+    store.dispatch(destroy());
 };
 
 /**
  * Handler for APP_SCREEN.CONFERENCE screen route. Saves route to specified room
- * in navigation.
+ * in navigation. Inits JitsiMeetJS and new conference.
  *
  * @param {Store} store - Redux store.
  * @param {Object} action - Action object.
@@ -42,4 +47,3 @@ navigationHandlers[APP_SCREEN.CONFERENCE] = (store, action) => {
 };
 
 export { navigationHandlers };
-
