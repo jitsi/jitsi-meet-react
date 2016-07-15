@@ -21,7 +21,8 @@ class WelcomePage extends Component {
     render() {
         return (
             <WelcomePageContainer
-                onJoin={ roomName =>
+                onJoin={
+                    roomName =>
                         this.props.onJoin(roomName, this.props.navigator)
                 }/>
         );

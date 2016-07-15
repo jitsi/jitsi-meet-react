@@ -1,62 +1,35 @@
-import React, { Component } from 'react';
+import React from 'react';
 
+import { AbstractWelcomePageContainer } from '../AbstractWelcomePageContainer';
 import { styles } from '../styles';
 
 /**
  * The web container rendering the welcome page.
+ *
+ * @extends AbstractWelcomePageContainer
  */
-export class WelcomePageContainer extends Component {
+export class WelcomePageContainer extends AbstractWelcomePageContainer {
     /**
-     * Initialize the WelcomePageContainer, including the initial
-     * state of the room name input.
+     * Renders a prompt for entering a room name.
      *
-     * @param {Object} props - Component properties.
-     */
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            roomName: ''
-        };
-
-        this.handleChange = event => {
-            this.setState({ roomName: event.target.value });
-        };
-
-        this.handleSubmit = () => {
-            this.props.onJoin(this.state.roomName);
-        };
-    }
-
-    /**
-     * Implements React's {@link Component#render()}. Renders a prompt for
-     * entering a room name.
-     *
-     * @inheritdoc
      * @returns {ReactElement}
      */
     render() {
         return (
-            <div style = { styles.container }>
-                <p style ={ styles.title }>Enter room name</p>
+            <div style={ styles.container }>
+                <p style={ styles.title }>Enter room name</p>
                 <input
+                    onChange={ ev => this._onRoomNameChange(ev.target.value) }
+                    style={ styles.textInput }
                     type="text"
-                    style = { styles.textInput }
-                    onChange= { this.handleChange }
-                    value= { this.state.roomName }  />
+                    value={ this.state.roomName }  />
                 <button
-                    style = { styles.button }
-                    onClick = { this.handleSubmit }>JOIN</button>
+                    disabled={ this.state.roomName === '' }
+                    onClick={ this._onJoinPress }
+                    style={ styles.button }>JOIN</button>
             </div>
         );
     }
 }
 
-/**
- * WelcomePageContainer component's property types.
- *
- * @static
- */
-WelcomePageContainer.propTypes = {
-    onJoin: React.PropTypes.func
-};
+WelcomePageContainer.propTypes = AbstractWelcomePageContainer.propTypes;
