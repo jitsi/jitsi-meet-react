@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { WelcomePageContainer as BaseWelcomePageContainer } from '../base';
+import {
+    WelcomePageContainer as BaseWelcomePageContainer
+} from '../WelcomePageContainer';
 import { styles } from '../styles';
 
 /**
