@@ -11,7 +11,7 @@ import {
 } from './actionTypes';
 import './reducer';
 
-const TrackErrors = JitsiMeetJS.errors.track;
+const JitsiTrackErrors = JitsiMeetJS.errors.track;
 
 /**
  * Attach a set of local tracks to a conference.
@@ -44,24 +44,18 @@ export function changeLocalTracks(newLocalTracks = []) {
         const conference = getState()['features/base/conference'];
         let tracksToAdd = [];
         let tracksToRemove = [];
-        let newAudioTrack;
-        let newVideoTrack;
         let promise = Promise.resolve();
 
         if (conference) {
             conference.getLocalTracks().forEach(track => {
-                if (track.isAudioTrack()) {
-                    newAudioTrack = newLocalTracks.find(t => t.isAudioTrack());
+                let type = track.getType();
 
-                    if (newAudioTrack) {
-                        tracksToAdd.push(newAudioTrack);
-                        tracksToRemove.push(track);
-                    }
-                } else if (track.isVideoTrack()) {
-                    newVideoTrack = newLocalTracks.find(t => t.isVideoTrack());
+                if (type) {
+                    let newTrack =
+                        newLocalTracks.find(t => (t.getType() === type));
 
-                    if (newVideoTrack) {
-                        tracksToAdd.push(newVideoTrack);
+                    if (newTrack) {
+                        tracksToAdd.push(newTrack);
                         tracksToRemove.push(track);
                     }
                 }
@@ -69,9 +63,7 @@ export function changeLocalTracks(newLocalTracks = []) {
 
             // TODO: add various checks from original useVideo/AudioStream
 
-            promise = Promise.all(tracksToRemove.map(t => t.dispose()))
-                .then(() => Promise.all(
-                    tracksToRemove.map(t => dispatch(trackRemoved(t)))))
+            promise = dispatch(_disposeAndRemoveTracks(tracksToRemove))
                 .then(() => addTracksToConference(conference, tracksToAdd));
         } else {
             tracksToAdd = newLocalTracks;
@@ -81,16 +73,24 @@ export function changeLocalTracks(newLocalTracks = []) {
             .then(() => Promise.all(
                 tracksToAdd.map(t => dispatch(trackAdded(t)))))
             .then(() => {
+                // FIXME Lyubomir Marinov: It doesn't sound right to me to have
+                // tracks trying to figure out & trigger participant-related
+                // events. A participant owns tracks so it appears natural to me
+                // to have the participant keep an eye on its tracks & determine
+                // whether its video type has changed.
+
                 // Maybe update local participant's videoType after we received
                 // new media tracks.
                 let participants = getState()['features/base/participants'];
                 let localParticipant = participants.find(p => p.local);
                 let promise = Promise.resolve();
-                let addedVideoTrack = tracksToAdd.find(t => t.isVideoTrack());
-                let removedVideoTrack = tracksToRemove
-                    .find(t => t.isVideoTrack());
 
                 if (localParticipant) {
+                    let addedVideoTrack =
+                        tracksToAdd.find(t => t.isVideoTrack());
+                    let removedVideoTrack =
+                        tracksToRemove.find(t => t.isVideoTrack());
+
                     if (addedVideoTrack) {
                         promise = dispatch(participantVideoTypeChanged(
                             localParticipant.id,
@@ -134,29 +134,40 @@ export function createLocalTracks(options) {
 
 /**
  * Calls JitsiLocalTrack#dispose() on all local tracks ignoring errors when
- * track is already disposed.
+ * track is already disposed. After that signals tracks to be removed.
  *
  * @returns {Function}
  */
-export function disposeLocalTracks() {
+export function destroyLocalTracks() {
     return (dispatch, getState) => {
-        const tracks = getState()['features/base/tracks'];
-
-        return Promise.all(
-            tracks
-                .filter(t => t.isLocal())
-                .map(t => {
-                    return t.dispose()
-                        .catch(err => {
-                            // Track might be already disposed, so we ignore
-                            // this error, but re-throw error in other cases.
-                            if (err.name !== TrackErrors.TRACK_IS_DISPOSED) {
-                                throw err;
-                            }
-                        });
-                }));
+        return dispatch(_disposeAndRemoveTracks(
+            getState()['features/base/tracks'].filter(t => t.isLocal())));
     };
 }
+
+/**
+ * Disposes passed tracks and signals them to be removed.
+ *
+ * @param {JitsiTrack[]} tracks - List of tracks.
+ * @returns {Function}
+ */
+function _disposeAndRemoveTracks(tracks) {
+    return dispatch => {
+        return Promise.all(
+            tracks.map(t => {
+                return t.dispose()
+                    .catch(err => {
+                        // Track might be already disposed so ignore such an
+                        // error. Of course, re-throw any other error(s).
+                        if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
+                            throw err;
+                        }
+                    });
+            }))
+            .then(Promise.all(tracks.map(t => dispatch(trackRemoved(t)))));
+    };
+}
+
 
 /**
  * Create an action for when a new track has been signaled to be added to the
@@ -187,8 +198,8 @@ export function trackMuteChanged(track) {
 }
 
 /**
- * Create an action for when a track has been signaled for
- * removal from the conference.
+ * Create an action for when a track has been signaled for removal from the
+ * conference.
  *
  * @param {JitsiTrack} track - JitsiTrack instance.
  * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}

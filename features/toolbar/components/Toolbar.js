@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { navigate } from '../../base/navigation';
 
 import {
-    hangup,
     toggleAudio,
     toggleCameraFacingMode
 } from '../';
@@ -67,8 +66,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleCameraFacingMode());
         },
         onHangup: navigator => {
-            dispatch(hangup())
-                .then(() => dispatch(navigate({ screen: 'home', navigator })));
+            dispatch(navigate({ screen: 'home', navigator }));
         }
     };
 };

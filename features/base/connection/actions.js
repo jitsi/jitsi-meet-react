@@ -1,7 +1,10 @@
 import { conferenceInitialized } from '../conference';
 import JitsiMeetJS from '../lib-jitsi-meet';
 import { localParticipantJoined } from '../participants';
-import { createLocalTracks } from '../tracks';
+import {
+    createLocalTracks,
+    destroyLocalTracks
+} from '../tracks';
 
 import {
     CONNECTION_CREATED,
@@ -17,6 +20,8 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 /**
  * Create an action for when the signaling connection has been lost.
  *
+ * @param {JitsiConnection} connection - The JitsiConnection which was
+ * disconnected.
  * @param {string} message - Error message.
  * @returns {{
  *     type: CONNECTION_DISCONNECTED,
@@ -36,7 +41,7 @@ export function connectionDisconnected(connection, message) {
  * Create an action for when the signaling connection has been established.
  *
  * @param {string} id - The ID of the local endpoint/participant/peer (within
- *      the context of the established connection).
+ * the context of the established connection).
  * @returns {{type: CONNECTION_ESTABLISHED, id: string}}
  */
 export function connectionEstablished(id) {
@@ -94,6 +99,35 @@ export function connectionInitialized(connection, room) {
             room,
             connection
         });
+    };
+}
+
+/**
+ * Leaves the conference, closes the connection and destroys local tracks.
+ *
+ * @returns {Function}
+ */
+export function destroy() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const conference = state['features/base/conference'];
+        const connection = state['features/base/connection'];
+
+        let promise = Promise.resolve();
+
+        if (conference) {
+            promise = conference.leave();
+        }
+
+        if (connection) {
+            promise = promise
+                .then(() => connection.disconnect());
+        }
+
+        // XXX Local tracks might exist without conference and connection
+        // initialized, so we need to explicitly clean them here.
+        return promise
+            .then(() => dispatch(destroyLocalTracks()));
     };
 }
 

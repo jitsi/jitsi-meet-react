@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 
 import { WelcomePageContainer as BaseWelcomePageContainer } from '../base';
-import styles from '../styles/Styles';
+import { styles } from '../styles';
 
 /**
  * The native container rendering the welcome page.

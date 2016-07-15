@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { WelcomePageContainer as BaseWelcomePageContainer } from '../base';
-import styles from '../styles/Styles';
+import { styles } from '../styles';
 
 /**
  * The web container rendering the welcome page.

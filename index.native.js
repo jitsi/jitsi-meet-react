@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { AppRegistry, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
+import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import { init } from './features/base/connection';
+import {
+    destroy,
+    init
+} from './features/base/connection';
 import { APP_NAVIGATE } from './features/base/navigation';
-import { ReducerRegistry } from './features/base/redux';
+import {
+    MiddlewareRegistry,
+    ReducerRegistry
+} from './features/base/redux';
 import { Conference } from './features/conference';
 import { WelcomePage } from './features/welcome';
 
@@ -22,10 +28,12 @@ const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
         case 'home':
-            return action.navigator.push({
+            action.navigator.push({
                 title: 'Jitsi Meet',
                 component: WelcomePage
             });
+            store.dispatch(destroy());
+            return;
         case 'conference':
             action.navigator.push({
                 title: action.room,
@@ -38,8 +46,13 @@ const router = store => next => action => {
     return next(action);
 };
 
+// TODO: this together with middleware declaration will go to separate file in
+// scope of another PR.
+MiddlewareRegistry.register(router);
+
 const reducer = ReducerRegistry.combineReducers();
-const store = createStore(reducer, applyMiddleware(Thunk, router));
+const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
+const store = createStore(reducer, middleware);
 
 /**
  * App root component.

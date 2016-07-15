@@ -8,13 +8,19 @@ import {
     routerReducer,
     syncHistoryWithStore
 } from 'react-router-redux';
-import { applyMiddleware, createStore } from 'redux';
+import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import { init } from './features/base/connection';
+import {
+    destroy,
+    init
+} from './features/base/connection';
 import { APP_NAVIGATE } from './features/base/navigation';
-import { ReducerRegistry } from './features/base/redux';
+import {
+    MiddlewareRegistry,
+    ReducerRegistry
+} from './features/base/redux';
 import { Conference } from './features/conference';
 import { WelcomePage } from './features/welcome';
 
@@ -37,26 +43,33 @@ const router = store => next => action => {
     return next(action);
 };
 
+// TODO: this together with middleware declaration will go to separate file in
+// scope of another PR.
+MiddlewareRegistry.register(router);
 
 const reducer = ReducerRegistry.combineReducers({
     routing: routerReducer
 });
-const store = createStore(reducer, applyMiddleware(
-    Thunk,
-    router,
-    routerMiddleware(browserHistory)
-));
+const middleware = MiddlewareRegistry.applyMiddleware(
+    Thunk, routerMiddleware(browserHistory));
+const store = createStore(reducer, middleware);
 
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render((
-  <Provider store={store}>
-    <Router history={history}>
-      <Route path='/' component={WelcomePage} />
-      <Route path='*' component={Conference} onEnter={route => {
-          const room = route.location.pathname.substr(1).toLowerCase();
-          store.dispatch(init(Config, room));
-      }} />
-    </Router>
-  </Provider>
+    <Provider store={store}>
+        <Router history={history}>
+            <Route
+                path='/'
+                component={WelcomePage} />
+            <Route
+                path='*'
+                component={Conference}
+                onEnter={route => {
+                    const room =
+                        route.location.pathname.substr(1).toLowerCase();
+                    store.dispatch(init(Config, room)); }}
+                onLeave={() => store.dispatch(destroy())} />
+        </Router>
+    </Provider>
 ), document.body);
