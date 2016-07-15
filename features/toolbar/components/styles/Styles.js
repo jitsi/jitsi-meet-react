@@ -4,15 +4,14 @@ import { ColorPalette, createStyleSheet } from '../../../base/styles';
  * The toolbar related styles.
  * TODO Make styles more generic and reusable. Use ColorPalette for all colors.
  */
-const styles = createStyleSheet({  
+export const styles = createStyleSheet({  
     /**
      * The toolbar button icon style.
      */
     icon: {
         alignSelf: 'center',
         color: 'white',
-        fontSize: 24,
-        textAlign: 'center'
+        fontSize: 24
     },
 
     /**
@@ -42,9 +41,6 @@ const styles = createStyleSheet({
         justifyContent: 'center',
         left: 0,
         position: 'absolute',
-        right: 0,
-        textAlign: 'center'
+        right: 0
     }
 });
-
-export default styles;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import styles from '../styles/Styles';
+import { styles } from './styles';
 
 /**
  * The video thumbnail web container.

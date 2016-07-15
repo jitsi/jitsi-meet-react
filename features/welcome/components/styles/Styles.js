@@ -5,7 +5,7 @@ import { ColorPalette, createStyleSheet } from '../../../base/styles';
  * TODO: Make styles more generic and reusable. Use color palette for all
  * colors.
  */
-var styles = createStyleSheet({
+export const styles = createStyleSheet({
     /**
      * Join button text style.
      */
@@ -75,5 +75,3 @@ var styles = createStyleSheet({
         textAlign: 'center'
     }
 });
-
-export default styles;

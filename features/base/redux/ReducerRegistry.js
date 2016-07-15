@@ -33,6 +33,8 @@ class ReducerRegistry {
     /**
      * Adds a reducer to the registry.
      *
+     * The method is to be invoked only before {@link #combineReducers()}.
+     *
      * @param {string} name - The field in the state object that will be managed
      * by the provided reducer.
      * @param {Function} reducer - A Redux reducer.

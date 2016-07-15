@@ -20,7 +20,7 @@ class MiddlewareRegistry {
      * (@link http://redux.js.org/docs/api/applyMiddleware.html).
      *
      * @param {Function[]} additional - Any additional middleware that need to
-     *      be included (such as middleware from third-party modules).
+     * be included (such as middleware from third-party modules).
      * @returns {Function}
      */
     applyMiddleware(...additional) {
@@ -32,6 +32,8 @@ class MiddlewareRegistry {
 
     /**
      * Adds a middleware to the registry.
+     *
+     * The method is to be invoked only before {@link #applyMiddleware()}.
      *
      * @param {Function} middleware - A Redux middleware.
      * @returns {void}
