@@ -6,7 +6,6 @@ import {
     navigate
 } from '../../app';
 import {
-    hangup,
     toggleAudio,
     toggleCameraFacingMode
 } from '../';
@@ -69,11 +68,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleCameraFacingMode());
         },
         onHangup: navigator => {
-            dispatch(hangup())
-                .then(() => dispatch(navigate({
-                    screen: APP_SCREEN.WELCOME, 
-                    navigator 
-                })));
+            dispatch(navigate({ screen: APP_SCREEN.WELCOME, navigator }));
         }
     };
 };
