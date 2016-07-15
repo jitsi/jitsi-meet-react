@@ -31,13 +31,17 @@ export class Video extends Component {
             ? URL.createObjectURL(this.props.stream)
             : '';
 
+        let videoStyle = this.props.mirror
+            ? styles.mirroredVideo
+            : styles.video;
+
         return (
             <video
                 autoPlay
                 muted={ this.props.muted }
                 onPlaying={ this.props.onPlaying }
                 src={ src }
-                style={ styles.video }
+                style={ videoStyle }
             />
         );
     }
@@ -51,5 +55,6 @@ export class Video extends Component {
 Video.propTypes = {
     stream: React.PropTypes.object,
     muted: React.PropTypes.bool,
+    mirror: React.PropTypes.bool,
     onPlaying: React.PropTypes.func
 };

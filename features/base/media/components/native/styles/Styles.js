@@ -10,6 +10,15 @@ const styles = StyleSheet.create({
     video: {
         alignSelf: 'stretch',
         flex: 1
+    },
+
+    /**
+     * Transform local videos to behave like a mirror.
+     */
+    mirroredVideo: {
+        alignSelf: 'stretch',
+        flex: 1,
+        transform: [{ scaleX: -1 }]
     }
 });
 

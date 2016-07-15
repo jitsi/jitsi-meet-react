@@ -20,8 +20,9 @@ class LargeVideo extends Component {
         super(props);
 
         this.state = {
-            videoStream: null,
-            activeParticipant: null
+            activeParticipant: null,
+            mirrored: null,
+            videoStream: null
         };
     }
 
@@ -63,9 +64,14 @@ class LargeVideo extends Component {
             this.props.dispatch(participantSelected(activeParticipant.id));
         }
 
+        let mirrored = videoTrack &&
+            videoTrack.isLocal() &&
+            videoTrack.videoType === 'camera';
+
         this.setState({
-            videoStream: videoStream,
-            activeParticipant: activeParticipant
+            activeParticipant: activeParticipant,
+            mirrored: mirrored,
+            videoStream: videoStream
         });
     }
 
@@ -89,6 +95,7 @@ class LargeVideo extends Component {
                 videoStreamParticipant.videoStarted &&
                 this.state.videoStream &&
                 <Video
+                    mirror={this.state.mirrored}
                     stream={this.state.videoStream}/>}
             </LargeVideoContainer>
         );
