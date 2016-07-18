@@ -1,9 +1,9 @@
-import { createStyleSheet } from '../../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
 export const styles = createStyleSheet({
     container: {
         alignSelf: 'stretch',
-        backgroundColor: 'black',
+        backgroundColor: ColorPalette.appBackground,
         bottom: 0,
         flex: 1,
         left: 0,
