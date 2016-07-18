@@ -22,7 +22,10 @@ import {
     ReducerRegistry
 } from './features/base/redux';
 import { Conference } from './features/conference';
-import { WelcomePage } from './features/welcome';
+import {
+    setRoomName,
+    WelcomePage
+} from './features/welcome';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both
@@ -61,7 +64,8 @@ ReactDOM.render((
         <Router history={history}>
             <Route
                 path='/'
-                component={WelcomePage} />
+                component={WelcomePage}
+                onEnter={() => store.dispatch(setRoomName(''))} />
             <Route
                 path='*'
                 component={Conference}

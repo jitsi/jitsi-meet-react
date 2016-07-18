@@ -1,6 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-import { AbstractWelcomePageContainer } from '../AbstractWelcomePageContainer';
+import {
+    AbstractWelcomePageContainer,
+    mapStateToProps
+} from '../AbstractWelcomePageContainer';
 import { styles } from '../styles';
 
 /**
@@ -8,7 +12,7 @@ import { styles } from '../styles';
  *
  * @extends AbstractWelcomePageContainer
  */
-export class WelcomePageContainer extends AbstractWelcomePageContainer {
+class WelcomePageContainer extends AbstractWelcomePageContainer {
     /**
      * Renders a prompt for entering a room name.
      *
@@ -22,9 +26,9 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
                     onChange={ ev => this._onRoomNameChange(ev.target.value) }
                     style={ styles.textInput }
                     type="text"
-                    value={ this.state.roomName }  />
+                    value={ this.props.roomName }  />
                 <button
-                    disabled={ this.state.roomName === '' }
+                    disabled={ this.props.roomName === '' }
                     onClick={ this._onJoinPress }
                     style={ styles.button }>JOIN</button>
             </div>
@@ -33,3 +37,5 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
 }
 
 WelcomePageContainer.propTypes = AbstractWelcomePageContainer.propTypes;
+
+export default connect(mapStateToProps)(WelcomePageContainer);

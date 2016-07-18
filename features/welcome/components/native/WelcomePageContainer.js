@@ -1,7 +1,11 @@
 import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { connect } from 'react-redux';
 
-import { AbstractWelcomePageContainer } from '../AbstractWelcomePageContainer';
+import {
+    AbstractWelcomePageContainer,
+    mapStateToProps
+} from '../AbstractWelcomePageContainer';
 import { styles } from '../styles';
 
 /**
@@ -9,7 +13,7 @@ import { styles } from '../styles';
  *
  * @extends AbstractWelcomePageContainer
  */
-export class WelcomePageContainer extends AbstractWelcomePageContainer {
+class WelcomePageContainer extends AbstractWelcomePageContainer {
     /**
      * Renders a prompt for entering a room name.
      *
@@ -26,9 +30,10 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
                     onChangeText={ this._onRoomNameChange }
                     placeholder="room name"
                     style={ styles.textInput }
+                    value={ this.props.roomName }
                 />
                 <TouchableHighlight
-                    disabled={ this.state.roomName === '' }
+                    disabled={ this.props.roomName === '' }
                     onPress={ this._onJoinPress }
                     style={ styles.button }
                     underlayColor="white">
@@ -40,3 +45,5 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
 }
 
 WelcomePageContainer.propTypes = AbstractWelcomePageContainer.propTypes;
+
+export default connect(mapStateToProps)(WelcomePageContainer);

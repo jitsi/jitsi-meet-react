@@ -1,1 +1,1 @@
-export * from './WelcomePageContainer';
+export { default as WelcomePageContainer } from './WelcomePageContainer';

@@ -15,7 +15,38 @@ import {
     ReducerRegistry
 } from './features/base/redux';
 import { Conference } from './features/conference';
-import { WelcomePage } from './features/welcome';
+import {
+    setRoomName,
+    WelcomePage
+} from './features/welcome';
+
+
+/**
+ * Welcome mobile app screen.
+ *
+ * @type {{ component: Component, index: number}}
+ */
+const WelcomePageScreen = {
+    component: WelcomePage,
+    index: 0
+};
+
+/**
+ * Conference mobile app screen.
+ *
+ * @type {{component: Component, index: number}}
+ */
+const ConferenceScreen = {
+    component: Conference,
+    index: 1
+};
+
+/**
+ * List of screens for mobile app.
+ *
+ * @type {{ component: Component, index: number}[]}
+ */
+const screens = [ WelcomePageScreen, ConferenceScreen ];
 
 /**
  * This router middleware is used to abstract navigation inside the app for both
@@ -28,17 +59,16 @@ const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         switch (action.screen) {
         case 'home':
-            action.navigator.push({
-                title: 'Jitsi Meet',
-                component: WelcomePage
-            });
+            // XXX We are using jumpTo() method instead of push/pop in order
+            // not to create new scenes. In this case WelcomePage and Conference
+            // components will be mounted only once and then they will be just
+            // updated whenever Redux state changes.
+            action.navigator.jumpTo(WelcomePageScreen);
+            store.dispatch(setRoomName(''));
             store.dispatch(destroy());
             return;
         case 'conference':
-            action.navigator.push({
-                title: action.room,
-                component: Conference
-            });
+            action.navigator.jumpTo(ConferenceScreen);
             store.dispatch(init(Config, action.room));
             return;
         }
@@ -82,10 +112,8 @@ class Root extends Component {
         return (
             <Provider store={store}>
                 <Navigator
-                    initialRoute={{
-                        title: 'Jitsi Meet',
-                        component: WelcomePage
-                    }}
+                    initialRoute={WelcomePageScreen}
+                    initialRouteStack={screens}
                     renderScene={this._navigatorRenderScene}
                 />
           </Provider>
