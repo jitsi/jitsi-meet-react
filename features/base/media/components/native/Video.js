@@ -44,6 +44,7 @@ export class Video extends Component {
 
             return (
                 <RTCView
+                    accessibilityLabel="base.media.components.video"
                     objectFit={ objectFit }
                     streamURL={ streamURL }
                     style={ style }

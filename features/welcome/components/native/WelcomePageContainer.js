@@ -20,6 +20,7 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
             <View style={ styles.container }>
                 <Text style={ styles.title }>Enter room name</Text>
                 <TextInput
+                    accessibilityLabel="welcome.WelcomePageContainer.roomName"
                     autoCapitalize="none"
                     autoCorrect={ false }
                     autoFocus={ true }
@@ -28,6 +29,7 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
                     style={ styles.textInput }
                 />
                 <TouchableHighlight
+                    accessibilityLabel="welcome.WelcomePageContainer.joinButton"
                     disabled={ this.state.roomName === '' }
                     onPress={ this._onJoinPress }
                     style={ styles.button }

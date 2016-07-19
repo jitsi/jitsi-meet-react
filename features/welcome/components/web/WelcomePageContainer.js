@@ -19,11 +19,13 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
             <div style={ styles.container }>
                 <p style={ styles.title }>Enter room name</p>
                 <input
+                    id="welcome.WelcomePageContainer.roomName"
                     onChange={ ev => this._onRoomNameChange(ev.target.value) }
                     style={ styles.textInput }
                     type="text"
                     value={ this.state.roomName }  />
                 <button
+                    id="welcome.WelcomePageContainer.joinButton"
                     disabled={ this.state.roomName === '' }
                     onClick={ this._onJoinPress }
                     style={ styles.button }>JOIN</button>

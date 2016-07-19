@@ -33,6 +33,7 @@ export class Video extends Component {
 
         return (
             <video
+                id="base.media.components.video"
                 autoPlay
                 muted={ this.props.muted }
                 onPlaying={ this.props.onPlaying }
