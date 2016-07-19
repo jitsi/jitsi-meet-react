@@ -1,75 +1,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { browserHistory, Route, Router } from 'react-router';
+import { browserHistory } from 'react-router';
 import {
-    push,
     routerMiddleware,
-    routerReducer,
-    syncHistoryWithStore
+    routerReducer
 } from 'react-router-redux';
 import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import Config from './config';
-import {
-    destroy,
-    init
-} from './features/base/connection';
-import { APP_NAVIGATE } from './features/base/navigation';
+import { App } from './features/app';
 import {
     MiddlewareRegistry,
-    ReducerRegistry
+    ReducerRegistry 
 } from './features/base/redux';
-import { Conference } from './features/conference';
-import { WelcomePage } from './features/welcome';
 
-/**
- * This router middleware is used to abstract navigation inside the app for both
- * native and web.
- *
- * @param {Store} store - Redux store.
- * @returns {Object}
- */
-const router = store => next => action => {
-    if (action.type === APP_NAVIGATE) {
-        switch (action.screen) {
-        case 'home':
-            return store.dispatch(push('/'));
-        case 'conference':
-            return store.dispatch(push('/' + action.room));
-        }
-    }
-    return next(action);
-};
-
-// TODO: this together with middleware declaration will go to separate file in
-// scope of another PR.
-MiddlewareRegistry.register(router);
-
+// Create combined reducer from all reducers in registry + routerReducer from
+// 'react-router-redux' module (stores location updates from history).
+// @see https://github.com/reactjs/react-router-redux#routerreducer.
 const reducer = ReducerRegistry.combineReducers({
     routing: routerReducer
 });
+
+// Apply all registered middleware from the MiddlewareRegistry + additional
+// 3rd party middleware:
+// - Thunk - allows us to dispatch async actions easily. For more info
+// @see https://github.com/gaearon/redux-thunk.
+// - routerMiddleware - middleware from 'react-router-redux' module to track
+// changes in browser history inside Redux state. For more information
+// @see https://github.com/reactjs/react-router-redux.
 const middleware = MiddlewareRegistry.applyMiddleware(
     Thunk, routerMiddleware(browserHistory));
+
+// Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
 
-const history = syncHistoryWithStore(browserHistory, store);
-
-ReactDOM.render((
-    <Provider store={store}>
-        <Router history={history}>
-            <Route
-                path='/'
-                component={WelcomePage} />
-            <Route
-                path='*'
-                component={Conference}
-                onEnter={route => {
-                    const room =
-                        route.location.pathname.substr(1).toLowerCase();
-                    store.dispatch(init(Config, room)); }}
-                onLeave={() => store.dispatch(destroy())} />
-        </Router>
-    </Provider>
-), document.body);
+// Render the root component.
+ReactDOM.render(<App store={store} config={Config}/>, document.body);
