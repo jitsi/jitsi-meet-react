@@ -1,5 +1,5 @@
 {
-  "name": "jitsi-meet-app",
+  "name": "jitsi-meet-react",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -17,10 +17,10 @@
     "jitsi-meet-logger": "jitsi/jitsi-meet-logger",
     "jquery": "^2.2.4",
     "lib-jitsi-meet": "jitsi/lib-jitsi-meet",
-    "react": "15.2.0",
+    "react": "15.2.1",
     "react-dom": "15.2.0",
     "react-fontawesome": "^1.1.0",
-    "react-native": "0.28.0",
+    "react-native": "0.29.2",
     "react-native-vector-icons": "^2.0.3",
     "react-native-webrtc": "jitsi/react-native-webrtc#lib-jitsi-meet",
     "react-redux": "^4.4.5",
