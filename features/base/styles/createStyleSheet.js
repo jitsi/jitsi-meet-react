@@ -1,4 +1,4 @@
-import { shimStyles } from './_';
+import { shimStyles } from './shimStyles';
 
 /**
  * Create a style sheet using the provided style definitions.

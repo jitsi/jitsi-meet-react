@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Icon from 'react-fontawesome';
 
-import { ColorPalette } from '../../../base/styles';
+import { ColorPalette } from '../../base/styles';
 
-import { styles } from '../styles';
+import { styles } from './styles';
 
 /**
  * The web container rendering the toolbar.

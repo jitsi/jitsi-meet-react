@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { WelcomePage } from '../../../welcome';
+import { WelcomePage } from '../../welcome';
 
 /**
  * Root application component.

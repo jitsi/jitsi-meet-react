@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 
-import { AbstractWelcomePageContainer } from '../AbstractWelcomePageContainer';
-import { styles } from '../styles';
+import { AbstractWelcomePageContainer } from './AbstractWelcomePageContainer';
+import { styles } from './styles';
 
 /**
  * The native container rendering the welcome page.

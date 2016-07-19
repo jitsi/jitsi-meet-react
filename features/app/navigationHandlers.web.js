@@ -1,6 +1,6 @@
 import { push } from 'react-router-redux';
 
-import { APP_SCREEN } from '../constants';
+import { APP_SCREEN } from './constants';
 
 export const navigationHandlers = {};
 

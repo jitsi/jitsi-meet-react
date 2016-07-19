@@ -10,9 +10,9 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import {
     destroy,
     init
-} from '../../../base/connection';
-import { Conference } from '../../../conference';
-import { WelcomePage } from '../../../welcome';
+} from '../../base/connection';
+import { Conference } from '../../conference';
+import { WelcomePage } from '../../welcome';
 
 /**
  * Root application component.

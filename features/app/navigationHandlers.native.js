@@ -1,13 +1,13 @@
-import config from '../../../config';
+import config from '../../config';
 
 import {
     destroy,
     init
-} from '../../base/connection';
-import { Conference } from '../../conference';
-import { WelcomePage } from '../../welcome';
+} from '../base/connection';
+import { Conference } from '../conference';
+import { WelcomePage } from '../welcome';
 
-import { APP_SCREEN } from '../constants';
+import { APP_SCREEN } from './constants';
 
 export const navigationHandlers = {};
 

@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { ColorPalette } from '../../../base/styles';
+import { ColorPalette } from '../../base/styles';
 
-import { styles } from '../styles';
+import { styles } from './styles';
 
 /**
  * The native container rendering the in call main buttons.
