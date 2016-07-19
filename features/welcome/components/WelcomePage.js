@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { navigate } from '../../base/navigation';
+import { navigate } from '../../app';
 
 import { WelcomePageContainer } from './_';
 
