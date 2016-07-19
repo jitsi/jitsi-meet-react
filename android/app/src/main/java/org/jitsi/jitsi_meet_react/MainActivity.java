@@ -1,4 +1,4 @@
-package com.jitsimeetapp;
+package org.jitsi.jitsi_meet_react;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +35,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "JitsiMeetApp";
+        return "App";
     }
 
     /**
