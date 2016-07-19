@@ -15,6 +15,9 @@ import {
     ReducerRegistry
 } from './features/base/redux';
 
+import './features/conference';
+import './features/welcome';
+
 // Create combined reducer from all reducers in registry + routerReducer from
 // 'react-router-redux' module (stores location updates from history).
 // @see https://github.com/reactjs/react-router-redux#routerreducer.

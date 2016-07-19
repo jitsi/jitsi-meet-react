@@ -10,6 +10,9 @@ import {
     ReducerRegistry
 } from './features/base/redux';
 
+import './features/conference';
+import './features/welcome';
+
 // Create combined reducer from all reducers in registry.
 const reducer = ReducerRegistry.combineReducers();
 

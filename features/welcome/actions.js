@@ -1,5 +1,6 @@
 import { ROOM_NAME_SET } from './actionTypes';
 import './reducer';
+import './screen';
 
 /**
  * Signals that room name was set.

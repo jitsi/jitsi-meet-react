@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { navigate } from '../../app';
-
+import { navigate } from '../../base/navigation';
+import { CONFERENCE_SCREEN } from '../../conference';
 import { WelcomePageContainer } from './_';
 
 /**
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onJoin: (roomName, navigator) => {
             dispatch(navigate({
-                screen: 'conference',
+                screen: CONFERENCE_SCREEN,
                 room: roomName,
                 navigator
             }));

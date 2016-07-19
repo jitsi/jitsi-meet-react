@@ -2,28 +2,7 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { Conference } from '../../../conference';
-import { WelcomePage } from '../../../welcome';
-
-/**
- * Welcome mobile app screen.
- *
- * @type {{ component: Component, index: number}}
- */
-const WelcomePageScreen = {
-    component: WelcomePage,
-    index: 0
-};
-
-/**
- * Conference mobile app screen.
- *
- * @type {{component: Component, index: number}}
- */
-const ConferenceScreen = {
-    component: Conference,
-    index: 1
-};
+import { ScreenRegistry } from '../../../base/navigation';
 
 /**
  * Root application component.
@@ -40,8 +19,20 @@ export class App extends Component {
     constructor(props) {
         super(props);
 
+        // XXX Unfortunately, React-Native Navigator doesn't allow to handle
+        // 'onLeave' or 'onEnter' events for particular screen. Instead it has
+        // global 'onDidFocus' and 'onWillFocus' events, but there we receive
+        // only new screen as an argument and don't know the previous one.
+        // So here we introduce this property to be able to have previous screen
+        // when screen change occurs.
+        this._activeScreen = null;
+
         // Bind event handlers so they are only bound once for every instance.
         this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
+        this._navigatorScreenDidFocus =
+            this._navigatorScreenDidFocus.bind(this);
+        this._navigatorScreenWillFocus =
+            this._navigatorScreenWillFocus.bind(this);
     }
 
     /**
@@ -51,11 +42,15 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     render() {
+        let screens = ScreenRegistry.getAllScreens();
+
         return (
             <Provider store={this.props.store}>
                 <Navigator
-                    initialRoute={WelcomePageScreen}
-                    initialRouteStack={[ WelcomePageScreen, ConferenceScreen ]}
+                    initialRoute={screens[0]}
+                    initialRouteStack={screens}
+                    onDidFocus={this._navigatorScreenDidFocus}
+                    onWillFocus={this._navigatorScreenWillFocus}
                     renderScene={this._navigatorRenderScene}/>
             </Provider>
         );
@@ -78,6 +73,37 @@ export class App extends Component {
         // to support Android as well. In order to reduce the number of
         // modifications, accept the same format of route definition.
         return React.createElement(route.component, { navigator });
+    }
+
+    /**
+     * Remember passed screen as active after it was focused.
+     *
+     * @param {Screen} screen - App screen that became active.
+     * @private
+     * @returns {void}
+     */
+    _navigatorScreenDidFocus(screen) {
+        this._activeScreen = screen;
+    }
+
+    /**
+     * Unfortunately, React-Native Navigator doesn't allow to handle
+     * 'onLeave' or 'onEnter' events for particular screen. Instead it has
+     * global 'onDidFocus' and 'onWillFocus' events and here we handle the
+     * screen change to re-assemble logic of Router for web.
+     *
+     * @param {Screen} screen - New app screen to become active.
+     * @private
+     * @returns {void}
+     */
+    _navigatorScreenWillFocus(screen) {
+        let store = this.props.store;
+
+        if (this._activeScreen) {
+            this._activeScreen.onLeave(store);
+        }
+
+        screen.onEnter(store);
     }
 }
 

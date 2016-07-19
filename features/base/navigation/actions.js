@@ -8,12 +8,12 @@ import './middleware';
  * @param {Object} opts - Navigation options.
  * @param {Navigator} opts.navigator - Navigator instance.
  * @param {string} opts.room - Conference room name.
- * @param {APP_SCREEN} opts.screen - Name of route/screen to switch to.
+ * @param {string} opts.screen - Name of screen to switch to.
  * @returns {{
  *      type: APP_NAVIGATE,
  *      navigator: Navigator,
  *      room: string,
- *      screen: APP_SCREEN
+ *      screen: string
  * }}
  */
 export function navigate(opts) {
