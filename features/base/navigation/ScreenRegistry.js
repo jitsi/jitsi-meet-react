@@ -3,7 +3,7 @@
  *
  * @typedef {Object} Screen
  * @property {Component} component - React Component constructor.
- * @property {number} index - Screen index, required for React-Native Navigator.
+ * @property {string} name - Screen name.
  * @property {Function} navigate - Function to execute to navigate to
  * this screen.
  * @property {Function} onEnter - Function to execute when screen is entered.
@@ -21,9 +21,11 @@ class ScreenRegistry {
      */
     constructor() {
         /**
-         * The set of registered screens, keyed based on the screen name.
+         * The set of registered screens.
+         *
+         * @private
          */
-        this.screenRegistry = {};
+        this._screenRegistry = new Set();
     }
 
     /**
@@ -32,41 +34,42 @@ class ScreenRegistry {
      * @returns {Screen[]}
      */
     getAllScreens() {
-        return Object.keys(this.screenRegistry)
-            .map(key => this.getScreenByName(key))
-            .sort((s1, s2) => s1.index - s2.index);
+        // We use destructuring operator to 'clone' screen object to prevent
+        // modifications from outside (e.g. React-Native's Navigator extends
+        // it with some additional properties).
+        return [ ...this._screenRegistry ]
+            .map(screen => { return { ...screen }; });
     }
 
     /**
-     * Returns all registered screens.
+     * Returns screen by name if any.
      *
      * @param {string} name - Screen name.
-     * @returns {Screen|undefined}
+     * @returns {Screen|null}
      */
     getScreenByName(name) {
-        let screen = this.screenRegistry[name];
+        let screen = [ ...this._screenRegistry ].find(s => s.name === name);
 
-        if (screen) {
-            return {
-                ...screen,
-                name: name
-            };
-        }
+        // We use destructuring operator to 'clone' screen object to prevent
+        // modifications from outside (e.g. React-Native's Navigator extends
+        // it with some additional properties).
+        return screen
+            ? { ...screen }
+            : null;
     }
 
     /**
      * Adds a screen to the registry.
      *
-     * @param {string} name - Screen name.
      * @param {Screen} screen - Screen definition object.
      * @returns {void}
      */
-    register(name, screen) {
-        if (this.screenRegistry[name]) {
-            throw new Error(`Screen ${name} is already registered!`);
+    register(screen) {
+        if (this._screenRegistry.has(screen)) {
+            throw new Error(`Screen ${screen.name} is already registered!`);
         }
 
-        this.screenRegistry[name] = screen;
+        this._screenRegistry.add(screen);
     }
 }
 

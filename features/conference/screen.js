@@ -4,8 +4,8 @@ import {
     init
 } from '../base/connection';
 import { ScreenRegistry } from '../base/navigation';
-import { CONFERENCE_SCREEN } from './constants';
 import { Conference } from './components';
+import { CONFERENCE_SCREEN } from './constants';
 import { navigate } from './navigationHandler';
 
 /**
@@ -15,8 +15,8 @@ import { navigate } from './navigationHandler';
  */
 const ConferenceScreen = {
     component: Conference,
-    index: 1,
-    navigate: navigate,
+    name: CONFERENCE_SCREEN,
+    navigate,
     /**
      * Inits new connection and conference when conference screen is entered.
      *
@@ -43,10 +43,10 @@ const ConferenceScreen = {
     onLeave(store) {
         store.dispatch(destroy());
     },
-    path: '*'
+    path: '/:room'
 };
 
 /**
  * Register screen for conference page.
  */
-ScreenRegistry.register(CONFERENCE_SCREEN, ConferenceScreen);
+ScreenRegistry.register(ConferenceScreen);

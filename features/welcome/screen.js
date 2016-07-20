@@ -1,7 +1,7 @@
 import { ScreenRegistry } from '../base/navigation';
 import { setRoomName } from './actions';
-import { WELCOME_SCREEN } from './constants';
 import { WelcomePage } from './components';
+import { WELCOME_SCREEN } from './constants';
 import { navigate } from './navigationHandler';
 
 /**
@@ -11,8 +11,8 @@ import { navigate } from './navigationHandler';
  */
 const WelcomePageScreen = {
     component: WelcomePage,
-    index: 0,
-    navigate: navigate,
+    name: WELCOME_SCREEN,
+    navigate,
     /**
      * Resets room name to empty string when welcome page screen is entered.
      *
@@ -34,4 +34,4 @@ const WelcomePageScreen = {
 /**
  * Register screen for welcome page.
  */
-ScreenRegistry.register(WELCOME_SCREEN, WelcomePageScreen);
+ScreenRegistry.register(WelcomePageScreen);

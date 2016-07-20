@@ -42,16 +42,16 @@ export class App extends Component {
         let screens = ScreenRegistry.getAllScreens();
 
         return (
-            <Provider store={this.props.store}>
-                <Router history={this.history}>
+            <Provider store={ this.props.store }>
+                <Router history={ this.history }>
                     { screens.map(screen => {
                         return (
                             <Route
-                                key={screen.name}
-                                path={screen.path}
-                                component={screen.component}
-                                onEnter={() => screen.onEnter(store)}
-                                onLeave={() => screen.onLeave(store)}/>
+                                key={ screen.name }
+                                path={ screen.path }
+                                component={ screen.component }
+                                onEnter={ () => screen.onEnter(store) }
+                                onLeave={ () => screen.onLeave(store) }/>
                         );
                     })}
                 </Router>
