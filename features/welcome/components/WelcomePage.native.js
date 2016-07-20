@@ -1,15 +1,16 @@
 import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { connect } from 'react-redux';
 
-import { AbstractWelcomePageContainer } from './AbstractWelcomePageContainer';
+import { AbstractWelcomePage } from './AbstractWelcomePage';
 import { styles } from './styles';
 
 /**
  * The native container rendering the welcome page.
  *
- * @extends AbstractWelcomePageContainer
+ * @extends AbstractWelcomePage
  */
-export class WelcomePageContainer extends AbstractWelcomePageContainer {
+class WelcomePage extends AbstractWelcomePage {
     /**
      * Renders a prompt for entering a room name.
      *
@@ -39,4 +40,11 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
     }
 }
 
-WelcomePageContainer.propTypes = AbstractWelcomePageContainer.propTypes;
+/**
+ * WelcomePage component's property types.
+ *
+ * @static
+ */
+WelcomePage.propTypes = AbstractWelcomePage.propTypes;
+
+export default connect()(WelcomePage);

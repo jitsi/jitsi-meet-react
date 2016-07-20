@@ -1,14 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-import { AbstractWelcomePageContainer } from './AbstractWelcomePageContainer';
+import { AbstractWelcomePage } from './AbstractWelcomePage';
 import { styles } from './styles';
 
 /**
  * The web container rendering the welcome page.
  *
- * @extends AbstractWelcomePageContainer
+ * @extends AbstractWelcomePage
  */
-export class WelcomePageContainer extends AbstractWelcomePageContainer {
+export class WelcomePage extends AbstractWelcomePage {
     /**
      * Renders a prompt for entering a room name.
      *
@@ -32,4 +33,11 @@ export class WelcomePageContainer extends AbstractWelcomePageContainer {
     }
 }
 
-WelcomePageContainer.propTypes = AbstractWelcomePageContainer.propTypes;
+/**
+ * WelcomePage component's property types.
+ *
+ * @static
+ */
+WelcomePage.propTypes = AbstractWelcomePage.propTypes;
+
+export default connect()(WelcomePage);
