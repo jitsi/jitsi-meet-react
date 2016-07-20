@@ -1,4 +1,3 @@
-import { PARTICIPANT_LEFT } from '../participants';
 import { ReducerRegistry } from '../redux';
 
 import {
