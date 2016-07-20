@@ -5,7 +5,7 @@ import {
     routerMiddleware,
     routerReducer
 } from 'react-router-redux';
-import { createStore } from 'redux';
+import { compose, createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
 import config from './config';
@@ -29,8 +29,16 @@ const reducer = ReducerRegistry.combineReducers({
 // - routerMiddleware - middleware from 'react-router-redux' module to track
 // changes in browser history inside Redux state. For more information
 // @see https://github.com/reactjs/react-router-redux.
-const middleware = MiddlewareRegistry.applyMiddleware(
-    Thunk, routerMiddleware(browserHistory));
+let middleware = MiddlewareRegistry.applyMiddleware(
+    Thunk,
+    routerMiddleware(browserHistory));
+// Try to enable Redux DevTools Chrome extension in order to make it available
+// for the purposes of facilitating development.
+let devToolsExtension;
+if (typeof window === 'object'
+        && (devToolsExtension = window.devToolsExtension)) {
+    middleware = compose(middleware, devToolsExtension());
+}
 
 // Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
