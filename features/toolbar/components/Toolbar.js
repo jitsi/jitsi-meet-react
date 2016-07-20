@@ -9,7 +9,7 @@ import {
     toggleAudio,
     toggleCameraFacingMode
 } from '../';
-import { ToolbarContainer } from './_';
+import { ToolbarContainer } from './ToolbarContainer';
 
 /**
  * The conference call toolbar.

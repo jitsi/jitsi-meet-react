@@ -1,4 +1,4 @@
-rootProject.name = 'JitsiMeetApp'
+rootProject.name = 'jitsi-meet-react'
 
 include ':app'
 include ':react-native-vector-icons'

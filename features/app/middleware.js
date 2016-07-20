@@ -1,7 +1,7 @@
 import { MiddlewareRegistry } from '../base/redux';
 
-import { navigationHandlers } from './_';
 import { APP_NAVIGATE } from './actionTypes';
+import { navigationHandlers } from './navigationHandlers';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both

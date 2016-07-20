@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { navigate } from '../../app';
 
-import { WelcomePageContainer } from './_';
+import WelcomePageContainer from './WelcomePageContainer';
 
 /**
  * The welcome page of the application.

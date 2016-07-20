@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Video } from '../../base/media';
 import { participantSelected } from '../../base/participants';
 
-import { LargeVideoContainer } from './_';
+import { LargeVideoContainer } from './LargeVideoContainer';
 
 /**
  * Large video React component.

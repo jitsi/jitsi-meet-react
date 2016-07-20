@@ -31,4 +31,4 @@ const store = createStore(reducer, middleware);
 const Root = () => <App config={config} store={store}/>;
 
 // Register the root component.
-AppRegistry.registerComponent('JitsiMeetApp', () => Root);
+AppRegistry.registerComponent('App', () => Root);

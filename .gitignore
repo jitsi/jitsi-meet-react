@@ -1,6 +1,6 @@
 dist
 ios/build
-ios/JitsiMeetApp.xcodeproj/xcuserdata
-ios/JitsiMeetApp.xcodeproj/project.xcworkspace
+ios/jitsi-meet-react.xcodeproj/xcuserdata
+ios/jitsi-meet-react.xcodeproj/project.xcworkspace
 node_modules
 npm-debug.log
