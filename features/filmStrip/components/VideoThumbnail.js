@@ -111,20 +111,27 @@ class VideoThumbnail extends Component {
     render() {
         let streams = this.getMediaStreams();
 
+        let includeAudio = streams.audio &&
+            !this.props.audioTrack.isLocal() &&
+            !this.props.audioMuted;
+
+        let includeVideo = streams.video && !this.props.videoMuted;
+
+
         return (
             <VideoThumbnailContainer
                 focused={this.props.participant.focused}
                 onClick={this._onClick}>
 
-                {streams.audio &&
+                {includeAudio &&
                     <Audio stream={streams.audio}/>}
 
-                {streams.video && !this.props.videoMuted &&
+                {includeVideo &&
                     <Video
                         stream={streams.video}
                         onPlaying={this._onVideoPlaying}/>}
 
-                {(!streams.video || this.props.videoMuted) &&
+                {!includeVideo &&
                     <Avatar uri={this.props.participant.avatar} />}
 
                 {this.props.participant.role === PARTICIPANT_ROLE.MODERATOR &&
