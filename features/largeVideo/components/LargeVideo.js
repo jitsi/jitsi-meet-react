@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Video } from '../../base/media';
+import { Video, showMirrored } from '../../base/media';
 import { participantSelected } from '../../base/participants';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
@@ -20,8 +20,9 @@ class LargeVideo extends Component {
         super(props);
 
         this.state = {
+            activeParticipant: null,
             videoStream: null,
-            activeParticipant: null
+            videoTrack: null
         };
     }
 
@@ -64,8 +65,9 @@ class LargeVideo extends Component {
         }
 
         this.setState({
-            videoStream: videoStream,
-            activeParticipant: activeParticipant
+            activeParticipant,
+            videoStream,
+            videoTrack
         });
     }
 
@@ -89,6 +91,7 @@ class LargeVideo extends Component {
                 videoStreamParticipant.videoStarted &&
                 this.state.videoStream &&
                 <Video
+                    mirror={showMirrored(this.state.videoTrack)}
                     stream={this.state.videoStream}/>}
             </LargeVideoContainer>
         );

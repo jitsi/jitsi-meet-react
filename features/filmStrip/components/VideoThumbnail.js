@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Audio, Video } from '../../base/media';
+import { Audio, Video, showMirrored } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
     participantFocused,
@@ -122,6 +122,7 @@ class VideoThumbnail extends Component {
                 {streams.video && !this.props.videoMuted &&
                     <Video
                         stream={streams.video}
+                        mirror={showMirrored(this.props.videoTrack)}
                         onPlaying={this._onVideoPlaying}/>}
 
                 {(!streams.video || this.props.videoMuted) &&

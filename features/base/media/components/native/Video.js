@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { View } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 
 import styles from './styles/Styles';
@@ -42,13 +43,26 @@ export class Video extends Component {
             let style = styles.video;
             let objectFit = (style && style.objectFit) || 'cover';
 
-            return (
+            let video = (
                 <RTCView
                     objectFit={ objectFit }
                     streamURL={ streamURL }
                     style={ style }
                 />
             );
+
+            // XXX RTCView does not currently support mirroring for local
+            // videos, even when providing a transform style property.
+            // We can achieve the same effect by wrapping the RTCView inside of
+            // another View, and applying the transform style property to that
+            // View instead.
+            if (this.props.mirror) {
+                return (
+                    <View style={ styles.mirroredVideo }>{video}</View>
+                );
+            } else {
+                return video;
+            }
         }
 
         // RTCView has peculiarities which may or may not be platform specific.
@@ -67,5 +81,6 @@ export class Video extends Component {
 Video.propTypes = {
     muted: React.PropTypes.bool,
     onPlaying: React.PropTypes.func,
+    mirror: React.PropTypes.bool,
     stream: React.PropTypes.object
 };
