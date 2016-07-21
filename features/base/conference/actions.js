@@ -8,7 +8,6 @@ import {
     remoteParticipantJoined
 } from '../participants';
 import {
-    addTracksToConference,
     trackAdded,
     trackMuteChanged,
     trackRemoved
@@ -19,6 +18,7 @@ import {
     CONFERENCE_LEFT
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
+import './middleware';
 import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
@@ -96,7 +96,7 @@ export function conferenceJoined(conference) {
             .filter(t => t.isLocal());
 
         if (localTracks.length) {
-            addTracksToConference(conference, localTracks);
+            _addTracksToConference(conference, localTracks);
         }
 
         dispatch({
@@ -118,4 +118,24 @@ export function conferenceLeft(conference) {
         type: CONFERENCE_LEFT,
         conference
     };
+}
+
+/**
+ * Attach a set of local tracks to a conference.
+ *
+ * @param {JitsiConference} conference - Conference instance.
+ * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
+ * @private
+ * @returns {void}
+ */
+function _addTracksToConference(conference, localTracks) {
+    let conferenceLocalTracks = conference.getLocalTracks();
+
+    for (let track of localTracks) {
+        // XXX The library lib-jitsi-meet may be draconian, for example, when
+        // adding one and the same video track multiple times.
+        if (-1 === conferenceLocalTracks.indexOf(track)) {
+            conference.addTrack(track);
+        }
+    }
 }
