@@ -2,6 +2,7 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
+    localParticipantJoined,
     participantLeft,
     participantRoleChanged,
     participantVideoTypeChanged,
@@ -25,58 +26,24 @@ const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
- * Create an action for when the signaling connection has been established.
+ * Initializes a new conference.
  *
- * @param {JitsiConference} conference - Conference instance.
+ * @param {string} room - Conference room name.
  * @returns {Function}
  */
-export function conferenceInitialized(conference) {
-    return dispatch => {
-        conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
-            () => dispatch(conferenceJoined(conference)));
-        conference.on(JitsiConferenceEvents.CONFERENCE_LEFT,
-            () => dispatch(conferenceLeft(conference)));
+export function createConference(room) {
+    return (dispatch, getState) => {
+        let connection = getState()['features/base/connection'];
+        let conference;
 
-        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
-            id => dispatch(dominantSpeakerChanged(id)));
+        if (!connection) {
+            throw new Error('Cannot create conference without connection');
+        }
 
-        conference.on(JitsiConferenceEvents.TRACK_ADDED,
-            track => {
-                if (!track || track.isLocal()) {
-                    return;
-                }
+        conference = connection.initJitsiConference(room, { openSctp: true });
 
-                dispatch(trackAdded(track));
-
-                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-                    dispatch(participantVideoTypeChanged(
-                        track.getParticipantId(), type));
-                });
-            });
-        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
-            track => dispatch(trackMuteChanged(track)));
-        conference.on(JitsiConferenceEvents.TRACK_REMOVED,
-            track => {
-                if (!track || track.isLocal()) {
-                    return;
-                }
-
-                dispatch(trackRemoved(track));
-            });
-
-        conference.on(JitsiConferenceEvents.USER_JOINED,
-            (id, user) => dispatch(remoteParticipantJoined(id, {
-                role: user.getRole(),
-                displayName: user.getDisplayName()
-            })));
-        conference.on(JitsiConferenceEvents.USER_LEFT,
-            id => dispatch(participantLeft(id)));
-        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
-            (id, role) => dispatch(participantRoleChanged(id, role)));
-
-        conference.addCommandListener(EMAIL_COMMAND, (data, id) => {
-            dispatch(changeParticipantEmail(id, data.value));
-        });
+        dispatch(localParticipantJoined(conference.myUserId()));
+        dispatch(_setupConferenceListeners(conference));
 
         conference.join();
     };
@@ -138,4 +105,66 @@ function _addTracksToConference(conference, localTracks) {
             conference.addTrack(track);
         }
     }
+}
+
+/**
+ * Setup various conference event handlers.
+ *
+ * @param {JitsiConference} conference - Conference instance.
+ * @private
+ * @returns {Function}
+ */
+function _setupConferenceListeners(conference) {
+    return dispatch => {
+        conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
+            () => dispatch(conferenceJoined(conference)));
+
+        conference.on(JitsiConferenceEvents.CONFERENCE_LEFT,
+            () => dispatch(conferenceLeft(conference)));
+
+        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
+            id => dispatch(dominantSpeakerChanged(id)));
+
+        conference.on(JitsiConferenceEvents.TRACK_ADDED,
+            track => {
+                if (!track || track.isLocal()) {
+                    return;
+                }
+
+                dispatch(trackAdded(track));
+
+                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
+                    dispatch(participantVideoTypeChanged(
+                        track.getParticipantId(), type));
+                });
+            });
+
+        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
+            track => dispatch(trackMuteChanged(track)));
+
+        conference.on(JitsiConferenceEvents.TRACK_REMOVED,
+            track => {
+                if (!track || track.isLocal()) {
+                    return;
+                }
+
+                dispatch(trackRemoved(track));
+            });
+
+        conference.on(JitsiConferenceEvents.USER_JOINED,
+            (id, user) => dispatch(remoteParticipantJoined(id, {
+                role: user.getRole(),
+                displayName: user.getDisplayName()
+            })));
+
+        conference.on(JitsiConferenceEvents.USER_LEFT,
+            id => dispatch(participantLeft(id)));
+
+        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
+            (id, role) => dispatch(participantRoleChanged(id, role)));
+
+        conference.addCommandListener(EMAIL_COMMAND, (data, id) => {
+            dispatch(changeParticipantEmail(id, data.value));
+        });
+    };
 }
