@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
+    Dimensions,
     TouchableHighlight,
     View
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { Icon } from '../../base/fontIcons';
 import { ColorPalette } from '../../base/styles';
 
 import { styles } from './styles';
@@ -20,42 +21,67 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        var underlayColor = ColorPalette.buttonUnderlay;
-        var micButtonStyle;
-        var micButtonIcon;
+        let underlayColor = ColorPalette.buttonUnderlay;
+        let micButtonStyle;
+        let micIconStyle;
+        let micButtonIcon;
         if (this.props.audioMuted) {
             micButtonStyle = [
                 styles.toolbarButton,
                 { backgroundColor: underlayColor }
             ];
-            micButtonIcon = 'microphone-slash';
+            micIconStyle = [styles.icon, { color: 'white' }];
+            micButtonIcon = 'mic-disabled';
         }
         else {
             micButtonStyle = styles.toolbarButton;
+            micIconStyle = styles.icon;
             micButtonIcon = 'microphone';
         }
 
+        // The following property is responsible to hide/show the toolbar view
+        // by moving it out of site of the screen boundaries. An attempt to use
+        // the opacity property was made in order to eventually implement a
+        // fadeIn/fadeOut animation, however a known React Native problem was
+        // discovered, which allowed the view to still capture touch events even
+        // if hidden.
+        // TODO Alternatives will be investigated.
+        let bottom =
+            this.props.visible
+                ? styles.toolbarContainer.bottom
+                : -Dimensions.get('window').height;
+
         return (
-            <View style = { styles.toolbarContainer }>
+            <View style = { [styles.toolbarContainer, { bottom }] }>
+
                 <TouchableHighlight
-                    style = { micButtonStyle }
-                    onPress = { () => this.props.onAudioMute() }>
-                    <Icon style = { styles.icon } name = { micButtonIcon }/>
+                    onPress = { this.props.onAudioMute }
+                    style = { micButtonStyle }>
+
+                    <Icon
+                        name = { micButtonIcon }
+                        style = { micIconStyle } />
                 </TouchableHighlight>
                 <TouchableHighlight
+                    onPress = { this.props.onHangup }
                     style = { [
                         styles.toolbarButton,
                         { backgroundColor: ColorPalette.jitsiRed }
                     ] }
-                    onPress = { () => this.props.onHangup() }
                     underlayColor = { underlayColor }>
-                    <Icon style = { styles.icon } name = "phone"/>
+
+                    <Icon
+                        name = "hangup"
+                        style = { [styles.icon, { color: 'white' }] } />
                 </TouchableHighlight>
                 <TouchableHighlight
+                    onPress = { this.props.onCameraChange }
                     style = { styles.toolbarButton }
-                    onPress = { () => this.props.onCameraChange() }
                     underlayColor = { underlayColor }>
-                    <Icon style = { styles.icon } name="camera"/>
+
+                    <Icon
+                        name = "photo-camera"
+                        style = { styles.icon } />
                 </TouchableHighlight>
             </View>
         );
@@ -68,8 +94,9 @@ export class ToolbarContainer extends Component {
  * @static
  */
 ToolbarContainer.propTypes = {
+    audioMuted: React.PropTypes.bool,
     onAudioMute: React.PropTypes.func,
-    onHangup: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
-    audioMuted: React.PropTypes.bool
+    onHangup: React.PropTypes.func,
+    visible: React.PropTypes.bool
 };

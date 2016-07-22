@@ -17,7 +17,7 @@ class FilmStrip extends Component {
      */
     render() {
         return (
-            <FilmStripContainer>
+            <FilmStripContainer visible={ this.props.visible }>
             {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
@@ -90,7 +90,8 @@ const mapStateToProps = state => {
  */
 FilmStrip.propTypes = {
     participants: React.PropTypes.array,
-    tracks: React.PropTypes.array
+    tracks: React.PropTypes.array,
+    visible: React.PropTypes.bool.isRequired
 };
 
 export default connect(mapStateToProps)(FilmStrip);
