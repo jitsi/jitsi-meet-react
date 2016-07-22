@@ -47,6 +47,7 @@ class Conference extends Component {
      * us to 'switch' between toolbar and filmstrip views and change the
      * visibility of the above.
      *
+     * @private
      * @returns {void}
      */
     _onPress() {
