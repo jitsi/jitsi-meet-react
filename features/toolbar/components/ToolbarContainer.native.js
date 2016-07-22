@@ -23,6 +23,7 @@ export class ToolbarContainer extends Component {
     render() {
         var underlayColor = ColorPalette.buttonUnderlay;
         var micButtonStyle;
+        var micIconStyle;
         var micButtonIcon;
         if (this.props.audioMuted) {
             micButtonStyle = [
@@ -84,6 +85,7 @@ export class ToolbarContainer extends Component {
  * @static
  */
 ToolbarContainer.propTypes = {
+    isVisible: React.PropTypes.bool,
     onAudioMute: React.PropTypes.func,
     onHangup: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,

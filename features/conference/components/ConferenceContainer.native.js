@@ -30,5 +30,6 @@ export class ConferenceContainer extends Component {
  * @static
  */
 ConferenceContainer.propTypes = {
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
+    onPress: React.PropTypes.func
 };

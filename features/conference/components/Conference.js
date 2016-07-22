@@ -13,6 +13,9 @@ class Conference extends Component {
 
     /**
      * Initializes the 'isToolbarVisible' property state.
+     *
+     * @param {Object} props - The read-only properties with which the new
+     *      instance is to be initialized.
      */
     constructor(props) {
         super(props);
@@ -43,6 +46,8 @@ class Conference extends Component {
      * Changes the value of the isToolbarVisible property, thus allowing
      * us to 'switch' between toolbar and filmstrip views and change the
      * visibility of the above.
+     *
+     * @returns {void}
      */
     _onPress() {
         this.setState({ isToolbarVisible: !this.state.isToolbarVisible });

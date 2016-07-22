@@ -39,5 +39,6 @@ export class FilmStripContainer extends Component {
  * @static
  */
 FilmStripContainer.propTypes = {
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
+    isVisible: React.PropTypes.bool
 };
