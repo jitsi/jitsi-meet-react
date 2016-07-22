@@ -1,3 +1,4 @@
+import { ScreenRegistry } from '../base/navigation';
 import { CONFERENCE_SCREEN } from './constants';
 
 /**
@@ -9,7 +10,10 @@ import { CONFERENCE_SCREEN } from './constants';
  * @returns {void}
  */
 export function navigate(store, action) {
-    let route = action.navigator.getCurrentRoutes()
-        .find(r => r.name === CONFERENCE_SCREEN);
-    action.navigator.jumpTo(route);
+    let route = ScreenRegistry.getScreenByName(CONFERENCE_SCREEN);
+
+    // TODO: currently replace method doesn't support animation, but work
+    // towards adding it is done in
+    // https://github.com/facebook/react-native/issues/1981
+    action.navigator.replace(route);
 }

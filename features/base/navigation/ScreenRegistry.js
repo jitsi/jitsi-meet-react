@@ -6,8 +6,6 @@
  * @property {string} name - Screen name.
  * @property {Function} navigate - Function to execute to navigate to
  * this screen.
- * @property {Function} onEnter - Function to execute when screen is entered.
- * @property {Function} onLeave - Function to execute when screen is left.
  * @property {string} path - URL route, required for web routing.
  */
 

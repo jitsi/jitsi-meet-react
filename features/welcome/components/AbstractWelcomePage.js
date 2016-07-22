@@ -26,6 +26,16 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
+     * Resets room name to empty string when welcome page screen is entered.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillMount() {
+        this.props.dispatch(setRoomName(''));
+    }
+
+    /**
      * Handles click on 'Join' button.
      *
      * @protected

@@ -38,7 +38,6 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let store = this.props.store;
         let screens = ScreenRegistry.getAllScreens();
 
         return (
@@ -49,9 +48,7 @@ export class App extends Component {
                             <Route
                                 key={ screen.name }
                                 path={ screen.path }
-                                component={ screen.component }
-                                onEnter={ () => screen.onEnter(store) }
-                                onLeave={ () => screen.onLeave(store) }/>
+                                component={ screen.component }/>
                         );
                     })}
                 </Router>

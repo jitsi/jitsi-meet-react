@@ -1,3 +1,4 @@
+import { ScreenRegistry } from '../base/navigation';
 import { WELCOME_SCREEN } from './constants';
 
 /**
@@ -9,7 +10,10 @@ import { WELCOME_SCREEN } from './constants';
  * @returns {void}
  */
 export function navigate(store, action) {
-    let route = action.navigator.getCurrentRoutes()
-        .find(r => r.name === WELCOME_SCREEN);
-    action.navigator.jumpTo(route);
+    let route = ScreenRegistry.getScreenByName(WELCOME_SCREEN);
+
+    // TODO: currently replace method doesn't support animation, but work
+    // towards adding it is done in
+    // https://github.com/facebook/react-native/issues/1981
+    action.navigator.replace(route);
 }
