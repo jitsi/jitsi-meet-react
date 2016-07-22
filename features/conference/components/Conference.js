@@ -12,11 +12,18 @@ import { ConferenceContainer } from './ConferenceContainer';
 class Conference extends Component {
 
     /**
-     * Initializes the 'isToolbarVisible' property state.
+     * Initializes a new Conference instance.
+     *
+     * @param {Object} props - The read-only properties with which the new
+     * instance is to be initialized.
      */
-    constructor() {
-        super();
-        this.state = { isToolbarVisible: false };
+    constructor(props) {
+        super(props);
+
+        this.state = { toolbarIsVisible: false };
+
+        // Bind event handlers so they are only bound once for every instance.
+        this._onPress = this._onPress.bind(this);
     }
 
     /**
@@ -27,24 +34,27 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer onPress = { this.onPress.bind(this) }>
+            <ConferenceContainer onPress={ this._onPress }>
                 <LargeVideo/>
                 <Toolbar
-                    isVisible = { this.state.isToolbarVisible }
-                    navigator = { this.props.navigator }/>
+                    navigator={ this.props.navigator }
+                    visible={ this.state.toolbarIsVisible } />
                 <FilmStrip
-                    isVisible = { !this.state.isToolbarVisible } />
+                    visible={ !this.state.toolbarIsVisible } />
             </ConferenceContainer>
         );
     }
 
     /**
-     * Changes the value of the isToolbarVisible property, thus allowing
+     * Changes the value of the toolbarIsVisible property, thus allowing
      * us to 'switch' between toolbar and filmstrip views and change the
      * visibility of the above.
+     *
+     * @private
+     * @returns {void}
      */
-    onPress() {
-        this.setState({ isToolbarVisible: !this.state.isToolbarVisible });
+    _onPress() {
+        this.setState({ toolbarIsVisible: !this.state.toolbarIsVisible });
     }
 }
 

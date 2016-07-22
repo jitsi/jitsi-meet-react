@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
+import { TouchableWithoutFeedback, View } from 'react-native';
 
 import { styles } from './styles';
 
@@ -17,7 +17,8 @@ export class ConferenceContainer extends Component {
     render() {
         return (
             <TouchableWithoutFeedback
-                onPress={ () => { this.props.onPress(); } }>
+                onPress={ this.props.onPress }>
+
                 <View style={ styles.conference }>{ this.props.children }</View>
             </TouchableWithoutFeedback>
         );
@@ -30,5 +31,6 @@ export class ConferenceContainer extends Component {
  * @static
  */
 ConferenceContainer.propTypes = {
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
+    onPress: React.PropTypes.func
 };

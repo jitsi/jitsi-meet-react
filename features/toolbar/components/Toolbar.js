@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
     APP_SCREEN,
     navigate
 } from '../../app';
+
 import {
     toggleAudio,
     toggleCameraFacingMode
@@ -24,13 +25,12 @@ class Toolbar extends Component {
     render() {
         return (
             <ToolbarContainer
-                isVisible = { this.props.isVisible }
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
                 onCameraChange = { () => this.props.onCameraChange() }
                 onHangup = { () => this.props.onHangup(this.props.navigator) }
                 videoMuted = { this.props.videoMuted }
-                />
+                visible = { this.props.visible } />
         );
     }
 }
@@ -62,14 +62,14 @@ const mapStateToProps = state => {
  */
 const mapDispatchToProps = dispatch => {
     return {
-        onAudioMute: () => {
+        onAudioMute() {
             dispatch(toggleAudio());
         },
-        onCameraChange: () => {
+        onCameraChange() {
             dispatch(toggleCameraFacingMode());
         },
-        onHangup: navigator => {
-            dispatch(navigate({ screen: APP_SCREEN.WELCOME, navigator }));
+        onHangup(navigator) {
+            dispatch(navigate({ navigator, screen: APP_SCREEN.WELCOME }));
         }
     };
 };
@@ -80,13 +80,13 @@ const mapDispatchToProps = dispatch => {
  * @static
  */
 Toolbar.propTypes = {
-    isVisible: PropTypes.bool.isRequired,
     audioMuted: React.PropTypes.bool,
     navigator: React.PropTypes.object,
     onAudioMute: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
     onHangup: React.PropTypes.func,
-    videoMuted: React.PropTypes.bool
+    videoMuted: React.PropTypes.bool,
+    visible: React.PropTypes.bool.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);
