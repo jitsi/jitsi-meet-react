@@ -1,15 +1,23 @@
 /**
- * Web-specific styles for media components.
+ * Make video element fill its container.
  */
-const styles = {
-    /**
-     * Make video element fill its container.
-     */
-    video: {
-        height: '100%',
-        objectFit: 'cover',
-        width: '100%'
-    }
+const video = {
+    height: '100%',
+    objectFit: 'cover',
+    width: '100%'
 };
 
-export default styles;
+/**
+ * Transform local videos to behave like a mirror.
+ */
+const mirroredVideo = Object.assign({}, video, {
+    transform: 'scaleX(-1)'
+});
+
+/**
+ * Web-specific styles for media components.
+ */
+export const styles = {
+    mirroredVideo,
+    video
+};

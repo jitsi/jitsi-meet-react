@@ -4,7 +4,7 @@ import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
 
-import { ConferenceContainer } from './_';
+import { ConferenceContainer } from './ConferenceContainer';
 
 /**
  * The conference page of the application.

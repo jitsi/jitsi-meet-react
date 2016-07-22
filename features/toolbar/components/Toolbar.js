@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { navigate } from '../../base/navigation';
-
+import {
+    APP_SCREEN,
+    navigate
+} from '../../app';
 import {
     toggleAudio,
     toggleCameraFacingMode
 } from '../';
-import { ToolbarContainer } from './_';
+import { ToolbarContainer } from './ToolbarContainer';
 
 /**
  * The conference call toolbar.
@@ -24,8 +26,8 @@ class Toolbar extends Component {
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
-                onHangup = { () => this.props.onHangup(this.props.navigator) }
                 onCameraChange = { () => this.props.onCameraChange() }
+                onHangup = { () => this.props.onHangup(this.props.navigator) }
                 videoMuted = { this.props.videoMuted }
                 />
         );
@@ -66,7 +68,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleCameraFacingMode());
         },
         onHangup: navigator => {
-            dispatch(navigate({ screen: 'home', navigator }));
+            dispatch(navigate({ screen: APP_SCREEN.WELCOME, navigator }));
         }
     };
 };

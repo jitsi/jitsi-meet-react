@@ -25,6 +25,6 @@ export class Audio extends Component {
  * @static
  */
 Audio.propTypes = {
-    stream: React.PropTypes.object,
-    muted: React.PropTypes.bool
+    muted: React.PropTypes.bool,
+    stream: React.PropTypes.object
 };

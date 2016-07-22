@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Video } from '../../base/media';
+import { shouldMirror, Video } from '../../base/media';
 
-import { LargeVideoContainer } from './_';
+import { LargeVideoContainer } from './LargeVideoContainer';
 
 /**
  * Large video React component.
@@ -32,6 +32,7 @@ class LargeVideo extends Component {
                 participantOnStage.videoStarted &&
                 videoTrack &&
                 <Video
+                    mirror={ shouldMirror(videoTrack) }
                     stream={ videoTrack.getOriginalStream() }/> }
             </LargeVideoContainer>
         );
@@ -47,10 +48,13 @@ class LargeVideo extends Component {
  */
 function getVideoTrack(participant, tracks) {
     return tracks.find(t => {
-        return t.isVideoTrack() &&
-            ((participant.local && t.isLocal()) ||
-            (!participant.local && !t.isLocal() &&
-            t.getParticipantId() === participant.id));
+        return (
+            t.isVideoTrack()
+            && ((participant.local && t.isLocal())
+                || (!participant.local
+                    && !t.isLocal()
+                    && t.getParticipantId() === participant.id))
+        );
     });
 }
 

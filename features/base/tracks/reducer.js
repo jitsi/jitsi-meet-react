@@ -1,4 +1,3 @@
-import { PARTICIPANT_LEFT } from '../participants';
 import { ReducerRegistry } from '../redux';
 
 import {
@@ -8,18 +7,10 @@ import {
 } from './actionTypes';
 
 /**
- * Listen for actions that add or remove local and remote tracks.
+ * Listen for actions that mutate (e.g. add, remove) local and remote tracks.
  */
 ReducerRegistry.register('features/base/tracks', (state = [], action) => {
     switch (action.type) {
-    // Remove remote participant's tracks after/when participant leaves.
-    // TODO Removed after/when https://github.com/jitsi/lib-jitsi-meet/pull/174
-    // is merged.
-    case PARTICIPANT_LEFT:
-        return state.filter(
-            track => track.isLocal() ||
-                track.getParticipantId() !== action.participant.id);
-
     case TRACK_ADDED:
         return [...state, action.track];
 

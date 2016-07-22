@@ -1,115 +1,34 @@
-import React, { Component } from 'react';
-import { AppRegistry, Navigator } from 'react-native';
-import { Provider } from 'react-redux';
+import React from 'react';
+import { AppRegistry } from 'react-native';
 import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
-import Config from './config';
-import {
-    destroy,
-    init
-} from './features/base/connection';
-import { APP_NAVIGATE } from './features/base/navigation';
+import config from './config';
+import { App } from './features/app';
 import {
     MiddlewareRegistry,
     ReducerRegistry
 } from './features/base/redux';
-import { Conference } from './features/conference';
-import { WelcomePage } from './features/welcome';
 
-/**
- * This router middleware is used to abstract navigation inside the app for both
- * native and web.
- *
- * @param {Store} store - Redux store.
- * @returns {Object}
- */
-const router = store => next => action => {
-    if (action.type === APP_NAVIGATE) {
-        switch (action.screen) {
-        case 'home':
-            action.navigator.push({
-                title: 'Jitsi Meet',
-                component: WelcomePage
-            });
-            store.dispatch(destroy());
-            return;
-        case 'conference':
-            action.navigator.push({
-                title: action.room,
-                component: Conference
-            });
-            store.dispatch(init(Config, action.room));
-            return;
-        }
-    }
-    return next(action);
-};
-
-// TODO: this together with middleware declaration will go to separate file in
-// scope of another PR.
-MiddlewareRegistry.register(router);
-
+// Create combined reducer from all reducers in registry.
 const reducer = ReducerRegistry.combineReducers();
+
+// Apply all registered middleware from the MiddlewareRegistry + additional
+// 3rd party middleware:
+// - Thunk - allows us to dispatch async actions easily. For more info
+// @see https://github.com/gaearon/redux-thunk.
 const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
+
+// Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
 
 /**
- * App root component.
- * @extends Component
+ * React Native doesn't support passing props to root component, so create a
+ * wrapper class instead in form of stateless function.
+ *
+ * @returns {ReactElement}
  */
-class Root extends Component {
-    /**
-     * Initializes a new Root instance.
-     *
-     * @param {Object} props - The read-only properties with which the new
-     * instance is to be initialized.
-     */
-    constructor(props) {
-        super(props);
+const Root = () => <App config={config} store={store}/>;
 
-        // Bind event handlers so they are only bound once for every instance.
-        this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
-    }
-
-    /**
-     * Implements React's {@link Component#render()}.
-     *
-     * @inheritdoc
-     * @returns {ReactElement}
-     */
-    render() {
-        return (
-            <Provider store={store}>
-                <Navigator
-                    initialRoute={{
-                        title: 'Jitsi Meet',
-                        component: WelcomePage
-                    }}
-                    renderScene={this._navigatorRenderScene}
-                />
-          </Provider>
-        );
-    }
-
-    /**
-     * Renders the scene identified by a specific route in a specific Navigator.
-     *
-     * @param {Object} route - The route which identifies the scene to be
-     * rendered in the specified navigator. In the fashion of NavigatorIOS, the
-     * specified route is expected to define a value for its component property
-     * which is the type of React component to be rendered.
-     * @param {Navigator} navigator - The Navigator in which the scene
-     * identified by the specified route is to be rendered.
-     * @private
-     * @returns {ReactElement}
-     */
-    _navigatorRenderScene(route, navigator) {
-        // We started with NavigatorIOS and then switched to Navigator in order
-        // to support Android as well. In order to reduce the number of
-        // modifications, accept the same format of route definition.
-        return React.createElement(route.component, { navigator });
-    }
-}
-
-AppRegistry.registerComponent('JitsiMeetApp', () => Root);
+// Register the root component.
+AppRegistry.registerComponent('App', () => Root);
