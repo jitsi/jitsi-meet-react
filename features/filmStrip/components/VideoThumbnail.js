@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Audio, Video } from '../../base/media';
+import { Audio, shouldMirror, Video } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
     participantFocused,
@@ -58,16 +58,13 @@ class VideoThumbnail extends Component {
      * @returns {void}
      */
     handleVideoThumbClicked() {
-        // TODO: this currently ignores interfaceConfig.filmStripOnly
-        this.props.dispatch(participantFocused(
-            this.props.participant.focused
-                ? null
-                : this.props.participant.id));
+        let { dispatch, participant } = this.props;
 
-        this.props.dispatch(participantPinned(
-            this.props.participant.pinned
-                ? null
-                : this.props.participant.id));
+        // TODO: this currently ignores interfaceConfig.filmStripOnly
+        dispatch(participantFocused(
+            participant.focused ? null : participant.id));
+        dispatch(participantPinned(
+            participant.pinned ? null : participant.id));
     }
 
     /**
@@ -75,18 +72,17 @@ class VideoThumbnail extends Component {
      * Handles click/tap event on the thumbnail. Prevents further event
      * propagation.
      *
-     * @param {Event} event - DOM event.
+     * @param {Event} ev - DOM event.
      * @returns {false}
      */
-    _onClick(event) {
+    _onClick(ev) {
         this.handleVideoThumbClicked();
 
-        // On IE we need to populate this handler on video <object>
-        // and it does not give event instance as an argument,
-        // so we check here for methods.
-        if (event && event.stopPropagation && event.preventDefault) {
-            event.stopPropagation();
-            event.preventDefault();
+        // On IE we need to populate this handler on video <object> and it does
+        // not give event instance as an argument, so we check here for methods.
+        if (ev && ev.stopPropagation && ev.preventDefault) {
+            ev.stopPropagation();
+            ev.preventDefault();
         }
 
         return false;
@@ -109,35 +105,42 @@ class VideoThumbnail extends Component {
      * @returns {ReactElement}
      */
     render() {
+        let participant = this.props.participant;
         let streams = this.getMediaStreams();
+        let renderAudio =
+            streams.audio
+                && !this.props.audioMuted
+                && !this.props.audioTrack.isLocal();
+        let renderVideo = streams.video && !this.props.videoMuted;
 
         return (
             <VideoThumbnailContainer
-                focused={this.props.participant.focused}
-                onClick={this._onClick}>
+                focused={ participant.focused }
+                onClick={ this._onClick }>
 
-                {streams.audio &&
-                    <Audio stream={streams.audio}/>}
+                { renderAudio &&
+                    <Audio stream={ streams.audio } /> }
 
-                {streams.video && !this.props.videoMuted &&
+                { renderVideo &&
                     <Video
-                        stream={streams.video}
-                        onPlaying={this._onVideoPlaying}/>}
+                        mirror={ shouldMirror(this.props.videoTrack) }
+                        onPlaying={ this._onVideoPlaying }
+                        stream={ streams.video } /> }
 
-                {(!streams.video || this.props.videoMuted) &&
-                    <Avatar uri={this.props.participant.avatar} />}
+                { !renderVideo &&
+                    <Avatar uri={ participant.avatar } /> }
 
-                {this.props.participant.role === PARTICIPANT_ROLE.MODERATOR &&
-                    <ModeratorIndicator />}
+                { participant.role === PARTICIPANT_ROLE.MODERATOR &&
+                    <ModeratorIndicator /> }
 
-                {this.props.participant.speaking &&
-                    <DominantSpeakerIndicator />}
+                { participant.speaking &&
+                    <DominantSpeakerIndicator /> }
 
-                {this.props.audioMuted &&
-                    <AudioMutedIndicator />}
+                { this.props.audioMuted &&
+                    <AudioMutedIndicator /> }
 
-                {this.props.videoMuted &&
-                    <VideoMutedIndicator />}
+                { this.props.videoMuted &&
+                    <VideoMutedIndicator /> }
 
             </VideoThumbnailContainer>
         );

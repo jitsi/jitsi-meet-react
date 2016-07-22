@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Video } from '../../base/media';
+import { shouldMirror, Video } from '../../base/media';
 import { participantSelected } from '../../base/participants';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 
 /**
  * Large video React component.
+ *
  * @extends Component
  */
 class LargeVideo extends Component {
@@ -20,8 +21,9 @@ class LargeVideo extends Component {
         super(props);
 
         this.state = {
+            activeParticipant: null,
             videoStream: null,
-            activeParticipant: null
+            videoTrack: null
         };
     }
 
@@ -64,8 +66,9 @@ class LargeVideo extends Component {
         }
 
         this.setState({
-            videoStream: videoStream,
-            activeParticipant: activeParticipant
+            activeParticipant,
+            videoStream,
+            videoTrack
         });
     }
 
@@ -76,21 +79,23 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let videoStreamParticipant = getParticipantByVideoStream(
-            this.state.videoStream,
+        let videoStream = this.state.videoStream;
+        let participant = getParticipantByVideoStream(
+            videoStream,
             this.props.tracks,
             this.props.participants);
 
         // TODO: in future other stuff might be on large video.
 
         return (
-            <LargeVideoContainer>
-                {videoStreamParticipant &&
-                videoStreamParticipant.videoStarted &&
-                this.state.videoStream &&
+            <LargeVideoContainer>{
+                participant &&
+                participant.videoStarted &&
+                videoStream &&
                 <Video
-                    stream={this.state.videoStream}/>}
-            </LargeVideoContainer>
+                    mirror={ shouldMirror(this.state.videoTrack) }
+                    stream={ videoStream } />
+            }</LargeVideoContainer>
         );
     }
 }
@@ -103,17 +108,18 @@ class LargeVideo extends Component {
  */
 function getActiveParticipant(props) {
     // First get the focused participant.
-    let activeParticipant = props.participants.find(p => p.focused);
+    let participants = props.participants;
+    let activeParticipant = participants.find(p => p.focused);
 
     // If no participant is focused, get the dominant speaker.
     if (!activeParticipant) {
-        activeParticipant = props.participants.find(p => p.speaking);
-    }
+        activeParticipant = participants.find(p => p.speaking);
 
-    // If no participant is focused and no dominant speaker,
-    // just get the last one participant.
-    if (!activeParticipant) {
-        activeParticipant = props.participants[props.participants.length - 1];
+        // If no participant is focused and no dominant speaker, just get the
+        // last one participant.
+        if (!activeParticipant) {
+            activeParticipant = participants[participants.length - 1];
+        }
     }
 
     return activeParticipant;
@@ -152,10 +158,13 @@ function getParticipantByVideoStream(stream, tracks, participants) {
  */
 function getVideoTrack(participant, tracks) {
     return tracks.find(t => {
-        return t.isVideoTrack() &&
-            ((participant.local && t.isLocal()) ||
-            (!participant.local && !t.isLocal() &&
-            t.getParticipantId() === participant.id));
+        return (
+            t.isVideoTrack()
+            && ((participant.local && t.isLocal())
+                || (!participant.local
+                    && !t.isLocal()
+                    && t.getParticipantId() === participant.id))
+        );
     });
 }
 
@@ -170,8 +179,8 @@ function getVideoTrack(participant, tracks) {
  */
 const mapStateToProps = state => {
     return {
-        tracks: state['features/base/tracks'],
-        participants: state['features/base/participants']
+        participants: state['features/base/participants'],
+        tracks: state['features/base/tracks']
     };
 };
 
@@ -181,9 +190,9 @@ const mapStateToProps = state => {
  * @static
  */
 LargeVideo.propTypes = {
-    tracks: React.PropTypes.array,
+    dispatch: React.PropTypes.func,
     participants: React.PropTypes.array,
-    dispatch: React.PropTypes.func
+    tracks: React.PropTypes.array
 };
 
 export default connect(mapStateToProps)(LargeVideo);

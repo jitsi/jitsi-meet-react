@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import { navigate } from '../../base/navigation';
+import { CONFERENCE_SCREEN } from '../../conference';
+
 import { setRoomName } from '../actions';
 
 /**
@@ -7,9 +10,9 @@ import { setRoomName } from '../actions';
  *
  * @abstract
  */
-export class AbstractWelcomePageContainer extends Component {
+export class AbstractWelcomePage extends Component {
     /**
-     * Initialize the WelcomePageContainer, including the initial
+     * Initializes a new AbstractWelcomePage instance, including the initial
      * state of the room name input.
      *
      * @param {Object} props - Component properties.
@@ -17,8 +20,23 @@ export class AbstractWelcomePageContainer extends Component {
     constructor(props) {
         super(props);
 
-        this._onRoomNameChange = this._onRoomNameChange.bind(this);
+        // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
+        this._onRoomNameChange = this._onRoomNameChange.bind(this);
+    }
+
+    /**
+     * Handles click on 'Join' button.
+     *
+     * @protected
+     * @returns {void}
+     */
+    _onJoinPress() {
+        this.props.dispatch(navigate({
+            navigator: this.props.navigator,
+            room: this.props.roomName,
+            screen: CONFERENCE_SCREEN
+        }));
     }
 
     /**
@@ -30,16 +48,6 @@ export class AbstractWelcomePageContainer extends Component {
      */
     _onRoomNameChange(value) {
         this.props.dispatch(setRoomName(value));
-    }
-
-    /**
-     * Handles click on 'Join' button.
-     *
-     * @protected
-     * @returns {void}
-     */
-    _onJoinPress() {
-        this.props.onJoin(this.props.roomName);
     }
 }
 
@@ -60,12 +68,12 @@ export const mapStateToProps = state => {
 };
 
 /**
- * WelcomePageContainer component's property types.
+ * AbstractWelcomePage component's property types.
  *
  * @static
  */
-AbstractWelcomePageContainer.propTypes = {
+AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
-    onJoin: React.PropTypes.func,
+    navigator: React.PropTypes.object,
     roomName: React.PropTypes.string
 };
