@@ -12,7 +12,10 @@ import {
     init
 } from '../../base/connection';
 import { Conference } from '../../conference';
-import { WelcomePage } from '../../welcome';
+import { 
+    setRoomName, 
+    WelcomePage 
+} from '../../welcome';
 
 /**
  * Root application component.
@@ -38,6 +41,8 @@ export class App extends Component {
         // Bind event handlers so they are only bound once for every instance.
         this._onConferenceRouteEnter = this._onConferenceRouteEnter.bind(this);
         this._onConferenceRouteLeave = this._onConferenceRouteLeave.bind(this);
+        this._onWelcomePageRouteEnter =
+            this._onWelcomePageRouteEnter.bind(this);
     }
 
     /**
@@ -52,7 +57,8 @@ export class App extends Component {
                 <Router history={this.history}>
                     <Route
                         path='/'
-                        component={WelcomePage}/>
+                        component={WelcomePage}
+                        onEnter={this._onWelcomePageRouteEnter}/>
                     <Route
                         path='*'
                         component={Conference}
@@ -84,6 +90,16 @@ export class App extends Component {
      */
     _onConferenceRouteLeave() {
         this.props.store.dispatch(destroy());
+    }
+
+    /**
+     * Resets room name to empty string when welcome page route is entered.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onWelcomePageRouteEnter() {
+        this.props.store.dispatch(setRoomName(''));
     }
 }
 

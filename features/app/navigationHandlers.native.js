@@ -5,7 +5,10 @@ import {
     init
 } from '../base/connection';
 import { Conference } from '../conference';
-import { WelcomePage } from '../welcome';
+import { 
+    setRoomName, 
+    WelcomePage 
+} from '../welcome';
 
 import { APP_SCREEN } from './constants';
 
@@ -22,10 +25,15 @@ export const navigationHandlers = {};
  * @returns {void}
  */
 navigationHandlers[APP_SCREEN.CONFERENCE] = (store, action) => {
-    action.navigator.push({
-        component: Conference,
-        title: action.room
-    });
+    let conferenceRoute = action.navigator.getCurrentRoutes()
+        .find(r => r.component === Conference);
+
+    // XXX We are using jumpTo() method instead of push/pop in order
+    // not to create new scenes. In this case WelcomePage and Conference
+    // components will be mounted only once and then they will be just
+    // updated whenever Redux state changes.
+    action.navigator.jumpTo(conferenceRoute);
+
     store.dispatch(init(config, action.room));
 };
 
@@ -39,9 +47,15 @@ navigationHandlers[APP_SCREEN.CONFERENCE] = (store, action) => {
  * @returns {void}
  */
 navigationHandlers[APP_SCREEN.WELCOME] = (store, action) => {
-    action.navigator.push({
-        component: WelcomePage,
-        title: 'Jitsi Meet'
-    });
+    let welcomePageRoute = action.navigator.getCurrentRoutes()
+        .find(r => r.component === WelcomePage);
+
+    // XXX We are using jumpTo() method instead of push/pop in order
+    // not to create new scenes. In this case WelcomePage and Conference
+    // components will be mounted only once and then they will be just
+    // updated whenever Redux state changes.
+    action.navigator.jumpTo(welcomePageRoute);
+
+    store.dispatch(setRoomName(''));
     store.dispatch(destroy());
 };

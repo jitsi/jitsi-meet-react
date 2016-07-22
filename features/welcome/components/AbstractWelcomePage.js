@@ -5,6 +5,8 @@ import {
     navigate
 } from '../../app';
 
+import { setRoomName } from '../actions';
+
 /**
  * Base (abstract) class for container component rendering the welcome page.
  *
@@ -20,8 +22,6 @@ export class AbstractWelcomePage extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { roomName: '' };
-
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
         this._onRoomNameChange = this._onRoomNameChange.bind(this);
@@ -36,7 +36,7 @@ export class AbstractWelcomePage extends Component {
     _onJoinPress() {
         this.props.dispatch(navigate({
             navigator: this.props.navigator,
-            room: this.state.roomName,
+            room: this.props.roomName,
             screen: APP_SCREEN.CONFERENCE
         }));
     }
@@ -49,9 +49,25 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onRoomNameChange(value) {
-        this.setState({ roomName: value });
+        this.props.dispatch(setRoomName(value));
     }
 }
+
+/**
+ * Maps roomName property from state  to component props. It seems it's not
+ * possible to 'connect' base component and then extend from it. So we export
+ * this function in order to be used in child classes for 'connect'.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{ roomName: string }}
+ */
+export const mapStateToProps = state => {
+    const stateFeaturesWelcome = state['features/welcome'];
+
+    return {
+        roomName: stateFeaturesWelcome.roomName
+    };
+};
 
 /**
  * AbstractWelcomePage component's property types.
@@ -60,5 +76,6 @@ export class AbstractWelcomePage extends Component {
  */
 AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object
+    navigator: React.PropTypes.object,
+    roomName: React.PropTypes.string
 };

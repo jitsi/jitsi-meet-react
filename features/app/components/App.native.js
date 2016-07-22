@@ -2,7 +2,28 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
+import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
+
+/**
+ * Welcome mobile app screen.
+ *
+ * @type {{ component: Component, index: number}}
+ */
+const WelcomePageScreen = {
+    component: WelcomePage,
+    index: 0
+};
+
+/**
+ * Conference mobile app screen.
+ *
+ * @type {{component: Component, index: number}}
+ */
+const ConferenceScreen = {
+    component: Conference,
+    index: 1
+};
 
 /**
  * Root application component.
@@ -33,10 +54,8 @@ export class App extends Component {
         return (
             <Provider store={this.props.store}>
                 <Navigator
-                    initialRoute={{
-                        component: WelcomePage,
-                        title: 'Jitsi Meet'
-                    }}
+                    initialRoute={WelcomePageScreen}
+                    initialRouteStack={[ WelcomePageScreen, ConferenceScreen ]}
                     renderScene={this._navigatorRenderScene}/>
             </Provider>
         );
