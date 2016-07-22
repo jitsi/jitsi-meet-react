@@ -16,9 +16,7 @@ export class ConferenceContainer extends Component {
      */
     render() {
         return (
-            <TouchableWithoutFeedback
-                onPress={ this.props.onPress }>
-
+            <TouchableWithoutFeedback onPress={ this.props.onPress }>
                 <View style={ styles.conference }>{ this.props.children }</View>
             </TouchableWithoutFeedback>
         );
