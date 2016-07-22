@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
+import { TouchableWithoutFeedback, View } from 'react-native';
 
 import { styles } from './styles';
 
@@ -16,8 +16,7 @@ export class ConferenceContainer extends Component {
      */
     render() {
         return (
-            <TouchableWithoutFeedback
-                onPress={ this.props.onPress }>
+            <TouchableWithoutFeedback onPress={ this.props.onPress }>
                 <View style={ styles.conference }>{ this.props.children }</View>
             </TouchableWithoutFeedback>
         );
