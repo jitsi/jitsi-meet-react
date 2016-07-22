@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import styles from './styles/Styles';
+import { styles } from './styles';
 
 /**
  * Web version of Audio component.
@@ -26,10 +26,13 @@ export class Video extends Component {
      * @returns {ReactElement}
      */
     render() {
-        // TODO: use URL.releaseObjectURL on componentDid/WillUnmount
+        // TODO URL.releaseObjectURL on componentDid/WillUnmount
         let src = this.props.stream
             ? URL.createObjectURL(this.props.stream)
             : '';
+        let style = this.props.mirror
+            ? styles.mirroredVideo
+            : styles.video;
 
         return (
             <video
@@ -37,7 +40,7 @@ export class Video extends Component {
                 muted={ this.props.muted }
                 onPlaying={ this.props.onPlaying }
                 src={ src }
-                style={ styles.video }
+                style={ style }
             />
         );
     }
@@ -49,7 +52,8 @@ export class Video extends Component {
  * @static
  */
 Video.propTypes = {
-    stream: React.PropTypes.object,
+    mirror: React.PropTypes.bool,
     muted: React.PropTypes.bool,
-    onPlaying: React.PropTypes.func
+    onPlaying: React.PropTypes.func,
+    stream: React.PropTypes.object
 };
