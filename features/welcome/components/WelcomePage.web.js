@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { AbstractWelcomePage } from './AbstractWelcomePage';
+import {
+    AbstractWelcomePage,
+    mapStateToProps
+} from './AbstractWelcomePage';
 import { styles } from './styles';
 
 /**
@@ -18,16 +21,20 @@ export class WelcomePage extends AbstractWelcomePage {
     render() {
         return (
             <div style={ styles.container }>
-                <p style={ styles.title }>Enter room name</p>
-                <input
-                    onChange={ ev => this._onRoomNameChange(ev.target.value) }
-                    style={ styles.textInput }
-                    type="text"
-                    value={ this.state.roomName }  />
-                <button
-                    disabled={ this.state.roomName === '' }
-                    onClick={ this._onJoinPress }
-                    style={ styles.button }>JOIN</button>
+                { this._renderLocalVideo() }
+                <div style={ styles.roomNameContainer }>
+                    <p style={ styles.title }>Enter room name</p>
+                    <input
+                        onChange={
+                            ev => this._onRoomNameChange(ev.target.value) }
+                        style={ styles.textInput }
+                        type="text"
+                        value={ this.state.roomName }  />
+                    <button
+                        disabled={ this.state.roomName === '' }
+                        onClick={ this._onJoinPress }
+                        style={ styles.button }>JOIN</button>
+                </div>
             </div>
         );
     }
@@ -40,4 +47,4 @@ export class WelcomePage extends AbstractWelcomePage {
  */
 WelcomePage.propTypes = AbstractWelcomePage.propTypes;
 
-export default connect()(WelcomePage);
+export default connect(mapStateToProps)(WelcomePage);

@@ -1,8 +1,8 @@
 import config from '../../config';
 
 import {
-    destroy,
-    init
+    connect,
+    disconnect
 } from '../base/connection';
 import { Conference } from '../conference';
 import { WelcomePage } from '../welcome';
@@ -26,7 +26,7 @@ navigationHandlers[APP_SCREEN.CONFERENCE] = (store, action) => {
         component: Conference,
         title: action.room
     });
-    store.dispatch(init(config, action.room));
+    store.dispatch(connect(config, action.room));
 };
 
 /**
@@ -43,5 +43,5 @@ navigationHandlers[APP_SCREEN.WELCOME] = (store, action) => {
         component: WelcomePage,
         title: 'Jitsi Meet'
     });
-    store.dispatch(destroy());
+    store.dispatch(disconnect());
 };

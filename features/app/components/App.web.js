@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import {
     browserHistory,
@@ -8,18 +8,20 @@ import {
 import { syncHistoryWithStore } from 'react-router-redux';
 
 import {
-    destroy,
-    init
+    connect,
+    disconnect
 } from '../../base/connection';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
+
+import { AbstractApp } from './AbstractApp';
 
 /**
  * Root application component.
  *
  * @extends Component
  */
-export class App extends Component {
+export class App extends AbstractApp {
     /**
      * Constructs new App component.
      *
@@ -72,7 +74,7 @@ export class App extends Component {
      */
     _onConferenceRouteEnter(route) {
         const room = route.location.pathname.substr(1).toLowerCase();
-        this.props.store.dispatch(init(this.props.config, room));
+        this.props.store.dispatch(connect(this.props.config, room));
     }
 
     /**
@@ -83,11 +85,13 @@ export class App extends Component {
      * @returns {void}
      */
     _onConferenceRouteLeave() {
-        this.props.store.dispatch(destroy());
+        this.props.store.dispatch(disconnect());
     }
 }
 
-App.propTypes = {
-    config: React.PropTypes.object,
-    store: React.PropTypes.object
-};
+/**
+ * App component's property types.
+ *
+ * @static
+ */
+App.propTypes = AbstractApp.propTypes;

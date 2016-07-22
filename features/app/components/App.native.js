@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { WelcomePage } from '../../welcome';
+
+import { AbstractApp } from './AbstractApp';
 
 /**
  * Root application component.
  *
  * @extends Component
  */
-export class App extends Component {
+export class App extends AbstractApp {
     /**
      * Initializes a new Root instance.
      *
@@ -62,7 +64,9 @@ export class App extends Component {
     }
 }
 
-App.propTypes = {
-    config: React.PropTypes.object,
-    store: React.PropTypes.object
-};
+/**
+ * App component's property types.
+ *
+ * @static
+ */
+App.propTypes = AbstractApp.propTypes;

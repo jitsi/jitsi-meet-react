@@ -1,6 +1,22 @@
 import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
 /**
+ * Welcome page container style.
+ */
+const container = {
+    alignSelf: 'stretch',
+    backgroundColor: ColorPalette.jitsiBlue,
+    bottom: 0,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0
+};
+
+/**
  * The welcome page style.
  * TODO: Make styles more generic and reusable. Use color palette for all
  * colors.
@@ -30,18 +46,14 @@ export const styles = createStyleSheet({
     /**
      * Welcome page container style.
      */
-    container: {
-        alignSelf: 'stretch',
-        backgroundColor: ColorPalette.jitsiBlue,
-        bottom: 0,
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        left: 0,
-        padding: 30,
-        position: 'absolute',
-        right: 0,
-        top: 0
+    container: container,
+    /**
+     * Container for room name input box and 'join' button.
+     */
+    roomNameContainer: {
+        ...container,
+        backgroundColor: 'transparent',
+        padding: 30
     },
     /**
      * Navigator container style.
@@ -54,7 +66,7 @@ export const styles = createStyleSheet({
      * Room input style.
      */
     textInput: {
-        backgroundColor: ColorPalette.jitsiBlue,
+        backgroundColor: 'transparent',
         borderColor: 'white',
         borderRadius: 8,
         borderStyle: 'solid',

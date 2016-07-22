@@ -21,4 +21,6 @@ import './_';
 // Re-export JitsiMeetJS from the library lib-jitsi-meet to (the other features
 // of) the project jitsi-meet-react.
 import JitsiMeetJS from 'lib-jitsi-meet';
+
 export { JitsiMeetJS as default };
+export * from './actions';
