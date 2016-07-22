@@ -7,6 +7,11 @@ import { Toolbar } from '../../toolbar';
 import { ConferenceContainer } from './ConferenceContainer';
 
 /**
+ * The timeout in milliseconds after which the toolbar view will be hidden.
+ */
+const toolbarTimeoutValue = 5000;
+
+/**
  * The conference page of the application.
  */
 class Conference extends Component {
@@ -20,6 +25,7 @@ class Conference extends Component {
     constructor(props) {
         super(props);
         this.state = { isToolbarVisible: false };
+        this.toolbarTimeout = null;
         this._onPress = this._onPress.bind(this);
     }
 
@@ -43,6 +49,17 @@ class Conference extends Component {
     }
 
     /**
+     * Clears the toolbarTimeout before the component unmounts.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillUnmount() {
+        if (this.toolbarTimeout)
+            clearTimeout(this.toolbarTimeout);
+    }
+
+    /**
      * Changes the value of the isToolbarVisible property, thus allowing
      * us to 'switch' between toolbar and filmstrip views and change the
      * visibility of the above.
@@ -51,7 +68,15 @@ class Conference extends Component {
      * @returns {void}
      */
     _onPress() {
-        this.setState({ isToolbarVisible: !this.state.isToolbarVisible });
+        var isVisible = !this.state.isToolbarVisible;
+
+        this.setState({ isToolbarVisible: isVisible });
+
+        if (isVisible)
+            this.toolbarTimeout = setTimeout(
+                this._onPress,
+                toolbarTimeoutValue
+            );
     }
 }
 
