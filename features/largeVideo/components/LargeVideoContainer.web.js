@@ -14,7 +14,7 @@ export class LargeVideoContainer extends Component {
      */
     render() {
         return (
-          <div style={ styles.container }>{ this.props.children }</div>
+            <div style={ styles.container }>{ this.props.children }</div>
         );
     }
 }
