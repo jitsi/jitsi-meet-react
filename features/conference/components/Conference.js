@@ -14,9 +14,10 @@ class Conference extends Component {
     /**
      * Initializes the 'isToolbarVisible' property state.
      */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { isToolbarVisible: false };
+        this._onPress = this._onPress.bind(this);
     }
 
     /**
@@ -27,7 +28,7 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer onPress = { this.onPress.bind(this) }>
+            <ConferenceContainer onPress = { this._onPress }>
                 <LargeVideo/>
                 <Toolbar
                     isVisible = { this.state.isToolbarVisible }
@@ -43,7 +44,7 @@ class Conference extends Component {
      * us to 'switch' between toolbar and filmstrip views and change the
      * visibility of the above.
      */
-    onPress() {
+    _onPress() {
         this.setState({ isToolbarVisible: !this.state.isToolbarVisible });
     }
 }

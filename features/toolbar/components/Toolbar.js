@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -80,8 +80,8 @@ const mapDispatchToProps = dispatch => {
  * @static
  */
 Toolbar.propTypes = {
-    isVisible: PropTypes.bool.isRequired,
     audioMuted: React.PropTypes.bool,
+    isVisible: React.PropTypes.bool.isRequired,
     navigator: React.PropTypes.object,
     onAudioMute: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,

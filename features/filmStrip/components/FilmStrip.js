@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import VideoThumbnail from './VideoThumbnail';
@@ -89,7 +89,7 @@ const mapStateToProps = state => {
  * @static
  */
 FilmStrip.propTypes = {
-    isVisible: PropTypes.bool.isRequired,
+    isVisible: React.PropTypes.bool.isRequired,
     participants: React.PropTypes.array,
     tracks: React.PropTypes.array
 };
