@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
     TouchableHighlight,
-    View
+    View,
+    Dimensions
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from '../../base/fontIcons/JitsiFontIcons';
 
 import { ColorPalette } from '../../base/styles';
 
@@ -28,19 +29,33 @@ export class ToolbarContainer extends Component {
                 styles.toolbarButton,
                 { backgroundColor: underlayColor }
             ];
-            micButtonIcon = 'microphone-slash';
+            micIconStyle = [styles.icon, { color: 'white' }];
+            micButtonIcon = 'mic-disabled';
         }
         else {
             micButtonStyle = styles.toolbarButton;
+            micIconStyle = styles.icon;
             micButtonIcon = 'microphone';
         }
 
+        // The following property is responsible to hide/show the toolbar
+        // view by moving it out of site of the screen boundaries.
+        // An attempt to use the opacity property has been made in order
+        // to eventually implement a fadeIn/fadeOut animation, however a known
+        // react native problem has been doscovered, which allows the view to
+        // still capture touch events even if hidden. Alternatives will be
+        // investigated.
+        var bottomValue = styles.toolbarContainer.bottom;
+        if (!this.props.isVisible)
+            bottomValue = -Dimensions.get('window').height;
+
         return (
-            <View style = { styles.toolbarContainer }>
+            <View style = { [styles.toolbarContainer,
+                            { bottom: bottomValue}] }>
                 <TouchableHighlight
                     style = { micButtonStyle }
                     onPress = { () => this.props.onAudioMute() }>
-                    <Icon style = { styles.icon } name = { micButtonIcon }/>
+                    <Icon style = { micIconStyle } name = { micButtonIcon }/>
                 </TouchableHighlight>
                 <TouchableHighlight
                     style = { [
@@ -49,13 +64,14 @@ export class ToolbarContainer extends Component {
                     ] }
                     onPress = { () => this.props.onHangup() }
                     underlayColor = { underlayColor }>
-                    <Icon style = { styles.icon } name = "phone"/>
+                    <Icon style = { [styles.icon, { color: 'white' }] }
+                            name = "hangup"/>
                 </TouchableHighlight>
                 <TouchableHighlight
                     style = { styles.toolbarButton }
                     onPress = { () => this.props.onCameraChange() }
                     underlayColor = { underlayColor }>
-                    <Icon style = { styles.icon } name="camera"/>
+                    <Icon style = { styles.icon } name="photo-camera"/>
                 </TouchableHighlight>
             </View>
         );

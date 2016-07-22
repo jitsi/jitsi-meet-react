@@ -10,6 +10,15 @@ import { ConferenceContainer } from './ConferenceContainer';
  * The conference page of the application.
  */
 class Conference extends Component {
+
+    /**
+     * Initializes the 'isToolbarVisible' property state.
+     */
+    constructor() {
+        super();
+        this.state = { isToolbarVisible: false };
+    }
+
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -18,12 +27,24 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer>
+            <ConferenceContainer onPress = { this.onPress.bind(this) }>
                 <LargeVideo/>
-                <Toolbar navigator = { this.props.navigator }/>
-                <FilmStrip/>
+                <Toolbar
+                    isVisible = { this.state.isToolbarVisible }
+                    navigator = { this.props.navigator }/>
+                <FilmStrip
+                    isVisible = { !this.state.isToolbarVisible } />
             </ConferenceContainer>
         );
+    }
+
+    /**
+     * Changes the value of the isToolbarVisible property, thus allowing
+     * us to 'switch' between toolbar and filmstrip views and change the
+     * visibility of the above.
+     */
+    onPress() {
+        this.setState({ isToolbarVisible: !this.state.isToolbarVisible });
     }
 }
 

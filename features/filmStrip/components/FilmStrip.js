@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import VideoThumbnail from './VideoThumbnail';
@@ -17,7 +17,7 @@ class FilmStrip extends Component {
      */
     render() {
         return (
-            <FilmStripContainer>
+            <FilmStripContainer isVisible={ this.props.isVisible }>
             {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
@@ -89,6 +89,7 @@ const mapStateToProps = state => {
  * @static
  */
 FilmStrip.propTypes = {
+    isVisible: PropTypes.bool.isRequired,
     participants: React.PropTypes.array,
     tracks: React.PropTypes.array
 };

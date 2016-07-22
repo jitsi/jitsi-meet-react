@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -24,6 +24,7 @@ class Toolbar extends Component {
     render() {
         return (
             <ToolbarContainer
+                isVisible = { this.props.isVisible }
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
                 onCameraChange = { () => this.props.onCameraChange() }
@@ -79,6 +80,7 @@ const mapDispatchToProps = dispatch => {
  * @static
  */
 Toolbar.propTypes = {
+    isVisible: PropTypes.bool.isRequired,
     audioMuted: React.PropTypes.bool,
     navigator: React.PropTypes.object,
     onAudioMute: React.PropTypes.func,

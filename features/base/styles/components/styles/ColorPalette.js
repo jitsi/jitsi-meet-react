@@ -5,6 +5,7 @@ export const ColorPalette = {
     appBackground: '#111111',
     buttonUnderlay: '#495258',
     jitsiBlue: '#00ccff',
-    jitsiRed: '#ff0000',
+    jitsiDarkGrey: '#555555',
+    jitsiRed: '#D00000',
     jitsiToggled: '#495258'
 };
