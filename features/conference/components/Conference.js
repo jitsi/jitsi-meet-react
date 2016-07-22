@@ -9,7 +9,7 @@ import { ConferenceContainer } from './ConferenceContainer';
 /**
  * The timeout in milliseconds after which the toolbar view will be hidden.
  */
-const toolbarTimeoutValue = 5000;
+const TOOLBAR_TIMEOUT_MS = 5000;
 
 /**
  * The conference page of the application.
@@ -17,16 +17,35 @@ const toolbarTimeoutValue = 5000;
 class Conference extends Component {
 
     /**
-     * Initializes the 'isToolbarVisible' property state.
+     * Initializes a new Conference instance.
      *
      * @param {Object} props - The read-only properties with which the new
-     *      instance is to be initialized.
+     * instance is to be initialized.
      */
     constructor(props) {
         super(props);
-        this.state = { isToolbarVisible: false };
+
+        this.state = { toolbarIsVisible: false };
+
+        /**
+         */
         this.toolbarTimeout = null;
+
+        // Bind event handlers so they are only bound once for every instance.
         this._onPress = this._onPress.bind(this);
+    }
+
+    /**
+     * Clears the toolbarTimeout before the component unmounts.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillUnmount() {
+        if (this.toolbarTimeout) {
+            clearTimeout(this.toolbarTimeout);
+            this.toolbarTimeout = undefined;
+        }
     }
 
     /**
@@ -37,46 +56,33 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer onPress = { this._onPress }>
+            <ConferenceContainer onPress={ this._onPress }>
                 <LargeVideo/>
                 <Toolbar
-                    isVisible = { this.state.isToolbarVisible }
-                    navigator = { this.props.navigator }/>
+                    navigator={ this.props.navigator }
+                    visible={ this.state.toolbarIsVisible } />
                 <FilmStrip
-                    isVisible = { !this.state.isToolbarVisible } />
+                    visible={ !this.state.toolbarIsVisible } />
             </ConferenceContainer>
         );
     }
 
     /**
-     * Clears the toolbarTimeout before the component unmounts.
-     *
-     * @inheritdoc
-     * @returns {void}
-     */
-    componentWillUnmount() {
-        if (this.toolbarTimeout)
-            clearTimeout(this.toolbarTimeout);
-    }
-
-    /**
-     * Changes the value of the isToolbarVisible property, thus allowing
-     * us to 'switch' between toolbar and filmstrip views and change the
-     * visibility of the above.
+     * Changes the value of the toolbarIsVisible property, thus allowing us to
+     * 'switch' between toolbar and filmstrip views and change the visibility of
+     * the above.
      *
      * @private
      * @returns {void}
      */
     _onPress() {
-        var isVisible = !this.state.isToolbarVisible;
+        let toolbarIsVisible = !this.state.toolbarIsVisible;
 
-        this.setState({ isToolbarVisible: isVisible });
+        this.setState({ toolbarIsVisible });
 
-        if (isVisible)
-            this.toolbarTimeout = setTimeout(
-                this._onPress,
-                toolbarTimeoutValue
-            );
+        if (toolbarIsVisible) {
+            this.toolbarTimeout = setTimeout(this._onPress, TOOLBAR_TIMEOUT_MS);
+        }
     }
 }
 
