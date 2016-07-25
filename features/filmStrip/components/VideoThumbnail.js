@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Audio, shouldMirror, Video } from '../../base/media';
+import {
+    Audio,
+    Video
+} from '../../base/media';
 import {
     PARTICIPANT_ROLE,
     participantFocused,
-    participantPinned,
-    participantVideoStarted
+    participantPinned
 } from '../../base/participants';
+import {
+    MEDIA_TYPE,
+    trackVideoStarted
+} from '../../base/tracks';
 
 import {
     AudioMutedIndicator,
@@ -34,22 +40,6 @@ class VideoThumbnail extends Component {
         // Bind event handlers so they are only bound once for every instance.
         this._onClick = this._onClick.bind(this);
         this._onVideoPlaying = this._onVideoPlaying.bind(this);
-    }
-
-    /**
-     * Returns audio and video media streams for participant.
-     *
-     * @returns {{ video: (MediaStream|null), audio: (MediaStream|null) }}
-     */
-    getMediaStreams() {
-        return {
-            video: this.props.videoTrack
-                ? this.props.videoTrack.getOriginalStream()
-                : null,
-            audio: this.props.audioTrack
-                ? this.props.audioTrack.getOriginalStream()
-                : null
-        };
     }
 
     /**
@@ -95,7 +85,8 @@ class VideoThumbnail extends Component {
      * @returns {void}
      */
     _onVideoPlaying() {
-        this.props.dispatch(participantVideoStarted(this.props.participant.id));
+        this.props.dispatch(
+            trackVideoStarted(this.props.videoTrack.jitsiTrack));
     }
 
     /**
@@ -105,29 +96,34 @@ class VideoThumbnail extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let participant = this.props.participant;
-        let streams = this.getMediaStreams();
-        let renderAudio =
-            streams.audio
-                && !this.props.audioMuted
-                && !this.props.audioTrack.isLocal();
-        let renderVideo = streams.video && !this.props.videoMuted;
+        let { audioTrack, participant, videoTrack } = this.props;
+        let audioStream;
+        let videoStream;
+
+        if (audioTrack && !audioTrack.muted && !audioTrack.local) {
+            audioStream = audioTrack.jitsiTrack.getOriginalStream();
+        }
+
+        if (videoTrack && !videoTrack.muted) {
+            videoStream = videoTrack.jitsiTrack.getOriginalStream();
+        }
 
         return (
             <VideoThumbnailContainer
                 focused={ participant.focused }
                 onClick={ this._onClick }>
 
-                { renderAudio &&
-                    <Audio stream={ streams.audio } /> }
+                { audioStream &&
+                    <Audio
+                        stream={ audioStream } /> }
 
-                { renderVideo &&
+                { videoStream &&
                     <Video
-                        mirror={ shouldMirror(this.props.videoTrack) }
+                        mirror={ videoTrack.mirrorVideo }
                         onPlaying={ this._onVideoPlaying }
-                        stream={ streams.video } /> }
+                        stream={ videoStream } /> }
 
-                { !renderVideo &&
+                { !videoStream &&
                     <Avatar uri={ participant.avatar } /> }
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR &&
@@ -136,10 +132,10 @@ class VideoThumbnail extends Component {
                 { participant.speaking &&
                     <DominantSpeakerIndicator /> }
 
-                { this.props.audioMuted &&
+                { (!audioTrack || audioTrack.muted) &&
                     <AudioMutedIndicator /> }
 
-                { this.props.videoMuted &&
+                { (!videoTrack || videoTrack.muted) &&
                     <VideoMutedIndicator /> }
 
             </VideoThumbnailContainer>
@@ -148,17 +144,42 @@ class VideoThumbnail extends Component {
 }
 
 /**
+ * Function that maps parts of Redux state tree into component props.
+ *
+ * @param {Object} state - Redux state.
+ * @param {Object} ownProps - Properties of component.
+ * @returns {{
+
+ *      tracks: Track[]
+ *  }}
+ */
+const mapStateToProps = (state, ownProps) => {
+    let tracks = state['features/base/tracks'];
+    let participantId = ownProps.participant.id;
+    let audioTrack = tracks.find(t => (
+        t.mediaType === MEDIA_TYPE.AUDIO
+            && participantId === t.participantId
+    ));
+    let videoTrack = tracks.find(t => (
+        t.mediaType === MEDIA_TYPE.VIDEO
+            && participantId === t.participantId
+    ));
+    return {
+        audioTrack,
+        videoTrack
+    };
+};
+
+/**
  * VideoThumbnail component's property types.
  *
  * @static
  */
 VideoThumbnail.propTypes = {
-    audioMuted: React.PropTypes.bool,
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     participant: React.PropTypes.object,
-    videoMuted: React.PropTypes.bool,
     videoTrack: React.PropTypes.object
 };
 
-export default connect()(VideoThumbnail);
+export default connect(mapStateToProps)(VideoThumbnail);

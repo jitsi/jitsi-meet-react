@@ -1,17 +1,18 @@
 import JitsiMeetJS from '../lib-jitsi-meet';
 
 import {
-    participantVideoTypeChanged
-} from '../../base/participants';
-
-import {
     TRACK_ADDED,
-    TRACK_MUTE_CHANGED,
+    TRACK_CHANGED,
     TRACK_REMOVED
 } from './actionTypes';
+import {
+    CAMERA_FACING_MODE,
+    MEDIA_TYPE
+} from './constants';
 import './reducer';
 
 const JitsiTrackErrors = JitsiMeetJS.errors.track;
+const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Attach a set of local tracks to a conference.
@@ -71,39 +72,7 @@ export function changeLocalTracks(newLocalTracks = []) {
 
         return promise
             .then(() => Promise.all(
-                tracksToAdd.map(t => dispatch(trackAdded(t)))))
-            .then(() => {
-                // FIXME Lyubomir Marinov: It doesn't sound right to me to have
-                // tracks trying to figure out & trigger participant-related
-                // events. A participant owns tracks so it appears natural to me
-                // to have the participant keep an eye on its tracks & determine
-                // whether its video type has changed.
-
-                // Maybe update local participant's videoType after we received
-                // new media tracks.
-                let participants = getState()['features/base/participants'];
-                let localParticipant = participants.find(p => p.local);
-                let promise = Promise.resolve();
-
-                if (localParticipant) {
-                    let addedVideoTrack =
-                        tracksToAdd.find(t => t.isVideoTrack());
-                    let removedVideoTrack =
-                        tracksToRemove.find(t => t.isVideoTrack());
-
-                    if (addedVideoTrack) {
-                        promise = dispatch(participantVideoTypeChanged(
-                            localParticipant.id,
-                            addedVideoTrack.videoType));
-                    } else if (removedVideoTrack) {
-                        promise = dispatch(participantVideoTypeChanged(
-                            localParticipant.id,
-                            undefined));
-                    }
-                }
-
-                return promise;
-            });
+                tracksToAdd.map(t => dispatch(trackAdded(t)))));
     };
 }
 
@@ -118,8 +87,8 @@ export function createLocalTracks(options) {
     options || (options = {});
     return dispatch => {
         return JitsiMeetJS.createLocalTracks({
-            devices: options.devices || ['audio', 'video'],
-            facingMode: options.facingMode || 'user',
+            devices: options.devices || [ MEDIA_TYPE.AUDIO, MEDIA_TYPE.VIDEO ],
+            facingMode: options.facingMode || CAMERA_FACING_MODE.USER,
             cameraDeviceId: options.cameraDeviceId,
             micDeviceId: options.micDeviceId
         }).then(localTracks => {
@@ -141,14 +110,16 @@ export function createLocalTracks(options) {
 export function destroyLocalTracks() {
     return (dispatch, getState) => {
         return dispatch(_disposeAndRemoveTracks(
-            getState()['features/base/tracks'].filter(t => t.isLocal())));
+            getState()['features/base/tracks']
+                .filter(t => t.local)
+                .map(t => t.jitsiTrack)));
     };
 }
 
 /**
  * Disposes passed tracks and signals them to be removed.
  *
- * @param {JitsiTrack[]} tracks - List of tracks.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of tracks.
  * @returns {Function}
  */
 function _disposeAndRemoveTracks(tracks) {
@@ -168,32 +139,82 @@ function _disposeAndRemoveTracks(tracks) {
     };
 }
 
+/**
+ * TODO: similar functionality is part of lib-jitsi-meet. This function should
+ * be removed when https://github.com/jitsi/lib-jitsi-meet/pull/187 is merged.
+ * Returns true if the provided JitsiTrack should be rendered as a mirror.
+ *
+ * We only want to show a video in mirrored mode when:
+ * 1) The video source is local, and not remote.
+ * 2) The video source is a camera, not a desktop (capture).
+ * 3) TODO The video source is capturing the user, not the environment.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @private
+ * @returns {boolean}
+ */
+function _shouldMirror(track) {
+    // XXX We should also check the facing mode of the track source, and only
+    // mirror when the source is user facing (and not environment facing).
+    return (
+        track
+        && track.isLocal()
+        && track.isVideoTrack()
+        && !track.isScreenSharing()
+    );
+}
+
+
 
 /**
  * Create an action for when a new track has been signaled to be added to the
  * conference.
  *
- * @param {JitsiTrack} track - JitsiTrack instance.
- * @returns {{ type: TRACK_ADDED, track: JitsiTrack }}
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_ADDED, track: Track }}
  */
 export function trackAdded(track) {
-    return {
-        type: TRACK_ADDED,
-        track
+    return (dispatch, getState) => {
+        track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
+            dispatch(trackVideoTypeChanged(track, type));
+        });
+
+        return dispatch({
+            type: TRACK_ADDED,
+            track: {
+                jitsiTrack: track,
+                local: track.isLocal(),
+                mediaType: track.getType(),
+                // TODO: similar functionality is part of lib-jitsi-meet.
+                // This function should be removed when
+                // https://github.com/jitsi/lib-jitsi-meet/pull/187 is merged.
+                mirrorVideo: _shouldMirror(track),
+                muted: track.isMuted(),
+                participantId: track.isLocal()
+                    ? (getState()['features/base/participants']
+                        .find(p => p.local) || {}).id
+                    : track.getParticipantId(),
+                videoStarted: false,
+                videoType: track.videoType
+            }
+        });
     };
 }
 
 /**
- * Create an action for when a track has been signaled for removal from the
- * conference.
+ * Create an action for when a track's mute state has been signaled to be
+ * changed.
  *
- * @param {JitsiTrack} track - JitsiTrack instance.
- * @returns {{ type: TRACK_MUTE_CHANGED, track: JitsiTrack }}
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_CHANGED, track: Track }}
  */
 export function trackMuteChanged(track) {
     return {
-        type: TRACK_MUTE_CHANGED,
-        track
+        type: TRACK_CHANGED,
+        track: {
+            jitsiTrack: track,
+            muted: track.isMuted()
+        }
     };
 }
 
@@ -201,12 +222,47 @@ export function trackMuteChanged(track) {
  * Create an action for when a track has been signaled for removal from the
  * conference.
  *
- * @param {JitsiTrack} track - JitsiTrack instance.
- * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_REMOVED, track: Track }}
  */
 export function trackRemoved(track) {
     return {
         type: TRACK_REMOVED,
-        track
+        track: {
+            jitsiTrack: track
+        }
+    };
+}
+
+/**
+ * Signal that track's video started to play.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_CHANGED, track: Track }}
+ */
+export function trackVideoStarted(track) {
+    return {
+        type: TRACK_CHANGED,
+        track: {
+            jitsiTrack: track,
+            videoStarted: true
+        }
+    };
+}
+
+/**
+ * Create an action for when participant video type changes.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @param {VIDEO_TYPE|undefined} videoType - Video type.
+ * @returns {{ type: TRACK_CHANGED, track: Track }}
+ */
+export function trackVideoTypeChanged(track, videoType) {
+    return {
+        type: TRACK_CHANGED,
+        track: {
+            jitsiTrack: track,
+            videoType
+        }
     };
 }

@@ -27,10 +27,6 @@ import {
  *      selected on UI.
  * @property {boolean} selected - If true, participant is current
  *      "SELECTED_ENDPOINT".
- * @property {boolean} videoStarted -  If true, participant video stream has
- *      already started.
- * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
- *      current video stream if any.
  * @property {string} email - participant email.
  */
 
@@ -70,9 +66,7 @@ function participant(state, action) {
             pinned: action.participant.pinned || false,
             role: action.participant.role,
             selected: action.participant.selected || false,
-            speaking: action.participant.speaking || false,
-            videoStarted: false,
-            videoType: action.participant.videoType || undefined
+            speaking: action.participant.speaking || false
         };
 
     case PARTICIPANT_FOCUSED:

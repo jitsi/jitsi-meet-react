@@ -4,7 +4,6 @@ import {
     dominantSpeakerChanged,
     participantLeft,
     participantRoleChanged,
-    participantVideoTypeChanged,
     remoteParticipantJoined
 } from '../participants';
 import {
@@ -22,7 +21,6 @@ import { EMAIL_COMMAND } from './constants';
 import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
-const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Create an action for when the signaling connection has been established.
@@ -47,11 +45,6 @@ export function conferenceInitialized(conference) {
                 }
 
                 dispatch(trackAdded(track));
-
-                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-                    dispatch(participantVideoTypeChanged(
-                        track.getParticipantId(), type));
-                });
             });
         conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
             track => dispatch(trackMuteChanged(track)));
@@ -93,7 +86,8 @@ export function conferenceInitialized(conference) {
 export function conferenceJoined(conference) {
     return (dispatch, getState) => {
         let localTracks = getState()['features/base/tracks']
-            .filter(t => t.isLocal());
+            .filter(t => t.local)
+            .map(t => t.jitsiTrack);
 
         if (localTracks.length) {
             addTracksToConference(conference, localTracks);

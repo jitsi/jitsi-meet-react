@@ -22,49 +22,16 @@ class FilmStrip extends Component {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
                     .map(p => {
-                        let audioTrack = this.props.tracks.find(t => (
-                            t.isAudioTrack() && _isParticipantTrack(p, t)
-                        ));
-                        let videoTrack = this.props.tracks.find(t => (
-                            t.isVideoTrack() && _isParticipantTrack(p, t)
-                        ));
-
-                        // XXX The props audioMuted and videoMuted would,
-                        // generally, be computed inside VideoThumbain because
-                        // their values are derived through audioTrack and
-                        // videoTrack, respectively. However, changes to the
-                        // values of audioMuted or videoMuted should trigger
-                        // (re)renders.
                         return (
                             <VideoThumbnail
-                                audioMuted={!audioTrack || audioTrack.isMuted()}
-                                audioTrack={audioTrack}
                                 key={p.id}
-                                participant={p}
-                                videoMuted={!videoTrack || videoTrack.isMuted()}
-                                videoTrack={videoTrack}
-                            />
+                                participant={p} />
                         );
                     })
             }
             </FilmStripContainer>
         );
     }
-}
-
-/**
- * Determines whether a specific JitsiTrack belongs to a specific participant.
- *
- * @param {Object} p - The participant who is the possible owner of the
- * specified JitsiTrack.
- * @param {JitsiTrack} t - The JitsiTrack which is to be determined whether it
- * belongs to the specified participant.
- * @returns {boolean} True if the specified JitsiTrack belongs to the specified
- * participant; otherwise, false.
- */
-function _isParticipantTrack(p, t) {
-    // XXX The method getParticipantId() is defined on JitsiRemoteTrack only.
-    return t.isLocal() ? p.local : (t.getParticipantId() === p.id);
 }
 
 /**
@@ -78,8 +45,7 @@ function _isParticipantTrack(p, t) {
  */
 const mapStateToProps = state => {
     return {
-        participants: state['features/base/participants'],
-        tracks: state['features/base/tracks']
+        participants: state['features/base/participants']
     };
 };
 
@@ -90,7 +56,6 @@ const mapStateToProps = state => {
  */
 FilmStrip.propTypes = {
     participants: React.PropTypes.array,
-    tracks: React.PropTypes.array,
     visible: React.PropTypes.bool.isRequired
 };
 

@@ -65,29 +65,19 @@ export function dominantSpeakerChanged(id) {
  * @param {string} [participant.displayName='me'] - Participant's display name.
  * @param {string} [participant.avatar=''] - Participant's avatar.
  * @param {string} [participant.role='none'] - Participant's role.
- * @returns {Function}
+ * @returns {{ type: PARTICIPANT_JOINED, participant: Participant }}
  */
 export function localParticipantJoined(id, participant = {}) {
-    return (dispatch, getState) => {
-        // Local media tracks might be already created by this moment, so
-        // we try to take videoType from current video track.
-        let tracks = getState()['features/base/tracks'];
-        let localVideoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
-
-        return dispatch({
-            type: PARTICIPANT_JOINED,
-            participant: {
-                id,
-                avatar: _getAvatarURL(id, participant.email),
-                email: participant.email,
-                local: true,
-                name: participant.displayName || 'me',
-                role: participant.role || PARTICIPANT_ROLE.NONE,
-                videoType: localVideoTrack
-                    ? localVideoTrack.videoType
-                    : undefined
-            }
-        });
+    return {
+        type: PARTICIPANT_JOINED,
+        participant: {
+            id,
+            avatar: _getAvatarURL(id, participant.email),
+            email: participant.email,
+            local: true,
+            name: participant.displayName || 'me',
+            role: participant.role || PARTICIPANT_ROLE.NONE
+        }
     };
 }
 
@@ -207,51 +197,6 @@ export function participantSelected(id) {
                 id
             }
         });
-    };
-}
-
-/**
- * Create an action for when the participant's video started to play.
- *
- * @param {string} id - Participant id.
- * @returns {{
- *      type: PARTICIPANT_UPDATED,
- *      participant: {
- *          id: string,
- *          videoStarted: boolean
- *      }
- * }}
- */
-export function participantVideoStarted(id) {
-    return {
-        type: PARTICIPANT_UPDATED,
-        participant: {
-            id,
-            videoStarted: true
-        }
-    };
-}
-
-/**
- * Create an action for when participant video type changes.
- *
- * @param {string} id - Participant id.
- * @param {string} videoType - Video type ('desktop' or 'camera').
- * @returns {{
- *      type: PARTICIPANT_UPDATED,
- *      participant: {
- *          id: string,
- *          videoType: string
- *      }
- * }}
- */
-export function participantVideoTypeChanged(id, videoType) {
-    return {
-        type: PARTICIPANT_UPDATED,
-        participant: {
-            id,
-            videoType
-        }
     };
 }
 

@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { shouldMirror, Video } from '../../base/media';
+import { Video } from '../../base/media';
 import { participantSelected } from '../../base/participants';
+import {
+    MEDIA_TYPE,
+    VIDEO_TYPE
+} from '../../base/tracks';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 
@@ -44,14 +48,16 @@ class LargeVideo extends Component {
             if (activeParticipant.local &&
                 activeParticipant.speaking &&
                 !activeParticipant.focused &&
-                this.state.videoStream) {
+                this.state.videoStream &&
+                this.state.videoTrack) {
                 videoStream = this.state.videoStream;
+                videoTrack = this.state.videoTrack;
             } else {
                 videoTrack = getVideoTrack(
                     activeParticipant, this.props.tracks);
 
                 videoStream = videoTrack
-                    ? videoTrack.getOriginalStream()
+                    ? videoTrack.jitsiTrack.getOriginalStream()
                     : this.state.videoStream;
             }
         }
@@ -59,9 +65,9 @@ class LargeVideo extends Component {
         // If our active participant changed and we're going to show "camera" on
         // large video, dispatch respective event.
         if (activeParticipant &&
-            videoTrack &&
             !activeParticipant.selected &&
-            activeParticipant.videoType === 'camera') {
+            videoTrack &&
+            videoTrack.videoType === VIDEO_TYPE.CAMERA) {
             this.props.dispatch(participantSelected(activeParticipant.id));
         }
 
@@ -80,20 +86,17 @@ class LargeVideo extends Component {
      */
     render() {
         let videoStream = this.state.videoStream;
-        let participant = getParticipantByVideoStream(
-            videoStream,
-            this.props.tracks,
-            this.props.participants);
+        let videoTrack = this.state.videoTrack;
 
         // TODO: in future other stuff might be on large video.
 
         return (
             <LargeVideoContainer>{
-                participant &&
-                participant.videoStarted &&
                 videoStream &&
+                videoTrack &&
+                videoTrack.videoStarted &&
                 <Video
-                    mirror={ shouldMirror(this.state.videoTrack) }
+                    mirror={ videoTrack.mirrorVideo }
                     stream={ videoStream } />
             }</LargeVideoContainer>
         );
@@ -126,46 +129,15 @@ function getActiveParticipant(props) {
 }
 
 /**
- * Returns participant corresponding to video stream.
- *
- * @param {MediaStream} stream - MediaStream.
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
- * @param {Participant[]} participants - List of all participants.
- * @returns {(Participant|undefined)}
- */
-function getParticipantByVideoStream(stream, tracks, participants) {
-    if (!stream) {
-        return;
-    }
-
-    let track = tracks.find(t => t.getOriginalStream() === stream);
-
-    if (track) {
-        if (track.isLocal()) {
-            return participants.find(p => p.local);
-        } else {
-            return participants.find(p => p.id === track.getParticipantId());
-        }
-    }
-}
-
-/**
  * Returns video stream for a specified participant.
  *
  * @param {Participant} participant - Participant object.
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
- * @returns {(JitsiLocalTrack|JitsiRemoteTrack|undefined)}
+ * @param {Track[]} tracks - List of all Track object.
+ * @returns {(Track|undefined)}
  */
 function getVideoTrack(participant, tracks) {
-    return tracks.find(t => {
-        return (
-            t.isVideoTrack()
-            && ((participant.local && t.isLocal())
-                || (!participant.local
-                    && !t.isLocal()
-                    && t.getParticipantId() === participant.id))
-        );
-    });
+    return tracks.find(t =>
+        t.mediaType === MEDIA_TYPE.VIDEO && t.participantId === participant.id);
 }
 
 /**
