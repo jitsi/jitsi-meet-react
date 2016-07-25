@@ -27,7 +27,7 @@ class Toolbar extends Component {
                 onCameraChange = { () => this.props.onCameraChange() }
                 onHangup = { () => this.props.onHangup(this.props.navigator) }
                 videoMuted = { this.props.videoMuted }
-                />
+                visible = { this.props.visible } />
         );
     }
 }
@@ -59,14 +59,14 @@ const mapStateToProps = state => {
  */
 const mapDispatchToProps = dispatch => {
     return {
-        onAudioMute: () => {
+        onAudioMute() {
             dispatch(toggleAudio());
         },
-        onCameraChange: () => {
+        onCameraChange() {
             dispatch(toggleCameraFacingMode());
         },
-        onHangup: navigator => {
-            dispatch(navigate({ screen: WELCOME_SCREEN, navigator }));
+        onHangup(navigator) {
+            dispatch(navigate({ navigator, screen: WELCOME_SCREEN }));
         }
     };
 };
@@ -82,7 +82,8 @@ Toolbar.propTypes = {
     onAudioMute: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
     onHangup: React.PropTypes.func,
-    videoMuted: React.PropTypes.bool
+    videoMuted: React.PropTypes.bool,
+    visible: React.PropTypes.bool.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);

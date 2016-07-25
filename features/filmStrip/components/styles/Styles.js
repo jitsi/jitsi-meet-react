@@ -48,7 +48,7 @@ export const styles = {
      */
     filmStrip: {
         alignSelf: 'stretch',
-        bottom: 110,
+        bottom: 10,
         flex: 1,
         flexDirection: 'row',
         position: 'absolute',

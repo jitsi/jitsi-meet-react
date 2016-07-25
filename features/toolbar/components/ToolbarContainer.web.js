@@ -16,9 +16,9 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        var underlayColor = ColorPalette.buttonUnderlay;
-        var micButtonStyle;
-        var micButtonIcon;
+        let underlayColor = ColorPalette.buttonUnderlay;
+        let micButtonStyle;
+        let micButtonIcon;
         if (this.props.audioMuted) {
             micButtonStyle = {
                 ...styles.toolbarButton,
@@ -36,7 +36,7 @@ export class ToolbarContainer extends Component {
                 <button
                     style = { micButtonStyle }
                     onClick = { () => this.props.onAudioMute() }>
-                    <Icon style = { styles.icon } name = { micButtonIcon } />
+                    <Icon name = { micButtonIcon } style = { styles.icon } />
                 </button>
                 <button
                     style = { {
@@ -44,14 +44,14 @@ export class ToolbarContainer extends Component {
                         backgroundColor: ColorPalette.jitsiRed
                     } }
                     onClick= { () => this.props.onHangup() }>
-                    <Icon style = { styles.icon } name = "phone" />
+                    <Icon name = "phone" style = { styles.icon } />
                 </button>
                 <button
                     style = { styles.toolbarButton }
                     onClick= { () => this.props.onCameraChange() }>
-                    <Icon style = { styles.icon } name="camera" />
+                    <Icon name="camera" style = { styles.icon } />
                 </button>
-            </div >
+            </div>
         );
     }
 }
@@ -62,8 +62,8 @@ export class ToolbarContainer extends Component {
  * @static
  */
 ToolbarContainer.propTypes = {
+    audioMuted: React.PropTypes.bool,
     onAudioMute: React.PropTypes.func,
-    onHangup: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
-    audioMuted: React.PropTypes.bool
+    onHangup: React.PropTypes.func
 };
