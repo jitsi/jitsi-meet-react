@@ -30,10 +30,10 @@ class WelcomePage extends AbstractWelcomePage {
                     onChangeText={ this._onRoomNameChange }
                     placeholder="room name"
                     style={ styles.textInput }
-                    value={ this.props.roomName }
+                    value={ this.state.roomName }
                 />
                 <TouchableHighlight
-                    disabled={ this.props.roomName === '' }
+                    disabled={ this.state.roomName === '' }
                     onPress={ this._onJoinPress }
                     style={ styles.button }
                     underlayColor="white">

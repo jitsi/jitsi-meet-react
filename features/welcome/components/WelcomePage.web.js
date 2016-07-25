@@ -26,9 +26,9 @@ class WelcomePage extends AbstractWelcomePage {
                     onChange={ ev => this._onRoomNameChange(ev.target.value) }
                     style={ styles.textInput }
                     type="text"
-                    value={ this.props.roomName }  />
+                    value={ this.state.roomName }  />
                 <button
-                    disabled={ this.props.roomName === '' }
+                    disabled={ this.state.roomName === '' }
                     onClick={ this._onJoinPress }
                     style={ styles.button }>JOIN</button>
             </div>

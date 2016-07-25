@@ -19,9 +19,28 @@ export class AbstractWelcomePage extends Component {
     constructor(props) {
         super(props);
 
+        /**
+         * Save room name into component's local state.
+         *
+         * @type {{roomName: string}}
+         */
+        this.state = {
+            roomName: ''
+        };
+
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
         this._onRoomNameChange = this._onRoomNameChange.bind(this);
+    }
+
+    /**
+     * This method is executed when component receives new properties.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - New props component will receive.
+     */
+    componentWillReceiveProps(nextProps) {
+        this.setState({ roomName: nextProps.roomName });
     }
 
     /**
@@ -41,9 +60,11 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinPress() {
+        this.props.dispatch(roomNameSet(this.state.roomName));
+
         this.props.dispatch(navigate({
             navigator: this.props.navigator,
-            room: this.props.roomName,
+            room: this.state.roomName,
             screen: CONFERENCE_SCREEN
         }));
     }
@@ -56,7 +77,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onRoomNameChange(value) {
-        this.props.dispatch(roomNameSet(value));
+        this.setState({ roomName: value });
     }
 }
 
