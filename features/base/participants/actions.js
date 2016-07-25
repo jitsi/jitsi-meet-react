@@ -142,7 +142,7 @@ export function participantLeft(id) {
 export function participantPinned(id) {
     return (dispatch, getState) => {
         let state = getState();
-        let conference = state['features/base/conference'];
+        let conference = state['features/base/conference'].jitsiConference;
         let participants = state['features/base/participants'];
         let participant = participants.find(p => p.id === id);
         let localParticipant = participants.find(p => p.local);
@@ -154,7 +154,7 @@ export function participantPinned(id) {
         // will unpin him and that's why we won't signal here too.
         if ((participant && !participant.local) ||
             (!participant && (!localParticipant || !localParticipant.pinned))) {
-            conference.pinParticipant(id);
+            conference && conference.pinParticipant(id);
         }
 
         return dispatch({
@@ -197,7 +197,8 @@ export function participantRoleChanged(id, role) {
  */
 export function participantSelected(id) {
     return (dispatch, getState) => {
-        let conference = getState()['features/base/conference'];
+        let conference =
+            getState()['features/base/conference'].jitsiConference;
 
         conference && conference.selectParticipant(id);
 

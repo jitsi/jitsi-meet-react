@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
+import { roomNameSet } from '../../base/conference';
 import { navigate } from '../../base/navigation';
 import { CONFERENCE_SCREEN } from '../../conference';
-
-import { setRoomName } from '../actions';
 
 /**
  * Base (abstract) class for container component rendering the welcome page.
@@ -32,7 +31,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(setRoomName(''));
+        this.props.dispatch(roomNameSet(''));
     }
 
     /**
@@ -57,7 +56,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onRoomNameChange(value) {
-        this.props.dispatch(setRoomName(value));
+        this.props.dispatch(roomNameSet(value));
     }
 }
 
@@ -70,10 +69,10 @@ export class AbstractWelcomePage extends Component {
  * @returns {{ roomName: string }}
  */
 export const mapStateToProps = state => {
-    const stateFeaturesWelcome = state['features/welcome'];
+    const stateFeaturesConference = state['features/base/conference'];
 
     return {
-        roomName: stateFeaturesWelcome.roomName
+        roomName: stateFeaturesConference.roomName
     };
 };
 

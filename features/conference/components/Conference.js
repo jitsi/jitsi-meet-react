@@ -115,10 +115,10 @@ Conference.propTypes = {
  * @returns {{ roomName: string }}
  */
 export const mapStateToProps = state => {
-    const stateFeaturesWelcome = state['features/welcome'];
+    const stateFeaturesConference = state['features/base/conference'];
 
     return {
-        roomName: stateFeaturesWelcome.roomName
+        roomName: stateFeaturesConference.roomName
     };
 };
 

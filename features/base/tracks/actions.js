@@ -41,7 +41,8 @@ export function addTracksToConference(conference, localTracks) {
  */
 export function changeLocalTracks(newLocalTracks = []) {
     return (dispatch, getState) => {
-        const conference = getState()['features/base/conference'];
+        const conference =
+            getState()['features/base/conference'].jitsiConference;
         let tracksToAdd = [];
         let tracksToRemove = [];
         let promise = Promise.resolve();
