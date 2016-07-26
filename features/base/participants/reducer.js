@@ -3,11 +3,9 @@ import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_FOCUSED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
-    PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
 
@@ -23,10 +21,6 @@ import {
  *      "PINNED_ENDPOINT".
  * @property {boolean} speaking - If true, participant is currently a
  *      dominant speaker.
- * @property {boolean} focused - If true, participant is currently visually
- *      selected on UI.
- * @property {boolean} selected - If true, participant is current
- *      "SELECTED_ENDPOINT".
  * @property {boolean} videoStarted -  If true, participant video stream has
  *      already started.
  * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
@@ -40,7 +34,7 @@ import {
  * @type {string[]}
  */
 const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE = [
-    'id', 'local', 'pinned', 'speaking', 'focused'];
+    'id', 'local', 'pinned', 'speaking'];
 
 /**
  * Reducer function for a single participant.
@@ -64,33 +58,19 @@ function participant(state, action) {
         return {
             id: action.participant.id,
             avatar: action.participant.avatar,
-            focused: action.participant.focused || false,
             local: action.participant.local || false,
             name: action.participant.name,
             pinned: action.participant.pinned || false,
             role: action.participant.role,
-            selected: action.participant.selected || false,
             speaking: action.participant.speaking || false,
             videoStarted: false,
             videoType: action.participant.videoType || undefined
         };
 
-    case PARTICIPANT_FOCUSED:
-        // Currently only one focused participant is allowed.
-        return Object.assign({}, state, {
-            focused: state.id === action.participant.id
-        });
-
     case PARTICIPANT_PINNED:
         // Currently only one pinned participant is allowed.
         return Object.assign({}, state, {
             pinned: state.id === action.participant.id
-        });
-
-    case PARTICIPANT_SELECTED:
-        // Currently only one selected participant is allowed.
-        return Object.assign({}, state, {
-            selected: state.id === action.participant.id
         });
 
     case PARTICIPANT_UPDATED:
@@ -137,9 +117,7 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
         return state.filter(p => p.id !== action.participant.id);
 
     case DOMINANT_SPEAKER_CHANGED:
-    case PARTICIPANT_FOCUSED:
     case PARTICIPANT_PINNED:
-    case PARTICIPANT_SELECTED:
     case PARTICIPANT_UPDATED:
         return state.map(p => participant(p, action));
 

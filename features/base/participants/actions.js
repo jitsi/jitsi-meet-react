@@ -2,11 +2,9 @@
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_FOCUSED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
-    PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
 import { PARTICIPANT_ROLE } from './constants';
@@ -92,27 +90,6 @@ export function localParticipantJoined(id, participant = {}) {
 }
 
 /**
- * Create an action for when the participant in conference is focused.
- *
- * @param {string|null} id - Participant id or null if no one is currently
- *     focused.
- * @returns {{
- *      type: PARTICIPANT_FOCUSED,
- *      participant: {
- *          id: string
- *      }
- * }}
- */
-export function participantFocused(id) {
-    return {
-        type: PARTICIPANT_FOCUSED,
-        participant: {
-            id
-        }
-    };
-}
-
-/**
  * Action to handle case when participant lefts.
  *
  * @param {string} id - Participant id.
@@ -129,40 +106,6 @@ export function participantLeft(id) {
         participant: {
             id
         }
-    };
-}
-
-/**
- * Create an action for when the participant in conference is pinned.
- *
- * @param {string|null} id - Participant id or null if no one is currently
- *     pinned.
- * @returns {Function}
- */
-export function participantPinned(id) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let conference = state['features/base/conference'];
-        let participants = state['features/base/participants'];
-        let participant = participants.find(p => p.id === id);
-        let localParticipant = participants.find(p => p.local);
-
-        // This condition prevents signaling to pin local participant. Here is
-        // the logic: if we have ID, then we check if participant by that ID is
-        // local. If we don't have ID and thus no participant by ID, we check
-        // for local participant. If it's currently pinned, then this action
-        // will unpin him and that's why we won't signal here too.
-        if ((participant && !participant.local) ||
-            (!participant && (!localParticipant || !localParticipant.pinned))) {
-            conference.pinParticipant(id);
-        }
-
-        return dispatch({
-            type: PARTICIPANT_PINNED,
-            participant: {
-                id
-            }
-        });
     };
 }
 
@@ -186,27 +129,6 @@ export function participantRoleChanged(id, role) {
             id,
             role
         }
-    };
-}
-
-/**
- * Create an action for when the participant in conference is selected.
- *
- * @param {string|null} id - Participant id. If null, no one is selected.
- * @returns {Function}
- */
-export function participantSelected(id) {
-    return (dispatch, getState) => {
-        let conference = getState()['features/base/conference'];
-
-        conference && conference.selectParticipant(id);
-
-        return dispatch({
-            type: PARTICIPANT_SELECTED,
-            participant: {
-                id
-            }
-        });
     };
 }
 
@@ -252,6 +174,40 @@ export function participantVideoTypeChanged(id, videoType) {
             id,
             videoType
         }
+    };
+}
+
+/**
+ * Create an action for when the participant in conference is pinned.
+ *
+ * @param {string|null} id - Participant id or null if no one is currently
+ *     pinned.
+ * @returns {Function}
+ */
+export function pinParticipant(id) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let conference = state['features/base/conference'];
+        let participants = state['features/base/participants'];
+        let participant = participants.find(p => p.id === id);
+        let localParticipant = participants.find(p => p.local);
+
+        // This condition prevents signaling to pin local participant. Here is
+        // the logic: if we have ID, then we check if participant by that ID is
+        // local. If we don't have ID and thus no participant by ID, we check
+        // for local participant. If it's currently pinned, then this action
+        // will unpin him and that's why we won't signal here too.
+        if ((participant && !participant.local) ||
+            (!participant && (!localParticipant || !localParticipant.pinned))) {
+            conference.pinParticipant(id);
+        }
+
+        return dispatch({
+            type: PARTICIPANT_PINNED,
+            participant: {
+                id
+            }
+        });
     };
 }
 
