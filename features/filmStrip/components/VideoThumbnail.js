@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Audio, shouldMirror, Video } from '../../base/media';
+import { 
+    Audio, 
+    shouldMirror, 
+    Video 
+} from '../../base/media';
 import {
     PARTICIPANT_ROLE,
-    participantFocused,
-    participantPinned,
-    participantVideoStarted
+    participantVideoStarted,
+    pinParticipant
 } from '../../base/participants';
 
 import {
@@ -61,10 +64,10 @@ class VideoThumbnail extends Component {
         let { dispatch, participant } = this.props;
 
         // TODO: this currently ignores interfaceConfig.filmStripOnly
-        dispatch(participantFocused(
-            participant.focused ? null : participant.id));
-        dispatch(participantPinned(
-            participant.pinned ? null : participant.id));
+        dispatch(pinParticipant(
+            participant.pinned
+                ? null
+                : participant.id));
     }
 
     /**
@@ -106,16 +109,22 @@ class VideoThumbnail extends Component {
      */
     render() {
         let participant = this.props.participant;
+        let largeVideo = this.props.largeVideo;
         let streams = this.getMediaStreams();
         let renderAudio =
             streams.audio
-                && !this.props.audioMuted
-                && !this.props.audioTrack.isLocal();
-        let renderVideo = streams.video && !this.props.videoMuted;
+            && !this.props.audioMuted
+            && !this.props.audioTrack.isLocal();
+        let renderVideo = 
+            streams.video
+            && !this.props.videoMuted 
+            && (!participant.videoStarted 
+                || (participant.videoStarted 
+                    && participant.id !== largeVideo.onStageParticipantId));
 
         return (
             <VideoThumbnailContainer
-                focused={ participant.focused }
+                pinned={ participant.pinned }
                 onClick={ this._onClick }>
 
                 { renderAudio &&
@@ -126,7 +135,7 @@ class VideoThumbnail extends Component {
                         mirror={ shouldMirror(this.props.videoTrack) }
                         onPlaying={ this._onVideoPlaying }
                         stream={ streams.video } /> }
-
+                
                 { !renderVideo &&
                     <Avatar uri={ participant.avatar } /> }
 
@@ -145,7 +154,23 @@ class VideoThumbnail extends Component {
             </VideoThumbnailContainer>
         );
     }
+
+
 }
+
+/**
+ * Function that maps parts of Redux state tree into component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{
+ *      largeVideo: Object
+ *  }}
+ */
+const mapStateToProps = state => {
+    return {
+        largeVideo: state['features/largeVideo']
+    };
+};
 
 /**
  * VideoThumbnail component's property types.
@@ -156,9 +181,10 @@ VideoThumbnail.propTypes = {
     audioMuted: React.PropTypes.bool,
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
+    largeVideo: React.PropTypes.object,
     participant: React.PropTypes.object,
     videoMuted: React.PropTypes.bool,
     videoTrack: React.PropTypes.object
 };
 
-export default connect()(VideoThumbnail);
+export default connect(mapStateToProps)(VideoThumbnail);

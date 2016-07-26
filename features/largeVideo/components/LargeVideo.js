@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { shouldMirror, Video } from '../../base/media';
-import { participantSelected } from '../../base/participants';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 
@@ -13,139 +12,30 @@ import { LargeVideoContainer } from './LargeVideoContainer';
  */
 class LargeVideo extends Component {
     /**
-     * Constructs new LargeVideo component.
-     *
-     * @param {Object} props - Component props.
-     */
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            activeParticipant: null,
-            videoStream: null,
-            videoTrack: null
-        };
-    }
-
-    /**
-     * How we handle new component properties.
-     *
-     * @inheritdoc
-     * @param {Object} nextProps - New props that component will receive.
-     */
-    componentWillReceiveProps(nextProps) {
-        let activeParticipant = getActiveParticipant(nextProps);
-        let videoStream = null;
-        let videoTrack = null;
-
-        if (activeParticipant) {
-            // If current active active participant is local user and he is
-            // dominant speaker and not focused, use previous video stream.
-            if (activeParticipant.local &&
-                activeParticipant.speaking &&
-                !activeParticipant.focused &&
-                this.state.videoStream) {
-                videoStream = this.state.videoStream;
-            } else {
-                videoTrack = getVideoTrack(
-                    activeParticipant, this.props.tracks);
-
-                videoStream = videoTrack
-                    ? videoTrack.getOriginalStream()
-                    : this.state.videoStream;
-            }
-        }
-
-        // If our active participant changed and we're going to show "camera" on
-        // large video, dispatch respective event.
-        if (activeParticipant &&
-            videoTrack &&
-            !activeParticipant.selected &&
-            activeParticipant.videoType === 'camera') {
-            this.props.dispatch(participantSelected(activeParticipant.id));
-        }
-
-        this.setState({
-            activeParticipant,
-            videoStream,
-            videoTrack
-        });
-    }
-
-    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      * @returns {ReactElement}
      */
     render() {
-        let videoStream = this.state.videoStream;
-        let participant = getParticipantByVideoStream(
-            videoStream,
-            this.props.tracks,
-            this.props.participants);
+        let participantOnStage = this.props.participants
+            .find(p => p.id === this.props.largeVideo.onStageParticipantId);
+        let videoTrack = participantOnStage
+            ? getVideoTrack(participantOnStage, this.props.tracks)
+            : null;
 
         // TODO: in future other stuff might be on large video.
 
         return (
-            <LargeVideoContainer>{
-                participant &&
-                participant.videoStarted &&
-                videoStream &&
+            <LargeVideoContainer>
+                { participantOnStage &&
+                participantOnStage.videoStarted &&
+                videoTrack &&
                 <Video
-                    mirror={ shouldMirror(this.state.videoTrack) }
-                    stream={ videoStream } />
-            }</LargeVideoContainer>
+                    mirror={ shouldMirror(videoTrack) }
+                    stream={ videoTrack.getOriginalStream() }/> }
+            </LargeVideoContainer>
         );
-    }
-}
-
-/**
- * Returns active participant to show.
- *
- * @param {Object} props - Component props.
- * @returns {(Participant|undefined)}
- */
-function getActiveParticipant(props) {
-    // First get the focused participant.
-    let participants = props.participants;
-    let activeParticipant = participants.find(p => p.focused);
-
-    // If no participant is focused, get the dominant speaker.
-    if (!activeParticipant) {
-        activeParticipant = participants.find(p => p.speaking);
-
-        // If no participant is focused and no dominant speaker, just get the
-        // last one participant.
-        if (!activeParticipant) {
-            activeParticipant = participants[participants.length - 1];
-        }
-    }
-
-    return activeParticipant;
-}
-
-/**
- * Returns participant corresponding to video stream.
- *
- * @param {MediaStream} stream - MediaStream.
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
- * @param {Participant[]} participants - List of all participants.
- * @returns {(Participant|undefined)}
- */
-function getParticipantByVideoStream(stream, tracks, participants) {
-    if (!stream) {
-        return;
-    }
-
-    let track = tracks.find(t => t.getOriginalStream() === stream);
-
-    if (track) {
-        if (track.isLocal()) {
-            return participants.find(p => p.local);
-        } else {
-            return participants.find(p => p.id === track.getParticipantId());
-        }
     }
 }
 
@@ -179,6 +69,7 @@ function getVideoTrack(participant, tracks) {
  */
 const mapStateToProps = state => {
     return {
+        largeVideo: state['features/largeVideo'],
         participants: state['features/base/participants'],
         tracks: state['features/base/tracks']
     };
@@ -192,6 +83,7 @@ const mapStateToProps = state => {
 LargeVideo.propTypes = {
     dispatch: React.PropTypes.func,
     participants: React.PropTypes.array,
+    largeVideo: React.PropTypes.object,
     tracks: React.PropTypes.array
 };
 

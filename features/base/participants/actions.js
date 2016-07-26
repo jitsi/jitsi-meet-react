@@ -2,11 +2,9 @@
 
 import {
     DOMINANT_SPEAKER_CHANGED,
-    PARTICIPANT_FOCUSED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
-    PARTICIPANT_SELECTED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
 import { PARTICIPANT_ROLE } from './constants';
@@ -92,27 +90,6 @@ export function localParticipantJoined(id, participant = {}) {
 }
 
 /**
- * Create an action for when the participant in conference is focused.
- *
- * @param {string|null} id - Participant id or null if no one is currently
- *     focused.
- * @returns {{
- *      type: PARTICIPANT_FOCUSED,
- *      participant: {
- *          id: string
- *      }
- * }}
- */
-export function participantFocused(id) {
-    return {
-        type: PARTICIPANT_FOCUSED,
-        participant: {
-            id
-        }
-    };
-}
-
-/**
  * Action to handle case when participant lefts.
  *
  * @param {string} id - Participant id.
@@ -139,7 +116,7 @@ export function participantLeft(id) {
  *     pinned.
  * @returns {Function}
  */
-export function participantPinned(id) {
+export function pinParticipant(id) {
     return (dispatch, getState) => {
         let state = getState();
         let conference = state['features/base/conference'];
@@ -186,27 +163,6 @@ export function participantRoleChanged(id, role) {
             id,
             role
         }
-    };
-}
-
-/**
- * Create an action for when the participant in conference is selected.
- *
- * @param {string|null} id - Participant id. If null, no one is selected.
- * @returns {Function}
- */
-export function participantSelected(id) {
-    return (dispatch, getState) => {
-        let conference = getState()['features/base/conference'];
-
-        conference && conference.selectParticipant(id);
-
-        return dispatch({
-            type: PARTICIPANT_SELECTED,
-            participant: {
-                id
-            }
-        });
     };
 }
 
