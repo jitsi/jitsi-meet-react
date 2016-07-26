@@ -1,19 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Dimensions,
     TouchableHighlight,
     View
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import { Icon } from '../../base/fontIcons';
 import { ColorPalette } from '../../base/styles';
 
+import {
+    AbstractToolbar,
+    mapStateToProps
+} from './AbstractToolbar';
 import { styles } from './styles';
 
 /**
  * The native container rendering the in call main buttons.
+ *
+ * @extends AbstractToolbar
  */
-export class ToolbarContainer extends Component {
+class Toolbar extends AbstractToolbar {
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -21,23 +28,9 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
+        const cameraButtonStyles = this._getMuteButtonStyles('camera');
+        const microphoneButtonStyles = this._getMuteButtonStyles('microphone');
         let underlayColor = ColorPalette.buttonUnderlay;
-        let micButtonStyle;
-        let micIconStyle;
-        let micButtonIcon;
-        if (this.props.audioMuted) {
-            micButtonStyle = [
-                styles.toolbarButton,
-                { backgroundColor: underlayColor }
-            ];
-            micIconStyle = [styles.icon, { color: 'white' }];
-            micButtonIcon = 'mic-disabled';
-        }
-        else {
-            micButtonStyle = styles.toolbarButton;
-            micIconStyle = styles.icon;
-            micButtonIcon = 'microphone';
-        }
 
         // The following property is responsible to hide/show the toolbar view
         // by moving it out of site of the screen boundaries. An attempt to use
@@ -53,35 +46,30 @@ export class ToolbarContainer extends Component {
 
         return (
             <View style = { [styles.toolbarContainer, { bottom }] }>
-
                 <TouchableHighlight
-                    onPress = { this.props.onAudioMute }
-                    style = { micButtonStyle }>
-
+                    onPress = { this._onMicrophoneMute }
+                    style = { microphoneButtonStyles.buttonStyle }>
                     <Icon
-                        name = { micButtonIcon }
-                        style = { micIconStyle } />
+                        name = { microphoneButtonStyles.iconName }
+                        style = { microphoneButtonStyles.iconStyle } />
                 </TouchableHighlight>
                 <TouchableHighlight
-                    onPress = { this.props.onHangup }
+                    onPress = { this._onHangup }
                     style = { [
                         styles.toolbarButton,
                         { backgroundColor: ColorPalette.jitsiRed }
                     ] }
                     underlayColor = { underlayColor }>
-
                     <Icon
                         name = "hangup"
                         style = { [styles.icon, { color: 'white' }] } />
                 </TouchableHighlight>
                 <TouchableHighlight
-                    onPress = { this.props.onCameraChange }
-                    style = { styles.toolbarButton }
-                    underlayColor = { underlayColor }>
-
+                    onPress = { this._onCameraMute }
+                    style = { cameraButtonStyles.buttonStyle }>
                     <Icon
-                        name = "photo-camera"
-                        style = { styles.icon } />
+                        name = { cameraButtonStyles.iconName }
+                        style = { cameraButtonStyles.iconStyle } />
                 </TouchableHighlight>
             </View>
         );
@@ -89,14 +77,23 @@ export class ToolbarContainer extends Component {
 }
 
 /**
- * ToolbarContainer component's property types.
+ * Additional properties for various icons, which are now platform-dependent.
+ * This is done to have common logic of generating styles for web and native.
+ * TODO: as soon as we have common font sets for web and native, this will be no
+ * longer required.
+ */
+Object.assign(Toolbar.prototype, {
+    cameraIcon: 'webCam',
+    cameraMutedIcon: 'camera-disabled',
+    microphoneIcon: 'microphone',
+    microphoneMutedIcon: 'mic-disabled'
+});
+
+/**
+ * Toolbar component's property types.
  *
  * @static
  */
-ToolbarContainer.propTypes = {
-    audioMuted: React.PropTypes.bool,
-    onAudioMute: React.PropTypes.func,
-    onCameraChange: React.PropTypes.func,
-    onHangup: React.PropTypes.func,
-    visible: React.PropTypes.bool
-};
+Toolbar.propTypes = AbstractToolbar.propTypes;
+
+export default connect(mapStateToProps)(Toolbar);
