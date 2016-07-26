@@ -7,12 +7,7 @@ import {
 } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-import {
-    destroy,
-    init
-} from '../../base/connection';
-import { Conference } from '../../conference';
-import { WelcomePage } from '../../welcome';
+import { ScreenRegistry } from '../../base/navigation';
 
 /**
  * Root application component.
@@ -34,10 +29,6 @@ export class App extends Component {
          * @link https://github.com/reactjs/react-router-redux#how-it-works
          */
         this.history = syncHistoryWithStore(browserHistory, props.store);
-
-        // Bind event handlers so they are only bound once for every instance.
-        this._onConferenceRouteEnter = this._onConferenceRouteEnter.bind(this);
-        this._onConferenceRouteLeave = this._onConferenceRouteLeave.bind(this);
     }
 
     /**
@@ -47,43 +38,22 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     render() {
+        let screens = ScreenRegistry.getAllScreens();
+
         return (
-            <Provider store={this.props.store}>
-                <Router history={this.history}>
-                    <Route
-                        path='/'
-                        component={WelcomePage}/>
-                    <Route
-                        path='*'
-                        component={Conference}
-                        onEnter={this._onConferenceRouteEnter}
-                        onLeave={this._onConferenceRouteLeave}/>
+            <Provider store={ this.props.store }>
+                <Router history={ this.history }>
+                {
+                    screens.map(screen => (
+                        <Route
+                            key={ screen.name }
+                            path={ screen.path }
+                            component={ screen.component }/>
+                    ))
+                }
                 </Router>
             </Provider>
         );
-    }
-
-    /**
-     * Init JitsiMeetJS and new conference when we enter the "conference" route.
-     *
-     * @param {Object} route - Current route.
-     * @private
-     * @returns {void}
-     */
-    _onConferenceRouteEnter(route) {
-        const room = route.location.pathname.substr(1).toLowerCase();
-        this.props.store.dispatch(init(this.props.config, room));
-    }
-
-    /**
-     * Destroy connection, conference and local tracks when we leave the
-     * "conference" route.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onConferenceRouteLeave() {
-        this.props.store.dispatch(destroy());
     }
 }
 

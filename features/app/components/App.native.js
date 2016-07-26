@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { WelcomePage } from '../../welcome';
+import { ScreenRegistry } from '../../base/navigation';
+import { WELCOME_SCREEN } from '../../welcome';
 
 /**
  * Root application component.
@@ -30,14 +31,20 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     render() {
+        let screens = ScreenRegistry.getAllScreens();
+        // XXX It's important to select initial screen from obtained screen
+        // array and not from ScreenRegistry#getScreenByName() method, because
+        // React-Native's Navigator will compare value in 'initialRoute' prop
+        // with values in 'initialRouteStack' prop using simple comparison
+        // operator.
+        let initialScreen =
+            screens.find(screen => screen.name === WELCOME_SCREEN);
+
         return (
-            <Provider store={this.props.store}>
+            <Provider store={ this.props.store }>
                 <Navigator
-                    initialRoute={{
-                        component: WelcomePage,
-                        title: 'Jitsi Meet'
-                    }}
-                    renderScene={this._navigatorRenderScene}/>
+                    initialRoute={ initialScreen }
+                    renderScene={ this._navigatorRenderScene }/>
             </Provider>
         );
     }

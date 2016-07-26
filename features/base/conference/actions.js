@@ -16,7 +16,8 @@ import {
 
 import {
     CONFERENCE_JOINED,
-    CONFERENCE_LEFT
+    CONFERENCE_LEFT,
+    ROOM_NAME_SET
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
 import './reducer';
@@ -101,7 +102,9 @@ export function conferenceJoined(conference) {
 
         dispatch({
             type: CONFERENCE_JOINED,
-            conference
+            conference: {
+                jitsiConference: conference
+            }
         });
     };
 }
@@ -111,11 +114,38 @@ export function conferenceJoined(conference) {
  *
  * @param {JitsiConference} conference - The JitsiConference instance which was
  * left by the local participant.
- * @returns {{ type: CONFERENCE_LEFT }}
+ * @returns {{
+ *      type: CONFERENCE_LEFT,
+ *      conference: {
+ *          jitsiConference: JitsiConference
+ *      }
+ *  }}
  */
 export function conferenceLeft(conference) {
     return {
         type: CONFERENCE_LEFT,
-        conference
+        conference: {
+            jitsiConference: conference
+        }
+    };
+}
+
+/**
+ * Signals that room name was set.
+ *
+ * @param {string} roomName - Name of conference room.
+ * @returns {{
+ *      type: ROOM_NAME_SET,
+ *      conference: {
+ *          roomName: string
+ *      }
+ *  }}
+ */
+export function roomNameSet(roomName) {
+    return {
+        type: ROOM_NAME_SET,
+        conference: {
+            roomName
+        }
     };
 }
