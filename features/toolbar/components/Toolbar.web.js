@@ -28,28 +28,30 @@ class Toolbar extends AbstractToolbar {
 
         return (
             <div style = { styles.toolbarContainer }>
-                <button
-                    onClick = { this._onMicrophoneMute }
-                    style = { microphoneButtonStyles.buttonStyle }>
-                    <Icon
-                        name = { microphoneButtonStyles.iconName }
-                        style = { microphoneButtonStyles.iconStyle } />
-                </button>
-                <button
-                    onClick= { this._onHangup }
-                    style = { {
-                        ...styles.toolbarButton,
-                        backgroundColor: ColorPalette.jitsiRed
-                    } }>
-                    <Icon name = "phone" style = { styles.icon } />
-                </button>
-                <button
-                    onClick= { this._onCameraMute }
-                    style = { cameraButtonStyles.buttonStyle }>
-                    <Icon
-                        name = { cameraButtonStyles.iconName }
-                        style = { cameraButtonStyles.iconStyle } />
-                </button>
+                <div style = { styles.toolbarButtonsContainer }>
+                    <button
+                        onClick = { this._onMicrophoneMute }
+                        style = { microphoneButtonStyles.buttonStyle }>
+                        <Icon
+                            name = { microphoneButtonStyles.iconName }
+                            style = { microphoneButtonStyles.iconStyle } />
+                    </button>
+                    <button
+                        onClick= { this._onHangup }
+                        style = { {
+                            ...styles.toolbarButton,
+                            backgroundColor: ColorPalette.jitsiRed
+                        } }>
+                        <Icon name = "phone" style = { styles.icon } />
+                    </button>
+                    <button
+                        onClick= { this._onCameraMute }
+                        style = { cameraButtonStyles.buttonStyle }>
+                        <Icon
+                            name = { cameraButtonStyles.iconName }
+                            style = { cameraButtonStyles.iconStyle } />
+                    </button>
+                </div>
             </div>
         );
     }

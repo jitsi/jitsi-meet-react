@@ -13,6 +13,7 @@ import {
     AbstractToolbar,
     mapStateToProps
 } from './AbstractToolbar';
+import { toggleCameraFacingMode } from '../actions';
 import { styles } from './styles';
 
 /**
@@ -21,6 +22,19 @@ import { styles } from './styles';
  * @extends AbstractToolbar
  */
 class Toolbar extends AbstractToolbar {
+    /**
+     * Constructs new Toolbar component.
+     *
+     * @param {Object} props - Component props.
+     */
+    constructor(props) {
+        super(props);
+
+        // Bind event handlers so they are only bound once for every instance.
+        this._onCameraFacingModeToggle =
+            this._onCameraFacingModeToggle.bind(this);
+    }
+
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -39,40 +53,71 @@ class Toolbar extends AbstractToolbar {
         // discovered, which allowed the view to still capture touch events even
         // if hidden.
         // TODO Alternatives will be investigated.
-        let bottom =
-            this.props.visible
-                ? styles.toolbarContainer.bottom
-                : -Dimensions.get('window').height;
+        let bottom = this.props.visible
+            ? {}
+            : { bottom: -Dimensions.get('window').height };
+
+        // TODO: use correct Jitsi icon for camera switch button when available
 
         return (
-            <View style = { [styles.toolbarContainer, { bottom }] }>
-                <TouchableHighlight
-                    onPress = { this._onMicrophoneMute }
-                    style = { microphoneButtonStyles.buttonStyle }>
-                    <Icon
-                        name = { microphoneButtonStyles.iconName }
-                        style = { microphoneButtonStyles.iconStyle } />
-                </TouchableHighlight>
-                <TouchableHighlight
-                    onPress = { this._onHangup }
+            <View style = { styles.toolbarContainer }>
+                <View
                     style = { [
-                        styles.toolbarButton,
-                        { backgroundColor: ColorPalette.jitsiRed }
-                    ] }
-                    underlayColor = { underlayColor }>
-                    <Icon
-                        name = "hangup"
-                        style = { [styles.icon, { color: 'white' }] } />
-                </TouchableHighlight>
-                <TouchableHighlight
-                    onPress = { this._onCameraMute }
-                    style = { cameraButtonStyles.buttonStyle }>
-                    <Icon
-                        name = { cameraButtonStyles.iconName }
-                        style = { cameraButtonStyles.iconStyle } />
-                </TouchableHighlight>
+                        styles.toggleCameraFacingModeContainer,
+                        bottom
+                    ] }>
+                    <TouchableHighlight
+                        onPress = { this._onCameraFacingModeToggle }
+                        style = { styles.toggleCameraFacingModeButton }
+                        underlayColor = 'transparent'>
+                        <Icon
+                            name = "reload"
+                            style = { [styles.icon, { color: 'white' }] } />
+                    </TouchableHighlight>
+                </View>
+                <View
+                    style = { [
+                        styles.toolbarButtonsContainer,
+                        bottom
+                    ] }>
+                    <TouchableHighlight
+                        onPress = { this._onMicrophoneMute }
+                        style = { microphoneButtonStyles.buttonStyle }>
+                        <Icon
+                            name = { microphoneButtonStyles.iconName }
+                            style = { microphoneButtonStyles.iconStyle } />
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        onPress = { this._onHangup }
+                        style = { [
+                            styles.toolbarButton,
+                            { backgroundColor: ColorPalette.jitsiRed }
+                        ] }
+                        underlayColor = { underlayColor }>
+                        <Icon
+                            name = "hangup"
+                            style = { [styles.icon, { color: 'white' }] } />
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        onPress = { this._onCameraMute }
+                        style = { cameraButtonStyles.buttonStyle }>
+                        <Icon
+                            name = { cameraButtonStyles.iconName }
+                            style = { cameraButtonStyles.iconStyle } />
+                    </TouchableHighlight>
+                </View>
             </View>
         );
+    }
+
+    /**
+     * Switches between front and rear cameras.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onCameraFacingModeToggle() {
+        this.props.dispatch(toggleCameraFacingMode());
     }
 }
 
