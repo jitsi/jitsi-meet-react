@@ -5,11 +5,11 @@ import {
     APP_SCREEN,
     navigate
 } from '../../app';
-
 import {
-    toggleAudio,
+    toggleMicrophoneMuted,
     toggleCameraFacingMode
-} from '../';
+} from '../../base/media';
+
 import { ToolbarContainer } from './ToolbarContainer';
 
 /**
@@ -42,10 +42,10 @@ class Toolbar extends Component {
  * @returns {{ audioMuted: boolean, videoMuted: boolean }}
  */
 const mapStateToProps = state => {
-    const stateFeaturesToolbar = state['features/toolbar'];
+    const stateFeaturesMedia = state['features/base/media'];
     return {
-        audioMuted: stateFeaturesToolbar.audioMuted,
-        videoMuted: stateFeaturesToolbar.videoMuted
+        audioMuted: stateFeaturesMedia.microphone.muted,
+        videoMuted: stateFeaturesMedia.camera.muted
     };
 };
 
@@ -63,7 +63,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAudioMute() {
-            dispatch(toggleAudio());
+            dispatch(toggleMicrophoneMuted());
         },
         onCameraChange() {
             dispatch(toggleCameraFacingMode());
