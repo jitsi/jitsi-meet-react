@@ -4,7 +4,8 @@ import { View } from 'react-native';
 import { styles } from './styles';
 
 /**
- * The native container rendering the person "on stage".
+ * The native container rendering the conference participant whose video is
+ * displayed as a large one rather than as a thumbnail.
  */
 export class LargeVideoContainer extends Component {
     /**

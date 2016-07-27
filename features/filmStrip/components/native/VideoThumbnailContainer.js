@@ -18,8 +18,8 @@ export class VideoThumbnailContainer extends Component {
         return (
             <TouchableHighlight onPress={ this.props.onClick }>
                 <View
-                    style={ this.props.focused
-                        ? [ styles.thumbnail, styles.thumbnailFocused ]
+                    style={ this.props.pinned
+                        ? [ styles.thumbnail, styles.thumbnailPinned ]
                         : [ styles.thumbnail ] }>
                     { this.props.children }
                 </View>
@@ -35,6 +35,6 @@ export class VideoThumbnailContainer extends Component {
  */
 VideoThumbnailContainer.propTypes = {
     children: React.PropTypes.node,
-    focused: React.PropTypes.bool,
+    pinned: React.PropTypes.bool,
     onClick: React.PropTypes.func
 };

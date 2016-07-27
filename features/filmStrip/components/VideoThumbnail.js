@@ -7,8 +7,7 @@ import {
 } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
-    participantFocused,
-    participantPinned
+    pinParticipant
 } from '../../base/participants';
 import {
     MEDIA_TYPE,
@@ -51,10 +50,10 @@ class VideoThumbnail extends Component {
         let { dispatch, participant } = this.props;
 
         // TODO: this currently ignores interfaceConfig.filmStripOnly
-        dispatch(participantFocused(
-            participant.focused ? null : participant.id));
-        dispatch(participantPinned(
-            participant.pinned ? null : participant.id));
+        dispatch(pinParticipant(
+            participant.pinned
+                ? null
+                : participant.id));
     }
 
     /**
@@ -96,21 +95,35 @@ class VideoThumbnail extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let { audioTrack, participant, videoTrack } = this.props;
+        let { audioTrack, largeVideo, participant, videoTrack } = this.props;
         let audioStream;
         let videoStream;
 
+        // We don't render audio in any of the following:
+        // 1. The audio (source) is muted. There's no practical reason (that we
+        //    know of, anyway) why we'd want to render it given that it's
+        //    silence (& not even comfort noise).
+        // 2. The audio is local. If we were to render local audio, the local
+        //    participants would be hearing themselves.
         if (audioTrack && !audioTrack.muted && !audioTrack.local) {
             audioStream = audioTrack.jitsiTrack.getOriginalStream();
         }
 
-        if (videoTrack && !videoTrack.muted) {
+        // We don't render video (in the film strip) in any of the following:
+        // 1. The video (source) is muted. Even if muted video happens to be
+        //    black frames one day, we've decided to display the participant's
+        //    avatar instead.
+        // 2. The video is rendered on the stage i.e. as a large video.
+        if (videoTrack 
+            && !videoTrack.muted 
+            && (!videoTrack.videoStarted
+                || participant.id !== largeVideo.participantId)) {
             videoStream = videoTrack.jitsiTrack.getOriginalStream();
         }
 
         return (
             <VideoThumbnailContainer
-                focused={ participant.focused }
+                pinned={ participant.pinned }
                 onClick={ this._onClick }>
 
                 { audioStream &&
@@ -149,11 +162,16 @@ class VideoThumbnail extends Component {
  * @param {Object} state - Redux state.
  * @param {Object} ownProps - Properties of component.
  * @returns {{
-
- *      tracks: Track[]
+ *      audioTrack: Track,
+ *      largeVideo: Object,
+ *      videoTrack: Track
  *  }}
  */
 const mapStateToProps = (state, ownProps) => {
+    // We need read-only access to the state of features/largeVideo so that
+    // the film strip doesn't render the video of the participant who is
+    // rendered on the stage i.e. as a large video.
+    let largeVideo = state['features/largeVideo'];
     let tracks = state['features/base/tracks'];
     let participantId = ownProps.participant.id;
     let audioTrack = tracks.find(t => (
@@ -166,6 +184,7 @@ const mapStateToProps = (state, ownProps) => {
     ));
     return {
         audioTrack,
+        largeVideo,
         videoTrack
     };
 };
@@ -178,6 +197,7 @@ const mapStateToProps = (state, ownProps) => {
 VideoThumbnail.propTypes = {
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
+    largeVideo: React.PropTypes.object,
     participant: React.PropTypes.object,
     videoTrack: React.PropTypes.object
 };

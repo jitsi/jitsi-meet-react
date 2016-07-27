@@ -164,8 +164,6 @@ function _shouldMirror(track) {
     );
 }
 
-
-
 /**
  * Create an action for when a new track has been signaled to be added to the
  * conference.

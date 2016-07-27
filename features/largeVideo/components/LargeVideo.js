@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { Video } from '../../base/media';
 import { participantSelected } from '../../base/participants';
 import {
-    MEDIA_TYPE,
-    VIDEO_TYPE
+    MEDIA_TYPE
 } from '../../base/tracks';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
@@ -17,127 +16,33 @@ import { LargeVideoContainer } from './LargeVideoContainer';
  */
 class LargeVideo extends Component {
     /**
-     * Constructs new LargeVideo component.
-     *
-     * @param {Object} props - Component props.
-     */
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            activeParticipant: null,
-            videoStream: null,
-            videoTrack: null
-        };
-    }
-
-    /**
-     * How we handle new component properties.
-     *
-     * @inheritdoc
-     * @param {Object} nextProps - New props that component will receive.
-     */
-    componentWillReceiveProps(nextProps) {
-        let activeParticipant = getActiveParticipant(nextProps);
-        let videoStream = null;
-        let videoTrack = null;
-
-        if (activeParticipant) {
-            // If current active active participant is local user and he is
-            // dominant speaker and not focused, use previous video stream.
-            if (activeParticipant.local &&
-                activeParticipant.speaking &&
-                !activeParticipant.focused &&
-                this.state.videoStream &&
-                this.state.videoTrack) {
-                videoStream = this.state.videoStream;
-                videoTrack = this.state.videoTrack;
-            } else {
-                videoTrack = getVideoTrack(
-                    activeParticipant, this.props.tracks);
-
-                videoStream = videoTrack
-                    ? videoTrack.jitsiTrack.getOriginalStream()
-                    : this.state.videoStream;
-            }
-        }
-
-        // If our active participant changed and we're going to show "camera" on
-        // large video, dispatch respective event.
-        if (activeParticipant &&
-            !activeParticipant.selected &&
-            videoTrack &&
-            videoTrack.videoType === VIDEO_TYPE.CAMERA) {
-            this.props.dispatch(participantSelected(activeParticipant.id));
-        }
-
-        this.setState({
-            activeParticipant,
-            videoStream,
-            videoTrack
-        });
-    }
-
-    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      * @returns {ReactElement}
      */
     render() {
-        let videoStream = this.state.videoStream;
-        let videoTrack = this.state.videoTrack;
+        let videoTrack = this.props.tracks.find(
+            t => (
+                t.participantId === this.props.largeVideo.participantId
+                && t.mediaType === MEDIA_TYPE.VIDEO
+            )
+        );
 
         // TODO: in future other stuff might be on large video.
 
         return (
-            <LargeVideoContainer>{
-                videoStream &&
+            <LargeVideoContainer>
+            {
                 videoTrack &&
                 videoTrack.videoStarted &&
                 <Video
                     mirror={ videoTrack.mirrorVideo }
-                    stream={ videoStream } />
-            }</LargeVideoContainer>
+                    stream={ videoTrack.jitsiTrack.getOriginalStream() }/>
+            }
+            </LargeVideoContainer>
         );
     }
-}
-
-/**
- * Returns active participant to show.
- *
- * @param {Object} props - Component props.
- * @returns {(Participant|undefined)}
- */
-function getActiveParticipant(props) {
-    // First get the focused participant.
-    let participants = props.participants;
-    let activeParticipant = participants.find(p => p.focused);
-
-    // If no participant is focused, get the dominant speaker.
-    if (!activeParticipant) {
-        activeParticipant = participants.find(p => p.speaking);
-
-        // If no participant is focused and no dominant speaker, just get the
-        // last one participant.
-        if (!activeParticipant) {
-            activeParticipant = participants[participants.length - 1];
-        }
-    }
-
-    return activeParticipant;
-}
-
-/**
- * Returns video stream for a specified participant.
- *
- * @param {Participant} participant - Participant object.
- * @param {Track[]} tracks - List of all Track object.
- * @returns {(Track|undefined)}
- */
-function getVideoTrack(participant, tracks) {
-    return tracks.find(t =>
-        t.mediaType === MEDIA_TYPE.VIDEO && t.participantId === participant.id);
 }
 
 /**
@@ -151,7 +56,7 @@ function getVideoTrack(participant, tracks) {
  */
 const mapStateToProps = state => {
     return {
-        participants: state['features/base/participants'],
+        largeVideo: state['features/largeVideo'],
         tracks: state['features/base/tracks']
     };
 };
@@ -163,7 +68,7 @@ const mapStateToProps = state => {
  */
 LargeVideo.propTypes = {
     dispatch: React.PropTypes.func,
-    participants: React.PropTypes.array,
+    largeVideo: React.PropTypes.object,
     tracks: React.PropTypes.array
 };
 
