@@ -25,7 +25,7 @@ export class Audio extends Component {
      * @returns {ReactElement}
      */
     render() {
-        // TODO: use URL.releaseObjectURL on componentDid/WillUnmount
+        // TODO URL.releaseObjectURL on componentDid/WillUnmount
         let src = this.props.stream
             ? URL.createObjectURL(this.props.stream)
             : '';
@@ -45,6 +45,6 @@ export class Audio extends Component {
  * @static
  */
 Audio.propTypes = {
-    stream: React.PropTypes.object,
-    muted: React.PropTypes.bool
+    muted: React.PropTypes.bool,
+    stream: React.PropTypes.object
 };

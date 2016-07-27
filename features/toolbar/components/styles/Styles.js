@@ -4,13 +4,13 @@ import { ColorPalette, createStyleSheet } from '../../../base/styles';
  * The toolbar related styles.
  * TODO Make styles more generic and reusable. Use ColorPalette for all colors.
  */
-export const styles = createStyleSheet({  
+export const styles = createStyleSheet({
     /**
      * The toolbar button icon style.
      */
     icon: {
         alignSelf: 'center',
-        color: 'white',
+        color: ColorPalette.jitsiDarkGrey,
         fontSize: 24
     },
 
@@ -19,15 +19,16 @@ export const styles = createStyleSheet({
      */
     toolbarButton: {
         alignSelf: 'center',
-        backgroundColor: ColorPalette.jitsiBlue,
+        backgroundColor: 'white',
+        opacity: 0.8,
         borderRadius: 35,
         borderWidth: 0,
         flexDirection: 'row',
-        height: 70,
+        height: 60,
         justifyContent: 'center',
         marginLeft: 20,
         marginRight: 20,
-        width: 70
+        width: 60
     },
 
     /**
@@ -37,7 +38,7 @@ export const styles = createStyleSheet({
         bottom: 30,
         flex: 1,
         flexDirection: 'row',
-        height: 70,
+        height: 60,
         justifyContent: 'center',
         left: 0,
         position: 'absolute',

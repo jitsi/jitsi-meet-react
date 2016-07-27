@@ -5,7 +5,7 @@
   "scripts": {
     "build:web": "mkdir -p dist/; cp -p favicon.ico dist/; webpack --colors --progress",
     "clean": "rm -rf dist",
-    "eslint": "node_modules/eslint/bin/eslint.js \"config.js\" \"features/**/*.js\" \"index.*.js\"",
+    "eslint": "node_modules/.bin/eslint config.js features/**/*.js index.*.js",
     "start:android": "npm run clean; react-native run-android",
     "start:ios": "npm run clean; react-native run-ios",
     "start:web": "webpack-dev-server --colors --history-api-fallback --hot --https --inline --open --port 5000"
@@ -20,7 +20,7 @@
     "react": "15.2.1",
     "react-dom": "15.2.0",
     "react-fontawesome": "^1.1.0",
-    "react-native": "0.29.2",
+    "react-native": "0.30.0",
     "react-native-vector-icons": "^2.0.3",
     "react-native-webrtc": "jitsi/react-native-webrtc#lib-jitsi-meet",
     "react-redux": "^4.4.5",
@@ -40,7 +40,7 @@
     "babel-preset-stage-1": "^6.5.0",
     "browserify": "11.1.x",
     "css-loader": "^0.23.1",
-    "eslint": "^2.13.1",
+    "eslint": "^3.1.1",
     "eslint-plugin-jsdoc": "^2.3.1",
     "eslint-plugin-react": "^5.2.2",
     "exorcist": "^0.4.0",
