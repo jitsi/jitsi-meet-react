@@ -1,4 +1,10 @@
 import JitsiMeetJS from './';
+import {
+    LIB_DISPOSED,
+    LIB_INIT_ERROR,
+    LIB_INITIALIZED
+} from './actionTypes';
+import './reducer';
 
 /**
  * Disposes lib-jitsi-meet.
@@ -9,10 +15,10 @@ export function disposeLib() {
     // XXX We wrapping this to be able to "dispatch" the action, because
     // we will need to dispatch some errors to global error handler at some
     // point.
-    return dispatch => { // eslint-disable-line no-unused-vars
+    return dispatch => {
         // TODO: currently lib-jitsi-meet doesn't have any functionality to
-        // dispose itself, so just return resolved Promise for now.
-        return Promise.resolve();
+        // dispose itself.
+        return dispatch({ type: LIB_DISPOSED });
     };
 }
 
@@ -29,12 +35,17 @@ export function initLib(config) {
     // XXX We wrapping this to be able to "dispatch" the action, because
     // we will need to dispatch some errors to global error handler at some
     // point.
-    return dispatch => { // eslint-disable-line no-unused-vars
+    return dispatch => {
         return JitsiMeetJS.init(config)
-            .catch(err => {
-                // TODO: call global error handler here.
-                console.error('lib-jitsi-meet failed to init due to ', err);
-                throw err;
+            .then(() => dispatch({ type: LIB_INITIALIZED }))
+            .catch(error => {
+                dispatch({
+                    type: LIB_INIT_ERROR,
+                    lib: { error }
+                });
+                // TODO: handle LIB_INIT_ERROR error somewhere instead
+                console.error('lib-jitsi-meet failed to init due to ', error);
+                throw error;
             });
     };
 }

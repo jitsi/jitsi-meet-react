@@ -24,3 +24,4 @@ import JitsiMeetJS from 'lib-jitsi-meet';
 
 export { JitsiMeetJS as default };
 export * from './actions';
+export * from './actionTypes';

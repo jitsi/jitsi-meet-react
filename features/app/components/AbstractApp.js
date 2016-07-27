@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 
-import { start, stop } from '../actions';
+import {
+    disposeLib,
+    initLib
+} from '../../base/lib-jitsi-meet';
+import {
+    localParticipantJoined,
+    localParticipantLeft
+} from '../../base/participants';
 
 /**
  * Base (abstract) class for main App component.
@@ -9,21 +16,27 @@ import { start, stop } from '../actions';
  */
 export class AbstractApp extends Component {
     /**
-     * Start app when component is going to be mounted.
+     * Init lib-jitsi-meet and create local participant when component is going
+     * to be mounted.
      *
      * @inheritdoc
      */
     componentWillMount() {
-        this.props.store.dispatch(start(this.props.config));
+        let dispatch = this.props.store.dispatch;
+        dispatch(localParticipantJoined());
+        dispatch(initLib(this.props.config));
     }
 
     /**
-     * Stop app when component is going to be unmounted.
+     * Dispose lib-jitsi-meet and remove local participant when component is
+     * going to be unmounted.
      *
      * @inheritdoc
      */
     componentWillUnmount() {
-        this.props.store.dispatch(stop());
+        let dispatch = this.props.store.dispatch;
+        dispatch(localParticipantLeft());
+        dispatch(disposeLib());
     }
 }
 
