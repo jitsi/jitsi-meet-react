@@ -48,7 +48,7 @@ export const styles = {
      */
     filmStrip: {
         alignSelf: 'stretch',
-        bottom: 110,
+        bottom: 10,
         flex: 1,
         flexDirection: 'row',
         position: 'absolute',
@@ -82,9 +82,9 @@ export const styles = {
     },
 
     /**
-     * Focused video thumbnail style.
+     * Pinned video thumbnail style.
      */
-    thumbnailFocused: {
+    thumbnailPinned: {
         borderColor: ColorPalette.jitsiBlue,
         shadowColor: 'black',
         shadowOffset: {

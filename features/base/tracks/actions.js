@@ -52,6 +52,46 @@ export function destroyLocalTracks() {
 }
 
 /**
+ * Returns video track for a specified participant.
+ *
+ * TODO The function is not an action. It's exported merely for the purpose of
+ * reuse &, hence, reduction of duplication. Move it into a more appropriate
+ * location in the source tree of the project.
+ *
+ * @param {Participant|undefined} participant - Participant object.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
+ * @returns {(JitsiLocalTrack|JitsiRemoteTrack|undefined)}
+ */
+export function getVideoTrack(participant, tracks) {
+    if (!participant) {
+        return;
+    }
+
+    return tracks.find(t => (
+        t.isVideoTrack() && isParticipantTrack(participant, t)
+    ));
+}
+
+/**
+ * Determines whether a specific JitsiTrack belongs to a specific participant.
+ *
+ * TODO The function is not an action. It's exported merely for the purpose of
+ * reuse &, hence, reduction of duplication. Move it into a more appropriate
+ * location in the source tree of the project.
+ *
+ * @param {Object} p - The participant who is the possible owner of the
+ * specified JitsiTrack.
+ * @param {JitsiTrack} t - The JitsiTrack which is to be determined whether it
+ * belongs to the specified participant.
+ * @returns {boolean} True if the specified JitsiTrack belongs to the specified
+ * participant; otherwise, false.
+ */
+export function isParticipantTrack(p, t) {
+    // XXX The method getParticipantId() is defined on JitsiRemoteTrack only.
+    return t.isLocal() ? p.local : (t.getParticipantId() === p.id);
+}
+
+/**
  * Create an action for when a new track has been signaled to be added to the
  * conference.
  *
