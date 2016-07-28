@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { roomNameSet } from '../../base/conference';
 import { navigate } from '../../base/navigation';
-import { CONFERENCE_SCREEN } from '../../conference';
+import { Conference } from '../../conference';
 
 /**
  * Base (abstract) class for container component rendering the welcome page.
@@ -63,9 +63,9 @@ export class AbstractWelcomePage extends Component {
         this.props.dispatch(roomNameSet(this.state.roomName));
 
         this.props.dispatch(navigate({
+            component: Conference,
             navigator: this.props.navigator,
-            room: this.state.roomName,
-            screen: CONFERENCE_SCREEN
+            room: this.state.roomName
         }));
     }
 

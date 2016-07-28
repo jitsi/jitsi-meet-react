@@ -1,2 +1,2 @@
 export * from './actions';
-export { default as ScreenRegistry } from './ScreenRegistry';
+export { default as RouteRegistry } from './RouteRegistry';

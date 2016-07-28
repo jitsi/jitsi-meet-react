@@ -7,7 +7,7 @@ import {
 } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-import { ScreenRegistry } from '../../base/navigation';
+import { RouteRegistry } from '../../base/navigation';
 
 /**
  * Root application component.
@@ -16,9 +16,10 @@ import { ScreenRegistry } from '../../base/navigation';
  */
 export class App extends Component {
     /**
-     * Constructs new App component.
+     * Initializes a new App instance.
      *
-     * @param {Object} props - React component properties.
+     * @param {Object} props - The read-only React Component props with which
+     * the new instance is to be initialized.
      */
     constructor(props) {
         super(props);
@@ -38,17 +39,17 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let screens = ScreenRegistry.getAllScreens();
+        let routes = RouteRegistry.getRoutes();
 
         return (
             <Provider store={ this.props.store }>
                 <Router history={ this.history }>
                 {
-                    screens.map(screen => (
+                    routes.map(r => (
                         <Route
-                            key={ screen.name }
-                            path={ screen.path }
-                            component={ screen.component }/>
+                            key={ r.component }
+                            path={ r.path }
+                            component={ r.component }/>
                     ))
                 }
                 </Router>

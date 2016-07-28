@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { navigate } from '../../base/navigation';
-import { WELCOME_SCREEN } from '../../welcome';
+import { WelcomePage } from '../../welcome';
 import {
     toggleAudio,
     toggleCameraFacingMode
@@ -66,7 +66,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleCameraFacingMode());
         },
         onHangup(navigator) {
-            dispatch(navigate({ navigator, screen: WELCOME_SCREEN }));
+            dispatch(navigate({ component: WelcomePage, navigator }));
         }
     };
 };
