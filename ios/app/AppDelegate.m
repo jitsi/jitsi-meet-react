@@ -10,27 +10,42 @@
 #import "AppDelegate.h"
 
 #import "RCTBundleURLProvider.h"
+#import "RCTLinkingManager.h"
 #import "RCTRootView.h"
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+// https://facebook.github.io/react-native/docs/linking.html
+- (BOOL)application:(UIApplication *)application
+continueUserActivity:(NSUserActivity *)userActivity
+ restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler
 {
-  NSURL *jsCodeLocation;
+  return [RCTLinkingManager application:application
+                   continueUserActivity:userActivity
+                     restorationHandler:restorationHandler];
+}
 
-  [[RCTBundleURLProvider sharedSettings] setDefaults];
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+- (BOOL)application:(UIApplication *)application
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  RCTBundleURLProvider *bundleURLProvider
+    = [RCTBundleURLProvider sharedSettings];
+  [bundleURLProvider setDefaults];
+  NSURL *jsCodeLocation
+    = [bundleURLProvider jsBundleURLForBundleRoot:@"index.ios"
+                                 fallbackResource:nil];
 
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"App"
-                                               initialProperties:nil
-                                                   launchOptions:launchOptions];
+  RCTRootView *rootView
+    = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+                                  moduleName:@"App"
+                           initialProperties:nil
+                               launchOptions:launchOptions];
 
   // Set a background color which is in accord with the JavaScript and Android
   // parts of the application and causes less perceived visual flicker than the
   // default background color.
   rootView.backgroundColor
-      = [[UIColor alloc] initWithRed:.07f green:.07f blue:.07f alpha:1];
+    = [[UIColor alloc] initWithRed:.07f green:.07f blue:.07f alpha:1];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
@@ -38,6 +53,18 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+// https://facebook.github.io/react-native/docs/linking.html
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+        annotation:(id)annotation
+{
+  return [RCTLinkingManager application:application
+                                openURL:url
+                      sourceApplication:sourceApplication
+                             annotation:annotation];
 }
 
 @end
