@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { AbstractWelcomePage } from './AbstractWelcomePage';
+import {
+    AbstractWelcomePage,
+    mapStateToProps
+} from './AbstractWelcomePage';
 import { styles } from './styles';
 
 /**
@@ -9,7 +12,7 @@ import { styles } from './styles';
  *
  * @extends AbstractWelcomePage
  */
-export class WelcomePage extends AbstractWelcomePage {
+class WelcomePage extends AbstractWelcomePage {
     /**
      * Renders a prompt for entering a room name.
      *
@@ -40,4 +43,4 @@ export class WelcomePage extends AbstractWelcomePage {
  */
 WelcomePage.propTypes = AbstractWelcomePage.propTypes;
 
-export default connect()(WelcomePage);
+export default connect(mapStateToProps)(WelcomePage);

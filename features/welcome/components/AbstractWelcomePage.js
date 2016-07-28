@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
-import {
-    APP_SCREEN,
-    navigate
-} from '../../app';
+import { roomNameSet } from '../../base/conference';
+import { navigate } from '../../base/navigation';
+import { Conference } from '../../conference';
 
 /**
  * Base (abstract) class for container component rendering the welcome page.
@@ -20,11 +19,38 @@ export class AbstractWelcomePage extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { roomName: '' };
+        /**
+         * Save room name into component's local state.
+         *
+         * @type {{roomName: string}}
+         */
+        this.state = {
+            roomName: ''
+        };
 
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
         this._onRoomNameChange = this._onRoomNameChange.bind(this);
+    }
+
+    /**
+     * This method is executed when component receives new properties.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - New props component will receive.
+     */
+    componentWillReceiveProps(nextProps) {
+        this.setState({ roomName: nextProps.roomName });
+    }
+
+    /**
+     * Resets room name to empty string when welcome page screen is entered.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillMount() {
+        this.props.dispatch(roomNameSet(''));
     }
 
     /**
@@ -34,10 +60,12 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinPress() {
+        this.props.dispatch(roomNameSet(this.state.roomName));
+
         this.props.dispatch(navigate({
+            component: Conference,
             navigator: this.props.navigator,
-            room: this.state.roomName,
-            screen: APP_SCREEN.CONFERENCE
+            room: this.state.roomName
         }));
     }
 
@@ -54,11 +82,28 @@ export class AbstractWelcomePage extends Component {
 }
 
 /**
+ * Maps roomName property from state  to component props. It seems it's not
+ * possible to 'connect' base component and then extend from it. So we export
+ * this function in order to be used in child classes for 'connect'.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{ roomName: string }}
+ */
+export const mapStateToProps = state => {
+    const stateFeaturesConference = state['features/base/conference'];
+
+    return {
+        roomName: stateFeaturesConference.roomName
+    };
+};
+
+/**
  * AbstractWelcomePage component's property types.
  *
  * @static
  */
 AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object
+    navigator: React.PropTypes.object,
+    roomName: React.PropTypes.string
 };

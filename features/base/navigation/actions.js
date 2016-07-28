@@ -8,19 +8,19 @@ import './middleware';
  * @param {Object} opts - Navigation options.
  * @param {Navigator} opts.navigator - Navigator instance.
  * @param {string} opts.room - Conference room name.
- * @param {APP_SCREEN} opts.screen - Name of route/screen to switch to.
+ * @param {string} opts.component - The React Component (class) to switch to.
  * @returns {{
  *      type: APP_NAVIGATE,
+ *      component: Object,
  *      navigator: Navigator,
- *      room: string,
- *      screen: APP_SCREEN
+ *      room: string
  * }}
  */
 export function navigate(opts) {
     return {
         type: APP_NAVIGATE,
+        component: opts.component,
         navigator: opts.navigator,
-        room: opts.room,
-        screen: opts.screen
+        room: opts.room
     };
 }

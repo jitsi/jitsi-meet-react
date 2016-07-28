@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
+import { RouteRegistry } from '../../base/navigation';
 import { WelcomePage } from '../../welcome';
 
 /**
@@ -30,14 +31,19 @@ export class App extends Component {
      * @returns {ReactElement}
      */
     render() {
+        let routes = RouteRegistry.getRoutes();
+        // XXX It's important to select initialRoute from obtained routes
+        // array and not from RouteRegistry#getRouteByComponent() method,
+        // because React Native's Navigator will compare value in 'initialRoute'
+        // prop with values in 'initialRouteStack' prop using simple comparison
+        // operator.
+        let initialRoute = routes.find(r => r.component === WelcomePage);
+
         return (
-            <Provider store={this.props.store}>
+            <Provider store={ this.props.store }>
                 <Navigator
-                    initialRoute={{
-                        component: WelcomePage,
-                        title: 'Jitsi Meet'
-                    }}
-                    renderScene={this._navigatorRenderScene}/>
+                    initialRoute={ initialRoute }
+                    renderScene={ this._navigatorRenderScene }/>
             </Provider>
         );
     }
@@ -64,10 +70,10 @@ export class App extends Component {
 
 App.propTypes = {
     config: React.PropTypes.object,
+    store: React.PropTypes.object,
     /**
      * The URL, if any, with which the app was launched. Supported on Android
      * only at the time of this writing.
      */
-    url: React.PropTypes.string,
-    store: React.PropTypes.object
+    url: React.PropTypes.string
 };

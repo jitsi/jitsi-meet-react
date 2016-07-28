@@ -110,7 +110,7 @@ export function connectionInitialized(connection, room) {
 export function destroy() {
     return (dispatch, getState) => {
         const state = getState();
-        const conference = state['features/base/conference'];
+        const conference = state['features/base/conference'].jitsiConference;
         const connection = state['features/base/connection'];
 
         let promise = Promise.resolve();

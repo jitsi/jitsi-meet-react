@@ -1,7 +1,7 @@
-import { MiddlewareRegistry } from '../base/redux';
+import { MiddlewareRegistry } from '../redux';
 
 import { APP_NAVIGATE } from './actionTypes';
-import { navigationHandlers } from './navigationHandlers';
+import RouteRegistry from './RouteRegistry';
 
 /**
  * This router middleware is used to abstract navigation inside the app for both
@@ -12,10 +12,10 @@ import { navigationHandlers } from './navigationHandlers';
  */
 const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
-        let handler = navigationHandlers[action.screen];
+        let route = RouteRegistry.getRouteByComponent(action.component);
 
-        if (handler) {
-            return handler(store, action);
+        if (route && route.navigate) {
+            return route.navigate(store, action);
         }
     }
 
