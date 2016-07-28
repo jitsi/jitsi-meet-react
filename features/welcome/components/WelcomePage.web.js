@@ -23,12 +23,12 @@ class WelcomePage extends AbstractWelcomePage {
             <div style={ styles.container }>
                 <p style={ styles.title }>Enter room name</p>
                 <input
-                    onChange={ ev => this._onRoomNameChange(ev.target.value) }
+                    onChange={ ev => this._onRoomChange(ev.target.value) }
                     style={ styles.textInput }
                     type="text"
-                    value={ this.state.roomName }  />
+                    value={ this.state.room }  />
                 <button
-                    disabled={ this.state.roomName === '' }
+                    disabled={ this.state.room === '' }
                     onClick={ this._onJoinPress }
                     style={ styles.button }>JOIN</button>
             </div>

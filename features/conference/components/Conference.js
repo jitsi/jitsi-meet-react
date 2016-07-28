@@ -39,15 +39,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        // XXX If we enter conference directly through URL, we might not have
-        // roomName in state yet. So getting it directly from location here.
-        // In future app might also be able to launch conference directly
-        // without entering the welcome page so this place might become an
-        // extension point.
-        let room = this.props.roomName ||
-            window.location.pathname.substr(1).toLowerCase();
-
-        this.props.dispatch(init(config, room));
+        this.props.dispatch(init(config, this.props.room));
     }
 
     /**
@@ -105,20 +97,20 @@ Conference.propTypes = {
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
     participants: React.PropTypes.object,
-    roomName: React.PropTypes.string
+    room: React.PropTypes.string
 };
 
 /**
- * Maps roomName property from state to component props.
+ * Maps room property from state to component props.
  *
  * @param {Object} state - Redux state.
- * @returns {{ roomName: string }}
+ * @returns {{ room: string }}
  */
 export const mapStateToProps = state => {
     const stateFeaturesConference = state['features/base/conference'];
 
     return {
-        roomName: stateFeaturesConference.roomName
+        room: stateFeaturesConference.room
     };
 };
 

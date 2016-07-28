@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import {
     browserHistory,
@@ -9,12 +9,14 @@ import { syncHistoryWithStore } from 'react-router-redux';
 
 import { RouteRegistry } from '../../base/navigation';
 
+import { AbstractApp } from './AbstractApp';
+
 /**
  * Root application component.
  *
- * @extends Component
+ * @extends AbstractApp
  */
-export class App extends Component {
+export class App extends AbstractApp {
     /**
      * Initializes a new App instance.
      *
@@ -58,7 +60,9 @@ export class App extends Component {
     }
 }
 
-App.propTypes = {
-    config: React.PropTypes.object,
-    store: React.PropTypes.object
-};
+/**
+ * App component's property types.
+ *
+ * @static
+ */
+App.propTypes = AbstractApp.propTypes;

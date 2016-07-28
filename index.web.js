@@ -44,4 +44,9 @@ if (typeof window === 'object'
 const store = createStore(reducer, middleware);
 
 // Render the root component.
-ReactDOM.render(<App config={config} store={store}/>, document.body);
+ReactDOM.render(
+    <App
+        config={ config }
+        store={ store }
+        url={ window.location.toString() } />,
+    document.body);

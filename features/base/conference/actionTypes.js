@@ -26,10 +26,10 @@ export const CONFERENCE_LEFT = 'CONFERENCE_LEFT';
  * Action to set room name.
  *
  * {
- *      type: ROOM_NAME_SET,
+ *      type: ROOM_SET,
  *      conference: {
- *          roomName: string
+ *          room: string
  *      }
  * }
  */
-export const ROOM_NAME_SET = 'ROOM_NAME_SET';
+export const ROOM_SET = 'ROOM_SET';
