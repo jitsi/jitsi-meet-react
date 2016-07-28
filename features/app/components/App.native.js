@@ -1,8 +1,9 @@
 import React from 'react';
-import { Navigator } from 'react-native';
+import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { RouteRegistry } from '../../base/navigation';
+import { roomNameSet } from '../../base/conference';
+import { navigate, RouteRegistry } from '../../base/navigation';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
 
@@ -25,6 +26,29 @@ export class App extends AbstractApp {
 
         // Bind event handlers so they are only bound once for every instance.
         this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
+        this._handleOpenURL = this._handleOpenURL.bind(this);
+    }
+
+    /**
+     * Subscribe to an event whenever "linked" to app url is activated.
+     *
+     * @inheritdoc
+     * @see https://facebook.github.io/react-native/docs/linking.html
+     * @returns {void}
+     */
+    componentDidMount() {
+        Linking.addEventListener('url', this._handleOpenURL);
+    }
+
+    /**
+     * Unsubscribe from an event whenever "linked" to app url is activated.
+     *
+     * @inheritdoc
+     * @see https://facebook.github.io/react-native/docs/linking.html
+     * @returns {void}
+     */
+    componentWillUnmount() {
+        Linking.removeEventListener('url', this._handleOpenURL);
     }
 
     /**
@@ -52,6 +76,7 @@ export class App extends AbstractApp {
             <Provider store={ store }>
                 <Navigator
                     initialRoute={ initialRoute }
+                    ref='navigator'
                     renderScene={ this._navigatorRenderScene }/>
             </Provider>
         );
@@ -77,6 +102,39 @@ export class App extends AbstractApp {
         return urlObj.hostname === config.connection.hosts.domain
             ? super._getRoomNameFromUrlObject(urlObj)
             : '';
+    }
+
+    /**
+     * Handler for a case when new "linked" url is activated. Parses room name
+     * from url and starts a new conference with this room name if it's not
+     * empty and is different from current one.
+     *
+     * @param {Object} event - Event.
+     * @param {string} event.url - New URL.
+     * @private
+     * @returns {void}
+     */
+    _handleOpenURL(event) {
+        let { store, config } = { ...this.props };
+        let dispatch = store.dispatch;
+        let newRoomName = this._getRoomNameFromUrl(event.url, config);
+
+        if (newRoomName !== '') {
+            let currentRoomName =
+                store.getState()['features/base/conference'].roomName;
+
+            if (currentRoomName !== newRoomName) {
+                // TODO: probably we should detect if user is currently in a
+                // conference and ask him if he wants to close current
+                // conference and start a new one with a new room name.
+                dispatch(roomNameSet(newRoomName));
+                dispatch(navigate({
+                    component: Conference,
+                    navigator: this.refs.navigator,
+                    room: newRoomName
+                }));
+            }
+        }
     }
 
     /**
