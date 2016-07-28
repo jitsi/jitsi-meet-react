@@ -39,15 +39,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        // XXX If we enter conference directly through URL, we might not have
-        // roomName in state yet. So getting it directly from location here.
-        // In future app might also be able to launch conference directly
-        // without entering the welcome page so this place might become an
-        // extension point.
-        let room = this.props.roomName ||
-            window.location.pathname.substr(1).toLowerCase();
-
-        this.props.dispatch(init(config, room));
+        this.props.dispatch(init(config, this.props.roomName));
     }
 
     /**

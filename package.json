@@ -30,6 +30,7 @@
     "redux-thunk": "^2.1.0",
     "strophe": "^1.2.4",
     "strophejs-plugins": "^0.0.6",
+    "url-polyfill": "github/url-polyfill",
     "xmldom": "^0.1.22"
   },
   "devDependencies": {

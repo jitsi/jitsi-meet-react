@@ -1,16 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { RouteRegistry } from '../../base/navigation';
+import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
+
+import { AbstractApp } from './AbstractApp';
 
 /**
  * Root application component.
  *
- * @extends Component
+ * @extends AbstractApp
  */
-export class App extends Component {
+export class App extends AbstractApp {
     /**
      * Initializes a new App instance.
      *
@@ -32,20 +35,48 @@ export class App extends Component {
      */
     render() {
         let routes = RouteRegistry.getRoutes();
+        let store = this.props.store;
+        let roomName = store.getState()['features/base/conference'].roomName;
+
         // XXX It's important to select initialRoute from obtained routes
         // array and not from RouteRegistry#getRouteByComponent() method,
         // because React Native's Navigator will compare value in 'initialRoute'
         // prop with values in 'initialRouteStack' prop using simple comparison
         // operator.
-        let initialRoute = routes.find(r => r.component === WelcomePage);
+        // We select initial route based on if we already have a room name or
+        // not.
+        let initialRoute = routes.find(
+            r => r.component === (roomName !== '' ? Conference : WelcomePage));
 
         return (
-            <Provider store={ this.props.store }>
+            <Provider store={ store }>
                 <Navigator
                     initialRoute={ initialRoute }
                     renderScene={ this._navigatorRenderScene }/>
             </Provider>
         );
+    }
+
+    /**
+     * Tries to get conference room name from URL.
+     * Alongside with getting room name from URL we want to compare hostname
+     * from URL with domain name from config to ensure we're a going to join
+     * room on the same domain for which our app is configured. This doesn't
+     * work quite well with web version, e.g. we're running our web app on
+     * localhost, but are joining meet.jit.si.
+     *
+     * @param {(string|undefined)} url - URL passed to the app.
+     * @param {Object} config - Configuration object.
+     * @override
+     * @protected
+     * @returns {string}
+     */
+    _getRoomNameFromUrl(url, config) {
+        let urlObj = super._urlStringToObject(url, config);
+
+        return urlObj.hostname === config.connection.hosts.domain
+            ? super._getRoomNameFromUrlObject(urlObj)
+            : '';
     }
 
     /**
@@ -68,12 +99,9 @@ export class App extends Component {
     }
 }
 
-App.propTypes = {
-    config: React.PropTypes.object,
-    store: React.PropTypes.object,
-    /**
-     * The URL, if any, with which the app was launched. Supported on Android
-     * only at the time of this writing.
-     */
-    url: React.PropTypes.string
-};
+/**
+ * App component's property types.
+ *
+ * @static
+ */
+App.propTypes = AbstractApp.propTypes;
