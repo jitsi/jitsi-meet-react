@@ -11,10 +11,10 @@ import { WelcomePage } from '../../welcome';
  */
 export class App extends Component {
     /**
-     * Initializes a new Root instance.
+     * Initializes a new App instance.
      *
-     * @param {Object} props - The read-only properties with which the new
-     *      instance is to be initialized.
+     * @param {Object} props - The read-only React Component props with which
+     * the new instance is to be initialized.
      */
     constructor(props) {
         super(props);
@@ -64,5 +64,10 @@ export class App extends Component {
 
 App.propTypes = {
     config: React.PropTypes.object,
+    /**
+     * The URL, if any, with which the app was launched. Supported on Android
+     * only at the time of this writing.
+     */
+    url: React.PropTypes.string,
     store: React.PropTypes.object
 };

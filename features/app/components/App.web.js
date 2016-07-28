@@ -21,9 +21,10 @@ import { WelcomePage } from '../../welcome';
  */
 export class App extends Component {
     /**
-     * Constructs new App component.
+     * Initializes a new App instance.
      *
-     * @param {Object} props - React component properties.
+     * @param {Object} props - The read-only React Component props with which
+     * the new instance is to be initialized.
      */
     constructor(props) {
         super(props);

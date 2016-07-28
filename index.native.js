@@ -23,12 +23,15 @@ const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
 const store = createStore(reducer, middleware);
 
 /**
- * React Native doesn't support passing props to root component, so create a
- * wrapper class instead in form of stateless function.
+ * React Native doesn't support specifying props to the main/root component (in
+ * the JS/JSX source code). So create a wrapper React component (class) around
+ * features/app's App instead (in the form of a stateless function).
  *
+ * @param {Object} props - The read-only React Component props with which the
+ * new instance is to be initialized.
  * @returns {ReactElement}
  */
-const Root = () => <App config={config} store={store}/>;
+const Root = props => <App { ...props } config={ config } store={ store } />;
 
 // Register the root component.
 AppRegistry.registerComponent('App', () => Root);
