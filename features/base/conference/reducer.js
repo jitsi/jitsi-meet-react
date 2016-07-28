@@ -3,12 +3,12 @@ import { ReducerRegistry } from '../redux';
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
-    ROOM_NAME_SET
+    ROOM_SET
 } from './actionTypes';
 
 const INITIAL_STATE = {
     jitsiConference: null,
-    roomName: ''
+    room: ''
 };
 
 /**
@@ -33,10 +33,10 @@ ReducerRegistry.register('features/base/conference',
                         : state.jitsiConference
             };
 
-        case ROOM_NAME_SET:
+        case ROOM_SET:
             return {
                 ...state,
-                roomName: action.conference.roomName
+                room: action.conference.room
             };
 
         default:

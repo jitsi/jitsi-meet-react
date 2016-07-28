@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { roomNameSet } from '../../base/conference';
+import { roomSet } from '../../base/conference';
 
 /**
  * Base (abstract) class for main App component.
@@ -8,7 +8,7 @@ import { roomNameSet } from '../../base/conference';
  */
 export class AbstractApp extends Component {
     /**
-     * Initializes a new App instance.
+     * Initializes a new AbstractApp instance.
      *
      * @param {Object} props - The read-only React Component props with which
      * the new instance is to be initialized.
@@ -16,9 +16,20 @@ export class AbstractApp extends Component {
     constructor(props) {
         super(props);
 
-        let roomName = this._getRoomNameFromUrl(props.url, props.config);
+        let room = this._getRoomFromUrlString(props.url, props.config);
 
-        props.store.dispatch(roomNameSet(roomName));
+        props.store.dispatch(roomSet(room));
+    }
+
+    /**
+     * Gets room name from URL object.
+     *
+     * @param {URL} url - URL object.
+     * @protected
+     * @returns {string}
+     */
+    _getRoomFromUrlObject(url) {
+        return url.pathname.substr(1).toLowerCase();
     }
 
     /**
@@ -29,21 +40,10 @@ export class AbstractApp extends Component {
      * @protected
      * @returns {string}
      */
-    _getRoomNameFromUrl(url, config) {
+    _getRoomFromUrlString(url, config) {
         let urlObj = this._urlStringToObject(url, config);
 
-        return this._getRoomNameFromUrlObject(urlObj);
-    }
-
-    /**
-     * Gets room name from URL object.
-     *
-     * @param {URL} url - URL object.
-     * @protected
-     * @returns {string}
-     */
-    _getRoomNameFromUrlObject(url) {
-        return url.pathname.substr(1).toLowerCase();
+        return this._getRoomFromUrlObject(urlObj);
     }
 
     /**
@@ -60,10 +60,9 @@ export class AbstractApp extends Component {
 
         try {
             urlObj = new URL(url);
-        } catch (ex) {
+        } catch (e) {
             urlObj = new URL('https://' + config.connection.hosts.domain);
         }
-
         return urlObj;
     }
 }
@@ -77,8 +76,7 @@ AbstractApp.propTypes = {
     config: React.PropTypes.object,
     store: React.PropTypes.object,
     /**
-     * The URL, if any, with which the app was launched. Supported on Android
-     * and web only at the time of this writing.
+     * The URL, if any, with which the app was launched.
      */
     url: React.PropTypes.string
 };

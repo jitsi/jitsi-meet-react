@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { roomNameSet } from '../../base/conference';
+import { roomSet } from '../../base/conference';
 import { navigate } from '../../base/navigation';
 import { Conference } from '../../conference';
 
@@ -22,15 +22,15 @@ export class AbstractWelcomePage extends Component {
         /**
          * Save room name into component's local state.
          *
-         * @type {{roomName: string}}
+         * @type {{room: string}}
          */
         this.state = {
-            roomName: ''
+            room: ''
         };
 
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
-        this._onRoomNameChange = this._onRoomNameChange.bind(this);
+        this._onRoomChange = this._onRoomChange.bind(this);
     }
 
     /**
@@ -40,7 +40,7 @@ export class AbstractWelcomePage extends Component {
      * @param {Object} nextProps - New props component will receive.
      */
     componentWillReceiveProps(nextProps) {
-        this.setState({ roomName: nextProps.roomName });
+        this.setState({ room: nextProps.room });
     }
 
     /**
@@ -50,7 +50,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(roomNameSet(''));
+        this.props.dispatch(roomSet(''));
     }
 
     /**
@@ -60,12 +60,12 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinPress() {
-        this.props.dispatch(roomNameSet(this.state.roomName));
+        this.props.dispatch(roomSet(this.state.room));
 
         this.props.dispatch(navigate({
             component: Conference,
             navigator: this.props.navigator,
-            room: this.state.roomName
+            room: this.state.room
         }));
     }
 
@@ -76,24 +76,24 @@ export class AbstractWelcomePage extends Component {
      * @protected
      * @returns {void}
      */
-    _onRoomNameChange(value) {
-        this.setState({ roomName: value });
+    _onRoomChange(value) {
+        this.setState({ room: value });
     }
 }
 
 /**
- * Maps roomName property from state  to component props. It seems it's not
+ * Maps room property from state  to component props. It seems it's not
  * possible to 'connect' base component and then extend from it. So we export
  * this function in order to be used in child classes for 'connect'.
  *
  * @param {Object} state - Redux state.
- * @returns {{ roomName: string }}
+ * @returns {{ room: string }}
  */
 export const mapStateToProps = state => {
     const stateFeaturesConference = state['features/base/conference'];
 
     return {
-        roomName: stateFeaturesConference.roomName
+        room: stateFeaturesConference.room
     };
 };
 
@@ -105,5 +105,5 @@ export const mapStateToProps = state => {
 AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
-    roomName: React.PropTypes.string
+    room: React.PropTypes.string
 };

@@ -17,7 +17,7 @@ import {
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
-    ROOM_NAME_SET
+    ROOM_SET
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
 import './reducer';
@@ -133,19 +133,19 @@ export function conferenceLeft(conference) {
 /**
  * Signals that room name was set.
  *
- * @param {string} roomName - Name of conference room.
+ * @param {string} room - Name of conference room.
  * @returns {{
- *      type: ROOM_NAME_SET,
+ *      type: ROOM_SET,
  *      conference: {
- *          roomName: string
+ *          room: string
  *      }
  *  }}
  */
-export function roomNameSet(roomName) {
+export function roomSet(room) {
     return {
-        type: ROOM_NAME_SET,
+        type: ROOM_SET,
         conference: {
-            roomName
+            room
         }
     };
 }

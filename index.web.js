@@ -46,6 +46,7 @@ const store = createStore(reducer, middleware);
 // Render the root component.
 ReactDOM.render(
     <App
-        url = { window.location.toString() }
-        config = { config }
-        store= { store }/>, document.body);
+        config={ config }
+        store={ store }
+        url={ window.location.toString() } />,
+    document.body);

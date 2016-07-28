@@ -2,7 +2,7 @@ import React from 'react';
 import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { roomNameSet } from '../../base/conference';
+import { roomSet } from '../../base/conference';
 import { navigate, RouteRegistry } from '../../base/navigation';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
@@ -25,8 +25,8 @@ export class App extends AbstractApp {
         super(props);
 
         // Bind event handlers so they are only bound once for every instance.
-        this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
         this._handleOpenURL = this._handleOpenURL.bind(this);
+        this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
     }
 
     /**
@@ -60,7 +60,7 @@ export class App extends AbstractApp {
     render() {
         let routes = RouteRegistry.getRoutes();
         let store = this.props.store;
-        let roomName = store.getState()['features/base/conference'].roomName;
+        let room = store.getState()['features/base/conference'].room;
 
         // XXX It's important to select initialRoute from obtained routes
         // array and not from RouteRegistry#getRouteByComponent() method,
@@ -70,7 +70,7 @@ export class App extends AbstractApp {
         // We select initial route based on if we already have a room name or
         // not.
         let initialRoute = routes.find(
-            r => r.component === (roomName !== '' ? Conference : WelcomePage));
+            r => r.component === (room !== '' ? Conference : WelcomePage));
 
         return (
             <Provider store={ store }>
@@ -96,11 +96,11 @@ export class App extends AbstractApp {
      * @protected
      * @returns {string}
      */
-    _getRoomNameFromUrl(url, config) {
+    _getRoomFromUrlString(url, config) {
         let urlObj = super._urlStringToObject(url, config);
 
         return urlObj.hostname === config.connection.hosts.domain
-            ? super._getRoomNameFromUrlObject(urlObj)
+            ? super._getRoomFromUrlObject(urlObj)
             : '';
     }
 
@@ -117,21 +117,21 @@ export class App extends AbstractApp {
     _handleOpenURL(event) {
         let { store, config } = { ...this.props };
         let dispatch = store.dispatch;
-        let newRoomName = this._getRoomNameFromUrl(event.url, config);
+        let newRoom = this._getRoomFromUrlString(event.url, config);
 
-        if (newRoomName !== '') {
-            let currentRoomName =
-                store.getState()['features/base/conference'].roomName;
+        if (newRoom !== '') {
+            let currentRoom =
+                store.getState()['features/base/conference'].room;
 
-            if (currentRoomName !== newRoomName) {
-                // TODO: probably we should detect if user is currently in a
-                // conference and ask him if he wants to close current
-                // conference and start a new one with a new room name.
-                dispatch(roomNameSet(newRoomName));
+            if (currentRoom !== newRoom) {
+                // TODO We should probably detect if user is currently in a
+                // conference and ask her if she wants to close the current
+                // conference and start a new one with the new room name.
+                dispatch(roomSet(newRoom));
                 dispatch(navigate({
                     component: Conference,
                     navigator: this.refs.navigator,
-                    room: newRoomName
+                    room: newRoom
                 }));
             }
         }

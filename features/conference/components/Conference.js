@@ -39,7 +39,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(init(config, this.props.roomName));
+        this.props.dispatch(init(config, this.props.room));
     }
 
     /**
@@ -97,20 +97,20 @@ Conference.propTypes = {
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
     participants: React.PropTypes.object,
-    roomName: React.PropTypes.string
+    room: React.PropTypes.string
 };
 
 /**
- * Maps roomName property from state to component props.
+ * Maps room property from state to component props.
  *
  * @param {Object} state - Redux state.
- * @returns {{ roomName: string }}
+ * @returns {{ room: string }}
  */
 export const mapStateToProps = state => {
     const stateFeaturesConference = state['features/base/conference'];
 
     return {
-        roomName: stateFeaturesConference.roomName
+        room: stateFeaturesConference.room
     };
 };
 

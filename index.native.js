@@ -40,7 +40,7 @@ class Root extends Component {
         super(props);
 
         /**
-         * Initial state of component.
+         * The initial state of this Component.
          *
          * @type {{url: undefined}}
          */
@@ -60,7 +60,7 @@ class Root extends Component {
         Linking.getInitialURL()
             .then(url => this.setState({ url }))
             .catch(err => {
-                console.error('failed to get initial url', err);
+                console.error('Failed to get initial URL', err);
                 // XXX Start with empty URL if we failed to get the initial one
                 // for any reason.
                 this.setState({ url: null });
@@ -74,8 +74,8 @@ class Root extends Component {
      * @returns {ReactElement}
      */
     render() {
-        // XXX We don't render the <App> component until we've get the initial
-        // url, either it's null or some value;
+        // XXX We don't render the App component until we get the initial URL,
+        // either it's null or some other non-null defined value;
         if (typeof this.state.url === 'undefined') {
             return null;
         }
