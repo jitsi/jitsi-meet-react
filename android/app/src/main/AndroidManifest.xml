@@ -33,6 +33,8 @@
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.LAUNCHER" />
             <data android:host="beta.meet.jit.si" android:scheme="https" />
+            <data android:host="chaos.hipchat.me" android:scheme="https" />
+            <data android:host="enso.me" android:scheme="https" />
             <data android:host="meet.jit.si" android:scheme="https" />
         </intent-filter>
       </activity>
