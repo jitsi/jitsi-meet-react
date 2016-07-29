@@ -2,7 +2,7 @@ import { APP_NAVIGATE } from './actionTypes';
 import './middleware';
 
 /**
- * Trigger an in-app navigation to a different screen. Allows navigation to be
+ * Trigger an in-app navigation to a different route. Allows navigation to be
  * abstracted between the mobile and web versions.
  *
  * @param {Object} opts - Navigation options.

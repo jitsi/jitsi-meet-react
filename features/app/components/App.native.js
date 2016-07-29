@@ -3,7 +3,7 @@ import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { roomSet } from '../../base/conference';
-import { navigate, RouteRegistry } from '../../base/navigation';
+import { navigate, RouteRegistry } from '../../base/navigator';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
 

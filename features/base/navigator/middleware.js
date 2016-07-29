@@ -1,6 +1,7 @@
 import { MiddlewareRegistry } from '../redux';
 
 import { APP_NAVIGATE } from './actionTypes';
+import navigate from './navigate';
 import RouteRegistry from './RouteRegistry';
 
 /**
@@ -14,8 +15,8 @@ const router = store => next => action => {
     if (action.type === APP_NAVIGATE) {
         let route = RouteRegistry.getRouteByComponent(action.component);
 
-        if (route && route.navigate) {
-            return route.navigate(store, action);
+        if (route) {
+            return navigate(store, action, route);
         }
     }
 

@@ -7,7 +7,7 @@ import {
 } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-import { RouteRegistry } from '../../base/navigation';
+import { RouteRegistry } from '../../base/navigator';
 
 import { AbstractApp } from './AbstractApp';
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { roomSet } from '../../base/conference';
-import { navigate } from '../../base/navigation';
+import { navigate } from '../../base/navigator';
 import { Conference } from '../../conference';
 
 /**

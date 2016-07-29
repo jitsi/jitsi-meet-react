@@ -1,13 +1,11 @@
-import { RouteRegistry } from '../base/navigation';
+import { RouteRegistry } from '../base/navigator';
 
 import { Conference } from './components';
-import { navigate } from './navigationHandler';
 
 /**
- * Register route for conference page.
+ * Register route for Conference (page).
  */
 RouteRegistry.register({
     component: Conference,
-    navigate,
     path: '/:room'
 });

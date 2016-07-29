@@ -1,13 +1,11 @@
-import { RouteRegistry } from '../base/navigation';
+import { RouteRegistry } from '../base/navigator';
 
 import { WelcomePage } from './components';
-import { navigate } from './navigationHandler';
 
 /**
- * Register route for welcome page.
+ * Register route for WelcomePage.
  */
 RouteRegistry.register({
     component: WelcomePage,
-    navigate,
     path: '/'
 });
