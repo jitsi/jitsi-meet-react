@@ -7,6 +7,7 @@ import {
     toggleAudio,
     toggleCameraFacingMode
 } from '../';
+
 import { ToolbarContainer } from './ToolbarContainer';
 
 /**
@@ -24,7 +25,7 @@ class Toolbar extends Component {
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
-                onCameraChange = { () => this.props.onCameraChange() }
+                onCameraChange = { this.props.onCameraChange }
                 onHangup = { () => this.props.onHangup(this.props.navigator) }
                 videoMuted = { this.props.videoMuted }
                 visible = { this.props.visible } />

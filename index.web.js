@@ -43,7 +43,7 @@ if (typeof window === 'object'
 // Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
 
-// Render the root component.
+// Render the main Component.
 ReactDOM.render(
     <App
         config={ config }

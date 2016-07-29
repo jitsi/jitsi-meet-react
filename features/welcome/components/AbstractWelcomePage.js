@@ -34,16 +34,6 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
-     * This method is executed when component receives new properties.
-     *
-     * @inheritdoc
-     * @param {Object} nextProps - New props component will receive.
-     */
-    componentWillReceiveProps(nextProps) {
-        this.setState({ room: nextProps.room });
-    }
-
-    /**
      * Resets room name to empty string when welcome page screen is entered.
      *
      * @inheritdoc
@@ -54,25 +44,37 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
+     * This method is executed when component receives new properties.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - New props component will receive.
+     */
+    componentWillReceiveProps(nextProps) {
+        this.setState({ room: nextProps.room });
+    }
+
+    /**
      * Handles click on 'Join' button.
      *
      * @protected
      * @returns {void}
      */
     _onJoinPress() {
-        this.props.dispatch(roomSet(this.state.room));
+        let room = this.state.room;
 
+        this.props.dispatch(roomSet(room));
         this.props.dispatch(navigate({
             component: Conference,
             navigator: this.props.navigator,
-            room: this.state.room
+            room
         }));
     }
 
     /**
-     * Handles 'change' event for the room name input field.
+     * Handles 'change' event for the room name text input field.
      *
-     * @param {string} value - Name for room.
+     * @param {string} value - The text typed into the respective text input
+     * field.
      * @protected
      * @returns {void}
      */

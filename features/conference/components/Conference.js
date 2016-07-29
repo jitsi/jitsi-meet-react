@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import config from '../../../config';
 import {
     destroy,
     init
@@ -39,7 +38,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(init(config, this.props.room));
+        this.props.dispatch(init(this.props.config, this.props.room));
     }
 
     /**
@@ -94,9 +93,16 @@ class Conference extends Component {
  * @static
  */
 Conference.propTypes = {
+    /**
+     * The configuration with which a connection is to be initialized for the
+     * purposes of joining the conference depicted by the (React Component)
+     * Conference instance.
+     *
+     * @type {Object}
+     */
+    config: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
-    participants: React.PropTypes.object,
     room: React.PropTypes.string
 };
 

@@ -24,7 +24,7 @@ const store = createStore(reducer, middleware);
 
 /**
  * React Native doesn't support specifying props to the main/root component (in
- * the JS/JSX source code). So create a wrapper React component (class) around
+ * the JS/JSX source code). So create a wrapper React Component (class) around
  * features/app's App instead.
  *
  * @extends Component
@@ -42,27 +42,24 @@ class Root extends Component {
         /**
          * The initial state of this Component.
          *
-         * @type {{url: undefined}}
+         * @type {{url: string}}
          */
         this.state = {
+            /**
+             * The URL, if any, with which the app was launched.
+             *
+             * @type {string}
+             */
             url: undefined
         };
-    }
 
-    /**
-     * Retrieve initial URL from Linking module and set it to state. This will
-     * actually 'launch' the app.
-     *
-     * @inheritdoc
-     * @returns {void}
-     */
-    componentDidMount() {
+        // Handle the URL, if any, with which the app was launched.
         Linking.getInitialURL()
             .then(url => this.setState({ url }))
             .catch(err => {
                 console.error('Failed to get initial URL', err);
-                // XXX Start with empty URL if we failed to get the initial one
-                // for any reason.
+                // XXX Start with an empty URL if getting the initial URL fails;
+                // otherwise, nothing will be rendered.
                 this.setState({ url: null });
             });
     }
@@ -84,10 +81,10 @@ class Root extends Component {
             <App
                 config={ config }
                 store={ store }
-                url={ this.state.url }/>
+                url={ this.state.url } />
         );
     }
 }
 
-// Register the root component.
+// Register the main Component.
 AppRegistry.registerComponent('App', () => Root);

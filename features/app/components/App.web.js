@@ -32,6 +32,9 @@ export class App extends AbstractApp {
          * @link https://github.com/reactjs/react-router-redux#how-it-works
          */
         this.history = syncHistoryWithStore(browserHistory, props.store);
+
+        // Bind event handlers so they are only bound once for every instance.
+        this._routerCreateElement = this._routerCreateElement.bind(this);
     }
 
     /**
@@ -45,7 +48,9 @@ export class App extends AbstractApp {
 
         return (
             <Provider store={ this.props.store }>
-                <Router history={ this.history }>
+                <Router
+                    createElement={ this._routerCreateElement }
+                    history={ this.history }>
                 {
                     routes.map(r => (
                         <Route
@@ -57,6 +62,21 @@ export class App extends AbstractApp {
                 </Router>
             </Provider>
         );
+    }
+
+    /**
+     * Create a ReactElement from the specified component and props on behalf of
+     * the associated Router.
+     *
+     * @param {Component} component - The component from which the ReactElement
+     * is to be created
+     * @param {Object} props - The read-only React Component props with which
+     * the ReactElement is to be initialized
+     * @returns {ReactElement}
+     * @private
+     */
+    _routerCreateElement(component, props) {
+        return this._createElement(component, props);
     }
 }
 

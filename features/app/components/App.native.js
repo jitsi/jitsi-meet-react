@@ -58,19 +58,17 @@ export class App extends AbstractApp {
      * @returns {ReactElement}
      */
     render() {
-        let routes = RouteRegistry.getRoutes();
         let store = this.props.store;
         let room = store.getState()['features/base/conference'].room;
-
+        let initialComponent = room ? Conference : WelcomePage;
         // XXX It's important to select initialRoute from obtained routes
         // array and not from RouteRegistry#getRouteByComponent() method,
         // because React Native's Navigator will compare value in 'initialRoute'
         // prop with values in 'initialRouteStack' prop using simple comparison
         // operator.
-        // We select initial route based on if we already have a room name or
-        // not.
-        let initialRoute = routes.find(
-            r => r.component === (room !== '' ? Conference : WelcomePage));
+        let initialRoute =
+            RouteRegistry.getRoutes().find(
+                r => r.component === initialComponent);
 
         return (
             <Provider store={ store }>
@@ -91,17 +89,20 @@ export class App extends AbstractApp {
      * localhost, but are joining meet.jit.si.
      *
      * @param {(string|undefined)} url - URL passed to the app.
-     * @param {Object} config - Configuration object.
      * @override
      * @protected
      * @returns {string}
      */
-    _getRoomFromUrlString(url, config) {
-        let urlObj = super._urlStringToObject(url, config);
+    _getRoomFromUrlString(url) {
+        let urlObj = super._urlStringToObject(url);
+        let room;
 
-        return urlObj.hostname === config.connection.hosts.domain
-            ? super._getRoomFromUrlObject(urlObj)
-            : '';
+        if (urlObj
+                && (urlObj.hostname
+                    === this.props.config.connection.hosts.domain)) {
+            room = super._getRoomFromUrlObject(urlObj);
+        }
+        return room;
     }
 
     /**
@@ -115,15 +116,15 @@ export class App extends AbstractApp {
      * @returns {void}
      */
     _handleOpenURL(event) {
-        let { store, config } = { ...this.props };
-        let dispatch = store.dispatch;
-        let newRoom = this._getRoomFromUrlString(event.url, config);
+        let newRoom = this._getRoomFromUrlString(event.url);
 
         if (newRoom !== '') {
-            let currentRoom =
-                store.getState()['features/base/conference'].room;
+            let store = this.props.store;
+            let oldRoom = store.getState()['features/base/conference'].room;
 
-            if (currentRoom !== newRoom) {
+            if (oldRoom !== newRoom) {
+                let dispatch = store.dispatch;
+
                 // TODO We should probably detect if user is currently in a
                 // conference and ask her if she wants to close the current
                 // conference and start a new one with the new room name.
@@ -153,7 +154,7 @@ export class App extends AbstractApp {
         // We started with NavigatorIOS and then switched to Navigator in order
         // to support Android as well. In order to reduce the number of
         // modifications, accept the same format of route definition.
-        return React.createElement(route.component, { navigator });
+        return this._createElement(route.component, { navigator });
     }
 }
 

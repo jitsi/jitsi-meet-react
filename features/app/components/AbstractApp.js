@@ -16,9 +16,39 @@ export class AbstractApp extends Component {
     constructor(props) {
         super(props);
 
-        let room = this._getRoomFromUrlString(props.url, props.config);
+        let room = this._getRoomFromUrlString(props.url);
 
         props.store.dispatch(roomSet(room));
+    }
+
+    /**
+     * Create a ReactElement from the specified component, the specified props
+     * and the props of this AbstractApp which are suitable for propagation to
+     * the children of this Component.
+     *
+     * @param {Component} component - The component from which the ReactElement
+     * is to be created
+     * @param {Object} props - The read-only React Component props with which
+     * the ReactElement is to be initialized
+     * @returns {ReactElement}
+     * @protected
+     */
+    _createElement(component, props) {
+        let {
+            // Don't propagate the dispatch and store props because they usually
+            // come from react-redux and programmers don't really expect them to
+            // be inherited but rather explicitly connected.
+            dispatch,
+            store,
+            // The url property was introduced to be consumed entirely by
+            // AbstractApp.
+            url,
+            // The remaining props, if any, are considered suitable for
+            // propagation to the children of this Component.
+            ...thisProps
+        } = this.props;
+
+        return React.createElement(component, { ...thisProps, ...props });
     }
 
     /**
@@ -29,39 +59,38 @@ export class AbstractApp extends Component {
      * @returns {string}
      */
     _getRoomFromUrlObject(url) {
-        return url.pathname.substr(1).toLowerCase();
+        return url ? url.pathname.substr(1).toLowerCase() : undefined;
     }
 
     /**
      * Tries to get conference room name from URL.
      *
      * @param {(string|undefined)} url - URL passed to the app.
-     * @param {Object} config - Configuration object.
      * @protected
      * @returns {string}
      */
-    _getRoomFromUrlString(url, config) {
-        let urlObj = this._urlStringToObject(url, config);
-
-        return this._getRoomFromUrlObject(urlObj);
+    _getRoomFromUrlString(url) {
+        return this._getRoomFromUrlObject(this._urlStringToObject(url));
     }
 
     /**
-     * Utility function that converts string URL to object representation with
-     * app specifics.
+     * Parses a string into a URL (object).
      *
-     * @param {(string|undefined)} url - URL passed to the app.
-     * @param {Object} config - Configuration object.
+     * @param {(string|undefined)} url - the URL to parse.
      * @protected
      * @returns {URL}
      */
-    _urlStringToObject(url, config) {
+    _urlStringToObject(url) {
         let urlObj;
 
-        try {
-            urlObj = new URL(url);
-        } catch (e) {
-            urlObj = new URL('https://' + config.connection.hosts.domain);
+        if (url) {
+            try {
+                urlObj = new URL(url);
+            } catch (ex) {
+                // The return value will signal the failure & the logged
+                // exception will provide the details to the developers.
+                console.error('Failed to parse URL: ' + url, ex);
+            }
         }
         return urlObj;
     }
