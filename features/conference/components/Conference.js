@@ -112,12 +112,8 @@ Conference.propTypes = {
  * @param {Object} state - Redux state.
  * @returns {{ room: string }}
  */
-export const mapStateToProps = state => {
-    const stateFeaturesConference = state['features/base/conference'];
-
-    return {
-        room: stateFeaturesConference.room
-    };
-};
+export const mapStateToProps = state => ({
+    room: state['features/base/conference'].room
+});
 
 export default connect(mapStateToProps)(Conference);

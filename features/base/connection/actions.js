@@ -1,21 +1,107 @@
-import { conferenceInitialized } from '../conference';
+import { createConference } from '../conference';
 import JitsiMeetJS from '../lib-jitsi-meet';
-import { localParticipantJoined } from '../participants';
 import {
     createLocalTracks,
     destroyLocalTracks
 } from '../tracks';
-
 import {
-    CONNECTION_CREATED,
     CONNECTION_DISCONNECTED,
     CONNECTION_ESTABLISHED,
-    CONNECTION_FAILED,
-    RTC_ERROR
+    CONNECTION_FAILED
 } from './actionTypes';
 import './reducer';
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
+
+/**
+ * Opens new connection.
+ *
+ * @param {Object} config - Application config.
+ * @param {string} room - The room name to use.
+ * @returns {Promise<JitsiConnection>}
+ */
+function connect(config, room) {
+    return dispatch => {
+        const connection = new JitsiMeetJS.JitsiConnection(
+            config.appId,
+            config.token,
+            {
+                ...config.connection,
+                bosh: config.connection.bosh + (
+                    room ? ('?room=' + room) : ''
+                )
+            }
+        );
+
+        return new Promise(function (resolve, reject) {
+            connection.addEventListener(
+                JitsiConnectionEvents.CONNECTION_DISCONNECTED,
+                handleConnectionDisconnected);
+            connection.addEventListener(
+                JitsiConnectionEvents.CONNECTION_ESTABLISHED,
+                handleConnectionEstablished);
+            connection.addEventListener(
+                JitsiConnectionEvents.CONNECTION_FAILED,
+                handleConnectionFailed);
+
+            connection.connect();
+
+            /**
+             * Dispatches CONNECTION_DISCONNECTED action when connection is
+             * disconnected.
+             *
+             * @param {string} message - Disconnect reason.
+             * @returns {void}
+             */
+            function handleConnectionDisconnected(message) {
+                connection.removeEventListener(
+                    JitsiConnectionEvents.CONNECTION_DISCONNECTED,
+                    handleConnectionDisconnected);
+
+                dispatch(connectionDisconnected(connection, message));
+            }
+
+            /**
+             * Resolves external promise when connection is established.
+             *
+             * @returns {void}
+             */
+            function handleConnectionEstablished() {
+                unsubscribe();
+                resolve(connection);
+            }
+
+            /**
+             * Rejects external promise when connection fails.
+             *
+             * @param {JitsiConnectionErrors} err - Connection error.
+             * @returns {void}
+             */
+            function handleConnectionFailed(err) {
+                unsubscribe();
+                console.error('CONNECTION FAILED:', err);
+                reject(err);
+            }
+
+            /**
+             * Unsubscribes connection instance from CONNECTION_ESTABLISHED
+             * and CONNECTION_FAILED events.
+             *
+             * @returns {void}
+             */
+            function unsubscribe() {
+                connection.removeEventListener(
+                    JitsiConnectionEvents.CONNECTION_ESTABLISHED,
+                    handleConnectionEstablished
+                );
+                connection.removeEventListener(
+                    JitsiConnectionEvents.CONNECTION_FAILED,
+                    handleConnectionFailed
+                );
+            }
+        });
+    };
+}
 
 /**
  * Create an action for when the signaling connection has been lost.
@@ -29,7 +115,7 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
  *     message: string
  * }}
  */
-export function connectionDisconnected(connection, message) {
+function connectionDisconnected(connection, message) {
     return {
         type: CONNECTION_DISCONNECTED,
         connection,
@@ -40,14 +126,13 @@ export function connectionDisconnected(connection, message) {
 /**
  * Create an action for when the signaling connection has been established.
  *
- * @param {string} id - The ID of the local endpoint/participant/peer (within
- * the context of the established connection).
- * @returns {{type: CONNECTION_ESTABLISHED, id: string}}
+ * @param {JitsiConnection} connection - JitsiConnection instance.
+ * @returns {{type: CONNECTION_ESTABLISHED, connection: JitsiConnection}}
  */
-export function connectionEstablished(id) {
+function connectionEstablished(connection) {
     return {
         type: CONNECTION_ESTABLISHED,
-        id
+        connection
     };
 }
 
@@ -57,48 +142,10 @@ export function connectionEstablished(id) {
  * @param {string} error - Error message.
  * @returns {{type: CONNECTION_FAILED, error: string}}
  */
-export function connectionFailed(error) {
+function connectionFailed(error) {
     return {
         type: CONNECTION_FAILED,
         error
-    };
-}
-
-/**
- * Configure a newly created connection, binding its events to actions.
- *
- * @param {JitsiConnection} connection - Connection instance.
- * @param {string} room - Conference room name.
- * @returns {Function}
- */
-export function connectionInitialized(connection, room) {
-    return dispatch => {
-        connection.addEventListener(
-            JitsiConnectionEvents.CONNECTION_DISCONNECTED,
-            msg => dispatch(connectionDisconnected(connection, msg)));
-
-        connection.addEventListener(
-            JitsiConnectionEvents.CONNECTION_ESTABLISHED,
-            id => {
-                let conference = connection.initJitsiConference(room, {
-                    openSctp: true
-                });
-                dispatch(localParticipantJoined(conference.myUserId()));
-                dispatch(connectionEstablished(id));
-                dispatch(conferenceInitialized(conference));
-            });
-
-        connection.addEventListener(
-            JitsiConnectionEvents.CONNECTION_FAILED,
-            err => dispatch(connectionFailed(err)));
-
-        connection.connect();
-
-        dispatch({
-            type: CONNECTION_CREATED,
-            connection,
-            room
-        });
     };
 }
 
@@ -140,37 +187,16 @@ export function destroy() {
  * @returns {Function}
  */
 export function init(config, room) {
-    return dispatch => {
-        JitsiMeetJS.init({}).then(() => {
-            dispatch(createLocalTracks());
+    return dispatch  => {
+        return JitsiMeetJS.init({})
+            .then(() => {
+                let localTracksPromise = dispatch(createLocalTracks());
+                let connectionPromise = dispatch(connect(config, room))
+                    .then(con => dispatch(connectionEstablished(con)))
+                    .catch(err => dispatch(connectionFailed(err)));
 
-            const connection = new JitsiMeetJS.JitsiConnection(
-                config.appId,
-                config.token,
-                {
-                    ...config.connection,
-                    bosh: config.connection.bosh + (
-                        room ? ('?room=' + room) : ''
-                    )
-                }
-            );
-
-            dispatch(connectionInitialized(connection, room));
-        }).catch(error => {
-            dispatch(rtcError(error));
-        });
-    };
-}
-
-/**
- * Create an action for when the JitsiMeetJS library could not be initialized.
- *
- * @param {Object} error - Generic Error.
- * @returns {{type: RTC_ERROR, error: Object}}
- */
-export function rtcError(error) {
-    return {
-        type: RTC_ERROR,
-        error
+                return Promise.all([ localTracksPromise, connectionPromise ]);
+            })
+            .then(() => dispatch(createConference(room)));
     };
 }
