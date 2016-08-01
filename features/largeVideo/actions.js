@@ -12,7 +12,7 @@ import './reducer';
 export function selectEndpoint() {
     return (dispatch, getState) => {
         let state = getState();
-        let conference = state['features/base/conference'];
+        let conference = state['features/base/conference'].jitsiConference;
 
         if (conference) {
             let participants = state['features/base/participants'];
