@@ -96,8 +96,8 @@ export function connectionInitialized(connection, room) {
 
         dispatch({
             type: CONNECTION_CREATED,
-            room,
-            connection
+            connection,
+            room
         });
     };
 }

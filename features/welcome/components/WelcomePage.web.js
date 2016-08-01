@@ -28,7 +28,7 @@ class WelcomePage extends AbstractWelcomePage {
                     type="text"
                     value={ this.state.room }  />
                 <button
-                    disabled={ this.state.room === '' }
+                    disabled={ this._isJoinDisabled() }
                     onClick={ this._onJoinPress }
                     style={ styles.button }>JOIN</button>
             </div>

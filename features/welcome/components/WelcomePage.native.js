@@ -33,7 +33,7 @@ class WelcomePage extends AbstractWelcomePage {
                     value={ this.state.room }
                 />
                 <TouchableHighlight
-                    disabled={ this.state.room === '' }
+                    disabled={ this._isJoinDisabled() }
                     onPress={ this._onJoinPress }
                     style={ styles.button }
                     underlayColor="white">

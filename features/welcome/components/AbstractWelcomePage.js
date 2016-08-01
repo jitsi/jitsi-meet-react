@@ -54,6 +54,18 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
+     * Determines whether the 'Join' button is (to be) disabled i.e. there's no
+     * valid room name typed into the respective text input field.
+     *
+     * @protected
+     * @returns {boolean} If the 'Join' button is (to be) disabled, true;
+     * otherwise, false.
+     */
+    _isJoinDisabled() {
+        return this.state.room === '';
+    }
+
+    /**
      * Handles click on 'Join' button.
      *
      * @protected
