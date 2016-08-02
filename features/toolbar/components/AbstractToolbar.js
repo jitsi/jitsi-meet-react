@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 
-import {
-    APP_SCREEN,
-    navigate
-} from '../../app';
+import { navigate } from '../../base/navigator';
+import { ColorPalette } from '../../base/styles';
+import { WelcomePage } from '../../welcome';
 
 import {
     toggleAudio,
     toggleVideo
-} from '../';
-
-import { ColorPalette } from '../../base/styles';
+} from '../actions';
 
 import { styles } from './styles';
 
@@ -94,8 +91,8 @@ export class AbstractToolbar extends Component {
     _onHangup() {
         this.props.dispatch(
             navigate({
-                navigator: this.props.navigator,
-                screen: APP_SCREEN.WELCOME
+                component: WelcomePage,
+                navigator: this.props.navigator
             })
         );
     }

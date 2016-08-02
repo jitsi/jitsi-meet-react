@@ -277,4 +277,7 @@ function _visitNode(node, callback) {
         }
     }
 
+    // Polyfill for URL constructor
+    require('url-polyfill');
+
 })(global || window || this);

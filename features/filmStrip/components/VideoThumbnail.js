@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Audio, shouldMirror, Video } from '../../base/media';
+import {
+    Audio,
+    shouldMirror,
+    Video
+} from '../../base/media';
 import {
     PARTICIPANT_ROLE,
-    participantFocused,
-    participantPinned,
-    participantVideoStarted
+    participantVideoStarted,
+    pinParticipant
 } from '../../base/participants';
 
 import {
@@ -61,10 +64,10 @@ class VideoThumbnail extends Component {
         let { dispatch, participant } = this.props;
 
         // TODO: this currently ignores interfaceConfig.filmStripOnly
-        dispatch(participantFocused(
-            participant.focused ? null : participant.id));
-        dispatch(participantPinned(
-            participant.pinned ? null : participant.id));
+        dispatch(pinParticipant(
+            participant.pinned
+                ? null
+                : participant.id));
     }
 
     /**
@@ -106,16 +109,32 @@ class VideoThumbnail extends Component {
      */
     render() {
         let participant = this.props.participant;
+        let largeVideo = this.props.largeVideo;
         let streams = this.getMediaStreams();
+        // We don't render audio in any of the following:
+        // 1. The audio (source) is muted. There's no practical reason (that we
+        //    know of, anyway) why we'd want to render it given that it's
+        //    silence (& not even comfort noise).
+        // 2. The audio is local. If we were to render local audio, the local
+        //    participant would be hearing themselves.
         let renderAudio =
             streams.audio
                 && !this.props.audioMuted
                 && !this.props.audioTrack.isLocal();
-        let renderVideo = streams.video && !this.props.videoMuted;
+        // We don't render video (in the film strip) in any of the following:
+        // 1. The video (source) is muted. Even if muted video happens to be
+        //    black frames one day, we've decided to display the participant's
+        //    avatar instead.
+        // 2. The video is rendered on the stage i.e. as a large video.
+        let renderVideo =
+            streams.video
+                && !this.props.videoMuted
+                && (!participant.videoStarted
+                    || participant.id !== largeVideo.participantId);
 
         return (
             <VideoThumbnailContainer
-                focused={ participant.focused }
+                pinned={ participant.pinned }
                 onClick={ this._onClick }>
 
                 { renderAudio &&
@@ -148,6 +167,23 @@ class VideoThumbnail extends Component {
 }
 
 /**
+ * Function that maps parts of Redux state tree into component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{
+ *      largeVideo: Object
+ *  }}
+ */
+const mapStateToProps = state => {
+    return {
+        // We need read-only access to the state of features/largeVideo so that
+        // the film strip doesn't render the video of the participant who is
+        // rendered on the stage i.e. as a large video.
+        largeVideo: state['features/largeVideo']
+    };
+};
+
+/**
  * VideoThumbnail component's property types.
  *
  * @static
@@ -156,9 +192,10 @@ VideoThumbnail.propTypes = {
     audioMuted: React.PropTypes.bool,
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
+    largeVideo: React.PropTypes.object,
     participant: React.PropTypes.object,
     videoMuted: React.PropTypes.bool,
     videoTrack: React.PropTypes.object
 };
 
-export default connect()(VideoThumbnail);
+export default connect(mapStateToProps)(VideoThumbnail);
