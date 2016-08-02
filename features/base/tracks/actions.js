@@ -15,68 +15,6 @@ const JitsiTrackErrors = JitsiMeetJS.errors.track;
 const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
- * Attach a set of local tracks to a conference.
- *
- * @param {JitsiConference} conference - Conference instance.
- * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
- * @returns {void}
- */
-export function addTracksToConference(conference, localTracks) {
-    let conferenceLocalTracks = conference.getLocalTracks();
-    for (let track of localTracks) {
-        // XXX The library lib-jitsi-meet may be draconian, for example, when
-        // adding one and the same video track multiple times.
-        if (-1 === conferenceLocalTracks.indexOf(track)) {
-            conference.addTrack(track);
-        }
-    }
-}
-
-/**
- * Add new local tracks to the conference, replacing any existing tracks that
- * were previously attached.
- *
- * @param {JitsiLocalTrack[]} [newLocalTracks=[]] - List of new local media
- * tracks.
- * @returns {Function}
- */
-export function changeLocalTracks(newLocalTracks = []) {
-    return (dispatch, getState) => {
-        const conference = getState()['features/base/conference'];
-        let tracksToAdd = [];
-        let tracksToRemove = [];
-        let promise = Promise.resolve();
-
-        if (conference) {
-            conference.getLocalTracks().forEach(track => {
-                let type = track.getType();
-
-                if (type) {
-                    let newTrack =
-                        newLocalTracks.find(t => (t.getType() === type));
-
-                    if (newTrack) {
-                        tracksToAdd.push(newTrack);
-                        tracksToRemove.push(track);
-                    }
-                }
-            });
-
-            // TODO: add various checks from original useVideo/AudioStream
-
-            promise = dispatch(_disposeAndRemoveTracks(tracksToRemove))
-                .then(() => addTracksToConference(conference, tracksToAdd));
-        } else {
-            tracksToAdd = newLocalTracks;
-        }
-
-        return promise
-            .then(() => Promise.all(
-                tracksToAdd.map(t => dispatch(trackAdded(t)))));
-    };
-}
-
-/**
  * Request to start capturing local audio and/or video. By default, the user
  * facing camera will be selected.
  *
@@ -92,7 +30,7 @@ export function createLocalTracks(options) {
             cameraDeviceId: options.cameraDeviceId,
             micDeviceId: options.micDeviceId
         }).then(localTracks => {
-            return dispatch(changeLocalTracks(localTracks));
+            return dispatch(_updateLocalTracks(localTracks));
         }).catch(reason => {
             console.error(
                 'JitsiMeetJS.createLocalTracks.catch rejection reason: '
@@ -113,29 +51,6 @@ export function destroyLocalTracks() {
             getState()['features/base/tracks']
                 .filter(t => t.local)
                 .map(t => t.jitsiTrack)));
-    };
-}
-
-/**
- * Disposes passed tracks and signals them to be removed.
- *
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of tracks.
- * @returns {Function}
- */
-function _disposeAndRemoveTracks(tracks) {
-    return dispatch => {
-        return Promise.all(
-            tracks.map(t => {
-                return t.dispose()
-                    .catch(err => {
-                        // Track might be already disposed so ignore such an
-                        // error. Of course, re-throw any other error(s).
-                        if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
-                            throw err;
-                        }
-                    });
-            }))
-            .then(Promise.all(tracks.map(t => dispatch(trackRemoved(t)))));
     };
 }
 
@@ -262,5 +177,108 @@ export function trackVideoTypeChanged(track, videoType) {
             jitsiTrack: track,
             videoType
         }
+    };
+}
+
+/**
+ * Signals passed tracks to be added.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of tracks.
+ * @private
+ * @returns {Function}
+ */
+function _addTracks(tracks) {
+    return dispatch => {
+        return Promise.all(tracks.map(t => dispatch(trackAdded(t))));
+    };
+}
+
+/**
+ * Disposes passed tracks and signals them to be removed.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of tracks.
+ * @private
+ * @returns {Function}
+ */
+function _disposeAndRemoveTracks(tracks) {
+    return dispatch => {
+        return Promise.all(
+            tracks.map(t => {
+                return t.dispose()
+                    .catch(err => {
+                        // Track might be already disposed so ignore such an
+                        // error. Of course, re-throw any other error(s).
+                        if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
+                            throw err;
+                        }
+                    });
+            }))
+            .then(Promise.all(tracks.map(t => dispatch(trackRemoved(t)))));
+    };
+}
+
+/**
+ * Determines which local media tracks should be added, and which - removed.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} currentTracks - List of
+ * existing media tracks.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} newTracks - List of new media
+ * tracks.
+ * @private
+ * @returns {{
+ *      tracksToAdd: JitsiLocalTrack[],
+ *      tracksToRemove: JitsiLocalTrack[]
+ * }}
+ */
+function _getLocalTracksToChange(currentTracks, newTracks) {
+    let currentLocalAudio = currentTracks.find(
+        t => t.isLocal() && t.isAudioTrack());
+    let currentLocalVideo = currentTracks.find(
+        t => t.isLocal() && t.isVideoTrack());
+    let newLocalAudio = newTracks.find(
+        t => t.isLocal() && t.isAudioTrack());
+    let newLocalVideo = newTracks.find(
+        t => t.isLocal() && t.isVideoTrack());
+    let tracksToRemove = [];
+    let tracksToAdd = [];
+
+    if (newLocalAudio) {
+        tracksToAdd.push(newLocalAudio);
+
+        if (currentLocalAudio) {
+            tracksToRemove.push(newLocalVideo);
+        }
+    }
+
+    if (newLocalVideo) {
+        tracksToAdd.push(newLocalVideo);
+
+        if (currentLocalVideo) {
+            tracksToRemove.push(currentLocalVideo);
+        }
+    }
+
+    return {
+        tracksToAdd,
+        tracksToRemove
+    };
+}
+
+/**
+ * Set new local tracks replacing any existing tracks that were previously
+ * available. Currently only one audio and one video local tracks are allowed.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} [newTracks=[]] - List of new
+ * media tracks.
+ * @returns {Function}
+ */
+function _updateLocalTracks(newTracks = []) {
+    return (dispatch, getState) => {
+        let tracks = getState()['features/base/tracks'].map(t => t.jitsiTrack);
+        let { tracksToAdd, tracksToRemove } =
+            _getLocalTracksToChange(tracks, newTracks);
+
+        return dispatch(_disposeAndRemoveTracks(tracksToRemove))
+            .then(() => dispatch(_addTracks(tracksToAdd)));
     };
 }

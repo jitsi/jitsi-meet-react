@@ -15,7 +15,7 @@ import './reducer';
 export function selectEndpoint() {
     return (dispatch, getState) => {
         let state = getState();
-        let conference = state['features/base/conference'];
+        let conference = state['features/base/conference'].jitsiConference;
 
         if (conference) {
             let largeVideo = state['features/largeVideo'];

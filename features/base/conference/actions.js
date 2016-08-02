@@ -2,12 +2,12 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
+    localParticipantJoined,
     participantLeft,
     participantRoleChanged,
     remoteParticipantJoined
 } from '../participants';
 import {
-    addTracksToConference,
     trackAdded,
     trackMuteChanged,
     trackRemoved
@@ -15,20 +15,135 @@ import {
 
 import {
     CONFERENCE_JOINED,
-    CONFERENCE_LEFT
+    CONFERENCE_LEFT,
+    ROOM_SET
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
+import './middleware';
 import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 
 /**
- * Create an action for when the signaling connection has been established.
+ * Initializes a new conference.
  *
- * @param {JitsiConference} conference - Conference instance.
+ * @param {string} room - Conference room name.
  * @returns {Function}
  */
-export function conferenceInitialized(conference) {
+export function createConference(room) {
+    return (dispatch, getState) => {
+        let connection = getState()['features/base/connection'];
+        let conference;
+
+        if (!connection) {
+            throw new Error('Cannot create conference without connection');
+        }
+
+        conference = connection.initJitsiConference(room, { openSctp: true });
+
+        dispatch(localParticipantJoined(conference.myUserId()));
+        dispatch(_setupConferenceListeners(conference));
+
+        conference.join();
+    };
+}
+
+/**
+ * Attach any pre-existing local media to the conference once the conference has
+ * been joined.
+ *
+ * @param {JitsiConference} conference - The JitsiConference instance which was
+ * joined by the local participant.
+ * @returns {Function}
+ */
+export function conferenceJoined(conference) {
+    return (dispatch, getState) => {
+        let localTracks = getState()['features/base/tracks']
+            .filter(t => t.local)
+            .map(t => t.jitsiTrack);
+
+        if (localTracks.length) {
+            _addTracksToConference(conference, localTracks);
+        }
+
+        dispatch({
+            type: CONFERENCE_JOINED,
+            conference: {
+                jitsiConference: conference
+            }
+        });
+    };
+}
+
+/**
+ * Signal that we have left the conference.
+ *
+ * @param {JitsiConference} conference - The JitsiConference instance which was
+ * left by the local participant.
+ * @returns {{
+ *      type: CONFERENCE_LEFT,
+ *      conference: {
+ *          jitsiConference: JitsiConference
+ *      }
+ *  }}
+ */
+export function conferenceLeft(conference) {
+    return {
+        type: CONFERENCE_LEFT,
+        conference: {
+            jitsiConference: conference
+        }
+    };
+}
+
+/**
+ * Signals that room name was set.
+ *
+ * @param {string} room - Name of conference room.
+ * @returns {{
+ *      type: ROOM_SET,
+ *      conference: {
+ *          room: string
+ *      }
+ *  }}
+ */
+export function roomSet(room) {
+    return {
+        type: ROOM_SET,
+        conference: {
+            room
+        }
+    };
+}
+
+/**
+ * Attach a set of local tracks to a conference.
+ *
+ * @param {JitsiConference} conference - Conference instance.
+ * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
+ * @private
+ * @returns {void}
+ */
+function _addTracksToConference(conference, localTracks) {
+    let conferenceLocalTracks = conference.getLocalTracks();
+
+    for (let track of localTracks) {
+        // XXX The library lib-jitsi-meet may be draconian, for example, when
+        // adding one and the same video track multiple times.
+        if (-1 === conferenceLocalTracks.indexOf(track)) {
+            conference.addTrack(track);
+        }
+    }
+}
+
+/**
+ * Setup various conference event handlers.
+ *
+ * @param {JitsiConference} conference - Conference instance.
+ * @private
+ * @returns {Function}
+ */
+function _setupConferenceListeners(conference) {
     return dispatch => {
         conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
             () => dispatch(conferenceJoined(conference)));
@@ -70,46 +185,5 @@ export function conferenceInitialized(conference) {
         conference.addCommandListener(EMAIL_COMMAND, (data, id) => {
             dispatch(changeParticipantEmail(id, data.value));
         });
-
-        conference.join();
-    };
-}
-
-/**
- * Attach any pre-existing local media to the conference once the
- * conference has been joined.
- *
- * @param {JitsiConference} conference - The JitsiConference instance which was
- * joined by the local participant.
- * @returns {Function}
- */
-export function conferenceJoined(conference) {
-    return (dispatch, getState) => {
-        let localTracks = getState()['features/base/tracks']
-            .filter(t => t.local)
-            .map(t => t.jitsiTrack);
-
-        if (localTracks.length) {
-            addTracksToConference(conference, localTracks);
-        }
-
-        dispatch({
-            type: CONFERENCE_JOINED,
-            conference
-        });
-    };
-}
-
-/**
- * Signal that we have left the conference.
- *
- * @param {JitsiConference} conference - The JitsiConference instance which was
- * left by the local participant.
- * @returns {{ type: CONFERENCE_LEFT }}
- */
-export function conferenceLeft(conference) {
-    return {
-        type: CONFERENCE_LEFT,
-        conference
     };
 }
