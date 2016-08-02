@@ -1,14 +1,14 @@
 import JitsiMeetJS from '../lib-jitsi-meet';
+import {
+    CAMERA_FACING_MODE,
+    MEDIA_TYPE
+} from '../media';
 
 import {
     TRACK_ADDED,
     TRACK_CHANGED,
     TRACK_REMOVED
 } from './actionTypes';
-import {
-    CAMERA_FACING_MODE,
-    MEDIA_TYPE
-} from './constants';
 import './reducer';
 
 const JitsiTrackErrors = JitsiMeetJS.errors.track;

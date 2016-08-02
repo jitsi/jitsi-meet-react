@@ -3,16 +3,14 @@ import { connect } from 'react-redux';
 
 import {
     Audio,
+    MEDIA_TYPE,
     Video
 } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
     pinParticipant
 } from '../../base/participants';
-import {
-    MEDIA_TYPE,
-    trackVideoStarted
-} from '../../base/tracks';
+import { trackVideoStarted } from '../../base/tracks';
 
 import {
     AudioMutedIndicator,

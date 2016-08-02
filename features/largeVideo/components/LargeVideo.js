@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Video } from '../../base/media';
-import { participantSelected } from '../../base/participants';
-import {
-    MEDIA_TYPE
-} from '../../base/tracks';
+import { MEDIA_TYPE, Video } from '../../base/media';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 

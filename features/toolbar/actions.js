@@ -1,8 +1,8 @@
 import {
     CAMERA_FACING_MODE,
-    createLocalTracks,
     MEDIA_TYPE
-} from '../base/tracks';
+} from '../base/media';
+import { createLocalTracks } from '../base/tracks';
 
 import {
     CHANGE_CAMERA_FACING_MODE,

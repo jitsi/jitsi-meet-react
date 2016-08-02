@@ -1,7 +1,7 @@
 import {
     MEDIA_TYPE,
     VIDEO_TYPE
-} from '../base/tracks';
+} from '../base/media';
 
 import { LARGE_VIDEO_PARTICIPANT_CHANGED } from './actionTypes';
 import './middleware';
