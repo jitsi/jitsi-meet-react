@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-    APP_SCREEN,
-    navigate
-} from '../../app';
+import { navigate } from '../../base/navigator';
+import { WelcomePage } from '../../welcome';
 import {
     toggleMicrophoneMuted,
     toggleCameraFacingMode
@@ -27,7 +25,7 @@ class Toolbar extends Component {
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
-                onCameraChange = { () => this.props.onCameraChange() }
+                onCameraChange = { this.props.onCameraChange }
                 onHangup = { () => this.props.onHangup(this.props.navigator) }
                 videoMuted = { this.props.videoMuted }
                 visible = { this.props.visible } />
@@ -69,7 +67,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleCameraFacingMode());
         },
         onHangup(navigator) {
-            dispatch(navigate({ navigator, screen: APP_SCREEN.WELCOME }));
+            dispatch(navigate({ component: WelcomePage, navigator }));
         }
     };
 };
