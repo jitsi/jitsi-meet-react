@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { roomSet } from '../../base/conference';
+import { isRoomValid, roomSet } from '../../base/conference';
 import { shouldMirror, Video } from '../../base/media';
 import { navigate } from '../../base/navigator';
 import { participantVideoStarted } from '../../base/participants';
@@ -65,7 +65,7 @@ export class AbstractWelcomePage extends Component {
      * otherwise, false.
      */
     _isJoinDisabled() {
-        return this.state.room === '';
+        return !isRoomValid(this.state.room);
     }
 
     /**
