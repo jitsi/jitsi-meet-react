@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
+
 import { roomSet } from '../../base/conference';
+import {
+    localParticipantJoined,
+    localParticipantLeft
+} from '../../base/participants';
 
 /**
  * Base (abstract) class for main App component.
@@ -8,17 +13,27 @@ import { roomSet } from '../../base/conference';
  */
 export class AbstractApp extends Component {
     /**
-     * Initializes a new AbstractApp instance.
+     * Init lib-jitsi-meet and create local participant when component is going
+     * to be mounted.
      *
-     * @param {Object} props - The read-only React Component props with which
-     * the new instance is to be initialized.
+     * @inheritdoc
      */
-    constructor(props) {
-        super(props);
+    componentWillMount() {
+        let dispatch = this.props.store.dispatch;
+        let room = this._getRoomFromUrlString(this.props.url);
 
-        let room = this._getRoomFromUrlString(props.url);
+        dispatch(roomSet(room));
+        dispatch(localParticipantJoined());
+    }
 
-        props.store.dispatch(roomSet(room));
+    /**
+     * Dispose lib-jitsi-meet and remove local participant when component is
+     * going to be unmounted.
+     *
+     * @inheritdoc
+     */
+    componentWillUnmount() {
+        this.props.store.dispatch(localParticipantLeft());
     }
 
     /**

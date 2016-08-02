@@ -2,7 +2,6 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
-    localParticipantJoined,
     participantLeft,
     participantRoleChanged,
     participantVideoTypeChanged,
@@ -44,7 +43,6 @@ export function createConference(room) {
 
         conference = connection.initJitsiConference(room, { openSctp: true });
 
-        dispatch(localParticipantJoined(conference.myUserId()));
         dispatch(_setupConferenceListeners(conference));
 
         conference.join();

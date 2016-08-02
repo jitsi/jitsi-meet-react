@@ -22,23 +22,26 @@ class WelcomePage extends AbstractWelcomePage {
     render() {
         return (
             <View style={ styles.container }>
-                <Text style={ styles.title }>Enter room name</Text>
-                <TextInput
-                    autoCapitalize="none"
-                    autoCorrect={ false }
-                    autoFocus={ true }
-                    onChangeText={ this._onRoomChange }
-                    placeholder="room name"
-                    style={ styles.textInput }
-                    value={ this.state.room }
-                />
-                <TouchableHighlight
-                    disabled={ this._isJoinDisabled() }
-                    onPress={ this._onJoinPress }
-                    style={ styles.button }
-                    underlayColor="white">
-                    <Text style={ styles.buttonText }>JOIN</Text>
-                </TouchableHighlight>
+                { this._renderLocalVideo() }
+                <View style={ styles.roomContainer }>
+                    <Text style={ styles.title }>Enter room name</Text>
+                    <TextInput
+                        autoCapitalize="none"
+                        autoCorrect={ false }
+                        autoFocus={ true }
+                        onChangeText={ this._onRoomChange }
+                        placeholder="room name"
+                        style={ styles.textInput }
+                        value={ this.state.room }
+                    />
+                    <TouchableHighlight
+                        disabled={ this._isJoinDisabled() }
+                        onPress={ this._onJoinPress }
+                        style={ styles.button }
+                        underlayColor="white">
+                        <Text style={ styles.buttonText }>JOIN</Text>
+                    </TouchableHighlight>
+                </View>
             </View>
         );
     }

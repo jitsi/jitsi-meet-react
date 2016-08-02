@@ -1,10 +1,6 @@
 import { createConference } from '../conference';
 import JitsiMeetJS from '../lib-jitsi-meet';
 import {
-    createLocalTracks,
-    destroyLocalTracks
-} from '../tracks';
-import {
     CONNECTION_DISCONNECTED,
     CONNECTION_ESTABLISHED,
     CONNECTION_FAILED
@@ -17,10 +13,10 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
  * Opens new connection.
  *
  * @param {Object} config - Application config.
- * @param {string} room - The room name to use.
+ * @param {string} [room] - The room name to use.
  * @returns {Promise<JitsiConnection>}
  */
-function connect(config, room) {
+export function connect(config, room) {
     return dispatch => {
         const connection = new JitsiMeetJS.JitsiConnection(
             config.appId,
@@ -99,7 +95,10 @@ function connect(config, room) {
                     handleConnectionFailed
                 );
             }
-        });
+        })
+        .catch(err => dispatch(connectionFailed(err)))
+        .then(con => dispatch(connectionEstablished(con)))
+        .then(() => dispatch(createConference(room)));
     };
 }
 
@@ -154,7 +153,7 @@ function connectionFailed(error) {
  *
  * @returns {Function}
  */
-export function destroy() {
+export function disconnect() {
     return (dispatch, getState) => {
         const state = getState();
         const conference = state['features/base/conference'].jitsiConference;
@@ -171,32 +170,6 @@ export function destroy() {
                 .then(() => connection.disconnect());
         }
 
-        // XXX Local tracks might exist without conference and connection
-        // initialized, so we need to explicitly clean them here.
-        return promise
-            .then(() => dispatch(destroyLocalTracks()));
-    };
-}
-
-/**
- * Initialize the JitsiMeetJS library, start local media, and then join
- * the named conference.
- *
- * @param {Object} config - Configuration object.
- * @param {string} room - Conference room name.
- * @returns {Function}
- */
-export function init(config, room) {
-    return dispatch  => {
-        return JitsiMeetJS.init({})
-            .then(() => {
-                let localTracksPromise = dispatch(createLocalTracks());
-                let connectionPromise = dispatch(connect(config, room))
-                    .then(con => dispatch(connectionEstablished(con)))
-                    .catch(err => dispatch(connectionFailed(err)));
-
-                return Promise.all([ localTracksPromise, connectionPromise ]);
-            })
-            .then(() => dispatch(createConference(room)));
+        return promise;
     };
 }
