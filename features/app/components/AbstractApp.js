@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 
 import { roomSet } from '../../base/conference';
 import {
-    disposeLib,
-    initLib
-} from '../../base/lib-jitsi-meet';
-import {
     localParticipantJoined,
     localParticipantLeft
 } from '../../base/participants';
@@ -17,20 +13,6 @@ import {
  */
 export class AbstractApp extends Component {
     /**
-     * Initializes a new AbstractApp instance.
-     *
-     * @param {Object} props - The read-only React Component props with which
-     * the new instance is to be initialized.
-     */
-    constructor(props) {
-        super(props);
-
-        let room = this._getRoomFromUrlString(props.url);
-
-        props.store.dispatch(roomSet(room));
-    }
-
-    /**
      * Init lib-jitsi-meet and create local participant when component is going
      * to be mounted.
      *
@@ -38,8 +20,10 @@ export class AbstractApp extends Component {
      */
     componentWillMount() {
         let dispatch = this.props.store.dispatch;
+        let room = this._getRoomFromUrlString(this.props.url);
+
+        dispatch(roomSet(room));
         dispatch(localParticipantJoined());
-        dispatch(initLib(this.props.config));
     }
 
     /**
@@ -49,9 +33,7 @@ export class AbstractApp extends Component {
      * @inheritdoc
      */
     componentWillUnmount() {
-        let dispatch = this.props.store.dispatch;
-        dispatch(localParticipantLeft());
-        dispatch(disposeLib());
+        this.props.store.dispatch(localParticipantLeft());
     }
 
     /**

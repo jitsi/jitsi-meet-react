@@ -4,6 +4,7 @@ import {
     LIB_INIT_ERROR,
     LIB_INITIALIZED
 } from './actionTypes';
+import './middleware';
 import './reducer';
 
 /**
