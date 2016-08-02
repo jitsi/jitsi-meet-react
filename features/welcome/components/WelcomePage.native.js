@@ -29,12 +29,13 @@ class WelcomePage extends AbstractWelcomePage {
                         autoCapitalize="none"
                         autoCorrect={ false }
                         autoFocus={ true }
-                        onChangeText={ this._onRoomNameChange }
+                        onChangeText={ this._onRoomChange }
                         placeholder="room name"
                         style={ styles.textInput }
+                        value={ this.state.room }
                     />
                     <TouchableHighlight
-                        disabled={ this.state.roomName === '' }
+                        disabled={ this._isJoinDisabled() }
                         onPress={ this._onJoinPress }
                         style={ styles.button }
                         underlayColor="white">

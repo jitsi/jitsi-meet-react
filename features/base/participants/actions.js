@@ -202,7 +202,7 @@ export function participantVideoTypeChanged(id, videoType) {
 export function pinParticipant(id) {
     return (dispatch, getState) => {
         let state = getState();
-        let conference = state['features/base/conference'];
+        let conference = state['features/base/conference'].jitsiConference;
         let participants = state['features/base/participants'];
         let participant = participants.find(p => p.id === id);
         let localParticipant = participants.find(p => p.local);

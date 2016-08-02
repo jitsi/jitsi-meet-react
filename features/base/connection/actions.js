@@ -33,11 +33,9 @@ export function connect(config, room) {
             connection.addEventListener(
                 JitsiConnectionEvents.CONNECTION_DISCONNECTED,
                 handleConnectionDisconnected);
-
             connection.addEventListener(
                 JitsiConnectionEvents.CONNECTION_ESTABLISHED,
                 handleConnectionEstablished);
-
             connection.addEventListener(
                 JitsiConnectionEvents.CONNECTION_FAILED,
                 handleConnectionFailed);
@@ -158,7 +156,7 @@ function connectionFailed(error) {
 export function disconnect() {
     return (dispatch, getState) => {
         const state = getState();
-        const conference = state['features/base/conference'];
+        const conference = state['features/base/conference'].jitsiConference;
         const connection = state['features/base/connection'];
 
         let promise = Promise.resolve();

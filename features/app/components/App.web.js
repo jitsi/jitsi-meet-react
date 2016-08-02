@@ -7,25 +7,21 @@ import {
 } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-import {
-    connect,
-    disconnect
-} from '../../base/connection';
-import { Conference } from '../../conference';
-import { WelcomePage } from '../../welcome';
+import { RouteRegistry } from '../../base/navigator';
 
 import { AbstractApp } from './AbstractApp';
 
 /**
  * Root application component.
  *
- * @extends Component
+ * @extends AbstractApp
  */
 export class App extends AbstractApp {
     /**
-     * Constructs new App component.
+     * Initializes a new App instance.
      *
-     * @param {Object} props - React component properties.
+     * @param {Object} props - The read-only React Component props with which
+     * the new instance is to be initialized.
      */
     constructor(props) {
         super(props);
@@ -38,8 +34,7 @@ export class App extends AbstractApp {
         this.history = syncHistoryWithStore(browserHistory, props.store);
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onConferenceRouteEnter = this._onConferenceRouteEnter.bind(this);
-        this._onConferenceRouteLeave = this._onConferenceRouteLeave.bind(this);
+        this._routerCreateElement = this._routerCreateElement.bind(this);
     }
 
     /**
@@ -49,43 +44,39 @@ export class App extends AbstractApp {
      * @returns {ReactElement}
      */
     render() {
+        let routes = RouteRegistry.getRoutes();
+
         return (
-            <Provider store={this.props.store}>
-                <Router history={this.history}>
-                    <Route
-                        path='/'
-                        component={WelcomePage}/>
-                    <Route
-                        path='*'
-                        component={Conference}
-                        onEnter={this._onConferenceRouteEnter}
-                        onLeave={this._onConferenceRouteLeave}/>
+            <Provider store={ this.props.store }>
+                <Router
+                    createElement={ this._routerCreateElement }
+                    history={ this.history }>
+                {
+                    routes.map(r => (
+                        <Route
+                            key={ r.component }
+                            path={ r.path }
+                            component={ r.component }/>
+                    ))
+                }
                 </Router>
             </Provider>
         );
     }
 
     /**
-     * Init JitsiMeetJS and new conference when we enter the "conference" route.
+     * Create a ReactElement from the specified component and props on behalf of
+     * the associated Router.
      *
-     * @param {Object} route - Current route.
+     * @param {Component} component - The component from which the ReactElement
+     * is to be created
+     * @param {Object} props - The read-only React Component props with which
+     * the ReactElement is to be initialized
+     * @returns {ReactElement}
      * @private
-     * @returns {void}
      */
-    _onConferenceRouteEnter(route) {
-        const room = route.location.pathname.substr(1).toLowerCase();
-        this.props.store.dispatch(connect(this.props.config, room));
-    }
-
-    /**
-     * Destroy connection, conference and local tracks when we leave the
-     * "conference" route.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onConferenceRouteLeave() {
-        this.props.store.dispatch(disconnect());
+    _routerCreateElement(component, props) {
+        return this._createElement(component, props);
     }
 }
 

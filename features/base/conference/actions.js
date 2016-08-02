@@ -15,7 +15,8 @@ import {
 
 import {
     CONFERENCE_JOINED,
-    CONFERENCE_LEFT
+    CONFERENCE_LEFT,
+    ROOM_SET
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
 import './middleware';
@@ -48,8 +49,8 @@ export function createConference(room) {
 }
 
 /**
- * Attach any pre-existing local media to the conference once the
- * conference has been joined.
+ * Attach any pre-existing local media to the conference once the conference has
+ * been joined.
  *
  * @param {JitsiConference} conference - The JitsiConference instance which was
  * joined by the local participant.
@@ -66,7 +67,9 @@ export function conferenceJoined(conference) {
 
         dispatch({
             type: CONFERENCE_JOINED,
-            conference
+            conference: {
+                jitsiConference: conference
+            }
         });
     };
 }
@@ -76,12 +79,39 @@ export function conferenceJoined(conference) {
  *
  * @param {JitsiConference} conference - The JitsiConference instance which was
  * left by the local participant.
- * @returns {{ type: CONFERENCE_LEFT }}
+ * @returns {{
+ *      type: CONFERENCE_LEFT,
+ *      conference: {
+ *          jitsiConference: JitsiConference
+ *      }
+ *  }}
  */
 export function conferenceLeft(conference) {
     return {
         type: CONFERENCE_LEFT,
-        conference
+        conference: {
+            jitsiConference: conference
+        }
+    };
+}
+
+/**
+ * Signals that room name was set.
+ *
+ * @param {string} room - Name of conference room.
+ * @returns {{
+ *      type: ROOM_SET,
+ *      conference: {
+ *          room: string
+ *      }
+ *  }}
+ */
+export function roomSet(room) {
+    return {
+        type: ROOM_SET,
+        conference: {
+            room
+        }
     };
 }
 
@@ -116,7 +146,6 @@ function _setupConferenceListeners(conference) {
     return dispatch => {
         conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
             () => dispatch(conferenceJoined(conference)));
-
         conference.on(JitsiConferenceEvents.CONFERENCE_LEFT,
             () => dispatch(conferenceLeft(conference)));
 
@@ -136,10 +165,8 @@ function _setupConferenceListeners(conference) {
                         track.getParticipantId(), type));
                 });
             });
-
         conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
             track => dispatch(trackMuteChanged(track)));
-
         conference.on(JitsiConferenceEvents.TRACK_REMOVED,
             track => {
                 if (!track || track.isLocal()) {
@@ -154,10 +181,8 @@ function _setupConferenceListeners(conference) {
                 role: user.getRole(),
                 displayName: user.getDisplayName()
             })));
-
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));
-
         conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
             (id, role) => dispatch(participantRoleChanged(id, role)));
 

@@ -63,7 +63,7 @@ function participant(state, action) {
      */
     case CONFERENCE_JOINED:
         if (state.local) {
-            let id = action.conference.myUserId();
+            let id = action.conference.jitsiConference.myUserId();
 
             return {
                 ...state,

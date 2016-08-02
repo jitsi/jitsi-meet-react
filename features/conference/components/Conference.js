@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
+import { connect as reduxConnect } from 'react-redux';
 
+import {
+    connect,
+    disconnect
+} from '../../base/connection';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
@@ -24,6 +29,27 @@ class Conference extends Component {
 
         // Bind event handlers so they are only bound once for every instance.
         this._onPress = this._onPress.bind(this);
+    }
+
+    /**
+     * Inits new connection and conference when conference screen is entered.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillMount() {
+        this.props.dispatch(connect(this.props.config, this.props.room));
+    }
+
+    /**
+     * Destroys connection, conference and local tracks when conference screen
+     * is left.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillUnmount() {
+        this.props.dispatch(disconnect());
     }
 
     /**
@@ -67,8 +93,27 @@ class Conference extends Component {
  * @static
  */
 Conference.propTypes = {
+    /**
+     * The configuration with which a connection is to be initialized for the
+     * purposes of joining the conference depicted by the (React Component)
+     * Conference instance.
+     *
+     * @type {Object}
+     */
+    config: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
-    participants: React.PropTypes.object
+    room: React.PropTypes.string
 };
 
-export default Conference;
+/**
+ * Maps room property from state to component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{ room: string }}
+ */
+export const mapStateToProps = state => ({
+    room: state['features/base/conference'].room
+});
+
+export default reduxConnect(mapStateToProps)(Conference);

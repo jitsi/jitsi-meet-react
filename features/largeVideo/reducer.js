@@ -24,7 +24,7 @@ ReducerRegistry.register('features/largeVideo',
          */
         case CONFERENCE_JOINED:
             if (state.participantId === LOCAL_PARTICIPANT_DEFAULT_ID) {
-                let id = action.conference.myUserId();
+                let id = action.conference.jitsiConference.myUserId();
 
                 return {
                     ...state,

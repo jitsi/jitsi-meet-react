@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 
+import { roomSet } from '../../base/conference';
 import { shouldMirror, Video } from '../../base/media';
+import { navigate } from '../../base/navigator';
 import { participantVideoStarted } from '../../base/participants';
-
-import {
-    APP_SCREEN,
-    navigate
-} from '../../app';
+import { Conference } from '../../conference';
 
 /**
  * Base (abstract) class for container component rendering the welcome page.
@@ -23,12 +21,51 @@ export class AbstractWelcomePage extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { roomName: '' };
+        /**
+         * Save room name into component's local state.
+         *
+         * @type {{room: string}}
+         */
+        this.state = {
+            room: ''
+        };
 
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
-        this._onRoomNameChange = this._onRoomNameChange.bind(this);
+        this._onRoomChange = this._onRoomChange.bind(this);
         this._onVideoPlaying = this._onVideoPlaying.bind(this);
+    }
+
+    /**
+     * Resets room name to empty string when welcome page screen is entered.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillMount() {
+        this.props.dispatch(roomSet(''));
+    }
+
+    /**
+     * This method is executed when component receives new properties.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - New props component will receive.
+     */
+    componentWillReceiveProps(nextProps) {
+        this.setState({ room: nextProps.room });
+    }
+
+    /**
+     * Determines whether the 'Join' button is (to be) disabled i.e. there's no
+     * valid room name typed into the respective text input field.
+     *
+     * @protected
+     * @returns {boolean} If the 'Join' button is (to be) disabled, true;
+     * otherwise, false.
+     */
+    _isJoinDisabled() {
+        return this.state.room === '';
     }
 
     /**
@@ -38,22 +75,26 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinPress() {
+        let room = this.state.room;
+
+        this.props.dispatch(roomSet(room));
         this.props.dispatch(navigate({
+            component: Conference,
             navigator: this.props.navigator,
-            room: this.state.roomName,
-            screen: APP_SCREEN.CONFERENCE
+            room
         }));
     }
 
     /**
-     * Handles 'change' event for the room name input field.
+     * Handles 'change' event for the room name text input field.
      *
-     * @param {string} value - Name for room.
+     * @param {string} value - The text typed into the respective text input
+     * field.
      * @protected
      * @returns {void}
      */
-    _onRoomNameChange(value) {
-        this.setState({ roomName: value });
+    _onRoomChange(value) {
+        this.setState({ room: value });
     }
 
     /**
@@ -93,6 +134,33 @@ export class AbstractWelcomePage extends Component {
 }
 
 /**
+ * Selects local video track from tracks in state, local participant and room
+ * and maps them to component props. It seems it's not possible to 'connect'
+ * base component and then extend from it. So we export this function in order
+ * to be used in child classes for 'connect'.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{
+ *      localParticipant: (Participant|undefined),
+ *      localVideoTrack: (JitsiLocalTrack|undefined),
+ *      room: string
+ * }}
+ */
+export const mapStateToProps = state => {
+    const stateFeaturesConference = state['features/base/conference'];
+    const stateFeaturesParticipants = state['features/base/participants'];
+    const stateFeaturesTracks = state['features/base/tracks'];
+
+    return {
+        localParticipant: stateFeaturesParticipants
+            .find(p => p.local),
+        localVideoTrack: stateFeaturesTracks
+            .find(t => t.isLocal() && t.isVideoTrack()),
+        room: stateFeaturesgit sConference.room
+    };
+};
+
+/**
  * AbstractWelcomePage component's property types.
  *
  * @static
@@ -101,30 +169,6 @@ AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
     localParticipant: React.PropTypes.object,
     localVideoTrack: React.PropTypes.object,
-    navigator: React.PropTypes.object
-};
-
-
-/**
- * Selects local video track from tracks in state and local participant and maps
- * them to component props. It seems it's not possible to 'connect' base
- * component and then extend from it. So we export this function in order to be
- * used in child classes for 'connect'.
- *
- * @param {Object} state - Redux state.
- * @returns {{
- *      localParticipant: (Participant|undefined),
- *      localVideoTrack: (JitsiLocalTrack|undefined)
- * }}
- */
-export const mapStateToProps = state => {
-    const stateFeaturesParticipants = state['features/base/participants'];
-    const stateFeaturesTracks = state['features/base/tracks'];
-
-    return {
-        localParticipant: stateFeaturesParticipants
-            .find(p => p.local),
-        localVideoTrack: stateFeaturesTracks
-            .find(t => t.isLocal() && t.isVideoTrack())
-    };
+    navigator: React.PropTypes.object,
+    room: React.PropTypes.string
 };

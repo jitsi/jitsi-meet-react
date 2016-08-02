@@ -14,19 +14,21 @@ const JitsiTrackErrors = JitsiMeetJS.errors.track;
  * @param {Store} store - Redux store.
  * @returns {Function}
  */
-const conferenceMiddleware = store => next => action => {
-    let actionType = action.type;
-    let track = action.track;
+MiddlewareRegistry.register(store => next => action => {
+    switch (action.type) {
+    case TRACK_ADDED:
+    case TRACK_REMOVED:
+        let track = action.track;
 
-    if ((actionType === TRACK_ADDED || actionType === TRACK_REMOVED) &&
-        track &&
-        track.isLocal()) {
-        return syncConferenceLocalTracksWithState(store, action)
-            .then(() => next(action));
-    } else {
-        return next(action);
+        if (track && track.isLocal()) {
+            return syncConferenceLocalTracksWithState(store, action)
+                .then(() => next(action));
+        }
+        break;
     }
-};
+
+    return next(action);
+});
 
 /**
  * Syncs local tracks from state with local tracks in JitsiConference instance.
@@ -35,45 +37,54 @@ const conferenceMiddleware = store => next => action => {
  * @param {Object} action - Action object.
  * @returns {Promise}
  */
-const syncConferenceLocalTracksWithState = (store, action) => {
-    const conference = store.getState()['features/base/conference'];
-    let promise = Promise.resolve();
+function syncConferenceLocalTracksWithState(store, action) {
+    const conference =
+        store.getState()['features/base/conference'].jitsiConference;
+    let promise;
 
     if (conference) {
-        let actionType = action.type;
         let track = action.track;
 
-        if (actionType === TRACK_ADDED) {
-            const conferenceLocalTracks = conference.getLocalTracks();
-
+        if (action.type === TRACK_ADDED) {
             // XXX The library lib-jitsi-meet may be draconian, for example,
             // when adding one and the same video track multiple times.
-            if (conferenceLocalTracks.indexOf(track) === -1) {
+            if (conference.getLocalTracks().indexOf(track) === -1) {
                 promise = conference.addTrack(track)
                     .catch(err => {
-                        // TODO: This is a good point to call some global
-                        // error handler when we have one.
-                        console.error(
-                            'Failed to add local track to conference', err);
+                        reportError(
+                            'Failed to add local track to conference',
+                            err);
                     });
             }
         } else {
             promise = conference.removeTrack(track)
                 .catch(err => {
                     // Local track might be already disposed by direct
-                    // JitsiTrack#dispose() call. So we should ignore this
-                    // error here.
+                    // JitsiTrack#dispose() call. So we should ignore this error
+                    // here.
                     if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
-                        // TODO: This is a good point to call some global
-                        // error handler when we have one.
-                        console.error('Failed to remove local track to ' +
-                            'conference', err);
+                        reportError(
+                            'Failed to remove local track to conference',
+                            err);
                     }
                 });
         }
     }
 
-    return promise;
+    return promise || Promise.resolve();
 };
 
-MiddlewareRegistry.register(conferenceMiddleware);
+/**
+ * Reports a specific Error with a specific error message. While the
+ * implementation merely logs the specified msg and err via the console at the
+ * time of this writing, the intention of the function is to abstract the
+ * reporting of errors and facilitate elaborating on it in the future.
+ *
+ * @param {string} msg - The error message to report.
+ * @param {Error} err - The Error to report.
+ */
+function reportError(msg, err) {
+    // TODO This is a good point to call some global error handler when we have
+    // one.
+    console.error(msg, err);
+}
