@@ -156,7 +156,7 @@ export const mapStateToProps = state => {
             .find(p => p.local),
         localVideoTrack: stateFeaturesTracks
             .find(t => t.isLocal() && t.isVideoTrack()),
-        room: stateFeaturesgit sConference.room
+        room: stateFeaturesConference.room
     };
 };
 
