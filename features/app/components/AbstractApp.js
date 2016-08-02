@@ -27,9 +27,9 @@ export class AbstractApp extends Component {
      * the children of this Component.
      *
      * @param {Component} component - The component from which the ReactElement
-     * is to be created
+     * is to be created.
      * @param {Object} props - The read-only React Component props with which
-     * the ReactElement is to be initialized
+     * the ReactElement is to be initialized.
      * @returns {ReactElement}
      * @protected
      */
@@ -59,7 +59,7 @@ export class AbstractApp extends Component {
      * @returns {string}
      */
     _getRoomFromUrlObject(url) {
-        return url ? url.pathname.substr(1).toLowerCase() : undefined;
+        return url ? url.pathname.substr(1).toLowerCase() : '';
     }
 
     /**
