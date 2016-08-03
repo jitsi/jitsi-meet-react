@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { MEDIA_TYPE, VideoTrack } from '../../base/media';
+import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 
@@ -18,12 +19,10 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let videoTrack = this.props.tracks.find(
-            t => (
-                t.participantId === this.props.largeVideo.participantId
-                && t.mediaType === MEDIA_TYPE.VIDEO
-            )
-        );
+        let  { tracks, largeVideo } = this.props;
+
+        let videoTrack = getTrackByMediaTypeAndParticipant(
+            tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
         // TODO: in future other stuff might be on large video.
 

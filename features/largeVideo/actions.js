@@ -3,6 +3,11 @@ import {
     VIDEO_TYPE
 } from '../base/media';
 
+import {
+    getLocalVideoTrack,
+    getTrackByMediaTypeAndParticipant
+} from '../base/tracks';
+
 import { LARGE_VIDEO_PARTICIPANT_CHANGED } from './actionTypes';
 import './middleware';
 import './reducer';
@@ -21,12 +26,8 @@ export function selectEndpoint() {
             let largeVideo = state['features/largeVideo'];
             let tracks = state['features/base/tracks'];
 
-            let videoTrack = tracks.find(
-                t => (
-                    t.participantId === largeVideo.participantId
-                    && t.mediaType === MEDIA_TYPE.VIDEO
-                )
-            );
+            let videoTrack = getTrackByMediaTypeAndParticipant(
+                tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
             conference.selectParticipant(
                 (videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA)
@@ -83,8 +84,7 @@ function electLastVisibleVideo(tracks) {
 
     // And if no remote video tracks are available, we select the local one.
     if (!videoTrack) {
-        videoTrack = tracks.find(
-            t => t.local && t.mediaType === MEDIA_TYPE.VIDEO);
+        videoTrack = getLocalVideoTrack(tracks);
     }
 
     return videoTrack;

@@ -10,6 +10,7 @@ import {
     PARTICIPANT_ROLE,
     pinParticipant
 } from '../../base/participants';
+import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
 
 import {
     AudioMutedIndicator,
@@ -152,14 +153,11 @@ const mapStateToProps = (state, ownProps) => {
     let largeVideo = state['features/largeVideo'];
     let tracks = state['features/base/tracks'];
     let participantId = ownProps.participant.id;
-    let audioTrack = tracks.find(t => (
-        t.mediaType === MEDIA_TYPE.AUDIO
-            && participantId === t.participantId
-    ));
-    let videoTrack = tracks.find(t => (
-        t.mediaType === MEDIA_TYPE.VIDEO
-            && participantId === t.participantId
-    ));
+    let audioTrack = getTrackByMediaTypeAndParticipant(
+        tracks, MEDIA_TYPE.AUDIO, participantId);
+    let videoTrack = getTrackByMediaTypeAndParticipant(
+        tracks, MEDIA_TYPE.VIDEO, participantId);
+
     return {
         audioTrack,
         largeVideo,

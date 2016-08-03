@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 import { isRoomValid, roomSet } from '../../base/conference';
-import { MEDIA_TYPE, VideoTrack } from '../../base/media';
+import { VideoTrack } from '../../base/media';
 import { navigate } from '../../base/navigator';
-import { trackVideoStarted } from '../../base/tracks';
+import { getLocalVideoTrack } from '../../base/tracks';
 import { Conference } from '../../conference';
 
 /**
@@ -133,8 +133,7 @@ export const mapStateToProps = state => {
     const tracks = state['features/base/tracks'];
 
     return {
-        localVideoTrack: tracks
-            .find(t => t.local && t.mediaType === MEDIA_TYPE.VIDEO),
+        localVideoTrack: getLocalVideoTrack(tracks),
         room: conference.room
     };
 };
