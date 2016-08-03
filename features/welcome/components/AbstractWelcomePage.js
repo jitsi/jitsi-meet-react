@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-import { isRoomValid, roomSet } from '../../base/conference';
+import { isRoomValid, setRoom } from '../../base/conference';
 import { shouldMirror, Video } from '../../base/media';
-import { navigate } from '../../base/navigator';
 import { participantVideoStarted } from '../../base/participants';
-import { Conference } from '../../conference';
 
 /**
  * Base (abstract) class for container component rendering the welcome page.
@@ -37,16 +35,6 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
-     * Resets room name to empty string when welcome page screen is entered.
-     *
-     * @inheritdoc
-     * @returns {void}
-     */
-    componentWillMount() {
-        this.props.dispatch(roomSet(''));
-    }
-
-    /**
      * This method is executed when component receives new properties.
      *
      * @inheritdoc
@@ -75,14 +63,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinPress() {
-        let room = this.state.room;
-
-        this.props.dispatch(roomSet(room));
-        this.props.dispatch(navigate({
-            component: Conference,
-            navigator: this.props.navigator,
-            room
-        }));
+        this.props.dispatch(setRoom(this.state.room));
     }
 
     /**
@@ -169,6 +150,5 @@ AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
     localParticipant: React.PropTypes.object,
     localVideoTrack: React.PropTypes.object,
-    navigator: React.PropTypes.object,
     room: React.PropTypes.string
 };

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 
-import { roomSet } from '../../base/conference';
+import { setRoom } from '../../base/conference';
 import {
     localParticipantJoined,
     localParticipantLeft
 } from '../../base/participants';
+
+import { appWillMount, appWillUnmount } from '../actions';
 
 /**
  * Base (abstract) class for main App component.
@@ -20,9 +22,10 @@ export class AbstractApp extends Component {
      */
     componentWillMount() {
         let dispatch = this.props.store.dispatch;
-        let room = this._getRoomFromUrlString(this.props.url);
 
-        dispatch(roomSet(room));
+        dispatch(appWillMount(this));
+
+        dispatch(setRoom(this._getRoomFromUrlString(this.props.url)));
         dispatch(localParticipantJoined());
     }
 
@@ -33,7 +36,11 @@ export class AbstractApp extends Component {
      * @inheritdoc
      */
     componentWillUnmount() {
-        this.props.store.dispatch(localParticipantLeft());
+        let dispatch = this.props.store.dispatch;
+
+        dispatch(localParticipantLeft());
+
+        dispatch(appWillUnmount(this));
     }
 
     /**
@@ -88,6 +95,24 @@ export class AbstractApp extends Component {
      */
     _getRoomFromUrlString(url) {
         return this._getRoomFromUrlObject(this._urlStringToObject(url));
+    }
+
+    /**
+     * Navigates this AbstractApp to (i.e. opens) a specific URL.
+     *
+     * @param {string} url - The URL to which to navigate this AbstractApp (i.e.
+     * the URL to open).
+     * @protected
+     * @returns {void}
+     */
+    _openURL(url) {
+        let room = this._getRoomFromUrlString(url);
+
+        // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
+        // currently in a conference and ask her if she wants to close the
+        // current conference and start a new one with the new room name.
+
+        this.props.store.dispatch(setRoom(room));
     }
 
     /**

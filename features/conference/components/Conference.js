@@ -63,7 +63,6 @@ class Conference extends Component {
             <ConferenceContainer onPress={ this._onPress }>
                 <LargeVideo/>
                 <Toolbar
-                    navigator={ this.props.navigator }
                     visible={ this.state.toolbarIsVisible } />
                 <FilmStrip
                     visible={ !this.state.toolbarIsVisible } />
@@ -87,9 +86,6 @@ class Conference extends Component {
 /**
  * Conference component's property types.
  *
- * Ensure that the application navigator object is passed down via props on
- * mobile.
- *
  * @static
  */
 Conference.propTypes = {
@@ -102,7 +98,6 @@ Conference.propTypes = {
      */
     config: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object,
     room: React.PropTypes.string
 };
 
