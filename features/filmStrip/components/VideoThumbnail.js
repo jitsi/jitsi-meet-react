@@ -8,8 +8,8 @@ import {
 } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
-    participantVideoStarted,
-    pinParticipant
+    participantPinned,
+    participantVideoStarted
 } from '../../base/participants';
 
 import {
@@ -64,7 +64,7 @@ class VideoThumbnail extends Component {
         let { dispatch, participant } = this.props;
 
         // TODO: this currently ignores interfaceConfig.filmStripOnly
-        dispatch(pinParticipant(
+        dispatch(participantPinned(
             participant.pinned
                 ? null
                 : participant.id));

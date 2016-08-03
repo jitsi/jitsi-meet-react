@@ -125,6 +125,27 @@ export function participantLeft(id) {
 }
 
 /**
+ * Create an action for when the participant in conference is pinned.
+ *
+ * @param {string|null} id - Participant id or null if no one is currently
+ * pinned.
+ * @returns {{
+ *      type: PARTICIPANT_PINNED,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
+ */
+export function participantPinned(id) {
+    return {
+        type: PARTICIPANT_PINNED,
+        participant: {
+            id
+        }
+    };
+}
+
+/**
  * Action to handle case when participant's role changes.
  *
  * @param {string} id - Participant id.
@@ -189,40 +210,6 @@ export function participantVideoTypeChanged(id, videoType) {
             id,
             videoType
         }
-    };
-}
-
-/**
- * Create an action for when the participant in conference is pinned.
- *
- * @param {string|null} id - Participant id or null if no one is currently
- *     pinned.
- * @returns {Function}
- */
-export function pinParticipant(id) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let conference = state['features/base/conference'].jitsiConference;
-        let participants = state['features/base/participants'];
-        let participant = participants.find(p => p.id === id);
-        let localParticipant = participants.find(p => p.local);
-
-        // This condition prevents signaling to pin local participant. Here is
-        // the logic: if we have ID, then we check if participant by that ID is
-        // local. If we don't have ID and thus no participant by ID, we check
-        // for local participant. If it's currently pinned, then this action
-        // will unpin him and that's why we won't signal here too.
-        if ((participant && !participant.local) ||
-            (!participant && (!localParticipant || !localParticipant.pinned))) {
-            conference.pinParticipant(id);
-        }
-
-        return dispatch({
-            type: PARTICIPANT_PINNED,
-            participant: {
-                id
-            }
-        });
     };
 }
 
