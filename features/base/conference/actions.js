@@ -2,10 +2,10 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
+    participantJoined,
     participantLeft,
     participantRoleChanged,
-    participantVideoTypeChanged,
-    remoteParticipantJoined
+    participantVideoTypeChanged
 } from '../participants';
 import {
     trackAdded,
@@ -158,9 +158,10 @@ function _setupConferenceListeners(conference) {
             });
 
         conference.on(JitsiConferenceEvents.USER_JOINED,
-            (id, user) => dispatch(remoteParticipantJoined(id, {
-                role: user.getRole(),
-                displayName: user.getDisplayName()
+            (id, user) => dispatch(participantJoined({
+                id,
+                name: user.getDisplayName(),
+                role: user.getRole()
             })));
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));
