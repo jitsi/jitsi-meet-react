@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 import { isRoomValid, roomSet } from '../../base/conference';
-import { shouldMirror, Video } from '../../base/media';
+import { MEDIA_TYPE, Video } from '../../base/media';
 import { navigate } from '../../base/navigator';
-import { participantVideoStarted } from '../../base/participants';
+import { trackVideoStarted } from '../../base/tracks';
 import { Conference } from '../../conference';
 
 /**
@@ -104,10 +104,10 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onVideoPlaying() {
-        let localParticipant = this.props.localParticipant;
+        let localVideoTrack = this.props.localVideoTrack;
 
-        if (localParticipant) {
-            this.props.dispatch(participantVideoStarted(localParticipant.id));
+        if (localVideoTrack) {
+            this.props.dispatch(trackVideoStarted(localVideoTrack.jitsiTrack));
         }
     }
 
@@ -125,9 +125,9 @@ export class AbstractWelcomePage extends Component {
             // https://github.com/jitsi/jitsi-meet-react/pull/62/files#r73215760
             return (
                 <Video
-                    mirror={ shouldMirror(localVideoTrack) }
+                    mirror={ localVideoTrack.mirrorVideo }
                     onPlaying={ this._onVideoPlaying }
-                    stream={ localVideoTrack.getOriginalStream() }/>
+                    stream={ localVideoTrack.jitsiTrack.getOriginalStream() }/>
             );
         }
 
@@ -143,19 +143,17 @@ export class AbstractWelcomePage extends Component {
  *
  * @param {Object} state - Redux state.
  * @returns {{
- *      localParticipant: (Participant|undefined),
- *      localVideoTrack: (JitsiLocalTrack|undefined),
+ *      localVideoTrack: (Track|undefined),
  *      room: string
  * }}
  */
 export const mapStateToProps = state => {
     const conference = state['features/base/conference'];
-    const participants = state['features/base/participants'];
     const tracks = state['features/base/tracks'];
 
     return {
-        localParticipant: participants.find(p => p.local),
-        localVideoTrack: tracks.find(t => t.isLocal() && t.isVideoTrack()),
+        localVideoTrack: tracks
+            .find(t => t.local && t.mediaType === MEDIA_TYPE.VIDEO),
         room: conference.room
     };
 };
@@ -167,7 +165,6 @@ export const mapStateToProps = state => {
  */
 AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
-    localParticipant: React.PropTypes.object,
     localVideoTrack: React.PropTypes.object,
     navigator: React.PropTypes.object,
     room: React.PropTypes.string

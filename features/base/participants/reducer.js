@@ -1,13 +1,10 @@
 /* global MD5 */
 
-import {
-    CONFERENCE_JOINED,
-    CONFERENCE_LEFT
-} from '../conference';
 import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
+    PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
@@ -54,12 +51,15 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE =
  */
 function participant(state, action) {
     switch (action.type) {
-    /**
-     * Sets participant id according to conference.
-     */
-    case CONFERENCE_JOINED:
-        if (state.local) {
-            let id = action.conference.jitsiConference.myUserId();
+    case DOMINANT_SPEAKER_CHANGED:
+        // Only one dominant speaker is allowed.
+        return Object.assign({}, state, {
+            speaking: state.id === action.participant.id
+        });
+
+    case PARTICIPANT_ID_CHANGED:
+        if (state.id === action.participant.previousId) {
+            let id = action.participant.newId;
 
             return {
                 ...state,
@@ -69,43 +69,25 @@ function participant(state, action) {
         }
         return state;
 
-    /**
-     * Cleans conference-specific properties of the local participant when
-     * conference is left.
-     */
-    case CONFERENCE_LEFT:
-        if (state.local) {
-            return {
-                ...state,
-                id: LOCAL_PARTICIPANT_DEFAULT_ID,
-                avatar: state.avatar ||
-                    _getAvatarURL(LOCAL_PARTICIPANT_DEFAULT_ID, state.email),
-                focused: false,
-                pinned: false,
-                role: PARTICIPANT_ROLE.NONE,
-                selected: false,
-                speaking: false
-            };
-        }
-        return state;
-
-    case DOMINANT_SPEAKER_CHANGED:
-        // Only one dominant speaker is allowed.
-        return Object.assign({}, state, {
-            speaking: state.id === action.participant.id
-        });
-
     case PARTICIPANT_JOINED:
+        let participant = action.participant;
+        let participantId = participant.id
+            || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
+        let participantAvatar = participant.avatar
+            || _getAvatarURL(participantId, participant.email);
+        // TODO: get these names from config/localized
+        let participantName = participant.name
+            || (participant.local ? 'me' : 'Fellow Jitster');
+
         return {
-            id: action.participant.id,
-            avatar: action.participant.avatar ||
-                _getAvatarURL(action.participant.id, action.participant.email),
-            email: action.participant.email,
-            local: action.participant.local || false,
-            name: action.participant.name,
-            pinned: action.participant.pinned || false,
-            role: action.participant.role || PARTICIPANT_ROLE.NONE,
-            speaking: action.participant.speaking || false
+            avatar: participantAvatar,
+            email: participant.email,
+            id: participantId,
+            local: participant.local || false,
+            name: participantName,
+            pinned: participant.pinned || false,
+            role: participant.role || PARTICIPANT_ROLE.NONE,
+            speaking: participant.speaking || false
         };
 
     case PARTICIPANT_PINNED:
@@ -158,9 +140,8 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
     case PARTICIPANT_LEFT:
         return state.filter(p => p.id !== action.participant.id);
 
-    case CONFERENCE_JOINED:
-    case CONFERENCE_LEFT:
     case DOMINANT_SPEAKER_CHANGED:
+    case PARTICIPANT_ID_CHANGED:
     case PARTICIPANT_PINNED:
     case PARTICIPANT_UPDATED:
         return state.map(p => participant(p, action));
