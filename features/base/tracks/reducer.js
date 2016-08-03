@@ -1,6 +1,6 @@
 import { ReducerRegistry } from '../redux';
 
-import { PARTICIPANT_JOINED } from '../participants';
+import { PARTICIPANT_ID_CHANGED } from '../participants';
 
 import {
     TRACK_ADDED,
@@ -35,15 +35,11 @@ import {
  */
 function track(state, action) {
     switch (action.type) {
-    /**
-     * Local participant may join after local tracks has been created, so
-     * need to sync his ID with participantID property of a Track
-     */
-    case PARTICIPANT_JOINED:
-        if (state.local && action.participant.local) {
+    case PARTICIPANT_ID_CHANGED:
+        if (state.participantId === action.participant.previousId) {
             return {
                 ...state,
-                participantId: action.participant.id
+                participantId: action.participant.newId
             };
         }
         return state;
@@ -66,7 +62,7 @@ ReducerRegistry.register('features/base/tracks', (state = [], action) => {
     case TRACK_ADDED:
         return [...state, action.track];
 
-    case PARTICIPANT_JOINED:
+    case PARTICIPANT_ID_CHANGED:
     case TRACK_CHANGED:
         return state.map(t => track(t, action));
 
