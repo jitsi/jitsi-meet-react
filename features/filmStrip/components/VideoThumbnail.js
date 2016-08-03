@@ -64,10 +64,7 @@ class VideoThumbnail extends Component {
         let { dispatch, participant } = this.props;
 
         // TODO: this currently ignores interfaceConfig.filmStripOnly
-        dispatch(pinParticipant(
-            participant.pinned
-                ? null
-                : participant.id));
+        dispatch(pinParticipant(participant.pinned ? null : participant.id));
     }
 
     /**
