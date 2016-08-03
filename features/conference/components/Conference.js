@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect as reactReduxConnect } from 'react-redux';
 
 import {
-    destroy,
-    init
+    connect,
+    disconnect
 } from '../../base/connection';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
@@ -38,7 +38,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(init(this.props.config, this.props.room));
+        this.props.dispatch(connect(this.props.config, this.props.room));
     }
 
     /**
@@ -49,7 +49,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillUnmount() {
-        this.props.dispatch(destroy());
+        this.props.dispatch(disconnect());
     }
 
     /**
@@ -116,4 +116,4 @@ export const mapStateToProps = state => ({
     room: state['features/base/conference'].room
 });
 
-export default connect(mapStateToProps)(Conference);
+export default reactReduxConnect(mapStateToProps)(Conference);

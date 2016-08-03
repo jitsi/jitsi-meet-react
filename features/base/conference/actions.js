@@ -2,7 +2,6 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
-    localParticipantJoined,
     participantLeft,
     participantRoleChanged,
     participantVideoTypeChanged,
@@ -20,6 +19,7 @@ import {
     ROOM_SET
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
+import { _addLocalTracksToConference } from './functions';
 import './middleware';
 import './reducer';
 
@@ -43,7 +43,6 @@ export function createConference(room) {
 
         conference = connection.initJitsiConference(room, { openSctp: true });
 
-        dispatch(localParticipantJoined(conference.myUserId()));
         dispatch(_setupConferenceListeners(conference));
 
         conference.join();
@@ -64,7 +63,7 @@ export function conferenceJoined(conference) {
             .filter(t => t.isLocal());
 
         if (localTracks.length) {
-            _addTracksToConference(conference, localTracks);
+            _addLocalTracksToConference(conference, localTracks);
         }
 
         dispatch({
@@ -115,26 +114,6 @@ export function roomSet(room) {
             room
         }
     };
-}
-
-/**
- * Attach a set of local tracks to a conference.
- *
- * @param {JitsiConference} conference - Conference instance.
- * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
- * @private
- * @returns {void}
- */
-function _addTracksToConference(conference, localTracks) {
-    let conferenceLocalTracks = conference.getLocalTracks();
-
-    for (let track of localTracks) {
-        // XXX The library lib-jitsi-meet may be draconian, for example, when
-        // adding one and the same video track multiple times.
-        if (-1 === conferenceLocalTracks.indexOf(track)) {
-            conference.addTrack(track);
-        }
-    }
 }
 
 /**

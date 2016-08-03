@@ -1,5 +1,3 @@
-/* global MD5 */
-
 import {
     DOMINANT_SPEAKER_CHANGED,
     PARTICIPANT_JOINED,
@@ -7,7 +5,7 @@ import {
     PARTICIPANT_PINNED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
-import { PARTICIPANT_ROLE } from './constants';
+import { LOCAL_PARTICIPANT_DEFAULT_ID } from './constants';
 import './reducer';
 
 /**
@@ -29,7 +27,6 @@ export function changeParticipantEmail(id, email) {
         type: PARTICIPANT_UPDATED,
         participant: {
             id,
-            avatar: _getAvatarURL(id, email),
             email
         }
     };
@@ -58,34 +55,52 @@ export function dominantSpeakerChanged(id) {
 /**
  * Action to create a local participant.
  *
- * @param {string} id - Participant id.
  * @param {Object} [participant={}] - Additional information about participant.
+ * @param {string} [participant.id=LOCAL_PARTICIPANT_DEFAULT_ID] - Participant's
+ * id.
  * @param {string} [participant.displayName='me'] - Participant's display name.
  * @param {string} [participant.avatar=''] - Participant's avatar.
  * @param {string} [participant.role='none'] - Participant's role.
  * @returns {Function}
  */
-export function localParticipantJoined(id, participant = {}) {
+export function localParticipantJoined(participant = {}) {
     return (dispatch, getState) => {
-        // Local media tracks might be already created by this moment, so
-        // we try to take videoType from current video track.
+        // Local media tracks might be created already by this moment, so we try
+        // to take videoType from current video track.
         let tracks = getState()['features/base/tracks'];
+        let id = participant.id || LOCAL_PARTICIPANT_DEFAULT_ID;
         let localVideoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
 
         return dispatch({
             type: PARTICIPANT_JOINED,
             participant: {
                 id,
-                avatar: _getAvatarURL(id, participant.email),
+                avatar: participant.avatar,
                 email: participant.email,
                 local: true,
                 name: participant.displayName || 'me',
-                role: participant.role || PARTICIPANT_ROLE.NONE,
+                role: participant.role,
                 videoType: localVideoTrack
                     ? localVideoTrack.videoType
                     : undefined
             }
         });
+    };
+}
+
+/**
+ * Action to remove a local participant.
+ *
+ * @returns {Function}
+ */
+export function localParticipantLeft() {
+    return (dispatch, getState) => {
+        let participant = getState()['features/base/participants']
+            .find(p => p.local);
+
+        if (participant) {
+            return dispatch(participantLeft(participant.id));
+        }
     };
 }
 
@@ -235,50 +250,10 @@ export function remoteParticipantJoined(id, participant = {}) {
         type: PARTICIPANT_JOINED,
         participant: {
             id,
-            avatar: _getAvatarURL(id),
+            avatar: undefined, // TODO: get avatar
             // TODO: get default value from interface config
             name: participant.displayName || 'Fellow Jitster',
-            role: participant.role || 'none'
+            role: participant.role
         }
     };
-}
-
-/**
- * Returns the URL of the image for the avatar of a particular participant
- * identified by their id and/or e-mail address.
- *
- * @param {string} participantId - Participant's id.
- * @param {string} email - Participant's email.
- * @returns {string} The URL of the image for the avatar of the participant
- * identified by the specified participantId and/or email.
- */
-function _getAvatarURL(participantId, email) {
-    // TODO: Use disableThirdPartyRequests config
-
-    let avatarId = email || participantId;
-
-    // If the ID looks like an email, we'll use gravatar.
-    // Otherwise, it's a random avatar, and we'll use the configured
-    // URL.
-    let random = !avatarId || avatarId.indexOf('@') < 0;
-
-    if (!avatarId) {
-        avatarId = participantId;
-    }
-    // MD5 is provided by Strophe
-    avatarId = MD5.hexdigest(avatarId.trim().toLowerCase());
-
-    let urlPref = null;
-    let urlSuf = null;
-    if (!random) {
-        urlPref = 'https://www.gravatar.com/avatar/';
-        urlSuf = '?d=wavatar&size=200';
-    }
-    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
-    else {
-        urlPref = 'https://robohash.org/';
-        urlSuf = '.png?size=200x200';
-    }
-
-    return urlPref + avatarId + urlSuf;
 }
