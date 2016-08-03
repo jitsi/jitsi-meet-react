@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { MEDIA_TYPE, Video } from '../../base/media';
+import { MEDIA_TYPE, VideoTrack } from '../../base/media';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 
@@ -32,9 +32,8 @@ class LargeVideo extends Component {
             {
                 videoTrack &&
                 videoTrack.videoStarted &&
-                <Video
-                    mirror={ videoTrack.mirrorVideo }
-                    stream={ videoTrack.jitsiTrack.getOriginalStream() }/>
+                <VideoTrack
+                    videoTrack={ videoTrack } />
             }
             </LargeVideoContainer>
         );

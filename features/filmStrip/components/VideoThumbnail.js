@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import {
     Audio,
     MEDIA_TYPE,
-    Video
+    VideoTrack
 } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
     pinParticipant
 } from '../../base/participants';
-import { trackVideoStarted } from '../../base/tracks';
 
 import {
     AudioMutedIndicator,
@@ -36,7 +35,6 @@ class VideoThumbnail extends Component {
 
         // Bind event handlers so they are only bound once for every instance.
         this._onClick = this._onClick.bind(this);
-        this._onVideoPlaying = this._onVideoPlaying.bind(this);
     }
 
     /**
@@ -76,17 +74,6 @@ class VideoThumbnail extends Component {
     }
 
     /**
-     * Handler for case when video starts to play.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onVideoPlaying() {
-        this.props.dispatch(
-            trackVideoStarted(this.props.videoTrack.jitsiTrack));
-    }
-
-    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
@@ -94,8 +81,6 @@ class VideoThumbnail extends Component {
      */
     render() {
         let { audioTrack, largeVideo, participant, videoTrack } = this.props;
-        let audioStream;
-        let videoStream;
 
         // We don't render audio in any of the following:
         // 1. The audio (source) is muted. There's no practical reason (that we
@@ -103,38 +88,33 @@ class VideoThumbnail extends Component {
         //    silence (& not even comfort noise).
         // 2. The audio is local. If we were to render local audio, the local
         //    participants would be hearing themselves.
-        if (audioTrack && !audioTrack.muted && !audioTrack.local) {
-            audioStream = audioTrack.jitsiTrack.getOriginalStream();
-        }
+        let renderAudio = audioTrack && !audioTrack.muted && !audioTrack.local;
 
         // We don't render video (in the film strip) in any of the following:
         // 1. The video (source) is muted. Even if muted video happens to be
         //    black frames one day, we've decided to display the participant's
         //    avatar instead.
         // 2. The video is rendered on the stage i.e. as a large video.
-        if (videoTrack 
-            && !videoTrack.muted 
+        let renderVideo = videoTrack
+            && !videoTrack.muted
             && (!videoTrack.videoStarted
-                || participant.id !== largeVideo.participantId)) {
-            videoStream = videoTrack.jitsiTrack.getOriginalStream();
-        }
+                || participant.id !== largeVideo.participantId);
 
         return (
             <VideoThumbnailContainer
                 pinned={ participant.pinned }
                 onClick={ this._onClick }>
 
-                { audioStream &&
+                { renderAudio &&
                     <Audio
-                        stream={ audioStream } /> }
+                        stream={ audioTrack.jitsiTrack.getOriginalStream() } />
+                }
 
-                { videoStream &&
-                    <Video
-                        mirror={ videoTrack.mirrorVideo }
-                        onPlaying={ this._onVideoPlaying }
-                        stream={ videoStream } /> }
+                { renderVideo &&
+                    <VideoTrack
+                        videoTrack={ videoTrack } /> }
 
-                { !videoStream &&
+                { !renderVideo &&
                     <Avatar uri={ participant.avatar } /> }
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR &&

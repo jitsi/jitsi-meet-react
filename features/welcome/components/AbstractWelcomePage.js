@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { isRoomValid, roomSet } from '../../base/conference';
-import { MEDIA_TYPE, Video } from '../../base/media';
+import { MEDIA_TYPE, VideoTrack } from '../../base/media';
 import { navigate } from '../../base/navigator';
 import { trackVideoStarted } from '../../base/tracks';
 import { Conference } from '../../conference';
@@ -33,7 +33,6 @@ export class AbstractWelcomePage extends Component {
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
         this._onRoomChange = this._onRoomChange.bind(this);
-        this._onVideoPlaying = this._onVideoPlaying.bind(this);
     }
 
     /**
@@ -98,20 +97,6 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
-     * Handler for case when video starts to play.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onVideoPlaying() {
-        let localVideoTrack = this.props.localVideoTrack;
-
-        if (localVideoTrack) {
-            this.props.dispatch(trackVideoStarted(localVideoTrack.jitsiTrack));
-        }
-    }
-
-    /**
      * Renders a local video if any.
      *
      * @protected
@@ -121,13 +106,9 @@ export class AbstractWelcomePage extends Component {
         let localVideoTrack = this.props.localVideoTrack;
 
         if (localVideoTrack) {
-            // FIXME
-            // https://github.com/jitsi/jitsi-meet-react/pull/62/files#r73215760
             return (
-                <Video
-                    mirror={ localVideoTrack.mirrorVideo }
-                    onPlaying={ this._onVideoPlaying }
-                    stream={ localVideoTrack.jitsiTrack.getOriginalStream() }/>
+                <VideoTrack
+                    videoTrack={ localVideoTrack } />
             );
         }
 
