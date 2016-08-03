@@ -1,11 +1,12 @@
 import {
     DOMINANT_SPEAKER_CHANGED,
+    PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
     PARTICIPANT_PINNED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
-import { LOCAL_PARTICIPANT_DEFAULT_ID } from './constants';
+import './middleware';
 import './reducer';
 
 /**
@@ -53,38 +54,52 @@ export function dominantSpeakerChanged(id) {
 }
 
 /**
- * Action to create a local participant.
+ * Action to signal that ID of local participant has changed. This happens when
+ * local participant joins a new conference or quits one.
  *
- * @param {Object} [participant={}] - Additional information about participant.
- * @param {string} [participant.id=LOCAL_PARTICIPANT_DEFAULT_ID] - Participant's
- * id.
- * @param {string} [participant.displayName='me'] - Participant's display name.
- * @param {string} [participant.avatar=''] - Participant's avatar.
- * @param {string} [participant.role='none'] - Participant's role.
+ * @param {string} id - New ID for local participant.
+ * @returns {{
+ *      type: PARTICIPANT_ID_CHANGED,
+ *      newValue: string,
+ *      oldValue: string
+ * }}
+ */
+export function localParticipantIdChanged(id) {
+    return (dispatch, getState) => {
+        let participant = _getLocalParticipant(getState);
+
+        if (participant) {
+            return dispatch({
+                type: PARTICIPANT_ID_CHANGED,
+                newValue: id,
+                oldValue: participant.id
+            });
+        }
+    };
+}
+
+/**
+ * Action to signal that a local participant has joined.
+ *
+ * @param {Participant} participant - Information about participant.
  * @returns {Function}
  */
-export function localParticipantJoined(participant = {}) {
+export function localParticipantJoined(participant) {
     return (dispatch, getState) => {
+        // TODO This is temporary and will be removed in
+        // https://github.com/jitsi/jitsi-meet-react/pull/65.
         // Local media tracks might be created already by this moment, so we try
         // to take videoType from current video track.
-        let tracks = getState()['features/base/tracks'];
-        let id = participant.id || LOCAL_PARTICIPANT_DEFAULT_ID;
-        let localVideoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
+        let localVideoTrack = getState()['features/base/tracks']
+            .find(t => t.isLocal() && t.isVideoTrack());
 
-        return dispatch({
-            type: PARTICIPANT_JOINED,
-            participant: {
-                id,
-                avatar: participant.avatar,
-                email: participant.email,
-                local: true,
-                name: participant.displayName || 'me',
-                role: participant.role,
-                videoType: localVideoTrack
-                    ? localVideoTrack.videoType
-                    : undefined
-            }
-        });
+        return dispatch(participantJoined({
+            ...participant,
+            local: true,
+            videoType: localVideoTrack
+                ? localVideoTrack.videoType
+                : undefined
+        }));
     };
 }
 
@@ -95,12 +110,27 @@ export function localParticipantJoined(participant = {}) {
  */
 export function localParticipantLeft() {
     return (dispatch, getState) => {
-        let participant = getState()['features/base/participants']
-            .find(p => p.local);
+        let participant = _getLocalParticipant(getState);
 
         if (participant) {
             return dispatch(participantLeft(participant.id));
         }
+    };
+}
+
+/**
+ * Action to signal that a participant has joined.
+ *
+ * @param {Participant} participant - Information about participant.
+ * @returns {{
+ *      type: PARTICIPANT_JOINED,
+ *      participant: Participant
+ * }}
+ */
+export function participantJoined(participant) {
+    return {
+        type: PARTICIPANT_JOINED,
+        participant
     };
 }
 
@@ -202,18 +232,20 @@ export function participantVideoTypeChanged(id, videoType) {
 export function pinParticipant(id) {
     return (dispatch, getState) => {
         let state = getState();
-        let conference = state['features/base/conference'].jitsiConference;
-        let participants = state['features/base/participants'];
-        let participant = participants.find(p => p.id === id);
-        let localParticipant = participants.find(p => p.local);
+        let participant = state['features/base/participants']
+            .find(p => p.id === id);
+        let localParticipant = _getLocalParticipant(getState);
 
         // This condition prevents signaling to pin local participant. Here is
         // the logic: if we have ID, then we check if participant by that ID is
         // local. If we don't have ID and thus no participant by ID, we check
         // for local participant. If it's currently pinned, then this action
         // will unpin him and that's why we won't signal here too.
-        if ((participant && !participant.local) ||
-            (!participant && (!localParticipant || !localParticipant.pinned))) {
+        if ((participant && !participant.local)
+                || (!participant
+                    && (!localParticipant || !localParticipant.pinned))) {
+            let conference = state['features/base/conference'].jitsiConference;
+
             conference.pinParticipant(id);
         }
 
@@ -227,33 +259,12 @@ export function pinParticipant(id) {
 }
 
 /**
- * Action to create a remote participant.
+ * Returns local participant from Redux state.
  *
- * @param {string} id - Participant id.
- * @param {Object} [participant={}] - Additional information about participant.
- * @param {string} [participant.avatar=''] - Participant's avatar.
- * @param {string} [participant.displayName='Fellow Jitster'] - Participant's
- * display name.
- * @param {string} [participant.role='none'] - Participant's role.
- * @returns {{
- *      type: PARTICIPANT_JOINED,
- *      participant: {
- *          id: string,
- *          avatar: string,
- *          name: string,
- *          role: PARTICIPANT_ROLE
- *      }
- * }}
+ * @param {Function} getState - Redux getState() method.
+ * @private
+ * @returns {(Participant|undefined)}
  */
-export function remoteParticipantJoined(id, participant = {}) {
-    return {
-        type: PARTICIPANT_JOINED,
-        participant: {
-            id,
-            avatar: undefined, // TODO: get avatar
-            // TODO: get default value from interface config
-            name: participant.displayName || 'Fellow Jitster',
-            role: participant.role
-        }
-    };
+function _getLocalParticipant(getState) {
+    return getState()['features/base/participants'].find(p => p.local);
 }
