@@ -1,11 +1,13 @@
-import JitsiMeetJS from '../lib-jitsi-meet';
 import { MiddlewareRegistry } from '../redux';
 import {
     TRACK_ADDED,
     TRACK_REMOVED
 } from '../tracks';
 
-const JitsiTrackErrors = JitsiMeetJS.errors.track;
+import {
+    _addLocalTracksToConference,
+    _removeLocalTracksFromConference
+} from './functions';
 
 /**
  * This middleware intercepts TRACK_ADDED and TRACK_REMOVED actions to sync
@@ -46,45 +48,11 @@ function syncConferenceLocalTracksWithState(store, action) {
         let track = action.track.jitsiTrack;
 
         if (action.type === TRACK_ADDED) {
-            // XXX The library lib-jitsi-meet may be draconian, for example,
-            // when adding one and the same video track multiple times.
-            if (conference.getLocalTracks().indexOf(track) === -1) {
-                promise = conference.addTrack(track)
-                    .catch(err => {
-                        reportError(
-                            'Failed to add local track to conference',
-                            err);
-                    });
-            }
+            promise = _addLocalTracksToConference(conference, [ track ]);
         } else {
-            promise = conference.removeTrack(track)
-                .catch(err => {
-                    // Local track might be already disposed by direct
-                    // JitsiTrack#dispose() call. So we should ignore this error
-                    // here.
-                    if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
-                        reportError(
-                            'Failed to remove local track to conference',
-                            err);
-                    }
-                });
+            promise = _removeLocalTracksFromConference( conference, [ track ]);
         }
     }
 
     return promise || Promise.resolve();
-};
-
-/**
- * Reports a specific Error with a specific error message. While the
- * implementation merely logs the specified msg and err via the console at the
- * time of this writing, the intention of the function is to abstract the
- * reporting of errors and facilitate elaborating on it in the future.
- *
- * @param {string} msg - The error message to report.
- * @param {Error} err - The Error to report.
- */
-function reportError(msg, err) {
-    // TODO This is a good point to call some global error handler when we have
-    // one.
-    console.error(msg, err);
 }

@@ -1,4 +1,9 @@
-import { CONFERENCE_LEFT } from '../conference';
+/* global MD5 */
+
+import {
+    CONFERENCE_JOINED,
+    CONFERENCE_LEFT
+} from '../conference';
 import { ReducerRegistry } from '../redux';
 
 import {
@@ -8,6 +13,10 @@ import {
     PARTICIPANT_PINNED,
     PARTICIPANT_UPDATED
 } from './actionTypes';
+import {
+    LOCAL_PARTICIPANT_DEFAULT_ID,
+    PARTICIPANT_ROLE
+} from './constants';
 
 /**
  * Participant object.
@@ -29,8 +38,8 @@ import {
  * @see Participant.
  * @type {string[]}
  */
-const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE = [
-    'id', 'local', 'pinned', 'speaking'];
+const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE =
+    [ 'id', 'local', 'pinned', 'speaking' ];
 
 /**
  * Reducer function for a single participant.
@@ -40,10 +49,46 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE = [
  * @param {string} action.type - Type of action.
  * @param {Participant} action.participant - Information about participant to be
  * added/modified.
+ * @param {JitsiConference} action.conference - Conference instance.
  * @returns {Participant|undefined}
  */
 function participant(state, action) {
     switch (action.type) {
+    /**
+     * Sets participant id according to conference.
+     */
+    case CONFERENCE_JOINED:
+        if (state.local) {
+            let id = action.conference.jitsiConference.myUserId();
+
+            return {
+                ...state,
+                id,
+                avatar: state.avatar || _getAvatarURL(id, state.email)
+            };
+        }
+        return state;
+
+    /**
+     * Cleans conference-specific properties of the local participant when
+     * conference is left.
+     */
+    case CONFERENCE_LEFT:
+        if (state.local) {
+            return {
+                ...state,
+                id: LOCAL_PARTICIPANT_DEFAULT_ID,
+                avatar: state.avatar ||
+                    _getAvatarURL(LOCAL_PARTICIPANT_DEFAULT_ID, state.email),
+                focused: false,
+                pinned: false,
+                role: PARTICIPANT_ROLE.NONE,
+                selected: false,
+                speaking: false
+            };
+        }
+        return state;
+
     case DOMINANT_SPEAKER_CHANGED:
         // Only one dominant speaker is allowed.
         return Object.assign({}, state, {
@@ -53,11 +98,13 @@ function participant(state, action) {
     case PARTICIPANT_JOINED:
         return {
             id: action.participant.id,
-            avatar: action.participant.avatar,
+            avatar: action.participant.avatar ||
+                _getAvatarURL(action.participant.id, action.participant.email),
+            email: action.participant.email,
             local: action.participant.local || false,
             name: action.participant.name,
             pinned: action.participant.pinned || false,
-            role: action.participant.role,
+            role: action.participant.role || PARTICIPANT_ROLE.NONE,
             speaking: action.participant.speaking || false
         };
 
@@ -78,7 +125,12 @@ function participant(state, action) {
                 }
             }
 
-            return Object.assign({}, state, updateObj);
+            updateObj = Object.assign({}, state, updateObj);
+
+            updateObj.avatar = updateObj.avatar
+                || _getAvatarURL(action.participant.id, updateObj.email);
+
+            return updateObj;
         }
         return state;
 
@@ -100,16 +152,14 @@ function participant(state, action) {
  */
 ReducerRegistry.register('features/base/participants', (state = [], action) => {
     switch (action.type) {
-    // Remove (the) local participant after/when conference is left.
-    case CONFERENCE_LEFT:
-        return state.filter(p => !p.local);
-
     case PARTICIPANT_JOINED:
         return [ ...state, participant(undefined, action) ];
 
     case PARTICIPANT_LEFT:
         return state.filter(p => p.id !== action.participant.id);
 
+    case CONFERENCE_JOINED:
+    case CONFERENCE_LEFT:
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_PINNED:
     case PARTICIPANT_UPDATED:
@@ -119,3 +169,43 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
         return state;
     }
 });
+
+/**
+ * Returns the URL of the image for the avatar of a particular participant
+ * identified by their id and/or e-mail address.
+ *
+ * @param {string} participantId - Participant's id.
+ * @param {string} [email] - Participant's email.
+ * @returns {string} The URL of the image for the avatar of the participant
+ * identified by the specified participantId and/or email.
+ */
+function _getAvatarURL(participantId, email) {
+    // TODO: Use disableThirdPartyRequests config
+
+    let avatarId = email || participantId;
+
+    // If the ID looks like an email, we'll use gravatar.
+    // Otherwise, it's a random avatar, and we'll use the configured
+    // URL.
+    let random = !avatarId || avatarId.indexOf('@') < 0;
+
+    if (!avatarId) {
+        avatarId = participantId;
+    }
+    // MD5 is provided by Strophe
+    avatarId = MD5.hexdigest(avatarId.trim().toLowerCase());
+
+    let urlPref = null;
+    let urlSuf = null;
+    if (!random) {
+        urlPref = 'https://www.gravatar.com/avatar/';
+        urlSuf = '?d=wavatar&size=200';
+    }
+    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
+    else {
+        urlPref = 'https://robohash.org/';
+        urlSuf = '.png?size=200x200';
+    }
+
+    return urlPref + avatarId + urlSuf;
+}

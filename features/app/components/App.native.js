@@ -2,7 +2,7 @@ import React from 'react';
 import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { roomSet } from '../../base/conference';
+import { isRoomValid, roomSet } from '../../base/conference';
 import { navigate, RouteRegistry } from '../../base/navigator';
 import { Conference } from '../../conference';
 import { WelcomePage } from '../../welcome';
@@ -60,7 +60,8 @@ export class App extends AbstractApp {
     render() {
         let store = this.props.store;
         let room = store.getState()['features/base/conference'].room;
-        let initialComponent = room ? Conference : WelcomePage;
+        let initialComponent = isRoomValid(room) ? Conference : WelcomePage;
+
         // XXX It's important to select initialRoute from obtained routes
         // array and not from RouteRegistry#getRouteByComponent() method,
         // because React Native's Navigator will compare value in 'initialRoute'

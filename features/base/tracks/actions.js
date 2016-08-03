@@ -9,6 +9,7 @@ import {
     TRACK_CHANGED,
     TRACK_REMOVED
 } from './actionTypes';
+import './middleware';
 import './reducer';
 
 const JitsiTrackErrors = JitsiMeetJS.errors.track;

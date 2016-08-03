@@ -21,16 +21,19 @@ class WelcomePage extends AbstractWelcomePage {
     render() {
         return (
             <div style={ styles.container }>
-                <p style={ styles.title }>Enter room name</p>
-                <input
-                    onChange={ ev => this._onRoomChange(ev.target.value) }
-                    style={ styles.textInput }
-                    type="text"
-                    value={ this.state.room }  />
-                <button
-                    disabled={ this._isJoinDisabled() }
-                    onClick={ this._onJoinPress }
-                    style={ styles.button }>JOIN</button>
+                { this._renderLocalVideo() }
+                <div style={ styles.roomContainer }>
+                    <p style={ styles.title }>Enter room name</p>
+                    <input
+                        onChange={ ev => this._onRoomChange(ev.target.value) }
+                        style={ styles.textInput }
+                        type="text"
+                        value={ this.state.room } />
+                    <button
+                        disabled={ this._isJoinDisabled() }
+                        onClick={ this._onJoinPress }
+                        style={ styles.button }>JOIN</button>
+                </div>
             </div>
         );
     }
