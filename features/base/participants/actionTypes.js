@@ -45,18 +45,6 @@ export const PARTICIPANT_JOINED = 'PARTICIPANT_JOINED';
 export const PARTICIPANT_LEFT = 'PARTICIPANT_LEFT';
 
 /**
- * Create an action for when the participant in conference is pinned.
- *
- * {
- *      type: PARTICIPANT_PINNED,
- *      participant: {
- *          id: string
- *      }
- * }
- */
-export const PARTICIPANT_PINNED = 'PARTICIPANT_PINNED';
-
-/**
  * Action to handle case when info about participant changes.
  *
  * {
@@ -65,3 +53,15 @@ export const PARTICIPANT_PINNED = 'PARTICIPANT_PINNED';
  * }
  */
 export const PARTICIPANT_UPDATED = 'PARTICIPANT_UPDATED';
+
+/**
+ * The type of the Redux action which pins a conference participant.
+ *
+ * {
+ *      type: PIN_PARTICIPANT,
+ *      participant: {
+ *          id: string
+ *      }
+ * }
+ */
+export const PIN_PARTICIPANT = 'PIN_PARTICIPANT';
