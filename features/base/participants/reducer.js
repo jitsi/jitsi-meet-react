@@ -75,6 +75,14 @@ function participant(state, action) {
 
     case PARTICIPANT_JOINED:
         let participant = action.participant;
+        // The logic of selecting participant's ID is following:
+        // 1) if ID was provided, use it.
+        // 2) if ID was not provided:
+        //  a) if it's a local participant, then we use
+        //  LOCAL_PARTICIPANT_DEFAULT_ID as ID.
+        //  b) if it's not a local participant, we leave participant ID
+        //  undefined. But actually this situation should not happen, maybe
+        //  we should raise an error in this case or generate a random ID.
         let id = participant.id
             || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
         let avatar = participant.avatar || _getAvatarURL(id, participant.email);
