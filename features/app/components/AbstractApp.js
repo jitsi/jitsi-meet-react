@@ -49,11 +49,12 @@ export class AbstractApp extends Component {
      * @protected
      */
     _createElement(component, props) {
+        /* eslint-disable no-unused-vars */
         let {
             // Don't propagate the dispatch and store props because they usually
             // come from react-redux and programmers don't really expect them to
             // be inherited but rather explicitly connected.
-            dispatch,
+            dispatch, // eslint-disable-line react/prop-types
             store,
             // The url property was introduced to be consumed entirely by
             // AbstractApp.
@@ -62,6 +63,7 @@ export class AbstractApp extends Component {
             // propagation to the children of this Component.
             ...thisProps
         } = this.props;
+        /* eslint-enable no-unused-vars */
 
         return React.createElement(component, { ...thisProps, ...props });
     }
@@ -91,7 +93,7 @@ export class AbstractApp extends Component {
     /**
      * Parses a string into a URL (object).
      *
-     * @param {(string|undefined)} url - the URL to parse.
+     * @param {(string|undefined)} url - The URL to parse.
      * @protected
      * @returns {URL}
      */

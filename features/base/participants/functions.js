@@ -1,7 +1,7 @@
 /**
  * Returns local participant from Redux state.
  *
- * @param {Function} participantsOrGetState - either the
+ * @param {Function} participantsOrGetState - Either the
  * features/base/participants Redux state or Redux's getState function to be
  * used to retrieve the features/base/participants state.
  * @private

@@ -73,7 +73,7 @@ function participant(state, action) {
         }
         return state;
 
-    case PARTICIPANT_JOINED:
+    case PARTICIPANT_JOINED: {
         let participant = action.participant;
         // XXX The situation of not having an ID for a remote participant should
         // not happen. Maybe we should raise an error in this case or generate a
@@ -97,6 +97,7 @@ function participant(state, action) {
             videoStarted: false,
             videoType: participant.videoType || undefined
         };
+    }
 
     case PARTICIPANT_UPDATED:
         if (state.id === action.participant.id) {
