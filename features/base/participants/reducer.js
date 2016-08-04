@@ -54,6 +54,11 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE =
  * @returns {Participant|undefined}
  */
 function participant(state, action) {
+    let avatar;
+    let id;
+    let name;
+    let participant;
+
     switch (action.type) {
     case DOMINANT_SPEAKER_CHANGED:
         // Only one dominant speaker is allowed.
@@ -74,15 +79,15 @@ function participant(state, action) {
         return state;
 
     case PARTICIPANT_JOINED:
-        let participant = action.participant;
+        participant = action.participant;
         // XXX The situation of not having an ID for a remote participant should
         // not happen. Maybe we should raise an error in this case or generate a
         // random ID.
-        let id = participant.id
+        id = participant.id
             || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
-        let avatar = participant.avatar || _getAvatarURL(id, participant.email);
+        avatar = participant.avatar || _getAvatarURL(id, participant.email);
         // TODO Get these names from config/localized.
-        let name =
+        name =
             participant.name || (participant.local ? 'me' : 'Fellow Jitster');
 
         return {

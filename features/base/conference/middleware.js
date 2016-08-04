@@ -22,6 +22,8 @@ import {
  * @returns {Function}
  */
 MiddlewareRegistry.register(store => next => action => {
+    let track;
+
     switch (action.type) {
     case PIN_PARTICIPANT:
         pinParticipant(store, action.participant.id);
@@ -29,7 +31,7 @@ MiddlewareRegistry.register(store => next => action => {
 
     case TRACK_ADDED:
     case TRACK_REMOVED:
-        let track = action.track;
+        track = action.track;
 
         if (track && track.isLocal()) {
             return syncConferenceLocalTracksWithState(store, action)
