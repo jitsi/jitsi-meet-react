@@ -25,10 +25,7 @@ import {
  * @returns {Function}
  */
 const largeVideoMiddleware = store => next => action => {
-    let participantId;
     let result = next(action);
-    let state;
-    let track;
 
     switch (action.type) {
     case DOMINANT_SPEAKER_CHANGED:
@@ -40,14 +37,14 @@ const largeVideoMiddleware = store => next => action => {
         store.dispatch(selectParticipantInLargeVideo());
         break;
 
-    case TRACK_UPDATED:
+    case TRACK_UPDATED: {
         // In order to minimize re-calculations, we need to select endpoint only
         // if the videoType of the current participant rendered in LargeVideo
         // has changed.
         if ('videoType' in action.track) {
-            state = store.getState();
-            participantId = state['features/largeVideo'].participantId;
-            track = getTrackObjectByJitsiTrack(
+            let state = store.getState();
+            let participantId = state['features/largeVideo'].participantId;
+            let track = getTrackObjectByJitsiTrack(
                 state['features/base/tracks'], action.track.jitsiTrack);
 
             if (track.participantId === participantId) {
@@ -55,6 +52,7 @@ const largeVideoMiddleware = store => next => action => {
             }
         }
         break;
+    }
     }
 
     return result;

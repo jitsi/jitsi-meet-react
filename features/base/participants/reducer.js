@@ -24,10 +24,10 @@ import {
  * @property {string} role - Participant role.
  * @property {boolean} local - If true, participant is local.
  * @property {boolean} pinned - If true, participant is current
- *      "PINNED_ENDPOINT".
- * @property {boolean} speaking - If true, participant is currently a
- *      dominant speaker.
- * @property {string} email - participant email.
+ * "PINNED_ENDPOINT".
+ * @property {boolean} speaking - If true, participant is currently a dominant
+ * speaker.
+ * @property {string} email - Participant email.
  */
 
 /**
@@ -69,12 +69,15 @@ function participant(state, action) {
         }
         return state;
 
-    case PARTICIPANT_JOINED:
+    case PARTICIPANT_JOINED: {
         let participant = action.participant;
+        // XXX The situation of not having an ID for a remote participant should
+        // not happen. Maybe we should raise an error in this case or generate a
+        // random ID.
         let id = participant.id
             || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
         let avatar = participant.avatar || _getAvatarURL(id, participant.email);
-        // TODO: get these names from config/localized
+        // TODO Get these names from config/localized.
         let name =
             participant.name || (participant.local ? 'me' : 'Fellow Jitster');
 
@@ -88,6 +91,7 @@ function participant(state, action) {
             role: participant.role || PARTICIPANT_ROLE.NONE,
             speaking: participant.speaking || false
         };
+    }
 
     case PARTICIPANT_UPDATED:
         if (state.id === action.participant.id) {
@@ -122,8 +126,8 @@ function participant(state, action) {
 }
 
 /**
- * Listen for actions which add, remove, or update the set of participants
- * in the conference.
+ * Listen for actions which add, remove, or update the set of participants in
+ * the conference.
  *
  * @param {Participant[]} state - List of participants to be modified.
  * @param {Object} action - Action object.
@@ -161,13 +165,12 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
  * identified by the specified participantId and/or email.
  */
 function _getAvatarURL(participantId, email) {
-    // TODO: Use disableThirdPartyRequests config
+    // TODO: Use disableThirdPartyRequests config.
 
     let avatarId = email || participantId;
 
-    // If the ID looks like an email, we'll use gravatar.
-    // Otherwise, it's a random avatar, and we'll use the configured
-    // URL.
+    // If the ID looks like an email, we'll use gravatar. Otherwise, it's a
+    // random avatar and we'll use the configured URL.
     let random = !avatarId || avatarId.indexOf('@') < 0;
 
     if (!avatarId) {
@@ -182,7 +185,7 @@ function _getAvatarURL(participantId, email) {
         urlPref = 'https://www.gravatar.com/avatar/';
         urlSuf = '?d=wavatar&size=200';
     }
-    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
+    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config.
     else {
         urlPref = 'https://robohash.org/';
         urlSuf = '.png?size=200x200';

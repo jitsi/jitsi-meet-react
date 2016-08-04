@@ -28,7 +28,7 @@ MiddlewareRegistry.register(store => next => action => {
         break;
 
     case TRACK_ADDED:
-    case TRACK_REMOVED:
+    case TRACK_REMOVED: {
         let track = action.track;
 
         if (track && track.local) {
@@ -36,6 +36,7 @@ MiddlewareRegistry.register(store => next => action => {
                 .then(() => next(action));
         }
         break;
+    }
     }
 
     return next(action);
