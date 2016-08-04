@@ -54,6 +54,11 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE =
  * @returns {Participant|undefined}
  */
 function participant(state, action) {
+    let avatar;
+    let id;
+    let name;
+    let participant;
+
     switch (action.type) {
     case DOMINANT_SPEAKER_CHANGED:
         // Only one dominant speaker is allowed.
@@ -74,12 +79,12 @@ function participant(state, action) {
         return state;
 
     case PARTICIPANT_JOINED:
-        let participant = action.participant;
-        let id = participant.id
+        participant = action.participant;
+        id = participant.id
             || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
-        let avatar = participant.avatar || _getAvatarURL(id, participant.email);
+        avatar = participant.avatar || _getAvatarURL(id, participant.email);
         // TODO: get these names from config/localized
-        let name =
+        name =
             participant.name || (participant.local ? 'me' : 'Fellow Jitster');
 
         return {

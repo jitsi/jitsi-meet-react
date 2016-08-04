@@ -69,9 +69,9 @@ export class App extends AbstractApp {
      * the associated Router.
      *
      * @param {Component} component - The component from which the ReactElement
-     * is to be created
+     * is to be created.
      * @param {Object} props - The read-only React Component props with which
-     * the ReactElement is to be initialized
+     * the ReactElement is to be initialized.
      * @returns {ReactElement}
      * @private
      */
