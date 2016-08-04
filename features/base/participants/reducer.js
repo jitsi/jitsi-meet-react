@@ -7,8 +7,8 @@ import {
     PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
-    PARTICIPANT_PINNED,
-    PARTICIPANT_UPDATED
+    PARTICIPANT_UPDATED,
+    PIN_PARTICIPANT
 } from './actionTypes';
 import {
     LOCAL_PARTICIPANT_DEFAULT_ID,
@@ -58,8 +58,8 @@ function participant(state, action) {
         });
 
     case PARTICIPANT_ID_CHANGED:
-        if (state.id === action.participant.previousId) {
-            let id = action.participant.newId;
+        if (state.id === action.oldValue) {
+            let id = action.newValue;
 
             return {
                 ...state,
@@ -71,30 +71,23 @@ function participant(state, action) {
 
     case PARTICIPANT_JOINED:
         let participant = action.participant;
-        let participantId = participant.id
+        let id = participant.id
             || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
-        let participantAvatar = participant.avatar
-            || _getAvatarURL(participantId, participant.email);
+        let avatar = participant.avatar || _getAvatarURL(id, participant.email);
         // TODO: get these names from config/localized
-        let participantName = participant.name
-            || (participant.local ? 'me' : 'Fellow Jitster');
+        let name =
+            participant.name || (participant.local ? 'me' : 'Fellow Jitster');
 
         return {
-            avatar: participantAvatar,
+            avatar,
             email: participant.email,
-            id: participantId,
+            id,
             local: participant.local || false,
-            name: participantName,
+            name,
             pinned: participant.pinned || false,
             role: participant.role || PARTICIPANT_ROLE.NONE,
             speaking: participant.speaking || false
         };
-
-    case PARTICIPANT_PINNED:
-        // Currently only one pinned participant is allowed.
-        return Object.assign({}, state, {
-            pinned: state.id === action.participant.id
-        });
 
     case PARTICIPANT_UPDATED:
         if (state.id === action.participant.id) {
@@ -115,6 +108,13 @@ function participant(state, action) {
             return updateObj;
         }
         return state;
+
+    case PIN_PARTICIPANT:
+        // Currently, only one pinned participant is allowed.
+        return {
+            ...state,
+            pinned: state.id === action.participant.id
+        };
 
     default:
         return state;
@@ -142,8 +142,8 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
 
     case DOMINANT_SPEAKER_CHANGED:
     case PARTICIPANT_ID_CHANGED:
-    case PARTICIPANT_PINNED:
     case PARTICIPANT_UPDATED:
+    case PIN_PARTICIPANT:
         return state.map(p => participant(p, action));
 
     default:

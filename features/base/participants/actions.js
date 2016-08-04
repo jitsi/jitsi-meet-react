@@ -3,9 +3,10 @@ import {
     PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
-    PARTICIPANT_PINNED,
-    PARTICIPANT_UPDATED
+    PARTICIPANT_UPDATED,
+    PIN_PARTICIPANT
 } from './actionTypes';
+import { getLocalParticipant } from './functions';
 import './middleware';
 import './reducer';
 
@@ -60,23 +61,19 @@ export function dominantSpeakerChanged(id) {
  * @param {string} id - New ID for local participant.
  * @returns {{
  *      type: PARTICIPANT_ID_CHANGED,
- *      participant: {
- *          newId: string,
- *          previousId: string
- *      }
+ *      newValue: string,
+ *      oldValue: string
  * }}
  */
 export function localParticipantIdChanged(id) {
     return (dispatch, getState) => {
-        let localParticipant = _getLocalParticipant(getState);
+        let participant = getLocalParticipant(getState);
 
-        if (localParticipant) {
+        if (participant) {
             return dispatch({
                 type: PARTICIPANT_ID_CHANGED,
-                participant: {
-                    newId: id,
-                    previousId: localParticipant.id
-                }
+                newValue: id,
+                oldValue: participant.id
             });
         }
     };
@@ -105,7 +102,7 @@ export function localParticipantJoined(participant = {}) {
  */
 export function localParticipantLeft() {
     return (dispatch, getState) => {
-        let participant = _getLocalParticipant(getState);
+        let participant = getLocalParticipant(getState);
 
         if (participant) {
             return dispatch(participantLeft(participant.id));
@@ -173,46 +170,22 @@ export function participantRoleChanged(id, role) {
 }
 
 /**
- * Create an action for when the participant in conference is pinned.
+ * Create an action which pins a conference participant.
  *
- * @param {string|null} id - Participant id or null if no one is currently
- *     pinned.
- * @returns {Function}
+ * @param {string|null} id - The ID of the conference participant to pin or null
+ * if none of the conference's participants are to be pinned.
+ * @returns {{
+ *      type: PIN_PARTICIPANT,
+ *      participant: {
+ *          id: string
+ *      }
+ * }}
  */
 export function pinParticipant(id) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let conference = state['features/base/conference'].jitsiConference;
-        let participant = state['features/base/participants']
-            .find(p => p.id === id);
-        let localParticipant = _getLocalParticipant(getState);
-
-        // This condition prevents signaling to pin local participant. Here is
-        // the logic: if we have ID, then we check if participant by that ID is
-        // local. If we don't have ID and thus no participant by ID, we check
-        // for local participant. If it's currently pinned, then this action
-        // will unpin him and that's why we won't signal here too.
-        if ((participant && !participant.local) ||
-            (!participant && (!localParticipant || !localParticipant.pinned))) {
-            conference.pinParticipant(id);
+    return {
+        type: PIN_PARTICIPANT,
+        participant: {
+            id
         }
-
-        return dispatch({
-            type: PARTICIPANT_PINNED,
-            participant: {
-                id
-            }
-        });
     };
-}
-
-/**
- * Returns local participant from Redux state.
- *
- * @param {Function} getState - Redux getState() method.
- * @private
- * @returns {(Participant|undefined)}
- */
-function _getLocalParticipant(getState) {
-    return getState()['features/base/participants'].find(p => p.local);
 }

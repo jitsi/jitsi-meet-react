@@ -30,7 +30,8 @@ export class App extends AbstractApp {
     }
 
     /**
-     * Subscribe to an event whenever "linked" to app url is activated.
+     * Subscribe to notifications about activating URLs registered to be handled
+     * by this app.
      *
      * @inheritdoc
      * @see https://facebook.github.io/react-native/docs/linking.html
@@ -41,7 +42,8 @@ export class App extends AbstractApp {
     }
 
     /**
-     * Unsubscribe from an event whenever "linked" to app url is activated.
+     * Unsubscribe from notifications about activating URLs registered to be
+     * handled by this app.
      *
      * @inheritdoc
      * @see https://facebook.github.io/react-native/docs/linking.html
@@ -119,7 +121,7 @@ export class App extends AbstractApp {
     _handleOpenURL(event) {
         let newRoom = this._getRoomFromUrlString(event.url);
 
-        if (newRoom !== '') {
+        if (isRoomValid(newRoom)) {
             let store = this.props.store;
             let oldRoom = store.getState()['features/base/conference'].room;
 

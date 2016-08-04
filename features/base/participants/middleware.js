@@ -8,8 +8,8 @@ import { localParticipantIdChanged } from './actions';
 import { LOCAL_PARTICIPANT_DEFAULT_ID } from './constants';
 
 /**
- * Middleware that captures CONFERENCE_JOINED and CONFERENCE_LEFT actions
- * and updates respectively ID of local participant.
+ * Middleware that captures CONFERENCE_JOINED and CONFERENCE_LEFT actions and
+ * updates respectively ID of local participant.
  *
  * @param {Store} store - Redux store.
  * @returns {Function}
@@ -17,8 +17,9 @@ import { LOCAL_PARTICIPANT_DEFAULT_ID } from './constants';
 MiddlewareRegistry.register(store => next => action => {
     switch (action.type) {
     case CONFERENCE_JOINED:
-        let id = action.conference.jitsiConference.myUserId();
-        store.dispatch(localParticipantIdChanged(id));
+        store.dispatch(
+            localParticipantIdChanged(
+                action.conference.jitsiConference.myUserId()));
         break;
 
     case CONFERENCE_LEFT:

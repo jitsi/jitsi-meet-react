@@ -17,10 +17,10 @@ ReducerRegistry.register(
         // must update ID of participant on stage to match ID in 'participants'
         // state to avoid additional changes in state and (re)renders.
         case PARTICIPANT_ID_CHANGED:
-            if (state.participantId === action.participant.previousId) {
+            if (state.participantId === action.oldValue) {
                 return {
                     ...state,
-                    participantId: action.participant.newId
+                    participantId: action.newValue
                 };
             }
             return state;
