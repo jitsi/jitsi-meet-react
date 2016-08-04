@@ -39,6 +39,18 @@ export function getTrackByMediaTypeAndParticipant(
 }
 
 /**
+ * Returns track object if any that corresponds to specified instance
+ * of JitsiLocalTrack or JitsiRemoteTrack.
+ *
+ * @param {Track[]} tracks - List of all tracks.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} jitsiTrack - JitsiTrack instance.
+ * @returns {(Track|undefined)}
+ */
+export function getTrackObjectByJitsiTrack(tracks, jitsiTrack) {
+    return tracks.find(t => t.jitsiTrack === jitsiTrack);
+}
+
+/**
  * Returns tracks of specified media type.
  *
  * @param {Track[]} tracks - List of all tracks.

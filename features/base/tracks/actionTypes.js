@@ -10,16 +10,6 @@
 export const TRACK_ADDED = 'TRACK_ADDED';
 
 /**
- * Action for when a track has changed.
- *
- * {
- *     type: TRACK_CHANGED,
- *     track: Track
- * }
- */
-export const TRACK_CHANGED = 'TRACK_CHANGED';
-
-/**
  * Action for when a track has been removed from the conference,
  * local or remote.
  *
@@ -29,3 +19,13 @@ export const TRACK_CHANGED = 'TRACK_CHANGED';
  * }
  */
 export const TRACK_REMOVED = 'TRACK_REMOVED';
+
+/**
+ * Action for when a track properties were updated.
+ *
+ * {
+ *     type: TRACK_UPDATED,
+ *     track: Track
+ * }
+ */
+export const TRACK_UPDATED = 'TRACK_UPDATED';

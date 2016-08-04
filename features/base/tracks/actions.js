@@ -6,8 +6,8 @@ import {
 
 import {
     TRACK_ADDED,
-    TRACK_CHANGED,
-    TRACK_REMOVED
+    TRACK_REMOVED,
+    TRACK_UPDATED
 } from './actionTypes';
 import './middleware';
 import './reducer';
@@ -120,11 +120,11 @@ export function trackAdded(track) {
  * changed.
  *
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
- * @returns {{ type: TRACK_CHANGED, track: Track }}
+ * @returns {{ type: TRACK_UPDATED, track: Track }}
  */
 export function trackMuteChanged(track) {
     return {
-        type: TRACK_CHANGED,
+        type: TRACK_UPDATED,
         track: {
             jitsiTrack: track,
             muted: track.isMuted()
@@ -152,11 +152,11 @@ export function trackRemoved(track) {
  * Signal that track's video started to play.
  *
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
- * @returns {{ type: TRACK_CHANGED, track: Track }}
+ * @returns {{ type: TRACK_UPDATED, track: Track }}
  */
 export function trackVideoStarted(track) {
     return {
-        type: TRACK_CHANGED,
+        type: TRACK_UPDATED,
         track: {
             jitsiTrack: track,
             videoStarted: true
@@ -169,11 +169,11 @@ export function trackVideoStarted(track) {
  *
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
  * @param {VIDEO_TYPE|undefined} videoType - Video type.
- * @returns {{ type: TRACK_CHANGED, track: Track }}
+ * @returns {{ type: TRACK_UPDATED, track: Track }}
  */
 export function trackVideoTypeChanged(track, videoType) {
     return {
-        type: TRACK_CHANGED,
+        type: TRACK_UPDATED,
         track: {
             jitsiTrack: track,
             videoType

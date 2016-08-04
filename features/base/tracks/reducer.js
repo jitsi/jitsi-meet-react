@@ -1,11 +1,10 @@
-import { ReducerRegistry } from '../redux';
-
 import { PARTICIPANT_ID_CHANGED } from '../participants';
+import { ReducerRegistry } from '../redux';
 
 import {
     TRACK_ADDED,
-    TRACK_CHANGED,
-    TRACK_REMOVED
+    TRACK_REMOVED,
+    TRACK_UPDATED
 } from './actionTypes';
 
 /**
@@ -16,7 +15,7 @@ import {
  * @property {MEDIA_TYPE} mediaType=false - Media type of track.
  * @property {boolean} mirrorVideo=false - If video track should be mirrored.
  * @property {boolean} muted=false - If track is muted.
- * @property {string|undefined} participantId - ID of participant whom this
+ * @property {(string|undefined)} participantId - ID of participant whom this
  * track belongs to.
  * @property {boolean} videoStarted=false - If video track has already started
  * to play.
@@ -29,6 +28,10 @@ import {
  * @param {Track|undefined} state - Track to be modified.
  * @param {Object} action - Action object.
  * @param {string} action.type - Type of action.
+ * @param {string} action.newValue - New participant ID value (in this
+ * particular case).
+ * @param {string} action.oldValue - Old participant ID value (in this
+ * particular case).
  * @param {Track} action.track - Information about track to be changed.
  * @param {Participant} action.participant - Information about participant.
  * @returns {Track|undefined}
@@ -36,14 +39,15 @@ import {
 function track(state, action) {
     switch (action.type) {
     case PARTICIPANT_ID_CHANGED:
-        if (state.participantId === action.participant.previousId) {
+        if (state.participantId === action.oldValue) {
             return {
                 ...state,
-                participantId: action.participant.newId
+                participantId: action.newValue
             };
         }
         return state;
-    case TRACK_CHANGED:
+
+    case TRACK_UPDATED:
         if (action.track.jitsiTrack === state.jitsiTrack) {
             return { ...state,  ...action.track };
         }
@@ -63,7 +67,7 @@ ReducerRegistry.register('features/base/tracks', (state = [], action) => {
         return [...state, action.track];
 
     case PARTICIPANT_ID_CHANGED:
-    case TRACK_CHANGED:
+    case TRACK_UPDATED:
         return state.map(t => track(t, action));
 
     case TRACK_REMOVED:
