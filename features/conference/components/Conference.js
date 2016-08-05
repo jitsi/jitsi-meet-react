@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect as reactReduxConnect } from 'react-redux';
 
 import {
-    destroy,
-    init
+    connect,
+    disconnect
 } from '../../base/connection';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
@@ -38,7 +38,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(init(this.props.config, this.props.room));
+        this.props.dispatch(connect(this.props.config, this.props.room));
     }
 
     /**
@@ -49,7 +49,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillUnmount() {
-        this.props.dispatch(destroy());
+        this.props.dispatch(disconnect());
     }
 
     /**
@@ -63,7 +63,6 @@ class Conference extends Component {
             <ConferenceContainer onPress={ this._onPress }>
                 <LargeVideo/>
                 <Toolbar
-                    navigator={ this.props.navigator }
                     visible={ this.state.toolbarIsVisible } />
                 <FilmStrip
                     visible={ !this.state.toolbarIsVisible } />
@@ -87,9 +86,6 @@ class Conference extends Component {
 /**
  * Conference component's property types.
  *
- * Ensure that the application navigator object is passed down via props on
- * mobile.
- *
  * @static
  */
 Conference.propTypes = {
@@ -102,7 +98,6 @@ Conference.propTypes = {
      */
     config: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object,
     room: React.PropTypes.string
 };
 
@@ -116,4 +111,4 @@ export const mapStateToProps = state => ({
     room: state['features/base/conference'].room
 });
 
-export default connect(mapStateToProps)(Conference);
+export default reactReduxConnect(mapStateToProps)(Conference);

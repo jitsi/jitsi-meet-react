@@ -23,13 +23,12 @@ export const CONFERENCE_JOINED = 'CONFERENCE_JOINED';
 export const CONFERENCE_LEFT = 'CONFERENCE_LEFT';
 
 /**
- * Action to set room name.
+ * The type of the Redux action which sets the name of the room of the
+ * conference to be joined.
  *
  * {
- *      type: ROOM_SET,
- *      conference: {
- *          room: string
- *      }
+ *      type: SET_ROOM,
+ *      room: string
  * }
  */
-export const ROOM_SET = 'ROOM_SET';
+export const SET_ROOM = 'SET_ROOM';

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-import { navigate } from '../../base/navigator';
+import { setRoom } from '../../base/conference';
 import { ColorPalette } from '../../base/styles';
-import { WelcomePage } from '../../welcome';
 
 import {
     toggleAudio,
@@ -38,7 +37,7 @@ export class AbstractToolbar extends Component {
      * @param {('camera'|'microphone')} type - Button to get styles for.
      * @protected
      * @returns {{
-     *      buttonStyle: Object
+     *      buttonStyle: Object,
      *      iconName: string,
      *      iconStyle: Object
      * }}
@@ -89,12 +88,12 @@ export class AbstractToolbar extends Component {
      * @returns {void}
      */
     _onHangup() {
-        this.props.dispatch(
-            navigate({
-                component: WelcomePage,
-                navigator: this.props.navigator
-            })
-        );
+        // XXX We don't know here which value is effectively/internally used
+        // when there's no valid room name to join. It isn't our business to
+        // know that anyway. The undefined value is our expression of (1)
+        // the lack of knowledge & (2) the desire to no longer have a valid
+        // room name to join.
+        this.props.dispatch(setRoom(undefined));
     }
 
     /**
@@ -116,7 +115,6 @@ export class AbstractToolbar extends Component {
 AbstractToolbar.propTypes = {
     cameraMuted: React.PropTypes.bool,
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object,
     microphoneMuted: React.PropTypes.bool,
     visible: React.PropTypes.bool.isRequired
 };

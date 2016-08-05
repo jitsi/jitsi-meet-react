@@ -1,23 +1,34 @@
-import JitsiMeetJS from '../lib-jitsi-meet';
+import {
+    getLocalParticipant,
+    PIN_PARTICIPANT
+} from '../participants';
 import { MiddlewareRegistry } from '../redux';
 import {
     TRACK_ADDED,
     TRACK_REMOVED
 } from '../tracks';
 
-const JitsiTrackErrors = JitsiMeetJS.errors.track;
+import {
+    _addLocalTracksToConference,
+    _removeLocalTracksFromConference
+} from './functions';
 
 /**
  * This middleware intercepts TRACK_ADDED and TRACK_REMOVED actions to sync
- * conference's local tracks with local tracks in state.
+ * conference's local tracks with local tracks in state. Also captures
+ * PIN_PARTICIPANT action to pin participant in conference.
  *
  * @param {Store} store - Redux store.
  * @returns {Function}
  */
 MiddlewareRegistry.register(store => next => action => {
     switch (action.type) {
+    case PIN_PARTICIPANT:
+        pinParticipant(store, action.participant.id);
+        break;
+
     case TRACK_ADDED:
-    case TRACK_REMOVED:
+    case TRACK_REMOVED: {
         let track = action.track;
 
         if (track && track.isLocal()) {
@@ -26,9 +37,38 @@ MiddlewareRegistry.register(store => next => action => {
         }
         break;
     }
+    }
 
     return next(action);
 });
+
+/**
+ * Pins remote participant in conference, ignores local participant.
+ *
+ * @param {Store} store - Redux store.
+ * @param {string|null} id - Participant id or null if no one is currently
+ * pinned.
+ * @returns {void}
+ */
+function pinParticipant(store, id) {
+    let state = store.getState();
+    let participants = state['features/base/participants'];
+    let participantById = participants.find(p => p.id === id);
+    let localParticipant = getLocalParticipant(participants);
+
+    // This condition prevents signaling to pin local participant. Here is the
+    // logic: if we have ID, then we check if participant by that ID is local.
+    // If we don't have ID and thus no participant by ID, we check for local
+    // participant. If it's currently pinned, then this action will unpin him
+    // and that's why we won't signal here too.
+    if ((participantById && !participantById.local)
+            || (!participantById
+                && (!localParticipant || !localParticipant.pinned))) {
+        let conference = state['features/base/conference'].jitsiConference;
+
+        conference.pinParticipant(id);
+    }
+}
 
 /**
  * Syncs local tracks from state with local tracks in JitsiConference instance.
@@ -46,45 +86,11 @@ function syncConferenceLocalTracksWithState(store, action) {
         let track = action.track;
 
         if (action.type === TRACK_ADDED) {
-            // XXX The library lib-jitsi-meet may be draconian, for example,
-            // when adding one and the same video track multiple times.
-            if (conference.getLocalTracks().indexOf(track) === -1) {
-                promise = conference.addTrack(track)
-                    .catch(err => {
-                        reportError(
-                            'Failed to add local track to conference',
-                            err);
-                    });
-            }
+            promise = _addLocalTracksToConference(conference, [ track ]);
         } else {
-            promise = conference.removeTrack(track)
-                .catch(err => {
-                    // Local track might be already disposed by direct
-                    // JitsiTrack#dispose() call. So we should ignore this error
-                    // here.
-                    if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
-                        reportError(
-                            'Failed to remove local track to conference',
-                            err);
-                    }
-                });
+            promise = _removeLocalTracksFromConference( conference, [ track ]);
         }
     }
 
     return promise || Promise.resolve();
-};
-
-/**
- * Reports a specific Error with a specific error message. While the
- * implementation merely logs the specified msg and err via the console at the
- * time of this writing, the intention of the function is to abstract the
- * reporting of errors and facilitate elaborating on it in the future.
- *
- * @param {string} msg - The error message to report.
- * @param {Error} err - The Error to report.
- */
-function reportError(msg, err) {
-    // TODO This is a good point to call some global error handler when we have
-    // one.
-    console.error(msg, err);
 }

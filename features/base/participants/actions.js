@@ -1,13 +1,13 @@
-/* global MD5 */
-
 import {
     DOMINANT_SPEAKER_CHANGED,
+    PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
-    PARTICIPANT_PINNED,
-    PARTICIPANT_UPDATED
+    PARTICIPANT_UPDATED,
+    PIN_PARTICIPANT
 } from './actionTypes';
-import { PARTICIPANT_ROLE } from './constants';
+import { getLocalParticipant } from './functions';
+import './middleware';
 import './reducer';
 
 /**
@@ -29,7 +29,6 @@ export function changeParticipantEmail(id, email) {
         type: PARTICIPANT_UPDATED,
         participant: {
             id,
-            avatar: _getAvatarURL(id, email),
             email
         }
     };
@@ -56,36 +55,83 @@ export function dominantSpeakerChanged(id) {
 }
 
 /**
- * Action to create a local participant.
+ * Action to signal that ID of local participant has changed. This happens when
+ * local participant joins a new conference or quits one.
  *
- * @param {string} id - Participant id.
- * @param {Object} [participant={}] - Additional information about participant.
- * @param {string} [participant.displayName='me'] - Participant's display name.
- * @param {string} [participant.avatar=''] - Participant's avatar.
- * @param {string} [participant.role='none'] - Participant's role.
+ * @param {string} id - New ID for local participant.
+ * @returns {{
+ *      type: PARTICIPANT_ID_CHANGED,
+ *      newValue: string,
+ *      oldValue: string
+ * }}
+ */
+export function localParticipantIdChanged(id) {
+    return (dispatch, getState) => {
+        let participant = getLocalParticipant(getState);
+
+        if (participant) {
+            return dispatch({
+                type: PARTICIPANT_ID_CHANGED,
+                newValue: id,
+                oldValue: participant.id
+            });
+        }
+    };
+}
+
+/**
+ * Action to signal that a local participant has joined.
+ *
+ * @param {Participant} participant - Information about participant.
  * @returns {Function}
  */
-export function localParticipantJoined(id, participant = {}) {
+export function localParticipantJoined(participant) {
     return (dispatch, getState) => {
-        // Local media tracks might be already created by this moment, so
-        // we try to take videoType from current video track.
-        let tracks = getState()['features/base/tracks'];
-        let localVideoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
+        // TODO This is temporary and will be removed in
+        // https://github.com/jitsi/jitsi-meet-react/pull/65.
+        // Local media tracks might be created already by this moment, so we try
+        // to take videoType from current video track.
+        let localVideoTrack = getState()['features/base/tracks']
+            .find(t => t.isLocal() && t.isVideoTrack());
 
-        return dispatch({
-            type: PARTICIPANT_JOINED,
-            participant: {
-                id,
-                avatar: _getAvatarURL(id, participant.email),
-                email: participant.email,
-                local: true,
-                name: participant.displayName || 'me',
-                role: participant.role || PARTICIPANT_ROLE.NONE,
-                videoType: localVideoTrack
-                    ? localVideoTrack.videoType
-                    : undefined
-            }
-        });
+        return dispatch(participantJoined({
+            ...participant,
+            local: true,
+            videoType: localVideoTrack
+                ? localVideoTrack.videoType
+                : undefined
+        }));
+    };
+}
+
+/**
+ * Action to remove a local participant.
+ *
+ * @returns {Function}
+ */
+export function localParticipantLeft() {
+    return (dispatch, getState) => {
+        let participant = getLocalParticipant(getState);
+
+        if (participant) {
+            return dispatch(participantLeft(participant.id));
+        }
+    };
+}
+
+/**
+ * Action to signal that a participant has joined.
+ *
+ * @param {Participant} participant - Information about participant.
+ * @returns {{
+ *      type: PARTICIPANT_JOINED,
+ *      participant: Participant
+ * }}
+ */
+export function participantJoined(participant) {
+    return {
+        type: PARTICIPANT_JOINED,
+        participant
     };
 }
 
@@ -178,107 +224,22 @@ export function participantVideoTypeChanged(id, videoType) {
 }
 
 /**
- * Create an action for when the participant in conference is pinned.
+ * Create an action which pins a conference participant.
  *
- * @param {string|null} id - Participant id or null if no one is currently
- *     pinned.
- * @returns {Function}
- */
-export function pinParticipant(id) {
-    return (dispatch, getState) => {
-        let state = getState();
-        let conference = state['features/base/conference'].jitsiConference;
-        let participants = state['features/base/participants'];
-        let participant = participants.find(p => p.id === id);
-        let localParticipant = participants.find(p => p.local);
-
-        // This condition prevents signaling to pin local participant. Here is
-        // the logic: if we have ID, then we check if participant by that ID is
-        // local. If we don't have ID and thus no participant by ID, we check
-        // for local participant. If it's currently pinned, then this action
-        // will unpin him and that's why we won't signal here too.
-        if ((participant && !participant.local) ||
-            (!participant && (!localParticipant || !localParticipant.pinned))) {
-            conference.pinParticipant(id);
-        }
-
-        return dispatch({
-            type: PARTICIPANT_PINNED,
-            participant: {
-                id
-            }
-        });
-    };
-}
-
-/**
- * Action to create a remote participant.
- *
- * @param {string} id - Participant id.
- * @param {Object} [participant={}] - Additional information about participant.
- * @param {string} [participant.avatar=''] - Participant's avatar.
- * @param {string} [participant.displayName='Fellow Jitster'] - Participant's
- * display name.
- * @param {string} [participant.role='none'] - Participant's role.
+ * @param {string|null} id - The ID of the conference participant to pin or null
+ * if none of the conference's participants are to be pinned.
  * @returns {{
- *      type: PARTICIPANT_JOINED,
+ *      type: PIN_PARTICIPANT,
  *      participant: {
- *          id: string,
- *          avatar: string,
- *          name: string,
- *          role: PARTICIPANT_ROLE
+ *          id: string
  *      }
  * }}
  */
-export function remoteParticipantJoined(id, participant = {}) {
+export function pinParticipant(id) {
     return {
-        type: PARTICIPANT_JOINED,
+        type: PIN_PARTICIPANT,
         participant: {
-            id,
-            avatar: _getAvatarURL(id),
-            // TODO: get default value from interface config
-            name: participant.displayName || 'Fellow Jitster',
-            role: participant.role || 'none'
+            id
         }
     };
-}
-
-/**
- * Returns the URL of the image for the avatar of a particular participant
- * identified by their id and/or e-mail address.
- *
- * @param {string} participantId - Participant's id.
- * @param {string} email - Participant's email.
- * @returns {string} The URL of the image for the avatar of the participant
- * identified by the specified participantId and/or email.
- */
-function _getAvatarURL(participantId, email) {
-    // TODO: Use disableThirdPartyRequests config
-
-    let avatarId = email || participantId;
-
-    // If the ID looks like an email, we'll use gravatar.
-    // Otherwise, it's a random avatar, and we'll use the configured
-    // URL.
-    let random = !avatarId || avatarId.indexOf('@') < 0;
-
-    if (!avatarId) {
-        avatarId = participantId;
-    }
-    // MD5 is provided by Strophe
-    avatarId = MD5.hexdigest(avatarId.trim().toLowerCase());
-
-    let urlPref = null;
-    let urlSuf = null;
-    if (!random) {
-        urlPref = 'https://www.gravatar.com/avatar/';
-        urlSuf = '?d=wavatar&size=200';
-    }
-    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
-    else {
-        urlPref = 'https://robohash.org/';
-        urlSuf = '.png?size=200x200';
-    }
-
-    return urlPref + avatarId + urlSuf;
 }

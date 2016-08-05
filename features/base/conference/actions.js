@@ -2,11 +2,10 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
-    localParticipantJoined,
+    participantJoined,
     participantLeft,
     participantRoleChanged,
-    participantVideoTypeChanged,
-    remoteParticipantJoined
+    participantVideoTypeChanged
 } from '../participants';
 import {
     trackAdded,
@@ -17,9 +16,10 @@ import {
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
-    ROOM_SET
+    SET_ROOM
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
+import { _addLocalTracksToConference } from './functions';
 import './middleware';
 import './reducer';
 
@@ -43,7 +43,6 @@ export function createConference(room) {
 
         conference = connection.initJitsiConference(room, { openSctp: true });
 
-        dispatch(localParticipantJoined(conference.myUserId()));
         dispatch(_setupConferenceListeners(conference));
 
         conference.join();
@@ -64,7 +63,7 @@ export function conferenceJoined(conference) {
             .filter(t => t.isLocal());
 
         if (localTracks.length) {
-            _addTracksToConference(conference, localTracks);
+            _addLocalTracksToConference(conference, localTracks);
         }
 
         dispatch({
@@ -98,43 +97,19 @@ export function conferenceLeft(conference) {
 }
 
 /**
- * Signals that room name was set.
+ * Sets (the name of) the room of the conference to be joined.
  *
- * @param {string} room - Name of conference room.
+ * @param {string} room - The name of the room of the conference to be joined.
  * @returns {{
- *      type: ROOM_SET,
- *      conference: {
- *          room: string
- *      }
+ *      type: SET_ROOM,
+ *      room: string
  *  }}
  */
-export function roomSet(room) {
+export function setRoom(room) {
     return {
-        type: ROOM_SET,
-        conference: {
-            room
-        }
+        type: SET_ROOM,
+        room
     };
-}
-
-/**
- * Attach a set of local tracks to a conference.
- *
- * @param {JitsiConference} conference - Conference instance.
- * @param {JitsiLocalTrack[]} localTracks - List of local media tracks.
- * @private
- * @returns {void}
- */
-function _addTracksToConference(conference, localTracks) {
-    let conferenceLocalTracks = conference.getLocalTracks();
-
-    for (let track of localTracks) {
-        // XXX The library lib-jitsi-meet may be draconian, for example, when
-        // adding one and the same video track multiple times.
-        if (-1 === conferenceLocalTracks.indexOf(track)) {
-            conference.addTrack(track);
-        }
-    }
 }
 
 /**
@@ -179,9 +154,10 @@ function _setupConferenceListeners(conference) {
             });
 
         conference.on(JitsiConferenceEvents.USER_JOINED,
-            (id, user) => dispatch(remoteParticipantJoined(id, {
-                role: user.getRole(),
-                displayName: user.getDisplayName()
+            (id, user) => dispatch(participantJoined({
+                id,
+                name: user.getDisplayName(),
+                role: user.getRole()
             })));
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));

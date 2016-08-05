@@ -5,7 +5,7 @@
   "scripts": {
     "build:web": "mkdir -p dist/; cp -p favicon.ico dist/; webpack --colors --progress",
     "clean": "rm -rf dist",
-    "eslint": "node_modules/.bin/eslint config.js features/**/*.js index.*.js",
+    "eslint": "node_modules/.bin/eslint 'config.js' 'features/**/*.js' 'index.*.js'",
     "start:android": "npm run clean; react-native run-android",
     "start:ios": "npm run clean; react-native run-ios",
     "start:web": "webpack-dev-server --colors --history-api-fallback --hot --https --inline --open --port 5000"

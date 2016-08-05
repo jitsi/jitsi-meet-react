@@ -2,11 +2,7 @@ import React from 'react';
 import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { roomSet } from '../../base/conference';
-import { navigate, RouteRegistry } from '../../base/navigator';
-import { Conference } from '../../conference';
-import { WelcomePage } from '../../welcome';
-
+import { _getRouteToRender } from '../functions';
 import { AbstractApp } from './AbstractApp';
 
 /**
@@ -25,30 +21,34 @@ export class App extends AbstractApp {
         super(props);
 
         // Bind event handlers so they are only bound once for every instance.
-        this._handleOpenURL = this._handleOpenURL.bind(this);
         this._navigatorRenderScene = this._navigatorRenderScene.bind(this);
+        this._onLinkingURL = this._onLinkingURL.bind(this);
     }
 
     /**
-     * Subscribe to an event whenever "linked" to app url is activated.
+     * Subscribe to notifications about activating URLs registered to be handled
+     * by this app.
      *
      * @inheritdoc
      * @see https://facebook.github.io/react-native/docs/linking.html
      * @returns {void}
      */
     componentDidMount() {
-        Linking.addEventListener('url', this._handleOpenURL);
+        Linking.addEventListener('url', this._onLinkingURL);
     }
 
     /**
-     * Unsubscribe from an event whenever "linked" to app url is activated.
+     * Unsubscribe from notifications about activating URLs registered to be
+     * handled by this app.
      *
      * @inheritdoc
      * @see https://facebook.github.io/react-native/docs/linking.html
      * @returns {void}
      */
     componentWillUnmount() {
-        Linking.removeEventListener('url', this._handleOpenURL);
+        Linking.removeEventListener('url', this._onLinkingURL);
+
+        super.componentWillUnmount();
     }
 
     /**
@@ -59,21 +59,11 @@ export class App extends AbstractApp {
      */
     render() {
         let store = this.props.store;
-        let room = store.getState()['features/base/conference'].room;
-        let initialComponent = room ? Conference : WelcomePage;
-        // XXX It's important to select initialRoute from obtained routes
-        // array and not from RouteRegistry#getRouteByComponent() method,
-        // because React Native's Navigator will compare value in 'initialRoute'
-        // prop with values in 'initialRouteStack' prop using simple comparison
-        // operator.
-        let initialRoute =
-            RouteRegistry.getRoutes().find(
-                r => r.component === initialComponent);
 
         return (
             <Provider store={ store }>
                 <Navigator
-                    initialRoute={ initialRoute }
+                    initialRoute={ _getRouteToRender(store) }
                     ref='navigator'
                     renderScene={ this._navigatorRenderScene }/>
             </Provider>
@@ -106,55 +96,53 @@ export class App extends AbstractApp {
     }
 
     /**
-     * Handler for a case when new "linked" url is activated. Parses room name
-     * from url and starts a new conference with this room name if it's not
-     * empty and is different from current one.
+     * Navigates to a specific Route (via platform-specific means).
      *
-     * @param {Object} event - Event.
-     * @param {string} event.url - New URL.
-     * @private
+     * @param {Route} route - The Route to which to navigate.
      * @returns {void}
      */
-    _handleOpenURL(event) {
-        let newRoom = this._getRoomFromUrlString(event.url);
+    _navigate(route) {
+        let navigator = this.refs.navigator;
 
-        if (newRoom !== '') {
-            let store = this.props.store;
-            let oldRoom = store.getState()['features/base/conference'].room;
-
-            if (oldRoom !== newRoom) {
-                let dispatch = store.dispatch;
-
-                // TODO We should probably detect if user is currently in a
-                // conference and ask her if she wants to close the current
-                // conference and start a new one with the new room name.
-                dispatch(roomSet(newRoom));
-                dispatch(navigate({
-                    component: Conference,
-                    navigator: this.refs.navigator,
-                    room: newRoom
-                }));
-            }
-        }
+        // TODO Currently, the replace method doesn't support animation. Work
+        // towards adding it is done in
+        // https://github.com/facebook/react-native/issues/1981
+        // XXX React Native's Navigator adds properties to the route it's
+        // provided with. Clone the specified route in order to prevent its
+        // modification.
+        navigator && navigator.replace({ ...route });
     }
 
     /**
-     * Renders the scene identified by a specific route in a specific Navigator.
+     * Renders the scene identified by a specific route in the Navigator of this
+     * instance.
      *
      * @param {Object} route - The route which identifies the scene to be
-     * rendered in the specified navigator. In the fashion of NavigatorIOS, the
+     * rendered in the associated Navigator. In the fashion of NavigatorIOS, the
      * specified route is expected to define a value for its component property
      * which is the type of React component to be rendered.
-     * @param {Navigator} navigator - The Navigator in which the scene
-     * identified by the specified route is to be rendered.
      * @private
      * @returns {ReactElement}
      */
-    _navigatorRenderScene(route, navigator) {
+    _navigatorRenderScene(route) {
         // We started with NavigatorIOS and then switched to Navigator in order
         // to support Android as well. In order to reduce the number of
         // modifications, accept the same format of route definition.
-        return this._createElement(route.component, { navigator });
+        return this._createElement(route.component, {});
+    }
+
+    /**
+     * Notified by React's Linking API that a specific URL registered to be
+     * handled by this App was activated.
+     *
+     * @param {Object} event - The details of the notification/event.
+     * @param {string} event.url - The URL registered to be handled by this App
+     * which was activated.
+     * @private
+     * @returns {void}
+     */
+    _onLinkingURL(event) {
+        this._openURL(event.url);
     }
 }
 

@@ -3,8 +3,6 @@
  *
  * @typedef {Object} Route
  * @property {Component} component - React Component constructor.
- * @property {Function} navigate - Function to execute to navigate to
- * this route.
  * @property {string} path - URL route, required for web routing.
  */
 

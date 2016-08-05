@@ -3,17 +3,25 @@ import { ReducerRegistry } from '../redux';
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
-    ROOM_SET
+    SET_ROOM
 } from './actionTypes';
+import { isRoomValid } from './functions';
 
 const INITIAL_STATE = {
     jitsiConference: null,
-    room: ''
+
+    /**
+     * The name of the room of the conference (to be) joined (i.e.
+     * {@link #jitsiConference}).
+     *
+     * @type {string}
+     */
+    room: null
 };
 
 /**
- * Listen for actions that contain the conference object, so that
- * it can be stored for use by other action creators.
+ * Listen for actions that contain the conference object, so that it can be
+ * stored for use by other action creators.
  */
 ReducerRegistry.register('features/base/conference',
     (state = INITIAL_STATE, action) => {
@@ -25,21 +33,32 @@ ReducerRegistry.register('features/base/conference',
             };
 
         case CONFERENCE_LEFT:
-            return {
-                ...state,
-                jitsiConference: state.jitsiConference
-                    === action.conference.jitsiConference
-                        ? null
-                        : state.jitsiConference
-            };
+            if (state.jitsiConference === action.conference.jitsiConference) {
+                return {
+                    ...state,
+                    jitsiConference: null
+                };
+            }
+            break;
 
-        case ROOM_SET:
-            return {
-                ...state,
-                room: action.conference.room
-            };
+        case SET_ROOM: {
+            let room = action.room;
 
-        default:
-            return state;
+            // Technically, there're multiple values which don't represent
+            // valid room names. Practically, each of them is as bad as the rest
+            // of them because we can't use any of them to join a conference.
+            if (!isRoomValid(room)) {
+                room = INITIAL_STATE.room;
+            }
+            if (state.room !== room) {
+                return {
+                    ...state,
+                    room
+                };
+            }
+            break;
         }
+        }
+
+        return state;
     });
