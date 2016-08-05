@@ -82,10 +82,10 @@ export function localParticipantIdChanged(id) {
 /**
  * Action to signal that a local participant has joined.
  *
- * @param {Participant} participant - Information about participant.
+ * @param {Participant} participant={} - Information about participant.
  * @returns {Function}
  */
-export function localParticipantJoined(participant) {
+export function localParticipantJoined(participant = {}) {
     return (dispatch, getState) => {
         // TODO This is temporary and will be removed in
         // https://github.com/jitsi/jitsi-meet-react/pull/65.

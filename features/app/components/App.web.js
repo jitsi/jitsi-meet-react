@@ -39,6 +39,28 @@ export class App extends AbstractApp {
     }
 
     /**
+     * Navigates to a specific Route (via platform-specific means).
+     *
+     * @override
+     * @param {Route} route - The Route to which to navigate.
+     * @returns {void}
+     */
+    navigate(route) {
+        let path = route.path;
+        let store = this.props.store;
+
+        // The syntax :room bellow is defined by react-router. It "matches a URL
+        // segment up to the next /, ?, or #. The matched string is called a
+        // param."
+        path =
+            path.replace(
+                /:room/g,
+                store.getState()['features/base/conference'].room);
+
+        return store.dispatch(push(path));
+    }
+
+    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
@@ -64,27 +86,6 @@ export class App extends AbstractApp {
                 </Router>
             </Provider>
         );
-    }
-
-    /**
-     * Navigates to a specific Route (via platform-specific means).
-     *
-     * @param {Route} route - The Route to which to navigate.
-     * @returns {void}
-     */
-    _navigate(route) {
-        let path = route.path;
-        let store = this.props.store;
-
-        // The syntax :room bellow is defined by react-router. It "matches a URL
-        // segment up to the next /, ?, or #. The matched string is called a
-        // param."
-        path =
-            path.replace(
-                /:room/g,
-                store.getState()['features/base/conference'].room);
-
-        return store.dispatch(push(path));
     }
 
     /**

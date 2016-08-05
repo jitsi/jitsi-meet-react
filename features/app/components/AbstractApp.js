@@ -6,7 +6,7 @@ import {
     localParticipantLeft
 } from '../../base/participants';
 
-import { appWillMount, appWillUnmount } from '../actions';
+import { appStart, appStop } from '../actions';
 
 /**
  * Base (abstract) class for main App component.
@@ -23,7 +23,7 @@ export class AbstractApp extends Component {
     componentWillMount() {
         let dispatch = this.props.store.dispatch;
 
-        dispatch(appWillMount(this));
+        dispatch(appStart(this));
 
         dispatch(setRoom(this._getRoomFromUrlString(this.props.url)));
         dispatch(localParticipantJoined());
@@ -40,7 +40,18 @@ export class AbstractApp extends Component {
 
         dispatch(localParticipantLeft());
 
-        dispatch(appWillUnmount(this));
+        dispatch(appStop(this));
+    }
+
+    /**
+     * Navigates to a specific Route (via platform-specific means).
+     *
+     * @abstract
+     * @param {Route} route - The Route to which to navigate.
+     * @returns {void}
+     */
+    navigate(route) { // eslint-disable-line no-unused-vars
+        throw new Error('This method is abstract');
     }
 
     /**
@@ -76,14 +87,17 @@ export class AbstractApp extends Component {
     }
 
     /**
-     * Gets room name from URL object.
+     * Gets room name from URL object if any.
      *
      * @param {URL} url - URL object.
      * @protected
-     * @returns {string}
+     * @returns {(string|undefined)}
      */
     _getRoomFromUrlObject(url) {
-        return url ? url.pathname.substr(1).toLowerCase() : undefined;
+        let room = url ? url.pathname.substr(1).toLowerCase() : undefined;
+
+        // XXX Convert empty string to undefined to simplify checks.
+        return room === '' ? undefined : room;
     }
 
     /**
@@ -107,12 +121,18 @@ export class AbstractApp extends Component {
      */
     _openURL(url) {
         let room = this._getRoomFromUrlString(url);
+        let currentRoom =
+            this.props.store.getState()['features/base/conference'].room;
 
         // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
         // currently in a conference and ask her if she wants to close the
         // current conference and start a new one with the new room name.
 
-        this.props.store.dispatch(setRoom(room));
+        // XXX Prevents dispatching unnecessary SET_ROOM actions, which happened
+        // in web version.
+        if (room !== currentRoom) {
+            this.props.store.dispatch(setRoom(room));
+        }
     }
 
     /**

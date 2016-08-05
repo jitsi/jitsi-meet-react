@@ -17,7 +17,7 @@ MiddlewareRegistry.register(store => next => action => {
     case APP_NAVIGATE: {
         let app = store.getState()['features/app'].app;
 
-        app._navigate(action.route);
+        app.navigate(action.route);
         break;
     }
 
