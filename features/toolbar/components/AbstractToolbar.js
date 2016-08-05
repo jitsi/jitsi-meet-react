@@ -34,7 +34,8 @@ export class AbstractToolbar extends Component {
      * Returns styles for mute button depending if camera or microphone is muted
      * or not.
      *
-     * @param {('camera'|'microphone')} type - Button to get styles for.
+     * @param {string} type - Type (either 'camera' or 'microphone') of button
+     * to get styles for.
      * @protected
      * @returns {{
      *      buttonStyle: Object,
@@ -57,8 +58,7 @@ export class AbstractToolbar extends Component {
                 ...styles.icon,
                 color: 'white'
             };
-        }
-        else {
+        } else {
             buttonStyle = styles.toolbarButton;
             iconName = this[type + 'Icon'];
             iconStyle = styles.icon;
