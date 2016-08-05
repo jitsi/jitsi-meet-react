@@ -99,7 +99,8 @@ export function conferenceLeft(conference) {
 /**
  * Sets (the name of) the room of the conference to be joined.
  *
- * @param {string} room - The name of the room of the conference to be joined.
+ * @param {(string|undefined)} room - The name of the room of the conference to
+ * be joined.
  * @returns {{
  *      type: SET_ROOM,
  *      room: string

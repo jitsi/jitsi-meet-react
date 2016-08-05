@@ -76,14 +76,23 @@ export class AbstractApp extends Component {
     }
 
     /**
-     * Gets room name from URL object.
+     * Gets room name from URL object if any.
      *
      * @param {URL} url - URL object.
      * @protected
-     * @returns {string}
+     * @returns {(string|undefined)}
      */
     _getRoomFromUrlObject(url) {
-        return url ? url.pathname.substr(1).toLowerCase() : undefined;
+        let room;
+
+        if (url) {
+            room = url.pathname.substr(1).toLowerCase();
+            // Convert empty string to undefined to simplify checks.
+            if (room === '') {
+                room = undefined;
+            }
+        }
+        return room;
     }
 
     /**

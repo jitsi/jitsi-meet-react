@@ -33,7 +33,9 @@ export class App extends AbstractApp {
      * @see https://facebook.github.io/react-native/docs/linking.html
      * @returns {void}
      */
-    componentDidMount() {
+    componentWillMount() {
+        super.componentWillMount();
+
         Linking.addEventListener('url', this._onLinkingURL);
     }
 
