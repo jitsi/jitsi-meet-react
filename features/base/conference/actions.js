@@ -15,7 +15,7 @@ import {
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
-    ROOM_SET
+    SET_ROOM
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
 import { _addLocalTracksToConference } from './functions';
@@ -96,22 +96,18 @@ export function conferenceLeft(conference) {
 }
 
 /**
- * Signals that room name was set.
+ * Sets (the name of) the room of the conference to be joined.
  *
- * @param {string} room - Name of conference room.
+ * @param {string} room - The name of the room of the conference to be joined.
  * @returns {{
- *      type: ROOM_SET,
- *      conference: {
- *          room: string
- *      }
+ *      type: SET_ROOM,
+ *      room: string
  *  }}
  */
-export function roomSet(room) {
+export function setRoom(room) {
     return {
-        type: ROOM_SET,
-        conference: {
-            room
-        }
+        type: SET_ROOM,
+        room
     };
 }
 

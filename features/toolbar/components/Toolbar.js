@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { navigate } from '../../base/navigator';
-import { WelcomePage } from '../../welcome';
+import { setRoom } from '../../base/conference';
 import {
     toggleAudio,
     toggleCameraFacingMode
@@ -26,7 +25,7 @@ class Toolbar extends Component {
                 audioMuted = { this.props.audioMuted }
                 onAudioMute = { muted => this.props.onAudioMute(muted) }
                 onCameraChange = { this.props.onCameraChange }
-                onHangup = { () => this.props.onHangup(this.props.navigator) }
+                onHangup = { this.props.onHangup }
                 videoMuted = { this.props.videoMuted }
                 visible = { this.props.visible } />
         );
@@ -48,7 +47,7 @@ const mapStateToProps = state => {
 };
 
 /**
- * Maps the onAudioMute, onHangup and onCameraChange actions to component
+ * Maps the onAudioMute, onCameraChange, and onHangup actions to component
  * props.
  *
  * @param {Function} dispatch - Redux dispatch function.
@@ -66,8 +65,13 @@ const mapDispatchToProps = dispatch => {
         onCameraChange() {
             dispatch(toggleCameraFacingMode());
         },
-        onHangup(navigator) {
-            dispatch(navigate({ component: WelcomePage, navigator }));
+        onHangup() {
+            // XXX We don't know here which value is effectively/internally used
+            // when there's no valid room name to join. It isn't our business to
+            // know that anyway. The undefined value is our expression of (1)
+            // the lack of knowledge & (2) the desire to no longer have a valid
+            // room name to join.
+            dispatch(setRoom(undefined));
         }
     };
 };
@@ -79,7 +83,6 @@ const mapDispatchToProps = dispatch => {
  */
 Toolbar.propTypes = {
     audioMuted: React.PropTypes.bool,
-    navigator: React.PropTypes.object,
     onAudioMute: React.PropTypes.func,
     onCameraChange: React.PropTypes.func,
     onHangup: React.PropTypes.func,
