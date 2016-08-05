@@ -14,9 +14,9 @@ const INITIAL_STATE = {
      * The name of the room of the conference (to be) joined (i.e.
      * {@link #jitsiConference}).
      *
-     * @type {string}
+     * @type {(string|undefined)}
      */
-    room: null
+    room: undefined
 };
 
 /**

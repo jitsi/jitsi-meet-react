@@ -1,7 +1,7 @@
 import {
     APP_NAVIGATE,
-    APP_WILL_MOUNT,
-    APP_WILL_UNMOUNT
+    APP_START,
+    APP_STOP
 } from './actionTypes';
 import './middleware';
 import './reducer';
@@ -28,13 +28,13 @@ export function appNavigate(route) {
  *
  * @param {App} app - The App which will mount.
  * @returns {{
- *     type: APP_WILL_MOUNT,
+ *     type: APP_START,
  *     app: App
  * }}
  */
-export function appWillMount(app) {
+export function appStart(app) {
     return {
-        type: APP_WILL_MOUNT,
+        type: APP_START,
         app
     };
 }
@@ -44,13 +44,13 @@ export function appWillMount(app) {
  *
  * @param {App} app - The App which will unmount.
  * @returns {{
- *     type: APP_WILL_UNMOUNT,
+ *     type: APP_STOP,
  *     app: App
  * }}
  */
-export function appWillUnmount(app) {
+export function appStop(app) {
     return {
-        type: APP_WILL_UNMOUNT,
+        type: APP_STOP,
         app
     };
 }

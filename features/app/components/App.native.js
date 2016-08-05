@@ -33,7 +33,9 @@ export class App extends AbstractApp {
      * @see https://facebook.github.io/react-native/docs/linking.html
      * @returns {void}
      */
-    componentDidMount() {
+    componentWillMount() {
+        super.componentWillMount();
+
         Linking.addEventListener('url', this._onLinkingURL);
     }
 
@@ -49,6 +51,24 @@ export class App extends AbstractApp {
         Linking.removeEventListener('url', this._onLinkingURL);
 
         super.componentWillUnmount();
+    }
+
+    /**
+     * Navigates to a specific Route (via platform-specific means).
+     *
+     * @param {Route} route - The Route to which to navigate.
+     * @returns {void}
+     */
+    navigate(route) {
+        let navigator = this.refs.navigator;
+
+        // TODO Currently, the replace method doesn't support animation. Work
+        // towards adding it is done in
+        // https://github.com/facebook/react-native/issues/1981
+        // XXX React Native's Navigator adds properties to the route it's
+        // provided with. Clone the specified route in order to prevent its
+        // modification.
+        navigator && navigator.replace({ ...route });
     }
 
     /**
@@ -93,24 +113,6 @@ export class App extends AbstractApp {
             room = super._getRoomFromUrlObject(urlObj);
         }
         return room;
-    }
-
-    /**
-     * Navigates to a specific Route (via platform-specific means).
-     *
-     * @param {Route} route - The Route to which to navigate.
-     * @returns {void}
-     */
-    _navigate(route) {
-        let navigator = this.refs.navigator;
-
-        // TODO Currently, the replace method doesn't support animation. Work
-        // towards adding it is done in
-        // https://github.com/facebook/react-native/issues/1981
-        // XXX React Native's Navigator adds properties to the route it's
-        // provided with. Clone the specified route in order to prevent its
-        // modification.
-        navigator && navigator.replace({ ...route });
     }
 
     /**

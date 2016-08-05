@@ -10,23 +10,21 @@
 export const APP_NAVIGATE = 'APP_NAVIGATE';
 
 /**
- * The type of the actions which signals that a specific App will mount (in the
- * terms of React).
+ * The type of the actions which signals that a specific App will start.
  *
  * {
- *     type: APP_WILL_MOUNT,
+ *     type: APP_START,
  *     app: App
  * }
  */
-export const APP_WILL_MOUNT = 'APP_WILL_MOUNT';
+export const APP_START = 'APP_START';
 
 /**
- * The type of the actions which signals that a specific App will unmount (in
- * the terms of React).
+ * The type of the actions which signals that a specific App will stop.
  *
  * {
- *     type: APP_WILL_UNMOUNT,
+ *     type: APP_STOP,
  *     app: App
  * }
  */
-export const APP_WILL_UNMOUNT = 'APP_WILL_UNMOUNT';
+export const APP_STOP = 'APP_STOP';
