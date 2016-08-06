@@ -95,6 +95,10 @@ export class App extends AbstractApp {
      * @returns {void}
      */
     _onRouteEnter() {
+        // XXX The following is mandatory. Otherwise, moving back & forward
+        // through the browser's history could leave this App on the Conference
+        // page without a room name.
+
         // Our Router configuration (at the time of this writing) is such that
         // each Route corresponds to a single URL. Hence, entering into a Route
         // is like opening a URL.
