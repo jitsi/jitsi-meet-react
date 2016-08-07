@@ -2,13 +2,14 @@ import {
     DOMINANT_SPEAKER_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
-    PARTICIPANT_UPDATED,
     PIN_PARTICIPANT
 } from '../base/participants';
 import { MiddlewareRegistry } from '../base/redux';
 import {
+    getTrackObjectByJitsiTrack,
     TRACK_ADDED,
-    TRACK_REMOVED
+    TRACK_REMOVED,
+    TRACK_UPDATED
 } from '../base/tracks';
 
 import {
@@ -36,18 +37,22 @@ const largeVideoMiddleware = store => next => action => {
         store.dispatch(selectParticipantInLargeVideo());
         break;
 
-    case PARTICIPANT_UPDATED:
-        var participantId =
-            store.getState()['features/largeVideo'].participantId;
-
+    case TRACK_UPDATED: {
         // In order to minimize re-calculations, we need to select endpoint only
         // if the videoType of the current participant rendered in LargeVideo
         // has changed.
-        if (action.participant.id === participantId
-                && 'videoType' in action.participant) {
-            store.dispatch(selectEndpoint());
+        if ('videoType' in action.track) {
+            let state = store.getState();
+            let participantId = state['features/largeVideo'].participantId;
+            let track = getTrackObjectByJitsiTrack(
+                state['features/base/tracks'], action.track.jitsiTrack);
+
+            if (track.participantId === participantId) {
+                store.dispatch(selectEndpoint());
+            }
         }
         break;
+    }
     }
 
     return result;

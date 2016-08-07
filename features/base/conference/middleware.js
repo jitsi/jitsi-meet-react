@@ -31,7 +31,7 @@ MiddlewareRegistry.register(store => next => action => {
     case TRACK_REMOVED: {
         let track = action.track;
 
-        if (track && track.isLocal()) {
+        if (track && track.local) {
             return syncConferenceLocalTracksWithState(store, action)
                 .then(() => next(action));
         }
@@ -83,7 +83,7 @@ function syncConferenceLocalTracksWithState(store, action) {
     let promise;
 
     if (conference) {
-        let track = action.track;
+        let track = action.track.jitsiTrack;
 
         if (action.type === TRACK_ADDED) {
             promise = _addLocalTracksToConference(conference, [ track ]);

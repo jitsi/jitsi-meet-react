@@ -83,25 +83,16 @@ export function localParticipantIdChanged(id) {
  * Action to signal that a local participant has joined.
  *
  * @param {Participant} participant={} - Information about participant.
- * @returns {Function}
+ * @returns {{
+ *      type: PARTICIPANT_JOINED,
+ *      participant: Participant
+ * }}
  */
 export function localParticipantJoined(participant = {}) {
-    return (dispatch, getState) => {
-        // TODO This is temporary and will be removed in
-        // https://github.com/jitsi/jitsi-meet-react/pull/65.
-        // Local media tracks might be created already by this moment, so we try
-        // to take videoType from current video track.
-        let localVideoTrack = getState()['features/base/tracks']
-            .find(t => t.isLocal() && t.isVideoTrack());
-
-        return dispatch(participantJoined({
-            ...participant,
-            local: true,
-            videoType: localVideoTrack
-                ? localVideoTrack.videoType
-                : undefined
-        }));
-    };
+    return participantJoined({
+        ...participant,
+        local: true
+    });
 }
 
 /**
@@ -174,51 +165,6 @@ export function participantRoleChanged(id, role) {
         participant: {
             id,
             role
-        }
-    };
-}
-
-/**
- * Create an action for when the participant's video started to play.
- *
- * @param {string} id - Participant id.
- * @returns {{
- *      type: PARTICIPANT_UPDATED,
- *      participant: {
- *          id: string,
- *          videoStarted: boolean
- *      }
- * }}
- */
-export function participantVideoStarted(id) {
-    return {
-        type: PARTICIPANT_UPDATED,
-        participant: {
-            id,
-            videoStarted: true
-        }
-    };
-}
-
-/**
- * Create an action for when participant video type changes.
- *
- * @param {string} id - Participant id.
- * @param {string} videoType - Video type ('desktop' or 'camera').
- * @returns {{
- *      type: PARTICIPANT_UPDATED,
- *      participant: {
- *          id: string,
- *          videoType: string
- *      }
- * }}
- */
-export function participantVideoTypeChanged(id, videoType) {
-    return {
-        type: PARTICIPANT_UPDATED,
-        participant: {
-            id,
-            videoType
         }
     };
 }

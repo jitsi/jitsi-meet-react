@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { shouldMirror, Video } from '../../base/media';
-import { getVideoTrack } from '../../base/tracks';
+import { MEDIA_TYPE, VideoTrack } from '../../base/media';
+import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
 
@@ -19,22 +19,20 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let participant =
-            this.props.participants.find(
-                p => p.id === this.props.largeVideo.participantId);
-        let videoTrack;
+        let  { tracks, largeVideo } = this.props;
+
+        let videoTrack = getTrackByMediaTypeAndParticipant(
+            tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
         // TODO: in future other stuff might be on large video.
 
         return (
             <LargeVideoContainer>
             {
-                participant &&
-                participant.videoStarted &&
-                (videoTrack = getVideoTrack(participant, this.props.tracks)) &&
-                <Video
-                    mirror={ shouldMirror(videoTrack) }
-                    stream={ videoTrack.getOriginalStream() }/>
+                videoTrack &&
+                videoTrack.videoStarted &&
+                <VideoTrack
+                    videoTrack={ videoTrack } />
             }
             </LargeVideoContainer>
         );
@@ -53,7 +51,6 @@ class LargeVideo extends Component {
 const mapStateToProps = state => {
     return {
         largeVideo: state['features/largeVideo'],
-        participants: state['features/base/participants'],
         tracks: state['features/base/tracks']
     };
 };
@@ -66,7 +63,6 @@ const mapStateToProps = state => {
 LargeVideo.propTypes = {
     dispatch: React.PropTypes.func,
     largeVideo: React.PropTypes.object,
-    participants: React.PropTypes.array,
     tracks: React.PropTypes.array
 };
 

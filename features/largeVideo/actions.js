@@ -1,4 +1,12 @@
-import { getVideoTrack } from '../base/tracks';
+import {
+    MEDIA_TYPE,
+    VIDEO_TYPE
+} from '../base/media';
+
+import {
+    getLocalVideoTrack,
+    getTrackByMediaTypeAndParticipant
+} from '../base/tracks';
 
 import { LARGE_VIDEO_PARTICIPANT_CHANGED } from './actionTypes';
 import './middleware';
@@ -15,16 +23,14 @@ export function selectEndpoint() {
         let conference = state['features/base/conference'].jitsiConference;
 
         if (conference) {
-            let participants = state['features/base/participants'];
             let largeVideo = state['features/largeVideo'];
             let tracks = state['features/base/tracks'];
 
-            let participant =
-                participants.find(p => p.id === largeVideo.participantId);
-            let videoTrack = getVideoTrack(participant, tracks);
+            let videoTrack = getTrackByMediaTypeAndParticipant(
+                tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
             conference.selectParticipant(
-                (videoTrack && videoTrack.videoType === 'camera')
+                (videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA)
                     ? largeVideo.participantId
                     : null);
         }
@@ -45,8 +51,7 @@ export function selectParticipantInLargeVideo() {
         let tracks = state['features/base/tracks'];
         let largeVideo = state['features/largeVideo'];
 
-        let participant = electParticipantInLargeVideo(participants, tracks);
-        let participantId = participant ? participant.id : undefined;
+        let participantId = electParticipantInLargeVideo(participants, tracks);
 
         if (participantId !== largeVideo.participantId) {
             dispatch({
@@ -63,15 +68,15 @@ export function selectParticipantInLargeVideo() {
  * Returns the most recent existing video track. It can be local or remote
  * video.
  *
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - All current tracks.
- * @returns {(JitsiLocalTrack|JitsiRemoteTrack|undefined)}
+ * @param {Track[]} tracks - All current tracks.
+ * @returns {(Track|undefined)}
  */
 function electLastVisibleVideo(tracks) {
     let videoTrack;
 
     // First we try to get most recent remote video track.
     for (let i = tracks.length - 1; i >= 0; i--) {
-        if (tracks[i].isVideoTrack() && !tracks[i].isLocal()) {
+        if (tracks[i].mediaType === MEDIA_TYPE.VIDEO && !tracks[i].local) {
             videoTrack = tracks[i];
             break;
         }
@@ -79,56 +84,40 @@ function electLastVisibleVideo(tracks) {
 
     // And if no remote video tracks are available, we select the local one.
     if (!videoTrack) {
-        videoTrack = tracks.find(t => t.isLocal() && t.isVideoTrack());
+        videoTrack = getLocalVideoTrack(tracks);
     }
 
     return videoTrack;
 }
 
 /**
- * Returns the participant who is to be on the stage i.e. should be displayed
+ * Returns the participant ID who is to be on the stage i.e. should be displayed
  * in LargeVideo.
  *
  * @param {Participant[]} participants - All participants.
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - All tracks.
- * @returns {(Participant|undefined)}
+ * @param {Track[]} tracks - All tracks.
+ * @returns {(string|undefined)}
  */
 function electParticipantInLargeVideo(participants, tracks) {
-    // First get the pinned participant. If local participant is pinned, she
+    // First get the pinned participant. If local participant is pinned, he
     // will be shown in LargeVideo.
-    let participant = participants.find(p => p.pinned);
+    let participantId = (participants.find(p => p.pinned) || {}).id;
 
     // If no participant is pinned, get the dominant speaker. But local
-    // participant won't be displayed in LargeVideo even if she is the dominant
+    // participant won't be displayed in LargeVideo even if he is the dominant
     // speaker.
-    if (!participant) {
-        participant = participants.find(p => p.speaking && !p.local);
+    if (!participantId) {
+        participantId =
+            (participants.find(p => p.speaking && !p.local) || {}).id;
     }
 
     // If no participant is pinned and no dominant speaker, just get the
     // participant with last visible video track. This may turn out to be local
     // participant.
-    if (!participant) {
+    if (!participantId) {
         let videoTrack = electLastVisibleVideo(tracks);
-        participant = getParticipantByVideoTrack(videoTrack, participants);
+        participantId = videoTrack && videoTrack.participantId;
     }
 
-    return participant;
-}
-
-/**
- * Returns participant corresponding to video stream.
- *
- * @param {JitsiLocalTrack|JitsiRemoteTrack} track - Current video track.
- * @param {Participant[]} participants - List of all participants.
- * @returns {(Participant|undefined)}
- */
-function getParticipantByVideoTrack(track, participants) {
-    if (!track) {
-        return;
-    }
-
-    return track.isLocal()
-        ? participants.find(p => p.local)
-        : participants.find(p => p.id === track.getParticipantId());
+    return participantId;
 }

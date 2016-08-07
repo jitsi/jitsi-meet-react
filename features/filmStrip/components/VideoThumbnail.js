@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 
 import {
     Audio,
-    shouldMirror,
-    Video
+    MEDIA_TYPE,
+    VideoTrack
 } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
-    participantVideoStarted,
     pinParticipant
 } from '../../base/participants';
+import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
 
 import {
     AudioMutedIndicator,
@@ -36,23 +36,6 @@ class VideoThumbnail extends Component {
 
         // Bind event handlers so they are only bound once for every instance.
         this._onClick = this._onClick.bind(this);
-        this._onVideoPlaying = this._onVideoPlaying.bind(this);
-    }
-
-    /**
-     * Returns audio and video media streams for participant.
-     *
-     * @returns {{ video: (MediaStream|null), audio: (MediaStream|null) }}
-     */
-    getMediaStreams() {
-        return {
-            video: this.props.videoTrack
-                ? this.props.videoTrack.getOriginalStream()
-                : null,
-            audio: this.props.audioTrack
-                ? this.props.audioTrack.getOriginalStream()
-                : null
-        };
     }
 
     /**
@@ -89,45 +72,31 @@ class VideoThumbnail extends Component {
     }
 
     /**
-     * Handler for case when video starts to play.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onVideoPlaying() {
-        this.props.dispatch(participantVideoStarted(this.props.participant.id));
-    }
-
-    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      * @returns {ReactElement}
      */
     render() {
-        let participant = this.props.participant;
-        let largeVideo = this.props.largeVideo;
-        let streams = this.getMediaStreams();
+        let { audioTrack, largeVideo, participant, videoTrack } = this.props;
+
         // We don't render audio in any of the following:
         // 1. The audio (source) is muted. There's no practical reason (that we
         //    know of, anyway) why we'd want to render it given that it's
         //    silence (& not even comfort noise).
         // 2. The audio is local. If we were to render local audio, the local
-        //    participant would be hearing themselves.
-        let renderAudio =
-            streams.audio
-                && !this.props.audioMuted
-                && !this.props.audioTrack.isLocal();
+        //    participants would be hearing themselves.
+        let renderAudio = audioTrack && !audioTrack.muted && !audioTrack.local;
+
         // We don't render video (in the film strip) in any of the following:
         // 1. The video (source) is muted. Even if muted video happens to be
         //    black frames one day, we've decided to display the participant's
         //    avatar instead.
         // 2. The video is rendered on the stage i.e. as a large video.
-        let renderVideo =
-            streams.video
-                && !this.props.videoMuted
-                && (!participant.videoStarted
-                    || participant.id !== largeVideo.participantId);
+        let renderVideo = videoTrack
+            && !videoTrack.muted
+            && (!videoTrack.videoStarted
+                || participant.id !== largeVideo.participantId);
 
         return (
             <VideoThumbnailContainer
@@ -135,13 +104,13 @@ class VideoThumbnail extends Component {
                 onClick={ this._onClick }>
 
                 { renderAudio &&
-                    <Audio stream={ streams.audio } /> }
+                    <Audio
+                        stream={ audioTrack.jitsiTrack.getOriginalStream() } />
+                }
 
                 { renderVideo &&
-                    <Video
-                        mirror={ shouldMirror(this.props.videoTrack) }
-                        onPlaying={ this._onVideoPlaying }
-                        stream={ streams.video } /> }
+                    <VideoTrack
+                        videoTrack={ videoTrack } /> }
 
                 { !renderVideo &&
                     <Avatar uri={ participant.avatar } /> }
@@ -152,10 +121,10 @@ class VideoThumbnail extends Component {
                 { participant.speaking &&
                     <DominantSpeakerIndicator /> }
 
-                { this.props.audioMuted &&
+                { (!audioTrack || audioTrack.muted) &&
                     <AudioMutedIndicator /> }
 
-                { this.props.videoMuted &&
+                { (!videoTrack || videoTrack.muted) &&
                     <VideoMutedIndicator /> }
 
             </VideoThumbnailContainer>
@@ -167,16 +136,29 @@ class VideoThumbnail extends Component {
  * Function that maps parts of Redux state tree into component props.
  *
  * @param {Object} state - Redux state.
+ * @param {Object} ownProps - Properties of component.
  * @returns {{
- *      largeVideo: Object
+ *      audioTrack: Track,
+ *      largeVideo: Object,
+ *      videoTrack: Track
  *  }}
  */
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+    // We need read-only access to the state of features/largeVideo so that
+    // the film strip doesn't render the video of the participant who is
+    // rendered on the stage i.e. as a large video.
+    let largeVideo = state['features/largeVideo'];
+    let tracks = state['features/base/tracks'];
+    let participantId = ownProps.participant.id;
+    let audioTrack = getTrackByMediaTypeAndParticipant(
+        tracks, MEDIA_TYPE.AUDIO, participantId);
+    let videoTrack = getTrackByMediaTypeAndParticipant(
+        tracks, MEDIA_TYPE.VIDEO, participantId);
+
     return {
-        // We need read-only access to the state of features/largeVideo so that
-        // the film strip doesn't render the video of the participant who is
-        // rendered on the stage i.e. as a large video.
-        largeVideo: state['features/largeVideo']
+        audioTrack,
+        largeVideo,
+        videoTrack
     };
 };
 
@@ -186,12 +168,10 @@ const mapStateToProps = state => {
  * @static
  */
 VideoThumbnail.propTypes = {
-    audioMuted: React.PropTypes.bool,
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     largeVideo: React.PropTypes.object,
     participant: React.PropTypes.object,
-    videoMuted: React.PropTypes.bool,
     videoTrack: React.PropTypes.object
 };
 
