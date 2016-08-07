@@ -27,10 +27,6 @@ import {
  * "PINNED_ENDPOINT".
  * @property {boolean} speaking - If true, participant is currently a dominant
  * speaker.
- * @property {boolean} videoStarted -  If true, participant video stream has
- * started already.
- * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
- * current video stream if any.
  * @property {string} email - Participant email.
  */
 
@@ -93,9 +89,7 @@ function participant(state, action) {
             name,
             pinned: participant.pinned || false,
             role: participant.role || PARTICIPANT_ROLE.NONE,
-            speaking: participant.speaking || false,
-            videoStarted: false,
-            videoType: participant.videoType || undefined
+            speaking: participant.speaking || false
         };
     }
 

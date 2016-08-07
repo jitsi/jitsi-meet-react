@@ -8,18 +8,6 @@ import { styles } from './styles';
  */
 export class Video extends Component {
     /**
-     * Implements shouldComponentUpdate of React Component. We don't update
-     * component if stream has not changed.
-     *
-     * @inheritdoc
-     * @param {Object} nextProps - Props that component is going to receive.
-     * @returns {boolean}
-     */
-    shouldComponentUpdate(nextProps) {
-        return (nextProps.stream || {}).id !== (this.props.stream || {}).id;
-    }
-
-    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
@@ -43,6 +31,18 @@ export class Video extends Component {
                 style={ style }
             />
         );
+    }
+
+    /**
+     * Implements shouldComponentUpdate of React Component. We don't update
+     * component if stream has not changed.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - Props that component is going to receive.
+     * @returns {boolean}
+     */
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.stream || {}).id !== (this.props.stream || {}).id;
     }
 }
 

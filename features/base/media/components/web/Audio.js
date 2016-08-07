@@ -7,18 +7,6 @@ import React, { Component } from 'react';
  */
 export class Audio extends Component {
     /**
-     * Implements shouldComponentUpdate of React Component. We don't update
-     * component if stream has not changed.
-     *
-     * @inheritdoc
-     * @param {Object} nextProps - Props that component is going to receive.
-     * @returns {boolean}
-     */
-    shouldComponentUpdate(nextProps) {
-        return (nextProps.stream || {}).id !== (this.props.stream || {}).id;
-    }
-
-    /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
@@ -36,6 +24,18 @@ export class Audio extends Component {
                 src={src}
             ></audio>
         );
+    }
+
+    /**
+     * Implements shouldComponentUpdate of React Component. We don't update
+     * component if stream has not changed.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - Props that component is going to receive.
+     * @returns {boolean}
+     */
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.stream || {}).id !== (this.props.stream || {}).id;
     }
 }
 

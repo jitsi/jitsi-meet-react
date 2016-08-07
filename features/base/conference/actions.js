@@ -4,8 +4,7 @@ import {
     dominantSpeakerChanged,
     participantJoined,
     participantLeft,
-    participantRoleChanged,
-    participantVideoTypeChanged
+    participantRoleChanged
 } from '../participants';
 import {
     trackAdded,
@@ -24,7 +23,6 @@ import './middleware';
 import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
-const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Initializes a new conference.
@@ -60,7 +58,8 @@ export function createConference(room) {
 export function conferenceJoined(conference) {
     return (dispatch, getState) => {
         let localTracks = getState()['features/base/tracks']
-            .filter(t => t.isLocal());
+            .filter(t => t.local)
+            .map(t => t.jitsiTrack);
 
         if (localTracks.length) {
             _addLocalTracksToConference(conference, localTracks);
@@ -137,11 +136,6 @@ function _setupConferenceListeners(conference) {
                 }
 
                 dispatch(trackAdded(track));
-
-                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-                    dispatch(participantVideoTypeChanged(
-                        track.getParticipantId(), type));
-                });
             });
         conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
             track => dispatch(trackMuteChanged(track)));

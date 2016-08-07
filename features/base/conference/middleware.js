@@ -31,7 +31,7 @@ MiddlewareRegistry.register(store => next => action => {
     case TRACK_REMOVED: {
         let track = action.track;
 
-        if (track && track.isLocal()) {
+        if (track && track.local) {
             return syncConferenceLocalTracksWithState(store, action)
                 .then(() => next(action));
         }
@@ -56,11 +56,13 @@ function pinParticipant(store, id) {
     let participantById = participants.find(p => p.id === id);
     let localParticipant = getLocalParticipant(participants);
 
-    // This condition prevents signaling to pin local participant. Here is the
-    // logic: if we have ID, then we check if participant by that ID is local.
-    // If we don't have ID and thus no participant by ID, we check for local
-    // participant. If it's currently pinned, then this action will unpin him
-    // and that's why we won't signal here too.
+    // The following condition prevents signaling to pin local participant. The
+    // logic is:
+    // - If we have an ID, we check if the participant identified by that ID is
+    //   local.
+    // - If we don't have an ID (i.e. no participant identified by an ID), we
+    //   check for local participant. If she's currently pinned, then this
+    //   action will unpin her and that's why we won't signal here too.
     if ((participantById && !participantById.local)
             || (!participantById
                 && (!localParticipant || !localParticipant.pinned))) {
@@ -83,7 +85,7 @@ function syncConferenceLocalTracksWithState(store, action) {
     let promise;
 
     if (conference) {
-        let track = action.track;
+        let track = action.track.jitsiTrack;
 
         if (action.type === TRACK_ADDED) {
             promise = _addLocalTracksToConference(conference, [ track ]);
