@@ -44,7 +44,7 @@ class VideoThumbnail extends Component {
      * @returns {void}
      */
     handleVideoThumbClicked() {
-        let { dispatch, participant } = this.props;
+        const { dispatch, participant } = this.props;
 
         // TODO The following currently ignores interfaceConfig.filmStripOnly.
         dispatch(pinParticipant(participant.pinned ? null : participant.id));
@@ -78,7 +78,7 @@ class VideoThumbnail extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let { audioTrack, largeVideo, participant, videoTrack } = this.props;
+        const { audioTrack, largeVideo, participant, videoTrack } = this.props;
 
         // We don't render audio in any of the following:
         // 1. The audio (source) is muted. There's no practical reason (that we
@@ -86,17 +86,17 @@ class VideoThumbnail extends Component {
         //    silence (& not even comfort noise).
         // 2. The audio is local. If we were to render local audio, the local
         //    participants would be hearing themselves.
-        let audioMuted = !audioTrack || audioTrack.muted;
-        let renderAudio = !audioMuted && !audioTrack.local;
+        const audioMuted = !audioTrack || audioTrack.muted;
+        const renderAudio = !audioMuted && !audioTrack.local;
 
         // We don't render video (in the film strip) in any of the following:
         // 1. The video (source) is muted. Even if muted video happens to be
         //    black frames one day, we've decided to display the participant's
         //    avatar instead.
         // 2. The video is rendered on the stage i.e. as a large video.
-        let videoMuted = !videoTrack || videoTrack.muted;
-        let renderVideo =
-            !videoMuted
+        const videoMuted = !videoTrack || videoTrack.muted;
+        const renderVideo
+            = !videoMuted
                 && (!videoTrack.videoStarted
                     || participant.id !== largeVideo.participantId);
 
@@ -105,28 +105,28 @@ class VideoThumbnail extends Component {
                 pinned={ participant.pinned }
                 onClick={ this._onClick }>
 
-                { renderAudio &&
-                    <Audio
+                { renderAudio
+                    && <Audio
                         stream={ audioTrack.jitsiTrack.getOriginalStream() } />
                 }
 
-                { renderVideo &&
-                    <VideoTrack videoTrack={ videoTrack } /> }
+                { renderVideo
+                    && <VideoTrack videoTrack={ videoTrack } /> }
 
-                { !renderVideo &&
-                    <Avatar uri={ participant.avatar } /> }
+                { !renderVideo
+                    && <Avatar uri={ participant.avatar } /> }
 
-                { participant.role === PARTICIPANT_ROLE.MODERATOR &&
-                    <ModeratorIndicator /> }
+                { participant.role === PARTICIPANT_ROLE.MODERATOR
+                    && <ModeratorIndicator /> }
 
-                { participant.speaking &&
-                    <DominantSpeakerIndicator /> }
+                { participant.speaking
+                    && <DominantSpeakerIndicator /> }
 
-                { audioMuted &&
-                    <AudioMutedIndicator /> }
+                { audioMuted
+                    && <AudioMutedIndicator /> }
 
-                { videoMuted &&
-                    <VideoMutedIndicator /> }
+                { videoMuted
+                    && <VideoMutedIndicator /> }
 
             </VideoThumbnailContainer>
         );
@@ -148,12 +148,12 @@ const mapStateToProps = (state, ownProps) => {
     // We need read-only access to the state of features/largeVideo so that the
     // film strip doesn't render the video of the participant who is rendered on
     // the stage i.e. as a large video.
-    let largeVideo = state['features/largeVideo'];
-    let tracks = state['features/base/tracks'];
-    let participantId = ownProps.participant.id;
-    let audioTrack = getTrackByMediaTypeAndParticipant(
+    const largeVideo = state['features/largeVideo'];
+    const tracks = state['features/base/tracks'];
+    const participantId = ownProps.participant.id;
+    const audioTrack = getTrackByMediaTypeAndParticipant(
         tracks, MEDIA_TYPE.AUDIO, participantId);
-    let videoTrack = getTrackByMediaTypeAndParticipant(
+    const videoTrack = getTrackByMediaTypeAndParticipant(
         tracks, MEDIA_TYPE.VIDEO, participantId);
 
     return {

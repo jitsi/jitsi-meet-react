@@ -12,7 +12,10 @@ export const styles = createStyleSheet(platformIndependentStyles, {
      */
     audioMutedIndicator: {
         textShadowColor: 'black',
-        textShadowOffset: { height: -1, width: 0 }
+        textShadowOffset: {
+            height: -1,
+            width: 0
+        }
     },
 
     /**
@@ -28,7 +31,10 @@ export const styles = createStyleSheet(platformIndependentStyles, {
      */
     moderatorIndicator: {
         textShadowColor: 'black',
-        textShadowOffset: { height: -1, width: 0 }
+        textShadowOffset: {
+            height: -1,
+            width: 0
+        }
     },
 
     /**
@@ -44,6 +50,9 @@ export const styles = createStyleSheet(platformIndependentStyles, {
      */
     videoMutedIndicator: {
         textShadowColor: 'black',
-        textShadowOffset: { height: -1, width: 0 }
+        textShadowOffset: {
+            height: -1,
+            width: 0
+        }
     }
 });

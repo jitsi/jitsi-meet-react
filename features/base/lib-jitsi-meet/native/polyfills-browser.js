@@ -38,17 +38,20 @@ function _getCommonPrototype(a, b) {
  */
 function _querySelector(node, selectors) {
     let element = null;
+
     if (node) {
-        _visitNode(node, function (node) {
-            if (node.nodeType == 1 /* ELEMENT_NODE */
-                && node.nodeName == selectors) {
-                element = node;
+        _visitNode(node, visitedNode => {
+            if (visitedNode.nodeType === 1 /* ELEMENT_NODE */
+                && visitedNode.nodeName === selectors) {
+                element = visitedNode;
+
                 return true;
-            } else {
-                return false;
             }
+
+            return false;
         });
     }
+
     return element;
 }
 
@@ -66,6 +69,9 @@ function _visitNode(node, callback) {
     if (callback(node)) {
         return true;
     }
+
+    /* eslint-disable no-param-reassign, no-extra-parens */
+
     if ((node = node.firstChild)) {
         do {
             if (_visitNode(node, callback)) {
@@ -73,21 +79,25 @@ function _visitNode(node, callback) {
             }
         } while ((node = node.nextSibling));
     }
+
+    /* eslint-enable no-param-reassign, no-extra-parens */
+
     return false;
 }
 
-(function (global) {
+(function(global) {
 
-    let DOMParser = require('xmldom').DOMParser;
+    const DOMParser = require('xmldom').DOMParser;
 
     // addEventListener
     //
     // Required by:
     // - jQuery
     if (typeof global.addEventListener === 'undefined') {
-        global.addEventListener = function () {
-        };
+        // eslint-disable-next-line no-empty-function
+        global.addEventListener = function() {};
     }
+
     // document
     //
     // Required by:
@@ -95,7 +105,7 @@ function _visitNode(node, callback) {
     // - lib-jitsi-meet/modules/RTC/adapter.screenshare.js
     // - Strophe
     if (typeof global.document === 'undefined') {
-        let document
+        const document
             = new DOMParser().parseFromString(
             /* source */ '<html><head></head><body></body></html>',
             /* mineType */ 'text/xml');
@@ -105,108 +115,131 @@ function _visitNode(node, callback) {
         // Required by:
         // - jQuery
         if (typeof document.addEventListener === 'undefined') {
-            document.addEventListener = function () {
-            };
+            // eslint-disable-next-line no-empty-function
+            document.addEventListener = function() {};
         }
 
         // Document.querySelector
         //
         // Required by:
         // - strophejs-plugins/caps/strophe.caps.jsonly.js
-        let documentPrototype = Object.getPrototypeOf(document);
+        const documentPrototype = Object.getPrototypeOf(document);
+
         if (documentPrototype) {
             if (typeof documentPrototype.querySelector === 'undefined') {
-                documentPrototype.querySelector = function (selectors) {
+                documentPrototype.querySelector = function(selectors) {
                     return _querySelector(this.elementNode, selectors);
                 };
             }
         }
+
         // Element.querySelector
         //
         // Required by:
         // - strophejs-plugins/caps/strophe.caps.jsonly.js
-        let elementPrototype = Object.getPrototypeOf(document.documentElement);
+        const elementPrototype
+            = Object.getPrototypeOf(document.documentElement);
+
         if (elementPrototype) {
             if (typeof elementPrototype.querySelector === 'undefined') {
-                elementPrototype.querySelector = function (selectors) {
+                elementPrototype.querySelector = function(selectors) {
                     return _querySelector(this, selectors);
                 };
             }
         }
+
         // FIXME There is a weird infinite loop related to console.log and
         // Document and/or Element at the time of this writing. Work around it
         // by patching Node and/or overriding console.log.
-        let nodePrototype
+        const nodePrototype
             = _getCommonPrototype(documentPrototype, elementPrototype);
+
         if (nodePrototype
+
             // XXX The intention was to find Node from which Document and
             // Element extend. If for whatever reason we've reached Object, then
             // it doesn't sound like what expected.
             && nodePrototype !== Object.getPrototypeOf({})) {
             // Override console.log.
-            let console = global.console;
+            const console = global.console;
+
             if (console) {
-                let loggerLevels = require('jitsi-meet-logger').levels;
-                Object.keys(loggerLevels).forEach(function (key) {
-                    let level = loggerLevels[key];
-                    let consoleLog = console[level];
+                const loggerLevels = require('jitsi-meet-logger').levels;
+
+                Object.keys(loggerLevels).forEach(key => {
+                    const level = loggerLevels[key];
+                    const consoleLog = console[level];
+
+                    /* eslint-disable prefer-rest-params */
+
                     if (typeof consoleLog === 'function') {
-                        console[level] = function () {
-                            let length = arguments.length;
-                            let args = new Array(length);
+                        console[level] = function() {
+                            const length = arguments.length;
+                            const args = new Array(length);
+
                             for (let i = 0; i < length; ++i) {
                                 let arg = arguments[i];
+
                                 if (arg
                                     && typeof arg !== 'string'
+
                                     // Limit the console.log override to Node
                                     // (instances).
                                     && nodePrototype.isPrototypeOf(arg)) {
-                                    let toString = arg.toString;
+                                    const toString = arg.toString;
+
                                     if (toString) {
                                         arg = toString.call(arg);
                                     }
                                 }
                                 args[i] = arg;
                             }
+
                             consoleLog.apply(this, args);
                         };
                     }
+
+                    /* eslint-enable prefer-rest-params */
                 });
             }
         }
 
         global.document = document;
     }
+
     // location
     if (typeof global.location === 'undefined') {
         global.location = {
             href: ''
         };
     }
+
     // performance
     if (typeof global.performance === 'undefined') {
         global.performance = {
-            now: function () {
+            now() {
                 return 0;
             }
         };
     }
+
     // sessionStorage
     //
     // Required by:
     // - Strophe
     if (typeof global.sessionStorage === 'undefined') {
         global.sessionStorage = {
-            getItem: function () {
-            },
-            removeItem: function () {
-            },
-            setItem: function () {
-            }
+            /* eslint-disable no-empty-function */
+            getItem() {},
+            removeItem() {},
+            setItem() {}
+
+            /* eslint-enable no-empty-function */
         };
     }
 
-    let navigator = global.navigator;
+    const navigator = global.navigator;
+
     if (navigator) {
         // platform
         //
@@ -215,6 +248,7 @@ function _visitNode(node, callback) {
         if (typeof navigator.platform === 'undefined') {
             navigator.platform = '';
         }
+
         // plugins
         //
         // Required by:
@@ -222,23 +256,27 @@ function _visitNode(node, callback) {
         if (typeof navigator.plugins === 'undefined') {
             navigator.plugins = [];
         }
+
         // userAgent
         //
         // Required by:
         // - lib-jitsi-meet/modules/RTC/adapter.screenshare.js
         // - lib-jitsi-meet/modules/RTC/RTCBrowserType.js
-        (function () {
-            let reactNativePackageJSON = require('react-native/package.json');
+        (function() {
+            const reactNativePackageJSON = require('react-native/package.json');
             let userAgent = reactNativePackageJSON.name || 'react-native';
 
-            let version = reactNativePackageJSON.version;
-            if (version)
-                userAgent += '/' + version;
+            const version = reactNativePackageJSON.version;
+
+            if (version) {
+                userAgent += `/${version}`;
+            }
 
             if (typeof navigator.userAgent !== 'undefined') {
-                let s = navigator.userAgent.toString();
+                const s = navigator.userAgent.toString();
+
                 if (s.length > 0 && s.indexOf(userAgent) === -1) {
-                    userAgent = s + ' ' + userAgent;
+                    userAgent = `${s} ${userAgent}`;
                 }
             }
 
@@ -255,7 +293,8 @@ function _visitNode(node, callback) {
 
     // XMLHttpRequest
     if (global.XMLHttpRequest) {
-        let prototype = global.XMLHttpRequest.prototype;
+        const prototype = global.XMLHttpRequest.prototype;
+
         // XMLHttpRequest.responseXML
         //
         // Required by:
@@ -264,13 +303,15 @@ function _visitNode(node, callback) {
             Object.defineProperty(prototype, 'responseXML', {
                 configurable: true,
                 enumerable: true,
-                get: function () {
-                    let responseText = this.responseText;
+                get() {
+                    const responseText = this.responseText;
                     let responseXML;
+
                     if (responseText) {
                         responseXML = new DOMParser()
                             .parseFromString(responseText);
                     }
+
                     return responseXML;
                 }
             });
@@ -280,4 +321,4 @@ function _visitNode(node, callback) {
     // Polyfill for URL constructor
     require('url-polyfill');
 
-})(global || window || this);
+})(global || window || this); // eslint-disable-line no-invalid-this

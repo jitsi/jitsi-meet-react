@@ -86,14 +86,14 @@ export class App extends AbstractApp {
      * @returns {string}
      */
     _getRoomFromUrlString(url) {
-        let urlObj = super._urlStringToObject(url);
+        const urlObj = super._urlStringToObject(url);
         let room;
 
         if (urlObj
-                && (urlObj.hostname
-                    === this.props.config.connection.hosts.domain)) {
+            && urlObj.hostname === this.props.config.connection.hosts.domain) {
             room = super._getRoomFromUrlObject(urlObj);
         }
+
         return room;
     }
 
@@ -104,7 +104,7 @@ export class App extends AbstractApp {
      * @returns {void}
      */
     _navigate(route) {
-        let navigator = this.refs.navigator;
+        const navigator = this.refs.navigator;
 
         // TODO Currently, the replace method doesn't support animation. Work
         // towards adding it is done in

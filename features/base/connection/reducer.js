@@ -12,7 +12,7 @@ import {
 ReducerRegistry.register('features/base/connection', (state = null, action) => {
     switch (action.type) {
     case CONNECTION_DISCONNECTED:
-        return (state === action.connection) ? null : state;
+        return state === action.connection ? null : state;
 
     case CONNECTION_ESTABLISHED:
         return action.connection;

@@ -32,9 +32,11 @@ const reducer = ReducerRegistry.combineReducers({
 let middleware = MiddlewareRegistry.applyMiddleware(
     Thunk,
     routerMiddleware(browserHistory));
+
 // Try to enable Redux DevTools Chrome extension in order to make it available
 // for the purposes of facilitating development.
 let devToolsExtension;
+
 if (typeof window === 'object'
         && (devToolsExtension = window.devToolsExtension)) {
     middleware = compose(middleware, devToolsExtension());

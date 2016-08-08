@@ -13,8 +13,8 @@ import { WelcomePage } from '../welcome';
  * @returns {Route}
  */
 export function _getRouteToRender(store) {
-    let room = store.getState()['features/base/conference'].room;
-    let component = isRoomValid(room) ? Conference : WelcomePage;
+    const room = store.getState()['features/base/conference'].room;
+    const component = isRoomValid(room) ? Conference : WelcomePage;
 
     return RouteRegistry.getRouteByComponent(component);
 }

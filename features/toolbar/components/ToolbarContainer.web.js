@@ -16,17 +16,17 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let underlayColor = ColorPalette.buttonUnderlay;
+        const underlayColor = ColorPalette.buttonUnderlay;
         let micButtonStyle;
         let micButtonIcon;
+
         if (this.props.audioMuted) {
             micButtonStyle = {
                 ...styles.toolbarButton,
                 backgroundColor: underlayColor
             };
             micButtonIcon = 'microphone-slash';
-        }
-        else {
+        } else {
             micButtonStyle = styles.toolbarButton;
             micButtonIcon = 'microphone';
         }
@@ -44,12 +44,12 @@ export class ToolbarContainer extends Component {
                         backgroundColor: ColorPalette.jitsiRed
                     } }
                     onClick= { this.props.onHangup }>
-                    <Icon name = "phone" style = { styles.icon } />
+                    <Icon name = 'phone' style = { styles.icon } />
                 </button>
                 <button
                     style = { styles.toolbarButton }
                     onClick= { this.props.onCameraChange }>
-                    <Icon name="camera" style = { styles.icon } />
+                    <Icon name='camera' style = { styles.icon } />
                 </button>
             </div>
         );

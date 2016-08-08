@@ -32,14 +32,14 @@ export function getTrackByMediaTypeAndParticipant(
         tracks,
         mediaType,
         participantId) {
-    return tracks.find(t => (
+    return tracks.find(t =>
         t.participantId === participantId && t.mediaType === mediaType
-    ));
+    );
 }
 
 /**
- * Returns the track if any which corresponds to a specific instance of
- * JitsiLocalTrack or JitsiRemoteTrack.
+ * Returns the track if any which corresponds to a specific instance
+ * of JitsiLocalTrack or JitsiRemoteTrack.
  *
  * @param {Track[]} tracks - List of all tracks.
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)} jitsiTrack - JitsiTrack instance.

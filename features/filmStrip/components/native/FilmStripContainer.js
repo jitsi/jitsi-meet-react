@@ -21,13 +21,13 @@ export class FilmStripContainer extends Component {
         // discovered, which allows the view to still capture touch events even
         // if hidden.
         // TODO Alternatives will be investigated.
-        let bottom =
-            this.props.visible
+        const bottom
+            = this.props.visible
                 ? styles.filmStrip.bottom
                 : -Dimensions.get('window').height;
 
         return (
-            <View style={ [styles.filmStrip, { bottom }] }>
+            <View style={ [ styles.filmStrip, { bottom }] }>
                 { this.props.children }
             </View>
         );

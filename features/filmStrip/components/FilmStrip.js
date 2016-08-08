@@ -21,9 +21,7 @@ class FilmStrip extends Component {
             {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
-                    .map(p => (
-                        <VideoThumbnail key={ p.id } participant={ p } />
-                    ))
+                    .map(p => <VideoThumbnail key={ p.id } participant={ p } />)
             }
             </FilmStripContainer>
         );

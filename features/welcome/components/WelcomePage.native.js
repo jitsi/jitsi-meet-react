@@ -26,11 +26,11 @@ class WelcomePage extends AbstractWelcomePage {
                 <View style={ styles.roomContainer }>
                     <Text style={ styles.title }>Enter room name</Text>
                     <TextInput
-                        autoCapitalize="none"
+                        autoCapitalize='none'
                         autoCorrect={ false }
                         autoFocus={ true }
                         onChangeText={ this._onRoomChange }
-                        placeholder="room name"
+                        placeholder='room name'
                         style={ styles.textInput }
                         value={ this.state.room }
                     />
@@ -38,7 +38,7 @@ class WelcomePage extends AbstractWelcomePage {
                         disabled={ this._isJoinDisabled() }
                         onPress={ this._onJoinPress }
                         style={ styles.button }
-                        underlayColor="white">
+                        underlayColor='white'>
                         <Text style={ styles.buttonText }>JOIN</Text>
                     </TouchableHighlight>
                 </View>

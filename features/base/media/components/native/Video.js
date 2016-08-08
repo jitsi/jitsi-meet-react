@@ -29,7 +29,7 @@ export class Video extends Component {
      * @returns {ReactElement|null}
      */
     render() {
-        let stream = this.props.stream;
+        const stream = this.props.stream;
 
         if (stream) {
             let streamURL = stream.toURL();
@@ -43,6 +43,7 @@ export class Video extends Component {
             let style = styles.video;
             let objectFit = (style && style.objectFit) || 'cover';
 
+            // eslint-disable-next-line no-extra-parens
             let video = (
                 <RTCView
                     objectFit={ objectFit }
@@ -59,9 +60,9 @@ export class Video extends Component {
                 return (
                     <View style={ styles.mirroredVideo }>{ video }</View>
                 );
-            } else {
-                return video;
             }
+
+            return video;
         }
 
         // RTCView has peculiarities which may or may not be platform specific.

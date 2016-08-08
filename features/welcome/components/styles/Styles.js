@@ -35,6 +35,7 @@ export const styles = createStyleSheet({
         marginBottom: 10,
         marginTop: 10
     },
+
     /**
      * Join button text style.
      */
@@ -43,10 +44,12 @@ export const styles = createStyleSheet({
         color: '#00ccff',
         fontSize: 18
     },
+
     /**
      * Welcome page container style.
      */
-    container: container,
+    container,
+
     /**
      * Container for room name input box and 'join' button.
      */
@@ -55,6 +58,7 @@ export const styles = createStyleSheet({
         backgroundColor: 'transparent',
         padding: 30
     },
+
     /**
      * Navigator container style.
      */
@@ -62,6 +66,7 @@ export const styles = createStyleSheet({
         backgroundColor: '#111111',
         flex: 1
     },
+
     /**
      * Room input style.
      */
@@ -77,6 +82,7 @@ export const styles = createStyleSheet({
         padding: 4,
         textAlign: 'center'
     },
+
     /**
      * Application title style.
      */

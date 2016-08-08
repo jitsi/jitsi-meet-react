@@ -35,8 +35,8 @@ import {
  * @see Participant.
  * @type {string[]}
  */
-const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE =
-    [ 'id', 'local', 'pinned', 'speaking' ];
+const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE
+    = [ 'id', 'local', 'pinned', 'speaking' ];
 
 /**
  * Reducer function for a single participant.
@@ -59,7 +59,7 @@ function participant(state, action) {
 
     case PARTICIPANT_ID_CHANGED:
         if (state.id === action.oldValue) {
-            let id = action.newValue;
+            const id = action.newValue;
 
             return {
                 ...state,
@@ -67,19 +67,25 @@ function participant(state, action) {
                 avatar: state.avatar || _getAvatarURL(id, state.email)
             };
         }
+
         return state;
 
     case PARTICIPANT_JOINED: {
-        let participant = action.participant;
+        const participant = action.participant; // eslint-disable-line no-shadow
         // XXX The situation of not having an ID for a remote participant should
         // not happen. Maybe we should raise an error in this case or generate a
         // random ID.
-        let id = participant.id
+        const id = participant.id
             || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
-        let avatar = participant.avatar || _getAvatarURL(id, participant.email);
+        const avatar = participant.avatar
+            || _getAvatarURL(id, participant.email);
+
         // TODO Get these names from config/localized.
-        let name =
-            participant.name || (participant.local ? 'me' : 'Fellow Jitster');
+        const name
+            = participant.name
+                || (participant.local
+                    ? 'me'
+                    : 'Fellow Jitster');
 
         return {
             avatar,
@@ -97,9 +103,10 @@ function participant(state, action) {
         if (state.id === action.participant.id) {
             let updateObj = {};
 
-            for (let key in action.participant) {
-                if (action.participant.hasOwnProperty(key) &&
-                    PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE.indexOf(key) === -1) {
+            for (const key in action.participant) {
+                if (action.participant.hasOwnProperty(key)
+                    && PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE.indexOf(key)
+                        === -1) {
                     updateObj[key] = action.participant[key];
                 }
             }
@@ -111,6 +118,7 @@ function participant(state, action) {
 
             return updateObj;
         }
+
         return state;
 
     case PIN_PARTICIPANT:
@@ -171,24 +179,25 @@ function _getAvatarURL(participantId, email) {
 
     // If the ID looks like an email, we'll use gravatar. Otherwise, it's a
     // random avatar and we'll use the configured URL.
-    let random = !avatarId || avatarId.indexOf('@') < 0;
+    const random = !avatarId || avatarId.indexOf('@') < 0;
 
     if (!avatarId) {
         avatarId = participantId;
     }
+
     // MD5 is provided by Strophe
     avatarId = MD5.hexdigest(avatarId.trim().toLowerCase());
 
     let urlPref = null;
     let urlSuf = null;
-    if (!random) {
-        urlPref = 'https://www.gravatar.com/avatar/';
-        urlSuf = '?d=wavatar&size=200';
-    }
-    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config.
-    else {
+
+    if (random) {
+        // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config.
         urlPref = 'https://robohash.org/';
         urlSuf = '.png?size=200x200';
+    } else {
+        urlPref = 'https://www.gravatar.com/avatar/';
+        urlSuf = '?d=wavatar&size=200';
     }
 
     return urlPref + avatarId + urlSuf;

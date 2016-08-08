@@ -18,18 +18,18 @@ import './reducer';
  */
 export function selectEndpoint() {
     return (dispatch, getState) => {
-        let state = getState();
-        let conference = state['features/base/conference'].jitsiConference;
+        const state = getState();
+        const conference = state['features/base/conference'].jitsiConference;
 
         if (conference) {
-            let largeVideo = state['features/largeVideo'];
-            let tracks = state['features/base/tracks'];
+            const largeVideo = state['features/largeVideo'];
+            const tracks = state['features/base/tracks'];
 
-            let videoTrack = getTrackByMediaTypeAndParticipant(
+            const videoTrack = getTrackByMediaTypeAndParticipant(
                 tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
             conference.selectParticipant(
-                (videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA)
+                videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA
                     ? largeVideo.participantId
                     : null);
         }
@@ -45,12 +45,12 @@ export function selectEndpoint() {
  */
 export function selectParticipantInLargeVideo() {
     return (dispatch, getState) => {
-        let state = getState();
-        let participants = state['features/base/participants'];
-        let tracks = state['features/base/tracks'];
-        let largeVideo = state['features/largeVideo'];
-
-        let participantId = electParticipantInLargeVideo(participants, tracks);
+        const state = getState();
+        const participants = state['features/base/participants'];
+        const tracks = state['features/base/tracks'];
+        const largeVideo = state['features/largeVideo'];
+        const participantId
+            = electParticipantInLargeVideo(participants, tracks);
 
         if (participantId !== largeVideo.participantId) {
             dispatch({
@@ -117,7 +117,7 @@ function electParticipantInLargeVideo(participants, tracks) {
     // participant with last visible video track. This may turn out to be local
     // participant.
     if (!id) {
-        let videoTrack = electLastVisibleVideo(tracks);
+        const videoTrack = electLastVisibleVideo(tracks);
 
         id = videoTrack && videoTrack.participantId;
     }

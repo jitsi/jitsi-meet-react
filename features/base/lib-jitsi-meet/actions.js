@@ -15,11 +15,9 @@ import './reducer';
 export function disposeLib() {
     // XXX We're wrapping this to be able to "dispatch" the action, because we
     // will need to dispatch some errors to global error handler at some point.
-    return dispatch => {
-        // TODO Currently, lib-jitsi-meet doesn't have any functionality to
-        // dispose itself.
-        return dispatch({ type: LIB_DISPOSED });
-    };
+    // TODO Currently, lib-jitsi-meet doesn't have any functionality to
+    // dispose itself.
+    return dispatch => dispatch({ type: LIB_DISPOSED });
 }
 
 /**
@@ -30,22 +28,22 @@ export function disposeLib() {
  * @returns {Function}
  */
 export function initLib(config) {
-    config || (config = {});
+    const conf = config || {};
 
     // XXX We wrapping this to be able to "dispatch" the action, because
     // we will need to dispatch some errors to global error handler at some
     // point.
-    return dispatch => {
-        return JitsiMeetJS.init(config)
+    return dispatch =>
+        JitsiMeetJS.init(conf)
             .then(() => dispatch({ type: LIB_INITIALIZED }))
             .catch(error => {
                 dispatch({
                     type: LIB_INIT_ERROR,
                     lib: { error }
                 });
+
                 // TODO Handle LIB_INIT_ERROR error somewhere instead.
                 console.error('lib-jitsi-meet failed to init due to ', error);
                 throw error;
             });
-    };
 }

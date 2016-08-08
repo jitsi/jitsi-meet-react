@@ -67,7 +67,7 @@ export function dominantSpeakerChanged(id) {
  */
 export function localParticipantIdChanged(id) {
     return (dispatch, getState) => {
-        let participant = getLocalParticipant(getState);
+        const participant = getLocalParticipant(getState);
 
         if (participant) {
             return dispatch({
@@ -102,7 +102,7 @@ export function localParticipantJoined(participant = {}) {
  */
 export function localParticipantLeft() {
     return (dispatch, getState) => {
-        let participant = getLocalParticipant(getState);
+        const participant = getLocalParticipant(getState);
 
         if (participant) {
             return dispatch(participantLeft(participant.id));

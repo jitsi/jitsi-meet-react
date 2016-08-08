@@ -40,6 +40,7 @@ class Toolbar extends Component {
  */
 const mapStateToProps = state => {
     const stateFeaturesToolbar = state['features/toolbar'];
+
     return {
         audioMuted: stateFeaturesToolbar.audioMuted,
         videoMuted: stateFeaturesToolbar.videoMuted
