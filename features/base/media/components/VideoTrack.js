@@ -32,9 +32,9 @@ class VideoTrack extends Component {
 
         return (
             <Video
-                mirror={ videoTrack.mirrorVideo }
-                onPlaying={ this._onVideoPlaying }
-                stream={ videoTrack.jitsiTrack.getOriginalStream() }/>
+                mirror = { videoTrack.mirrorVideo }
+                onPlaying = { this._onVideoPlaying }
+                stream = { videoTrack.jitsiTrack.getOriginalStream() } />
         );
     }
 

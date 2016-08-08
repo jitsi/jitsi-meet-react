@@ -80,9 +80,9 @@ class Root extends Component {
 
         return (
             <App
-                config={ config }
-                store={ store }
-                url={ this.state.url } />
+                config = { config }
+                store = { store }
+                url = { this.state.url } />
         );
     }
 }

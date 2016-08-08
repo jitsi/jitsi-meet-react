@@ -23,7 +23,7 @@ class Toolbar extends Component {
         return (
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
-                onAudioMute = { muted => this.props.onAudioMute(muted) }
+                onAudioMute = { this.props.onAudioMute }
                 onCameraChange = { this.props.onCameraChange }
                 onHangup = { this.props.onHangup }
                 videoMuted = { this.props.videoMuted }

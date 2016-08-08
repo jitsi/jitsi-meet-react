@@ -49,19 +49,17 @@ export class App extends AbstractApp {
 
         /* eslint-disable no-extra-parens */
         return (
-            <Provider store={ this.props.store }>
+            <Provider store = { this.props.store }>
                 <Router
-                    createElement={ this._routerCreateElement }
-                    history={ this.history }>
-                {
-                    routes.map(r => (
-                        <Route
-                            component={ r.component }
-                            key={ r.component }
-                            onEnter={ this._onRouteEnter }
-                            path={ r.path } />
-                    ))
-                }
+                    createElement = { this._routerCreateElement }
+                    history = { this.history }>
+                { routes.map(r => (
+                    <Route
+                        component = { r.component }
+                        key = { r.component }
+                        onEnter = { this._onRouteEnter }
+                        path = { r.path } />
+                    )) }
                 </Router>
             </Provider>
         );

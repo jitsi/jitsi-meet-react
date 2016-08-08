@@ -15,8 +15,8 @@ export class Avatar extends Component {
     render() {
         return (
             <Image
-                source={ { uri: this.props.uri } }
-                style={ styles.avatar } />
+                source = {{ uri: this.props.uri }}
+                style = { styles.avatar } />
         );
     }
 }

@@ -60,12 +60,12 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer onPress={ this._onPress }>
-                <LargeVideo/>
+            <ConferenceContainer onPress = { this._onPress }>
+                <LargeVideo />
                 <Toolbar
-                    visible={ this.state.toolbarIsVisible } />
+                    visible = { this.state.toolbarIsVisible } />
                 <FilmStrip
-                    visible={ !this.state.toolbarIsVisible } />
+                    visible = { !this.state.toolbarIsVisible } />
             </ConferenceContainer>
         );
     }

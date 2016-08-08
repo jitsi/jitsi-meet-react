@@ -19,23 +19,27 @@ class WelcomePage extends AbstractWelcomePage {
      * @returns {ReactElement}
      */
     render() {
+        /* eslint-disable react/jsx-no-bind */
+
         return (
-            <div style={ styles.container }>
+            <div style = { styles.container }>
                 { this._renderLocalVideo() }
-                <div style={ styles.roomContainer }>
-                    <p style={ styles.title }>Enter room name</p>
+                <div style = { styles.roomContainer }>
+                    <p style = { styles.title }>Enter room name</p>
                     <input
-                        onChange={ ev => this._onRoomChange(ev.target.value) }
-                        style={ styles.textInput }
-                        type='text'
-                        value={ this.state.room || '' } />
+                        onChange = { ev => this._onRoomChange(ev.target.value) }
+                        style = { styles.textInput }
+                        type = 'text'
+                        value = { this.state.room || '' } />
                     <button
-                        disabled={ this._isJoinDisabled() }
-                        onClick={ this._onJoinPress }
-                        style={ styles.button }>JOIN</button>
+                        disabled = { this._isJoinDisabled() }
+                        onClick = { this._onJoinPress }
+                        style = { styles.button }>JOIN</button>
                 </div>
             </div>
         );
+
+        /* eslint-enable react/jsx-no-bind */
     }
 }
 

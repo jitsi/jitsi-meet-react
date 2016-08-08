@@ -15,9 +15,8 @@ export class ModeratorIndicator extends Component {
     render() {
         return (
             <Icon
-                name='star'
-                style={ styles.moderatorIndicator }
-            />
+                name = 'star'
+                style = { styles.moderatorIndicator } />
         );
     }
 }

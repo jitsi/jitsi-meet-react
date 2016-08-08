@@ -28,11 +28,9 @@ class LargeVideo extends Component {
 
         return (
             <LargeVideoContainer>
-            {
-                videoTrack
+            { videoTrack
                     && videoTrack.videoStarted
-                    && <VideoTrack videoTrack={ videoTrack } />
-            }
+                    && <VideoTrack videoTrack = { videoTrack } /> }
             </LargeVideoContainer>
         );
     }

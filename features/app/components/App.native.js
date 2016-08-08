@@ -60,16 +60,20 @@ export class App extends AbstractApp {
      * @returns {ReactElement}
      */
     render() {
-        let store = this.props.store;
+        const store = this.props.store;
+
+        /* eslint-disable brace-style, react/jsx-no-bind */
 
         return (
-            <Provider store={ store }>
+            <Provider store = { store }>
                 <Navigator
-                    initialRoute={ _getRouteToRender(store) }
-                    ref='navigator'
-                    renderScene={ this._navigatorRenderScene }/>
+                    initialRoute = { _getRouteToRender(store) }
+                    ref = { navigator => { this.navigator = navigator; } }
+                    renderScene = { this._navigatorRenderScene } />
             </Provider>
         );
+
+        /* eslint-enable brace-style, react/jsx-no-bind */
     }
 
     /**
@@ -104,7 +108,7 @@ export class App extends AbstractApp {
      * @returns {void}
      */
     _navigate(route) {
-        const navigator = this.refs.navigator;
+        const navigator = this.navigator;
 
         // TODO Currently, the replace method doesn't support animation. Work
         // towards adding it is done in

@@ -27,7 +27,7 @@ export class FilmStripContainer extends Component {
                 : -Dimensions.get('window').height;
 
         return (
-            <View style={ [ styles.filmStrip, { bottom }] }>
+            <View style = { [ styles.filmStrip, { bottom }] }>
                 { this.props.children }
             </View>
         );

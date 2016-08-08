@@ -21,7 +21,7 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let underlayColor = ColorPalette.buttonUnderlay;
+        const underlayColor = ColorPalette.buttonUnderlay;
         let micButtonStyle;
         let micIconStyle;
         let micButtonIcon;

@@ -56,7 +56,7 @@ class VideoThumbnail extends Component {
      * propagation.
      *
      * @param {Event} ev - DOM event.
-     * @returns {false}
+     * @returns {boolean}
      */
     _onClick(ev) {
         this.handleVideoThumbClicked();
@@ -102,19 +102,19 @@ class VideoThumbnail extends Component {
 
         return (
             <VideoThumbnailContainer
-                pinned={ participant.pinned }
-                onClick={ this._onClick }>
+                onClick = { this._onClick }
+                pinned = { participant.pinned }>
 
                 { renderAudio
                     && <Audio
-                        stream={ audioTrack.jitsiTrack.getOriginalStream() } />
-                }
+                        stream
+                            = { audioTrack.jitsiTrack.getOriginalStream() } /> }
 
                 { renderVideo
-                    && <VideoTrack videoTrack={ videoTrack } /> }
+                    && <VideoTrack videoTrack = { videoTrack } /> }
 
                 { !renderVideo
-                    && <Avatar uri={ participant.avatar } /> }
+                    && <Avatar uri = { participant.avatar } /> }
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR
                     && <ModeratorIndicator /> }
