@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
+import { connect as reactReduxConnect } from 'react-redux';
 
+import {
+    connect,
+    disconnect
+} from '../../base/connection';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
@@ -36,7 +41,18 @@ class Conference extends Component {
     }
 
     /**
-     * Clears the toolbarTimeout before the component unmounts.
+     * Inits new connection and conference when conference screen is entered.
+     *
+     * @inheritdoc
+     * @returns {void}
+     */
+    componentWillMount() {
+        this.props.dispatch(connect(this.props.config, this.props.room));
+    }
+
+    /**
+     * Destroys connection, conference and local tracks when conference screen
+     * is left. Clears the toolbarTimeout before the component unmounts.
      *
      * @inheritdoc
      * @returns {void}
@@ -46,6 +62,8 @@ class Conference extends Component {
             clearTimeout(this.toolbarTimeout);
             this.toolbarTimeout = undefined;
         }
+
+        this.props.dispatch(disconnect());
     }
 
     /**
@@ -56,13 +74,10 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer onPress={ this._onPress }>
-                <LargeVideo/>
-                <Toolbar
-                    navigator={ this.props.navigator }
-                    visible={ this.state.toolbarIsVisible } />
-                <FilmStrip
-                    visible={ !this.state.toolbarIsVisible } />
+            <ConferenceContainer onPress = { this._onPress }>
+                <LargeVideo />
+                <Toolbar visible = { this.state.toolbarIsVisible } />
+                <FilmStrip visible = { !this.state.toolbarIsVisible } />
             </ConferenceContainer>
         );
     }
@@ -76,7 +91,7 @@ class Conference extends Component {
      * @returns {void}
      */
     _onPress() {
-        let toolbarIsVisible = !this.state.toolbarIsVisible;
+        const toolbarIsVisible = !this.state.toolbarIsVisible;
 
         this.setState({ toolbarIsVisible });
 
@@ -89,14 +104,30 @@ class Conference extends Component {
 /**
  * Conference component's property types.
  *
- * Ensure that the application navigator object is passed down via props on
- * mobile.
- *
  * @static
  */
 Conference.propTypes = {
-    navigator: React.PropTypes.object,
-    participants: React.PropTypes.object
+    /**
+     * The configuration with which a connection is to be initialized for the
+     * purposes of joining the conference depicted by the (React Component)
+     * Conference instance.
+     *
+     * @type {Object}
+     */
+    config: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    room: React.PropTypes.string
 };
 
-export default Conference;
+/**
+ * Maps room property from state to component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{ room: string }}
+ */
+// eslint-disable-next-line arrow-body-style
+export const mapStateToProps = state => ({
+    room: state['features/base/conference'].room
+});
+
+export default reactReduxConnect(mapStateToProps)(Conference);

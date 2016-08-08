@@ -21,19 +21,19 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let underlayColor = ColorPalette.buttonUnderlay;
+        const underlayColor = ColorPalette.buttonUnderlay;
         let micButtonStyle;
         let micIconStyle;
         let micButtonIcon;
+
         if (this.props.audioMuted) {
             micButtonStyle = [
                 styles.toolbarButton,
                 { backgroundColor: underlayColor }
             ];
-            micIconStyle = [styles.icon, { color: 'white' }];
+            micIconStyle = [ styles.icon, { color: 'white' } ];
             micButtonIcon = 'mic-disabled';
-        }
-        else {
+        } else {
             micButtonStyle = styles.toolbarButton;
             micIconStyle = styles.icon;
             micButtonIcon = 'microphone';
@@ -46,13 +46,13 @@ export class ToolbarContainer extends Component {
         // discovered, which allowed the view to still capture touch events even
         // if hidden.
         // TODO Alternatives will be investigated.
-        let bottom =
-            this.props.visible
+        const bottom
+            = this.props.visible
                 ? styles.toolbarContainer.bottom
                 : -Dimensions.get('window').height;
 
         return (
-            <View style = { [styles.toolbarContainer, { bottom }] }>
+            <View style = { [ styles.toolbarContainer, { bottom } ] }>
 
                 <TouchableHighlight
                     onPress = { this.props.onAudioMute }
@@ -71,8 +71,8 @@ export class ToolbarContainer extends Component {
                     underlayColor = { underlayColor }>
 
                     <Icon
-                        name = "hangup"
-                        style = { [styles.icon, { color: 'white' }] } />
+                        name = 'hangup'
+                        style = { styles.whiteIcon } />
                 </TouchableHighlight>
                 <TouchableHighlight
                     onPress = { this.props.onCameraChange }
@@ -80,7 +80,7 @@ export class ToolbarContainer extends Component {
                     underlayColor = { underlayColor }>
 
                     <Icon
-                        name = "photo-camera"
+                        name = 'photo-camera'
                         style = { styles.icon } />
                 </TouchableHighlight>
             </View>

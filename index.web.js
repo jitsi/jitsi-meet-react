@@ -32,9 +32,11 @@ const reducer = ReducerRegistry.combineReducers({
 let middleware = MiddlewareRegistry.applyMiddleware(
     Thunk,
     routerMiddleware(browserHistory));
+
 // Try to enable Redux DevTools Chrome extension in order to make it available
 // for the purposes of facilitating development.
 let devToolsExtension;
+
 if (typeof window === 'object'
         && (devToolsExtension = window.devToolsExtension)) {
     middleware = compose(middleware, devToolsExtension());
@@ -43,5 +45,10 @@ if (typeof window === 'object'
 // Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
 
-// Render the root component.
-ReactDOM.render(<App config={config} store={store}/>, document.body);
+// Render the main Component.
+ReactDOM.render(
+    <App
+        config = { config }
+        store = { store }
+        url = { window.location.toString() } />,
+    document.body);

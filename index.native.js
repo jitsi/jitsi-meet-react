@@ -1,5 +1,5 @@
-import React from 'react';
-import { AppRegistry } from 'react-native';
+import React, { Component } from 'react';
+import { AppRegistry, Linking } from 'react-native';
 import { createStore } from 'redux';
 import Thunk from 'redux-thunk';
 
@@ -23,12 +23,69 @@ const middleware = MiddlewareRegistry.applyMiddleware(Thunk);
 const store = createStore(reducer, middleware);
 
 /**
- * React Native doesn't support passing props to root component, so create a
- * wrapper class instead in form of stateless function.
+ * React Native doesn't support specifying props to the main/root component (in
+ * the JS/JSX source code). So create a wrapper React Component (class) around
+ * features/app's App instead.
  *
- * @returns {ReactElement}
+ * @extends Component
  */
-const Root = () => <App config={config} store={store}/>;
+class Root extends Component {
+    /**
+     * Initializes a new Root instance.
+     *
+     * @param {Object} props - The read-only properties with which the new
+     * instance is to be initialized.
+     */
+    constructor(props) {
+        super(props);
 
-// Register the root component.
+        /**
+         * The initial state of this Component.
+         *
+         * @type {{url: string}}
+         */
+        this.state = {
+            /**
+             * The URL, if any, with which the app was launched.
+             *
+             * @type {string}
+             */
+            url: undefined
+        };
+
+        // Handle the URL, if any, with which the app was launched.
+        Linking.getInitialURL()
+            .then(url => this.setState({ url }))
+            .catch(err => {
+                console.error('Failed to get initial URL', err);
+
+                // XXX Start with an empty URL if getting the initial URL fails;
+                // otherwise, nothing will be rendered.
+                this.setState({ url: null });
+            });
+    }
+
+    /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {ReactElement}
+     */
+    render() {
+        // XXX We don't render the App component until we get the initial URL,
+        // either it's null or some other non-null defined value;
+        if (typeof this.state.url === 'undefined') {
+            return null;
+        }
+
+        return (
+            <App
+                config = { config }
+                store = { store }
+                url = { this.state.url } />
+        );
+    }
+}
+
+// Register the main Component.
 AppRegistry.registerComponent('App', () => Root);

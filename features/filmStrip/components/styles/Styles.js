@@ -82,9 +82,9 @@ export const styles = {
     },
 
     /**
-     * Focused video thumbnail style.
+     * Pinned video thumbnail style.
      */
-    thumbnailFocused: {
+    thumbnailPinned: {
         borderColor: ColorPalette.jitsiBlue,
         shadowColor: 'black',
         shadowOffset: {

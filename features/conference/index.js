@@ -1,2 +1,3 @@
-export * from './components';
+import './route';
 
+export * from './components';

@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { AbstractWelcomePage } from './AbstractWelcomePage';
+import {
+    AbstractWelcomePage,
+    mapStateToProps
+} from './AbstractWelcomePage';
 import { styles } from './styles';
 
 /**
@@ -9,27 +12,34 @@ import { styles } from './styles';
  *
  * @extends AbstractWelcomePage
  */
-export class WelcomePage extends AbstractWelcomePage {
+class WelcomePage extends AbstractWelcomePage {
     /**
      * Renders a prompt for entering a room name.
      *
      * @returns {ReactElement}
      */
     render() {
+        /* eslint-disable react/jsx-no-bind */
+
         return (
-            <div style={ styles.container }>
-                <p style={ styles.title }>Enter room name</p>
-                <input
-                    onChange={ ev => this._onRoomNameChange(ev.target.value) }
-                    style={ styles.textInput }
-                    type="text"
-                    value={ this.state.roomName }  />
-                <button
-                    disabled={ this.state.roomName === '' }
-                    onClick={ this._onJoinPress }
-                    style={ styles.button }>JOIN</button>
+            <div style = { styles.container }>
+                { this._renderLocalVideo() }
+                <div style = { styles.roomContainer }>
+                    <p style = { styles.title }>Enter room name</p>
+                    <input
+                        onChange = { ev => this._onRoomChange(ev.target.value) }
+                        style = { styles.textInput }
+                        type = 'text'
+                        value = { this.state.room || '' } />
+                    <button
+                        disabled = { this._isJoinDisabled() }
+                        onClick = { this._onJoinPress }
+                        style = { styles.button }>JOIN</button>
+                </div>
             </div>
         );
+
+        /* eslint-enable react/jsx-no-bind */
     }
 }
 
@@ -40,4 +50,4 @@ export class WelcomePage extends AbstractWelcomePage {
  */
 WelcomePage.propTypes = AbstractWelcomePage.propTypes;
 
-export default connect()(WelcomePage);
+export default connect(mapStateToProps)(WelcomePage);

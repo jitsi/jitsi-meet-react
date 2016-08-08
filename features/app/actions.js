@@ -1,26 +1,56 @@
-import { APP_NAVIGATE } from './actionTypes';
+import {
+    APP_NAVIGATE,
+    APP_WILL_MOUNT,
+    APP_WILL_UNMOUNT
+} from './actionTypes';
 import './middleware';
+import './reducer';
 
 /**
- * Trigger an in-app navigation to a different screen. Allows navigation to be
+ * Triggers an in-app navigation to a different route. Allows navigation to be
  * abstracted between the mobile and web versions.
  *
- * @param {Object} opts - Navigation options.
- * @param {Navigator} opts.navigator - Navigator instance.
- * @param {string} opts.room - Conference room name.
- * @param {APP_SCREEN} opts.screen - Name of route/screen to switch to.
+ * @param {Route} route - The Route to which to navigate.
  * @returns {{
  *      type: APP_NAVIGATE,
- *      navigator: Navigator,
- *      room: string,
- *      screen: APP_SCREEN
+ *      route: Route
  * }}
  */
-export function navigate(opts) {
+export function appNavigate(route) {
     return {
         type: APP_NAVIGATE,
-        navigator: opts.navigator,
-        room: opts.room,
-        screen: opts.screen
+        route
+    };
+}
+
+/**
+ * Signals that a specific App will mount (in the terms of React).
+ *
+ * @param {App} app - The App which will mount.
+ * @returns {{
+ *     type: APP_WILL_MOUNT,
+ *     app: App
+ * }}
+ */
+export function appWillMount(app) {
+    return {
+        type: APP_WILL_MOUNT,
+        app
+    };
+}
+
+/**
+ * Signals that a specific App will unmount (in the terms of React).
+ *
+ * @param {App} app - The App which will unmount.
+ * @returns {{
+ *     type: APP_WILL_UNMOUNT,
+ *     app: App
+ * }}
+ */
+export function appWillUnmount(app) {
+    return {
+        type: APP_WILL_UNMOUNT,
+        app
     };
 }

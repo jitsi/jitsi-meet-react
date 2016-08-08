@@ -2,7 +2,10 @@ import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
 
-import { AbstractWelcomePage } from './AbstractWelcomePage';
+import {
+    AbstractWelcomePage,
+    mapStateToProps
+} from './AbstractWelcomePage';
 import { styles } from './styles';
 
 /**
@@ -18,23 +21,26 @@ class WelcomePage extends AbstractWelcomePage {
      */
     render() {
         return (
-            <View style={ styles.container }>
-                <Text style={ styles.title }>Enter room name</Text>
-                <TextInput
-                    autoCapitalize="none"
-                    autoCorrect={ false }
-                    autoFocus={ true }
-                    onChangeText={ this._onRoomNameChange }
-                    placeholder="room name"
-                    style={ styles.textInput }
-                />
-                <TouchableHighlight
-                    disabled={ this.state.roomName === '' }
-                    onPress={ this._onJoinPress }
-                    style={ styles.button }
-                    underlayColor="white">
-                    <Text style={ styles.buttonText }>JOIN</Text>
-                </TouchableHighlight>
+            <View style = { styles.container }>
+                { this._renderLocalVideo() }
+                <View style = { styles.roomContainer }>
+                    <Text style = { styles.title }>Enter room name</Text>
+                    <TextInput
+                        autoCapitalize = 'none'
+                        autoCorrect = { false }
+                        autoFocus = { true }
+                        onChangeText = { this._onRoomChange }
+                        placeholder = 'room name'
+                        style = { styles.textInput }
+                        value = { this.state.room } />
+                    <TouchableHighlight
+                        disabled = { this._isJoinDisabled() }
+                        onPress = { this._onJoinPress }
+                        style = { styles.button }
+                        underlayColor = 'white'>
+                        <Text style = { styles.buttonText }>JOIN</Text>
+                    </TouchableHighlight>
+                </View>
             </View>
         );
     }
@@ -47,4 +53,4 @@ class WelcomePage extends AbstractWelcomePage {
  */
 WelcomePage.propTypes = AbstractWelcomePage.propTypes;
 
-export default connect()(WelcomePage);
+export default connect(mapStateToProps)(WelcomePage);

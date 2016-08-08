@@ -13,16 +13,16 @@ export class VideoThumbnailContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        const containerStyle = this.props.focused
-            ? Object.assign({}, styles.thumbnail, styles.thumbnailFocused)
+        const containerStyle = this.props.pinned
+            ? Object.assign({}, styles.thumbnail, styles.thumbnailPinned)
             : styles.thumbnail;
 
         return (
-          <div
-              onClick={ this.props.onClick }
-              style={ containerStyle }>
-              { this.props.children }
-          </div>
+            <div
+                onClick = { this.props.onClick }
+                style = { containerStyle }>
+                { this.props.children }
+            </div>
         );
     }
 }
@@ -34,6 +34,6 @@ export class VideoThumbnailContainer extends Component {
  */
 VideoThumbnailContainer.propTypes = {
     children: React.PropTypes.node,
-    focused: React.PropTypes.bool,
-    onClick: React.PropTypes.func
+    onClick: React.PropTypes.func,
+    pinned: React.PropTypes.bool
 };

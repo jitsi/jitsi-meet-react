@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { styles } from './styles';
 
 /**
- * The web container rendering the person "on stage".
+ * The web container rendering the conference participant whose video is
+ * displayed as a large one rather than as a thumbnail.
  */
 export class LargeVideoContainer extends Component {
     /**
@@ -14,7 +15,7 @@ export class LargeVideoContainer extends Component {
      */
     render() {
         return (
-            <div style={ styles.container }>{ this.props.children }</div>
+            <div style = { styles.container }>{ this.props.children }</div>
         );
     }
 }
