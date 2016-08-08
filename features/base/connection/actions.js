@@ -24,12 +24,12 @@ export function connect(config, room) {
             {
                 ...config.connection,
                 bosh: config.connection.bosh + (
-                    room ? ('?room=' + room) : ''
+                    room ? `?room=${room}` : ''
                 )
             }
         );
 
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             connection.addEventListener(
                 JitsiConnectionEvents.CONNECTION_DISCONNECTED,
                 handleConnectionDisconnected);

@@ -18,8 +18,8 @@ export class DominantSpeakerIndicator extends Component {
         return (
             <View style = { styles.dominantSpeakerIndicatorBackground }>
                 <Icon
-                    style = { styles.dominantSpeakerIndicator }
-                    name = 'bullhorn' />
+                    name = 'bullhorn'
+                    style = { styles.dominantSpeakerIndicator } />
             </View>
         );
     }

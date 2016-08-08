@@ -32,14 +32,14 @@ const JitsiConferenceEvents = JitsiMeetJS.events.conference;
  */
 export function createConference(room) {
     return (dispatch, getState) => {
-        let connection = getState()['features/base/connection'];
-        let conference;
+        const connection = getState()['features/base/connection'];
 
         if (!connection) {
             throw new Error('Cannot create conference without connection');
         }
 
-        conference = connection.initJitsiConference(room, { openSctp: true });
+        const conference
+            = connection.initJitsiConference(room, { openSctp: true });
 
         dispatch(_setupConferenceListeners(conference));
 
@@ -57,7 +57,7 @@ export function createConference(room) {
  */
 export function conferenceJoined(conference) {
     return (dispatch, getState) => {
-        let localTracks = getState()['features/base/tracks']
+        const localTracks = getState()['features/base/tracks']
             .filter(t => t.local)
             .map(t => t.jitsiTrack);
 

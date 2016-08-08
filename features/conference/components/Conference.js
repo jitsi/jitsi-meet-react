@@ -60,12 +60,12 @@ class Conference extends Component {
      */
     render() {
         return (
-            <ConferenceContainer onPress={ this._onPress }>
-                <LargeVideo/>
+            <ConferenceContainer onPress = { this._onPress }>
+                <LargeVideo />
                 <Toolbar
-                    visible={ this.state.toolbarIsVisible } />
+                    visible = { this.state.toolbarIsVisible } />
                 <FilmStrip
-                    visible={ !this.state.toolbarIsVisible } />
+                    visible = { !this.state.toolbarIsVisible } />
             </ConferenceContainer>
         );
     }
@@ -107,6 +107,7 @@ Conference.propTypes = {
  * @param {Object} state - Redux state.
  * @returns {{ room: string }}
  */
+// eslint-disable-next-line arrow-body-style
 export const mapStateToProps = state => ({
     room: state['features/base/conference'].room
 });

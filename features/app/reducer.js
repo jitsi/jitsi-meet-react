@@ -19,13 +19,19 @@ ReducerRegistry.register('features/app', (state = INITIAL_STATE, action) => {
     switch (action.type) {
     case APP_WILL_MOUNT:
         if (state.app !== action.app) {
-            return { ...state, app: action.app };
+            return {
+                ...state,
+                app: action.app
+            };
         }
         break;
 
     case APP_WILL_UNMOUNT:
         if (state.app === action.app) {
-            return { ...state, app: INITIAL_STATE.app };
+            return {
+                ...state,
+                app: INITIAL_STATE.app
+            };
         }
         break;
     }

@@ -48,11 +48,15 @@ function track(state, action) {
         break;
 
     case TRACK_UPDATED:
-        if (action.track.jitsiTrack === state.jitsiTrack) {
-            return { ...state,  ...action.track };
+        if (state.jitsiTrack === action.track.jitsiTrack) {
+            return {
+                ...state,
+                ...action.track
+            };
         }
         break;
     }
+
     return state;
 }
 
@@ -66,11 +70,13 @@ ReducerRegistry.register('features/base/tracks', (state = [], action) => {
         return state.map(t => track(t, action));
 
     case TRACK_ADDED:
-        return [...state, action.track];
+        return [
+            ...state,
+            action.track
+        ];
 
     case TRACK_REMOVED:
-        return state
-            .filter(track => track.jitsiTrack !== action.track.jitsiTrack);
+        return state.filter(t => t.jitsiTrack !== action.track.jitsiTrack);
 
     default:
         return state;

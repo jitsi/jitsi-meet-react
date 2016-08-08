@@ -17,9 +17,8 @@ export class VideoMutedIndicator extends Component {
         // the fontawesome icon set yet.
         return (
             <Icon
-                name='eye-slash'
-                style={ styles.videoMutedIndicator }
-            />
+                name = 'eye-slash'
+                style = { styles.videoMutedIndicator } />
         );
     }
 }

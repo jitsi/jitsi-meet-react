@@ -23,20 +23,18 @@ const JitsiTrackEvents = JitsiMeetJS.events.track;
  * @returns {Function}
  */
 export function createLocalTracks(options = {}) {
-    return dispatch => {
-        return JitsiMeetJS.createLocalTracks({
+    return dispatch =>
+        JitsiMeetJS.createLocalTracks({
             devices: options.devices || [ MEDIA_TYPE.AUDIO, MEDIA_TYPE.VIDEO ],
             facingMode: options.facingMode || CAMERA_FACING_MODE.USER,
             cameraDeviceId: options.cameraDeviceId,
             micDeviceId: options.micDeviceId
-        }).then(localTracks => {
-            return dispatch(_updateLocalTracks(localTracks));
-        }).catch(reason => {
+        })
+        .then(localTracks => dispatch(_updateLocalTracks(localTracks)))
+        .catch(err => {
             console.error(
-                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
-                    + reason);
+                `JitsiMeetJS.createLocalTracks.catch rejection reason: ${err}`);
         });
-    };
 }
 
 /**
@@ -46,13 +44,12 @@ export function createLocalTracks(options = {}) {
  * @returns {Function}
  */
 export function destroyLocalTracks() {
-    return (dispatch, getState) => (
+    return (dispatch, getState) =>
         dispatch(
             _disposeAndRemoveTracks(
                 getState()['features/base/tracks']
                     .filter(t => t.local)
-                    .map(t => t.jitsiTrack)))
-    );
+                    .map(t => t.jitsiTrack)));
 }
 
 /**
@@ -187,9 +184,8 @@ export function trackVideoTypeChanged(track, videoType) {
  * @returns {Function}
  */
 function _addTracks(tracks) {
-    return dispatch => {
-        return Promise.all(tracks.map(t => dispatch(trackAdded(t))));
-    };
+    return dispatch =>
+        Promise.all(tracks.map(t => dispatch(trackAdded(t))));
 }
 
 /**
@@ -200,20 +196,19 @@ function _addTracks(tracks) {
  * @returns {Function}
  */
 function _disposeAndRemoveTracks(tracks) {
-    return dispatch => {
-        return Promise.all(
-            tracks.map(t => {
-                return t.dispose()
+    return dispatch =>
+        Promise.all(
+            tracks.map(t =>
+                t.dispose()
                     .catch(err => {
                         // Track might be already disposed so ignore such an
                         // error. Of course, re-throw any other error(s).
                         if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
                             throw err;
                         }
-                    });
-            }))
+                    })
+            ))
             .then(Promise.all(tracks.map(t => dispatch(trackRemoved(t)))));
-    };
 }
 
 /**
@@ -230,16 +225,16 @@ function _disposeAndRemoveTracks(tracks) {
  * }}
  */
 function _getLocalTracksToChange(currentTracks, newTracks) {
-    let currentLocalAudio = currentTracks.find(
+    const currentLocalAudio = currentTracks.find(
         t => t.isLocal() && t.isAudioTrack());
-    let currentLocalVideo = currentTracks.find(
+    const currentLocalVideo = currentTracks.find(
         t => t.isLocal() && t.isVideoTrack());
-    let newLocalAudio = newTracks.find(
+    const newLocalAudio = newTracks.find(
         t => t.isLocal() && t.isAudioTrack());
-    let newLocalVideo = newTracks.find(
+    const newLocalVideo = newTracks.find(
         t => t.isLocal() && t.isVideoTrack());
-    let tracksToRemove = [];
-    let tracksToAdd = [];
+    const tracksToRemove = [];
+    const tracksToAdd = [];
 
     if (newLocalAudio) {
         tracksToAdd.push(newLocalAudio);
@@ -270,9 +265,10 @@ function _getLocalTracksToChange(currentTracks, newTracks) {
  */
 function _updateLocalTracks(newTracks = []) {
     return (dispatch, getState) => {
-        let tracks = getState()['features/base/tracks'].map(t => t.jitsiTrack);
-        let { tracksToAdd, tracksToRemove } =
-            _getLocalTracksToChange(tracks, newTracks);
+        const tracks
+            = getState()['features/base/tracks'].map(t => t.jitsiTrack);
+        const { tracksToAdd, tracksToRemove }
+            = _getLocalTracksToChange(tracks, newTracks);
 
         return dispatch(_disposeAndRemoveTracks(tracksToRemove))
             .then(() => dispatch(_addTracks(tracksToAdd)));

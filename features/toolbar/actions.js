@@ -28,8 +28,8 @@ export function toggleAudio() {
 export function toggleCameraFacingMode() {
     return (dispatch, getState) => {
         const stateFeaturesToolbar = getState()['features/toolbar'];
-        const cameraFacingMode =
-            stateFeaturesToolbar.cameraFacingMode === CAMERA_FACING_MODE.USER
+        const cameraFacingMode
+            = stateFeaturesToolbar.cameraFacingMode === CAMERA_FACING_MODE.USER
                 ? CAMERA_FACING_MODE.ENVIRONMENT
                 : CAMERA_FACING_MODE.USER;
 
@@ -59,7 +59,7 @@ function toggleMedia(media) {
         const tracks = getState()['features/base/tracks'];
         const localTracks = tracks.filter(t => t.local);
 
-        for (let track of localTracks) {
+        for (const track of localTracks) {
             const type = track.mediaType;
 
             if (type === media) {

@@ -29,10 +29,10 @@ export class Video extends Component {
      * @returns {ReactElement|null}
      */
     render() {
-        let stream = this.props.stream;
+        const stream = this.props.stream;
 
         if (stream) {
-            let streamURL = stream.toURL();
+            const streamURL = stream.toURL();
 
             // XXX The CSS style object-fit that we utilize on Web is not
             // supported on React Native. Adding objectFit to React Native's
@@ -40,15 +40,15 @@ export class Video extends Component {
             // unjustified amount of effort. Consequently, I've chosen to define
             // objectFit on RTCView itself. Anyway, prepare to accommodate a
             // future definition of objectFit in React Native's StyleSheet.
-            let style = styles.video;
-            let objectFit = (style && style.objectFit) || 'cover';
+            const style = styles.video;
+            const objectFit = (style && style.objectFit) || 'cover';
 
-            let video = (
+            // eslint-disable-next-line no-extra-parens
+            const video = (
                 <RTCView
-                    objectFit={ objectFit }
-                    streamURL={ streamURL }
-                    style={ style }
-                />
+                    objectFit = { objectFit }
+                    streamURL = { streamURL }
+                    style = { style } />
             );
 
             // XXX RTCView doesn't currently support mirroring, even when
@@ -57,11 +57,11 @@ export class Video extends Component {
             // property to that View instead.
             if (this.props.mirror) {
                 return (
-                    <View style={ styles.mirroredVideo }>{ video }</View>
+                    <View style = { styles.mirroredVideo }>{ video }</View>
                 );
-            } else {
-                return video;
             }
+
+            return video;
         }
 
         // RTCView has peculiarities which may or may not be platform specific.

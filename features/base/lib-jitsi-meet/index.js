@@ -2,10 +2,11 @@ import './_';
 
 // The library lib-jitsi-meet (externally) depends on the libraries jQuery and
 // Strophe
-(function (global) {
+(function(global) {
     // jQuery
     if (typeof global.$ === 'undefined') {
         const jQuery = require('jquery');
+
         jQuery(global);
         global.$ = jQuery;
     }
@@ -16,7 +17,7 @@ import './_';
         require('strophejs-plugins/disco/strophe.disco');
         require('strophejs-plugins/caps/strophe.caps.jsonly');
     }
-})(global || window || this);
+})(global || window || this); // eslint-disable-line no-invalid-this
 
 // Re-export JitsiMeetJS from the library lib-jitsi-meet to (the other features
 // of) the project jitsi-meet-react.

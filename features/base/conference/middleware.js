@@ -29,7 +29,7 @@ MiddlewareRegistry.register(store => next => action => {
 
     case TRACK_ADDED:
     case TRACK_REMOVED: {
-        let track = action.track;
+        const track = action.track;
 
         if (track && track.local) {
             return syncConferenceLocalTracksWithState(store, action)
@@ -51,10 +51,10 @@ MiddlewareRegistry.register(store => next => action => {
  * @returns {void}
  */
 function pinParticipant(store, id) {
-    let state = store.getState();
-    let participants = state['features/base/participants'];
-    let participantById = participants.find(p => p.id === id);
-    let localParticipant = getLocalParticipant(participants);
+    const state = store.getState();
+    const participants = state['features/base/participants'];
+    const participantById = participants.find(p => p.id === id);
+    const localParticipant = getLocalParticipant(participants);
 
     // The following condition prevents signaling to pin local participant. The
     // logic is:
@@ -66,7 +66,7 @@ function pinParticipant(store, id) {
     if ((participantById && !participantById.local)
             || (!participantById
                 && (!localParticipant || !localParticipant.pinned))) {
-        let conference = state['features/base/conference'].jitsiConference;
+        const conference = state['features/base/conference'].jitsiConference;
 
         conference.pinParticipant(id);
     }
@@ -80,17 +80,17 @@ function pinParticipant(store, id) {
  * @returns {Promise}
  */
 function syncConferenceLocalTracksWithState(store, action) {
-    const conference =
-        store.getState()['features/base/conference'].jitsiConference;
+    const conference
+        = store.getState()['features/base/conference'].jitsiConference;
     let promise;
 
     if (conference) {
-        let track = action.track.jitsiTrack;
+        const track = action.track.jitsiTrack;
 
         if (action.type === TRACK_ADDED) {
             promise = _addLocalTracksToConference(conference, [ track ]);
         } else {
-            promise = _removeLocalTracksFromConference( conference, [ track ]);
+            promise = _removeLocalTracksFromConference(conference, [ track ]);
         }
     }
 

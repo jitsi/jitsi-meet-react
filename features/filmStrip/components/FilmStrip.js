@@ -17,13 +17,14 @@ class FilmStrip extends Component {
      */
     render() {
         return (
-            <FilmStripContainer visible={ this.props.visible }>
+            <FilmStripContainer visible = { this.props.visible }>
             {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
-                    .map(p => (
-                        <VideoThumbnail key={ p.id } participant={ p } />
-                    ))
+                    .map(p =>
+                        <VideoThumbnail
+                            key = { p.id }
+                            participant = { p } />)
             }
             </FilmStripContainer>
         );

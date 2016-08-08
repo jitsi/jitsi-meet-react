@@ -15,11 +15,10 @@ export class DominantSpeakerIndicator extends Component {
      */
     render() {
         return (
-            <div style={ styles.dominantSpeakerIndicatorBackground }>
+            <div style = { styles.dominantSpeakerIndicatorBackground }>
                 <Icon
-                    name='bullhorn'
-                    style={ styles.dominantSpeakerIndicator }
-                />
+                    name = 'bullhorn'
+                    style = { styles.dominantSpeakerIndicator } />
             </div>
         );
     }

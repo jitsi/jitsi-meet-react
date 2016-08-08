@@ -23,7 +23,7 @@ class Toolbar extends Component {
         return (
             <ToolbarContainer
                 audioMuted = { this.props.audioMuted }
-                onAudioMute = { muted => this.props.onAudioMute(muted) }
+                onAudioMute = { this.props.onAudioMute }
                 onCameraChange = { this.props.onCameraChange }
                 onHangup = { this.props.onHangup }
                 videoMuted = { this.props.videoMuted }
@@ -40,6 +40,7 @@ class Toolbar extends Component {
  */
 const mapStateToProps = state => {
     const stateFeaturesToolbar = state['features/toolbar'];
+
     return {
         audioMuted: stateFeaturesToolbar.audioMuted,
         videoMuted: stateFeaturesToolbar.videoMuted
