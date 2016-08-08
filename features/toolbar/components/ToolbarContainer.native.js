@@ -72,7 +72,7 @@ export class ToolbarContainer extends Component {
 
                     <Icon
                         name = 'hangup'
-                        style = { [ styles.icon, { color: 'white' }] } />
+                        style = { styles.whiteIcon } />
                 </TouchableHighlight>
                 <TouchableHighlight
                     onPress = { this.props.onCameraChange }

@@ -13,7 +13,8 @@ module.exports = {
     },
     'plugins': [
         'jsdoc',
-        'react'
+        'react',
+        'react-native'
     ],
     'rules': {
         // Possible Errors group
@@ -389,6 +390,12 @@ module.exports = {
         'react/jsx-space-before-closing': 2,
         'react/jsx-uses-react': 2,
         'react/jsx-uses-vars': 2,
-        'react/jsx-wrap-multilines': 2
+        'react/jsx-wrap-multilines': 2,
+
+        // React-Mative plugin rules group
+        'react-native/no-unused-styles': 2,
+        'react-native/split-platform-components': 2,
+        'react-native/no-inline-styles': 2,
+        'react-native/no-color-literals': 2
     }
 };
