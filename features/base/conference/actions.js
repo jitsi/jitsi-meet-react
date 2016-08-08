@@ -2,10 +2,9 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     changeParticipantEmail,
     dominantSpeakerChanged,
+    participantJoined,
     participantLeft,
-    participantRoleChanged,
-    participantVideoTypeChanged,
-    remoteParticipantJoined
+    participantRoleChanged
 } from '../participants';
 import {
     trackAdded,
@@ -16,7 +15,7 @@ import {
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
-    ROOM_SET
+    SET_ROOM
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
 import { _addLocalTracksToConference } from './functions';
@@ -24,7 +23,6 @@ import './middleware';
 import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
-const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Initializes a new conference.
@@ -60,7 +58,8 @@ export function createConference(room) {
 export function conferenceJoined(conference) {
     return (dispatch, getState) => {
         let localTracks = getState()['features/base/tracks']
-            .filter(t => t.isLocal());
+            .filter(t => t.local)
+            .map(t => t.jitsiTrack);
 
         if (localTracks.length) {
             _addLocalTracksToConference(conference, localTracks);
@@ -97,22 +96,19 @@ export function conferenceLeft(conference) {
 }
 
 /**
- * Signals that room name was set.
+ * Sets (the name of) the room of the conference to be joined.
  *
- * @param {string} room - Name of conference room.
+ * @param {(string|undefined)} room - The name of the room of the conference to
+ * be joined.
  * @returns {{
- *      type: ROOM_SET,
- *      conference: {
- *          room: string
- *      }
+ *      type: SET_ROOM,
+ *      room: string
  *  }}
  */
-export function roomSet(room) {
+export function setRoom(room) {
     return {
-        type: ROOM_SET,
-        conference: {
-            room
-        }
+        type: SET_ROOM,
+        room
     };
 }
 
@@ -140,11 +136,6 @@ function _setupConferenceListeners(conference) {
                 }
 
                 dispatch(trackAdded(track));
-
-                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-                    dispatch(participantVideoTypeChanged(
-                        track.getParticipantId(), type));
-                });
             });
         conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
             track => dispatch(trackMuteChanged(track)));
@@ -158,9 +149,10 @@ function _setupConferenceListeners(conference) {
             });
 
         conference.on(JitsiConferenceEvents.USER_JOINED,
-            (id, user) => dispatch(remoteParticipantJoined(id, {
-                role: user.getRole(),
-                displayName: user.getDisplayName()
+            (id, user) => dispatch(participantJoined({
+                id,
+                name: user.getDisplayName(),
+                role: user.getRole()
             })));
         conference.on(JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));

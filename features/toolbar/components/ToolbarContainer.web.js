@@ -35,7 +35,7 @@ export class ToolbarContainer extends Component {
             <div style = { styles.toolbarContainer }>
                 <button
                     style = { micButtonStyle }
-                    onClick = { () => this.props.onAudioMute() }>
+                    onClick = { this.props.onAudioMute }>
                     <Icon name = { micButtonIcon } style = { styles.icon } />
                 </button>
                 <button
@@ -43,12 +43,12 @@ export class ToolbarContainer extends Component {
                         ...styles.toolbarButton,
                         backgroundColor: ColorPalette.jitsiRed
                     } }
-                    onClick= { () => this.props.onHangup() }>
+                    onClick= { this.props.onHangup }>
                     <Icon name = "phone" style = { styles.icon } />
                 </button>
                 <button
                     style = { styles.toolbarButton }
-                    onClick= { () => this.props.onCameraChange() }>
+                    onClick= { this.props.onCameraChange }>
                     <Icon name="camera" style = { styles.icon } />
                 </button>
             </div>

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 
-import { roomSet } from '../../base/conference';
+import { setRoom } from '../../base/conference';
 import {
     localParticipantJoined,
     localParticipantLeft
 } from '../../base/participants';
+
+import { appWillMount, appWillUnmount } from '../actions';
 
 /**
  * Base (abstract) class for main App component.
@@ -20,9 +22,10 @@ export class AbstractApp extends Component {
      */
     componentWillMount() {
         let dispatch = this.props.store.dispatch;
-        let room = this._getRoomFromUrlString(this.props.url);
 
-        dispatch(roomSet(room));
+        dispatch(appWillMount(this));
+
+        dispatch(setRoom(this._getRoomFromUrlString(this.props.url)));
         dispatch(localParticipantJoined());
     }
 
@@ -33,7 +36,11 @@ export class AbstractApp extends Component {
      * @inheritdoc
      */
     componentWillUnmount() {
-        this.props.store.dispatch(localParticipantLeft());
+        let dispatch = this.props.store.dispatch;
+
+        dispatch(localParticipantLeft());
+
+        dispatch(appWillUnmount(this));
     }
 
     /**
@@ -49,11 +56,12 @@ export class AbstractApp extends Component {
      * @protected
      */
     _createElement(component, props) {
+        /* eslint-disable no-unused-vars */
         let {
             // Don't propagate the dispatch and store props because they usually
             // come from react-redux and programmers don't really expect them to
             // be inherited but rather explicitly connected.
-            dispatch,
+            dispatch, // eslint-disable-line react/prop-types
             store,
             // The url property was introduced to be consumed entirely by
             // AbstractApp.
@@ -62,19 +70,29 @@ export class AbstractApp extends Component {
             // propagation to the children of this Component.
             ...thisProps
         } = this.props;
+        /* eslint-enable no-unused-vars */
 
         return React.createElement(component, { ...thisProps, ...props });
     }
 
     /**
-     * Gets room name from URL object.
+     * Gets room name from URL object if any.
      *
      * @param {URL} url - URL object.
      * @protected
-     * @returns {string}
+     * @returns {(string|undefined)}
      */
     _getRoomFromUrlObject(url) {
-        return url ? url.pathname.substr(1).toLowerCase() : undefined;
+        let room;
+
+        if (url) {
+            room = url.pathname.substr(1).toLowerCase();
+            // Convert empty string to undefined to simplify checks.
+            if (room === '') {
+                room = undefined;
+            }
+        }
+        return room;
     }
 
     /**
@@ -89,9 +107,27 @@ export class AbstractApp extends Component {
     }
 
     /**
+     * Navigates this AbstractApp to (i.e. opens) a specific URL.
+     *
+     * @param {string} url - The URL to which to navigate this AbstractApp (i.e.
+     * the URL to open).
+     * @protected
+     * @returns {void}
+     */
+    _openURL(url) {
+        let room = this._getRoomFromUrlString(url);
+
+        // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
+        // currently in a conference and ask her if she wants to close the
+        // current conference and start a new one with the new room name.
+
+        this.props.store.dispatch(setRoom(room));
+    }
+
+    /**
      * Parses a string into a URL (object).
      *
-     * @param {(string|undefined)} url - the URL to parse.
+     * @param {(string|undefined)} url - The URL to parse.
      * @protected
      * @returns {URL}
      */

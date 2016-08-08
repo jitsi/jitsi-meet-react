@@ -14,6 +14,7 @@ import {
     createLocalTracks,
     destroyLocalTracks
 } from './actions';
+import { getLocalTrack } from './functions';
 
 /**
  * Middleware that captures LIB_INITIALIZED and LIB_DISPOSED actions
@@ -62,19 +63,18 @@ MiddlewareRegistry.register(store => next => action => {
  * @returns {Promise|undefined}
  */
 function _setTrackMuted(store, mediaType, muted) {
-    let tracks = store.getState()['features/base/tracks'];
-    let localTrack = tracks
-        .find(t => t.isLocal() && t.getType() === mediaType);
+    const tracks = store.getState()['features/base/tracks'];
+    const localTrack = getLocalTrack(tracks, mediaType);
 
     if (!localTrack) {
         return;
     }
 
     if (muted) {
-        return localTrack.mute()
+        return localTrack.jitsiTrack.mute()
             .catch(err => console.warn('Track mute was rejected:', err));
     } else {
-        return localTrack.unmute()
+        return localTrack.jitsiTrack.unmute()
             .catch(err => console.warn('Track unmute was rejected:', err));
     }
 }

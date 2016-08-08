@@ -28,7 +28,7 @@ class WelcomePage extends AbstractWelcomePage {
                         onChange={ ev => this._onRoomChange(ev.target.value) }
                         style={ styles.textInput }
                         type="text"
-                        value={ this.state.room } />
+                        value={ this.state.room || '' } />
                     <button
                         disabled={ this._isJoinDisabled() }
                         onClick={ this._onJoinPress }

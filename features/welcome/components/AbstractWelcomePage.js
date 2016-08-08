@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-import { isRoomValid, roomSet } from '../../base/conference';
-import { shouldMirror, Video } from '../../base/media';
-import { navigate } from '../../base/navigator';
-import { participantVideoStarted } from '../../base/participants';
-import { Conference } from '../../conference';
+import { isRoomValid, setRoom } from '../../base/conference';
+import { VideoTrack } from '../../base/media';
+import { getLocalVideoTrack } from '../../base/tracks';
 
 /**
  * Base (abstract) class for container component rendering the welcome page.
@@ -33,17 +31,6 @@ export class AbstractWelcomePage extends Component {
         // Bind event handlers so they are only bound once for every instance.
         this._onJoinPress = this._onJoinPress.bind(this);
         this._onRoomChange = this._onRoomChange.bind(this);
-        this._onVideoPlaying = this._onVideoPlaying.bind(this);
-    }
-
-    /**
-     * Resets room name to empty string when welcome page screen is entered.
-     *
-     * @inheritdoc
-     * @returns {void}
-     */
-    componentWillMount() {
-        this.props.dispatch(roomSet(''));
     }
 
     /**
@@ -75,14 +62,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinPress() {
-        let room = this.state.room;
-
-        this.props.dispatch(roomSet(room));
-        this.props.dispatch(navigate({
-            component: Conference,
-            navigator: this.props.navigator,
-            room
-        }));
+        this.props.dispatch(setRoom(this.state.room));
     }
 
     /**
@@ -98,20 +78,6 @@ export class AbstractWelcomePage extends Component {
     }
 
     /**
-     * Handler for case when video starts to play.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onVideoPlaying() {
-        let localParticipant = this.props.localParticipant;
-
-        if (localParticipant) {
-            this.props.dispatch(participantVideoStarted(localParticipant.id));
-        }
-    }
-
-    /**
      * Renders a local video if any.
      *
      * @protected
@@ -120,18 +86,11 @@ export class AbstractWelcomePage extends Component {
     _renderLocalVideo() {
         let localVideoTrack = this.props.localVideoTrack;
 
-        if (localVideoTrack) {
-            // FIXME
-            // https://github.com/jitsi/jitsi-meet-react/pull/62/files#r73215760
-            return (
-                <Video
-                    mirror={ shouldMirror(localVideoTrack) }
-                    onPlaying={ this._onVideoPlaying }
-                    stream={ localVideoTrack.getOriginalStream() }/>
-            );
-        }
-
-        return null;
+        return (
+            localVideoTrack
+                ? <VideoTrack videoTrack={ localVideoTrack } />
+                : null
+        );
     }
 }
 
@@ -143,19 +102,16 @@ export class AbstractWelcomePage extends Component {
  *
  * @param {Object} state - Redux state.
  * @returns {{
- *      localParticipant: (Participant|undefined),
- *      localVideoTrack: (JitsiLocalTrack|undefined),
+ *      localVideoTrack: (Track|undefined),
  *      room: string
  * }}
  */
 export const mapStateToProps = state => {
     const conference = state['features/base/conference'];
-    const participants = state['features/base/participants'];
     const tracks = state['features/base/tracks'];
 
     return {
-        localParticipant: participants.find(p => p.local),
-        localVideoTrack: tracks.find(t => t.isLocal() && t.isVideoTrack()),
+        localVideoTrack: getLocalVideoTrack(tracks),
         room: conference.room
     };
 };
@@ -167,8 +123,6 @@ export const mapStateToProps = state => {
  */
 AbstractWelcomePage.propTypes = {
     dispatch: React.PropTypes.func,
-    localParticipant: React.PropTypes.object,
     localVideoTrack: React.PropTypes.object,
-    navigator: React.PropTypes.object,
     room: React.PropTypes.string
 };

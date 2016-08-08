@@ -1,17 +1,14 @@
 /* global MD5 */
 
-import {
-    CONFERENCE_JOINED,
-    CONFERENCE_LEFT
-} from '../conference';
 import { ReducerRegistry } from '../redux';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
+    PARTICIPANT_ID_CHANGED,
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
-    PARTICIPANT_PINNED,
-    PARTICIPANT_UPDATED
+    PARTICIPANT_UPDATED,
+    PIN_PARTICIPANT
 } from './actionTypes';
 import {
     LOCAL_PARTICIPANT_DEFAULT_ID,
@@ -27,14 +24,10 @@ import {
  * @property {string} role - Participant role.
  * @property {boolean} local - If true, participant is local.
  * @property {boolean} pinned - If true, participant is current
- *      "PINNED_ENDPOINT".
- * @property {boolean} speaking - If true, participant is currently a
- *      dominant speaker.
- * @property {boolean} videoStarted -  If true, participant video stream has
- *      already started.
- * @property {('camera'|'desktop'|undefined)} videoType - Type of participant's
- *      current video stream if any.
- * @property {string} email - participant email.
+ * "PINNED_ENDPOINT".
+ * @property {boolean} speaking - If true, participant is currently a dominant
+ * speaker.
+ * @property {string} email - Participant email.
  */
 
 /**
@@ -58,12 +51,15 @@ const PARTICIPANT_PROPS_TO_OMIT_WHEN_UPDATE =
  */
 function participant(state, action) {
     switch (action.type) {
-    /**
-     * Sets participant id according to conference.
-     */
-    case CONFERENCE_JOINED:
-        if (state.local) {
-            let id = action.conference.jitsiConference.myUserId();
+    case DOMINANT_SPEAKER_CHANGED:
+        // Only one dominant speaker is allowed.
+        return Object.assign({}, state, {
+            speaking: state.id === action.participant.id
+        });
+
+    case PARTICIPANT_ID_CHANGED:
+        if (state.id === action.oldValue) {
+            let id = action.newValue;
 
             return {
                 ...state,
@@ -73,52 +69,29 @@ function participant(state, action) {
         }
         return state;
 
-    /**
-     * Cleans conference-specific properties of the local participant when
-     * conference is left.
-     */
-    case CONFERENCE_LEFT:
-        if (state.local) {
-            return {
-                ...state,
-                id: LOCAL_PARTICIPANT_DEFAULT_ID,
-                avatar: state.avatar ||
-                    _getAvatarURL(LOCAL_PARTICIPANT_DEFAULT_ID, state.email),
-                focused: false,
-                pinned: false,
-                role: PARTICIPANT_ROLE.NONE,
-                selected: false,
-                speaking: false
-            };
-        }
-        return state;
+    case PARTICIPANT_JOINED: {
+        let participant = action.participant;
+        // XXX The situation of not having an ID for a remote participant should
+        // not happen. Maybe we should raise an error in this case or generate a
+        // random ID.
+        let id = participant.id
+            || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
+        let avatar = participant.avatar || _getAvatarURL(id, participant.email);
+        // TODO Get these names from config/localized.
+        let name =
+            participant.name || (participant.local ? 'me' : 'Fellow Jitster');
 
-    case DOMINANT_SPEAKER_CHANGED:
-        // Only one dominant speaker is allowed.
-        return Object.assign({}, state, {
-            speaking: state.id === action.participant.id
-        });
-
-    case PARTICIPANT_JOINED:
         return {
-            id: action.participant.id,
-            avatar: action.participant.avatar ||
-                _getAvatarURL(action.participant.id, action.participant.email),
-            email: action.participant.email,
-            local: action.participant.local || false,
-            name: action.participant.name,
-            pinned: action.participant.pinned || false,
-            role: action.participant.role || PARTICIPANT_ROLE.NONE,
-            speaking: action.participant.speaking || false,
-            videoStarted: false,
-            videoType: action.participant.videoType || undefined
+            avatar,
+            email: participant.email,
+            id,
+            local: participant.local || false,
+            name,
+            pinned: participant.pinned || false,
+            role: participant.role || PARTICIPANT_ROLE.NONE,
+            speaking: participant.speaking || false
         };
-
-    case PARTICIPANT_PINNED:
-        // Currently only one pinned participant is allowed.
-        return Object.assign({}, state, {
-            pinned: state.id === action.participant.id
-        });
+    }
 
     case PARTICIPANT_UPDATED:
         if (state.id === action.participant.id) {
@@ -140,14 +113,21 @@ function participant(state, action) {
         }
         return state;
 
+    case PIN_PARTICIPANT:
+        // Currently, only one pinned participant is allowed.
+        return {
+            ...state,
+            pinned: state.id === action.participant.id
+        };
+
     default:
         return state;
     }
 }
 
 /**
- * Listen for actions which add, remove, or update the set of participants
- * in the conference.
+ * Listen for actions which add, remove, or update the set of participants in
+ * the conference.
  *
  * @param {Participant[]} state - List of participants to be modified.
  * @param {Object} action - Action object.
@@ -164,11 +144,10 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
     case PARTICIPANT_LEFT:
         return state.filter(p => p.id !== action.participant.id);
 
-    case CONFERENCE_JOINED:
-    case CONFERENCE_LEFT:
     case DOMINANT_SPEAKER_CHANGED:
-    case PARTICIPANT_PINNED:
+    case PARTICIPANT_ID_CHANGED:
     case PARTICIPANT_UPDATED:
+    case PIN_PARTICIPANT:
         return state.map(p => participant(p, action));
 
     default:
@@ -186,13 +165,12 @@ ReducerRegistry.register('features/base/participants', (state = [], action) => {
  * identified by the specified participantId and/or email.
  */
 function _getAvatarURL(participantId, email) {
-    // TODO: Use disableThirdPartyRequests config
+    // TODO: Use disableThirdPartyRequests config.
 
     let avatarId = email || participantId;
 
-    // If the ID looks like an email, we'll use gravatar.
-    // Otherwise, it's a random avatar, and we'll use the configured
-    // URL.
+    // If the ID looks like an email, we'll use gravatar. Otherwise, it's a
+    // random avatar and we'll use the configured URL.
     let random = !avatarId || avatarId.indexOf('@') < 0;
 
     if (!avatarId) {
@@ -207,7 +185,7 @@ function _getAvatarURL(participantId, email) {
         urlPref = 'https://www.gravatar.com/avatar/';
         urlSuf = '?d=wavatar&size=200';
     }
-    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config
+    // TODO: Use RANDOM_AVATAR_URL_PREFIX from interface config.
     else {
         urlPref = 'https://robohash.org/';
         urlSuf = '.png?size=200x200';

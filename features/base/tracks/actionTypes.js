@@ -4,20 +4,10 @@
  *
  * {
  *     type: TRACK_ADDED,
- *     track: JitsiTrack
+ *     track: Track
  * }
  */
 export const TRACK_ADDED = 'TRACK_ADDED';
-
-/**
- * Action for when the mute status of a remote track has changed.
- *
- * {
- *     type: TRACK_MUTE_CHANGED,
- *     track: JitsiTrack
- * }
- */
-export const TRACK_MUTE_CHANGED = 'TRACK_MUTE_CHANGED';
 
 /**
  * Action for when a track has been removed from the conference,
@@ -25,7 +15,17 @@ export const TRACK_MUTE_CHANGED = 'TRACK_MUTE_CHANGED';
  *
  * {
  *     type: TRACK_REMOVED,
- *     track: JitsiTrack
+ *     track: Track
  * }
  */
 export const TRACK_REMOVED = 'TRACK_REMOVED';
+
+/**
+ * Action for when a track properties were updated.
+ *
+ * {
+ *     type: TRACK_UPDATED,
+ *     track: Track
+ * }
+ */
+export const TRACK_UPDATED = 'TRACK_UPDATED';
