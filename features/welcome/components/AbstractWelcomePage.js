@@ -84,12 +84,8 @@ export class AbstractWelcomePage extends Component {
      * @returns {(ReactElement|null)}
      */
     _renderLocalVideo() {
-        const localVideoTrack = this.props.localVideoTrack;
-
         return (
-            localVideoTrack
-                ? <VideoTrack videoTrack = { localVideoTrack } />
-                : null
+            <VideoTrack videoTrack = { this.props.localVideoTrack } />
         );
     }
 }
