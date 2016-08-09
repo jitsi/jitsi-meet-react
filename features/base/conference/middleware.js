@@ -68,7 +68,18 @@ function pinParticipant(store, id) {
                 && (!localParticipant || !localParticipant.pinned))) {
         const conference = state['features/base/conference'].jitsiConference;
 
-        conference.pinParticipant(id);
+        try {
+            conference.pinParticipant(id);
+        } catch (ex) {
+            // XXX DataChannels are initialized at some later point when
+            // conference has multiple participants, but this code might
+            // be executed before. So here we're swallowing a particular
+            // error.
+            // TODO this should be fixed in lib-jitsi-meet.
+            if (ex.message !== 'Data channels support is disabled!') {
+                throw ex;
+            }
+        }
     }
 }
 
