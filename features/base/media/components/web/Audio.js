@@ -14,15 +14,15 @@ export class Audio extends Component {
      */
     render() {
         // TODO URL.releaseObjectURL on componentDid/WillUnmount
-        let src = this.props.stream
+        const src = this.props.stream
             ? URL.createObjectURL(this.props.stream)
             : '';
 
         return (
-            <audio autoPlay
-                muted={this.props.muted}
-                src={src}
-            ></audio>
+            <audio
+                autoPlay = { true }
+                muted = { this.props.muted }
+                src = { src } />
         );
     }
 

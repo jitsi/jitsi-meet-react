@@ -40,7 +40,7 @@ const CAMERA_INITIAL_STATE = {
  * @returns {CameraMediaState}
  */
 const camera = (state = CAMERA_INITIAL_STATE, action) => {
-    switch(action.type) {
+    switch (action.type) {
     case CAMERA_FACING_MODE_CHANGED:
         return {
             ...state,
@@ -86,14 +86,16 @@ const MICROPHONE_INITIAL_STATE = {
  * @returns {MicrophoneMediaState}
  */
 const microphone = (state = MICROPHONE_INITIAL_STATE, action) => {
-    switch(action.type) {
+    switch (action.type) {
     case MICROPHONE_MUTED_STATE_CHANGED:
         return {
             ...state,
             muted: action.media.microphone.muted
         };
+
     case CONFERENCE_LEFT:
         return MICROPHONE_INITIAL_STATE;
+
     default:
         return state;
     }

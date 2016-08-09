@@ -19,20 +19,18 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let { largeVideo, tracks } = this.props;
-        let videoTrack =
-            getTrackByMediaTypeAndParticipant(
+        const { largeVideo, tracks } = this.props;
+        const videoTrack
+            = getTrackByMediaTypeAndParticipant(
                 tracks,
                 MEDIA_TYPE.VIDEO,
                 largeVideo.participantId);
 
         return (
             <LargeVideoContainer>
-            {
-                videoTrack
+                { videoTrack
                     && videoTrack.videoStarted
-                    && <VideoTrack videoTrack={ videoTrack } />
-            }
+                    && <VideoTrack videoTrack = { videoTrack } /> }
             </LargeVideoContainer>
         );
     }

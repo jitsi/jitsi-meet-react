@@ -6,5 +6,5 @@
  *     participantId: (string|undefined)
  * }
  */
-export const LARGE_VIDEO_PARTICIPANT_CHANGED =
-    'LARGE_VIDEO_PARTICIPANT_CHANGED';
+export const LARGE_VIDEO_PARTICIPANT_CHANGED
+    = 'LARGE_VIDEO_PARTICIPANT_CHANGED';

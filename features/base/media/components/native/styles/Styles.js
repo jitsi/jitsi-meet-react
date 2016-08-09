@@ -12,7 +12,7 @@ const video = {
  * Transform local videos to behave like a mirror.
  */
 const mirroredVideo = Object.assign({}, video, {
-    transform: [{ scaleX: -1 }]
+    transform: [ { scaleX: -1 } ]
 });
 
 /**

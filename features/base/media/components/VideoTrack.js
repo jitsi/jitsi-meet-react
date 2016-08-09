@@ -1,5 +1,5 @@
-import React, { Component } from  'react';
-import  { connect } from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { trackVideoStarted } from '../../tracks';
 
@@ -28,13 +28,13 @@ class VideoTrack extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let videoTrack = this.props.videoTrack;
+        const videoTrack = this.props.videoTrack;
 
         return (
             <Video
-                mirror={ videoTrack.mirrorVideo }
-                onPlaying={ this._onVideoPlaying }
-                stream={ videoTrack.jitsiTrack.getOriginalStream() }/>
+                mirror = { videoTrack.mirrorVideo }
+                onPlaying = { this._onVideoPlaying }
+                stream = { videoTrack.jitsiTrack.getOriginalStream() } />
         );
     }
 
@@ -45,7 +45,7 @@ class VideoTrack extends Component {
      * @returns {void}
      */
     _onVideoPlaying() {
-        let videoTrack = this.props.videoTrack;
+        const videoTrack = this.props.videoTrack;
 
         if (videoTrack) {
             this.props.dispatch(trackVideoStarted(videoTrack.jitsiTrack));

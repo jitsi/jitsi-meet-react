@@ -73,8 +73,8 @@ function _setTrackMuted(store, mediaType, muted) {
     if (muted) {
         return localTrack.jitsiTrack.mute()
             .catch(err => console.warn('Track mute was rejected:', err));
-    } else {
-        return localTrack.jitsiTrack.unmute()
-            .catch(err => console.warn('Track unmute was rejected:', err));
     }
+
+    return localTrack.jitsiTrack.unmute()
+        .catch(err => console.warn('Track unmute was rejected:', err));
 }

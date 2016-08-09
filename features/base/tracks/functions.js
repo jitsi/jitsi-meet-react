@@ -43,9 +43,9 @@ export function getTrackByMediaTypeAndParticipant(
         tracks,
         mediaType,
         participantId) {
-    return tracks.find(t => (
+    return tracks.find(t =>
         t.participantId === participantId && t.mediaType === mediaType
-    ));
+    );
 }
 
 /**

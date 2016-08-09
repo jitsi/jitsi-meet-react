@@ -11,6 +11,7 @@ ReducerRegistry.register(
     'features/largeVideo',
     (state = INITIAL_STATE, action) => {
         switch (action.type) {
+
         // When conference is joined, we update ID of local participant from
         // default 'local' to real ID. However, in large video we might have
         // already selected 'local' as participant on stage. So in this case we
@@ -23,6 +24,7 @@ ReducerRegistry.register(
                     participantId: action.newValue
                 };
             }
+
             return state;
 
         case LARGE_VIDEO_PARTICIPANT_CHANGED:

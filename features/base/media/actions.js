@@ -89,8 +89,8 @@ export function microphoneMutedStateChanged(muted) {
 export function toggleCameraFacingMode() {
     return (dispatch, getState) => {
         const mediaState = getState()['features/base/media'];
-        const cameraFacingMode =
-            mediaState.camera.facingMode === CAMERA_FACING_MODE.USER
+        const cameraFacingMode
+            = mediaState.camera.facingMode === CAMERA_FACING_MODE.USER
                 ? CAMERA_FACING_MODE.ENVIRONMENT
                 : CAMERA_FACING_MODE.USER;
 
@@ -105,7 +105,7 @@ export function toggleCameraFacingMode() {
  */
 export function toggleCameraMuted() {
     return (dispatch, getState) => {
-        let muted = getState()['features/base/media'].camera.muted;
+        const muted = getState()['features/base/media'].camera.muted;
 
         return dispatch(cameraMutedStateChanged(!muted));
     };
@@ -118,7 +118,7 @@ export function toggleCameraMuted() {
  */
 export function toggleMicrophoneMuted() {
     return (dispatch, getState) => {
-        let muted = getState()['features/base/media'].microphone.muted;
+        const muted = getState()['features/base/media'].microphone.muted;
 
         return dispatch(microphoneMutedStateChanged(!muted));
     };

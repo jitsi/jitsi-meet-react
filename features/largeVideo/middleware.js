@@ -25,7 +25,7 @@ import {
  * @returns {Function}
  */
 const largeVideoMiddleware = store => next => action => {
-    let result = next(action);
+    const result = next(action);
 
     switch (action.type) {
     case DOMINANT_SPEAKER_CHANGED:
@@ -42,12 +42,12 @@ const largeVideoMiddleware = store => next => action => {
         // if the videoType of the current participant rendered in LargeVideo
         // has changed.
         if ('videoType' in action.track) {
-            let state = store.getState();
-            let track =
-                getTrackByJitsiTrack(
+            const state = store.getState();
+            const track
+                = getTrackByJitsiTrack(
                     state['features/base/tracks'],
                     action.track.jitsiTrack);
-            let participantId = state['features/largeVideo'].participantId;
+            const participantId = state['features/largeVideo'].participantId;
 
             if (track.participantId === participantId) {
                 store.dispatch(selectEndpoint());

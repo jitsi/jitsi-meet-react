@@ -16,17 +16,17 @@ export class ToolbarContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        let underlayColor = ColorPalette.buttonUnderlay;
+        const underlayColor = ColorPalette.buttonUnderlay;
         let micButtonStyle;
         let micButtonIcon;
+
         if (this.props.audioMuted) {
             micButtonStyle = {
                 ...styles.toolbarButton,
                 backgroundColor: underlayColor
             };
             micButtonIcon = 'microphone-slash';
-        }
-        else {
+        } else {
             micButtonStyle = styles.toolbarButton;
             micButtonIcon = 'microphone';
         }
@@ -34,22 +34,28 @@ export class ToolbarContainer extends Component {
         return (
             <div style = { styles.toolbarContainer }>
                 <button
-                    style = { micButtonStyle }
-                    onClick = { this.props.onAudioMute }>
-                    <Icon name = { micButtonIcon } style = { styles.icon } />
+                    onClick = { this.props.onAudioMute }
+                    style = { micButtonStyle }>
+                    <Icon
+                        name = { micButtonIcon }
+                        style = { styles.icon } />
                 </button>
                 <button
-                    style = { {
+                    onClick = { this.props.onHangup }
+                    style = {{
                         ...styles.toolbarButton,
                         backgroundColor: ColorPalette.jitsiRed
-                    } }
-                    onClick= { this.props.onHangup }>
-                    <Icon name = "phone" style = { styles.icon } />
+                    }}>
+                    <Icon
+                        name = 'phone'
+                        style = { styles.icon } />
                 </button>
                 <button
-                    style = { styles.toolbarButton }
-                    onClick= { this.props.onCameraChange }>
-                    <Icon name="camera" style = { styles.icon } />
+                    onClick = { this.props.onCameraChange }
+                    style = { styles.toolbarButton }>
+                    <Icon
+                        name = 'camera'
+                        style = { styles.icon } />
                 </button>
             </div>
         );

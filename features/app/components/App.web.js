@@ -45,25 +45,26 @@ export class App extends AbstractApp {
      * @returns {ReactElement}
      */
     render() {
-        let routes = RouteRegistry.getRoutes();
+        const routes = RouteRegistry.getRoutes();
 
+        /* eslint-disable no-extra-parens */
         return (
-            <Provider store={ this.props.store }>
+            <Provider store = { this.props.store }>
                 <Router
-                    createElement={ this._routerCreateElement }
-                    history={ this.history }>
-                {
-                    routes.map(r => (
+                    createElement = { this._routerCreateElement }
+                    history = { this.history }>
+                    { routes.map(r => (
                         <Route
-                            component={ r.component }
-                            key={ r.component }
-                            onEnter={ this._onRouteEnter }
-                            path={ r.path } />
-                    ))
-                }
+                            component = { r.component }
+                            key = { r.component }
+                            onEnter = { this._onRouteEnter }
+                            path = { r.path } />
+                    )) }
                 </Router>
             </Provider>
         );
+
+        /* eslint-enable no-extra-parens */
     }
 
     /**
@@ -74,13 +75,13 @@ export class App extends AbstractApp {
      */
     _navigate(route) {
         let path = route.path;
-        let store = this.props.store;
+        const store = this.props.store;
 
         // The syntax :room bellow is defined by react-router. It "matches a URL
         // segment up to the next /, ?, or #. The matched string is called a
         // param."
-        path =
-            path.replace(
+        path
+            = path.replace(
                 /:room/g,
                 store.getState()['features/base/conference'].room);
 

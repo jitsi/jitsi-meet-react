@@ -15,21 +15,20 @@ export class Video extends Component {
      */
     render() {
         // TODO URL.releaseObjectURL on componentDid/WillUnmount
-        let src = this.props.stream
+        const src = this.props.stream
             ? URL.createObjectURL(this.props.stream)
             : '';
-        let style = this.props.mirror
+        const style = this.props.mirror
             ? styles.mirroredVideo
             : styles.video;
 
         return (
             <video
-                autoPlay
-                muted={ this.props.muted }
-                onPlaying={ this.props.onPlaying }
-                src={ src }
-                style={ style }
-            />
+                autoPlay = { true }
+                muted = { this.props.muted }
+                onPlaying = { this.props.onPlaying }
+                src = { src }
+                style = { style } />
         );
     }
 

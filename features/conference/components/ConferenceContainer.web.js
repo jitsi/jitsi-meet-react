@@ -14,7 +14,7 @@ export class ConferenceContainer extends Component {
      */
     render() {
         return (
-            <div style={ styles.conference }>{ this.props.children }</div>
+            <div style = { styles.conference }>{ this.props.children }</div>
         );
     }
 }
