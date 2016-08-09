@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import { trackVideoStarted } from '../../tracks';
 
@@ -7,8 +6,10 @@ import { Video } from './_';
 
 /**
  * Component that renders video element for a specified video track.
+ *
+ * @abstract
  */
-class VideoTrack extends Component {
+export class AbstractVideoTrack extends Component {
     /**
      * Initializes a new VideoTrack instance.
      *
@@ -17,8 +18,30 @@ class VideoTrack extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            videoTrack: props.videoTrack
+        };
+
         // Bind event handlers so they are only bound once for every instance.
         this._onVideoPlaying = this._onVideoPlaying.bind(this);
+    }
+
+    /**
+     * Implements React's {@link Component#componentWillReceiveProps()}.
+     *
+     * @inheritdoc
+     * @param {Object} nextProps - New props component is receiving.
+     * @returns {void}
+     */
+    componentWillReceiveProps(nextProps) {
+        const state = this.state;
+        const nextVideoTrack = nextProps.videoTrack;
+
+        if (!state.videoTrack
+            || (nextVideoTrack
+                && state.videoTrack !== nextVideoTrack)) {
+            this._changeVideoTrack(nextVideoTrack);
+        }
     }
 
     /**
@@ -28,7 +51,7 @@ class VideoTrack extends Component {
      * @returns {ReactElement}
      */
     render() {
-        const videoTrack = this.props.videoTrack;
+        const videoTrack = this.state.videoTrack;
         let stream = null;
 
         if (videoTrack) {
@@ -45,6 +68,17 @@ class VideoTrack extends Component {
                 onPlaying = { this._onVideoPlaying }
                 stream = { stream } />
         );
+    }
+
+    /**
+     * Changes the current video track.
+     *
+     * @protected
+     * @param {Track} videoTrack - New video track to show.
+     * @returns {void}
+     */
+    _changeVideoTrack(videoTrack) {
+        this.setState({ videoTrack });
     }
 
     /**
@@ -67,10 +101,8 @@ class VideoTrack extends Component {
  *
  * @static
  */
-VideoTrack.propTypes = {
+AbstractVideoTrack.propTypes = {
     dispatch: React.PropTypes.func,
     videoTrack: React.PropTypes.object,
     waitForVideoStarted: React.PropTypes.bool
 };
-
-export default connect()(VideoTrack);
