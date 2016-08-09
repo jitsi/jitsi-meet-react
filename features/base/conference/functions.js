@@ -12,13 +12,13 @@ const JitsiTrackErrors = JitsiMeetJS.errors.track;
  * @returns {Promise}
  */
 export function _addLocalTracksToConference(conference, localTracks) {
-    let conferenceLocalTracks = conference.getLocalTracks();
-    let promises = [];
+    const conferenceLocalTracks = conference.getLocalTracks();
+    const promises = [];
 
-    for (let track of localTracks) {
+    for (const track of localTracks) {
         // XXX The library lib-jitsi-meet may be draconian, for example, when
         // adding one and the same video track multiple times.
-        if (-1 === conferenceLocalTracks.indexOf(track)) {
+        if (conferenceLocalTracks.indexOf(track) === -1) {
             promises.push(conference.addTrack(track)
                 .catch(err => {
                     _reportError(
@@ -53,8 +53,8 @@ export function isRoomValid(room) {
  * @returns {Promise}
  */
 export function _removeLocalTracksFromConference(conference, localTracks) {
-    return Promise.all(localTracks.map(track => {
-        return conference.removeTrack(track)
+    return Promise.all(localTracks.map(track =>
+        conference.removeTrack(track)
             .catch(err => {
                 // Local track might be already disposed by direct
                 // JitsiTrack#dispose() call. So we should ignore this error
@@ -64,8 +64,8 @@ export function _removeLocalTracksFromConference(conference, localTracks) {
                         'Failed to remove local track from conference',
                         err);
                 }
-            });
-    }));
+            })
+    ));
 }
 
 /**

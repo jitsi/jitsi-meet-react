@@ -21,7 +21,7 @@ export class AbstractApp extends Component {
      * @inheritdoc
      */
     componentWillMount() {
-        let dispatch = this.props.store.dispatch;
+        const dispatch = this.props.store.dispatch;
 
         dispatch(appWillMount(this));
 
@@ -36,7 +36,7 @@ export class AbstractApp extends Component {
      * @inheritdoc
      */
     componentWillUnmount() {
-        let dispatch = this.props.store.dispatch;
+        const dispatch = this.props.store.dispatch;
 
         dispatch(localParticipantLeft());
 
@@ -56,8 +56,8 @@ export class AbstractApp extends Component {
      * @protected
      */
     _createElement(component, props) {
-        /* eslint-disable no-unused-vars */
-        let {
+        /* eslint-disable no-unused-vars, lines-around-comment */
+        const {
             // Don't propagate the dispatch and store props because they usually
             // come from react-redux and programmers don't really expect them to
             // be inherited but rather explicitly connected.
@@ -70,20 +70,32 @@ export class AbstractApp extends Component {
             // propagation to the children of this Component.
             ...thisProps
         } = this.props;
-        /* eslint-enable no-unused-vars */
+        /* eslint-enable no-unused-vars, lines-around-comment */
 
+        // eslint-disable-next-line object-property-newline
         return React.createElement(component, { ...thisProps, ...props });
     }
 
     /**
-     * Gets room name from URL object.
+     * Gets room name from URL object if any.
      *
      * @param {URL} url - URL object.
      * @protected
-     * @returns {string}
+     * @returns {(string|undefined)}
      */
     _getRoomFromUrlObject(url) {
-        return url ? url.pathname.substr(1).toLowerCase() : undefined;
+        let room;
+
+        if (url) {
+            room = url.pathname.substr(1).toLowerCase();
+
+            // Convert empty string to undefined to simplify checks.
+            if (room === '') {
+                room = undefined;
+            }
+        }
+
+        return room;
     }
 
     /**
@@ -106,7 +118,7 @@ export class AbstractApp extends Component {
      * @returns {void}
      */
     _openURL(url) {
-        let room = this._getRoomFromUrlString(url);
+        const room = this._getRoomFromUrlString(url);
 
         // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
         // currently in a conference and ask her if she wants to close the
@@ -131,9 +143,10 @@ export class AbstractApp extends Component {
             } catch (ex) {
                 // The return value will signal the failure & the logged
                 // exception will provide the details to the developers.
-                console.error('Failed to parse URL: ' + url, ex);
+                console.error(`Failed to parse URL: ${url}`, ex);
             }
         }
+
         return urlObj;
     }
 }
@@ -146,6 +159,7 @@ export class AbstractApp extends Component {
 AbstractApp.propTypes = {
     config: React.PropTypes.object,
     store: React.PropTypes.object,
+
     /**
      * The URL, if any, with which the app was launched.
      */

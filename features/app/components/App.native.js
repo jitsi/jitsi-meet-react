@@ -33,7 +33,9 @@ export class App extends AbstractApp {
      * @see https://facebook.github.io/react-native/docs/linking.html
      * @returns {void}
      */
-    componentDidMount() {
+    componentWillMount() {
+        super.componentWillMount();
+
         Linking.addEventListener('url', this._onLinkingURL);
     }
 
@@ -58,16 +60,20 @@ export class App extends AbstractApp {
      * @returns {ReactElement}
      */
     render() {
-        let store = this.props.store;
+        const store = this.props.store;
+
+        /* eslint-disable brace-style, react/jsx-no-bind */
 
         return (
-            <Provider store={ store }>
+            <Provider store = { store }>
                 <Navigator
-                    initialRoute={ _getRouteToRender(store) }
-                    ref='navigator'
-                    renderScene={ this._navigatorRenderScene }/>
+                    initialRoute = { _getRouteToRender(store) }
+                    ref = { navigator => { this.navigator = navigator; } }
+                    renderScene = { this._navigatorRenderScene } />
             </Provider>
         );
+
+        /* eslint-enable brace-style, react/jsx-no-bind */
     }
 
     /**
@@ -84,14 +90,15 @@ export class App extends AbstractApp {
      * @returns {string}
      */
     _getRoomFromUrlString(url) {
-        let urlObj = super._urlStringToObject(url);
+        const urlObj = super._urlStringToObject(url);
         let room;
 
         if (urlObj
-                && (urlObj.hostname
-                    === this.props.config.connection.hosts.domain)) {
+                && urlObj.hostname
+                    === this.props.config.connection.hosts.domain) {
             room = super._getRoomFromUrlObject(urlObj);
         }
+
         return room;
     }
 
@@ -102,7 +109,7 @@ export class App extends AbstractApp {
      * @returns {void}
      */
     _navigate(route) {
-        let navigator = this.refs.navigator;
+        const navigator = this.navigator;
 
         // TODO Currently, the replace method doesn't support animation. Work
         // towards adding it is done in

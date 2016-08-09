@@ -15,7 +15,7 @@ import { _getRouteToRender } from './functions';
 MiddlewareRegistry.register(store => next => action => {
     switch (action.type) {
     case APP_NAVIGATE: {
-        let app = store.getState()['features/app'].app;
+        const app = store.getState()['features/app'].app;
 
         app._navigate(action.route);
         break;
@@ -34,13 +34,14 @@ MiddlewareRegistry.register(store => next => action => {
         // dispatched iff SET_ROOM causes an actual change in the value of the
         // room state.
 
-        let oldRoom = store.getState()['features/base/conference'].room;
-        let r = next(action);
-        let newRoom = store.getState()['features/base/conference'].room;
+        const oldRoom = store.getState()['features/base/conference'].room;
+        const r = next(action);
+        const newRoom = store.getState()['features/base/conference'].room;
 
         if (oldRoom !== newRoom) {
             store.dispatch(appNavigate(_getRouteToRender(store)));
         }
+
         return r;
     }
     }

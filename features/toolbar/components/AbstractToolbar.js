@@ -25,9 +25,9 @@ export class AbstractToolbar extends Component {
         super(props);
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onCameraMute =  this._onCameraMute.bind(this);
-        this._onHangup =  this._onHangup.bind(this);
-        this._onMicrophoneMute =  this._onMicrophoneMute.bind(this);
+        this._onCameraMute = this._onCameraMute.bind(this);
+        this._onHangup = this._onHangup.bind(this);
+        this._onMicrophoneMute = this._onMicrophoneMute.bind(this);
     }
 
     /**
@@ -48,19 +48,16 @@ export class AbstractToolbar extends Component {
         let iconName;
         let iconStyle;
 
-        if (this.props[type + 'Muted']) {
+        if (this.props[`${type}Muted`]) {
             buttonStyle = {
                 ...styles.toolbarButton,
                 backgroundColor: ColorPalette.buttonUnderlay
             };
-            iconName = this[type + 'MutedIcon'];
-            iconStyle = {
-                ...styles.icon,
-                color: 'white'
-            };
+            iconName = this[`${type}MutedIcon`];
+            iconStyle = styles.whiteIcon;
         } else {
             buttonStyle = styles.toolbarButton;
-            iconName = this[type + 'Icon'];
+            iconName = this[`${type}Icon`];
             iconStyle = styles.icon;
         }
 

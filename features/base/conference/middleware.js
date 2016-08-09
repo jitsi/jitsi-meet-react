@@ -29,9 +29,9 @@ MiddlewareRegistry.register(store => next => action => {
 
     case TRACK_ADDED:
     case TRACK_REMOVED: {
-        let track = action.track;
+        const track = action.track;
 
-        if (track && track.isLocal()) {
+        if (track && track.local) {
             return syncConferenceLocalTracksWithState(store, action)
                 .then(() => next(action));
         }
@@ -51,20 +51,22 @@ MiddlewareRegistry.register(store => next => action => {
  * @returns {void}
  */
 function pinParticipant(store, id) {
-    let state = store.getState();
-    let participants = state['features/base/participants'];
-    let participantById = participants.find(p => p.id === id);
-    let localParticipant = getLocalParticipant(participants);
+    const state = store.getState();
+    const participants = state['features/base/participants'];
+    const participantById = participants.find(p => p.id === id);
+    const localParticipant = getLocalParticipant(participants);
 
-    // This condition prevents signaling to pin local participant. Here is the
-    // logic: if we have ID, then we check if participant by that ID is local.
-    // If we don't have ID and thus no participant by ID, we check for local
-    // participant. If it's currently pinned, then this action will unpin him
-    // and that's why we won't signal here too.
+    // The following condition prevents signaling to pin local participant. The
+    // logic is:
+    // - If we have an ID, we check if the participant identified by that ID is
+    //   local.
+    // - If we don't have an ID (i.e. no participant identified by an ID), we
+    //   check for local participant. If she's currently pinned, then this
+    //   action will unpin her and that's why we won't signal here too.
     if ((participantById && !participantById.local)
             || (!participantById
                 && (!localParticipant || !localParticipant.pinned))) {
-        let conference = state['features/base/conference'].jitsiConference;
+        const conference = state['features/base/conference'].jitsiConference;
 
         conference.pinParticipant(id);
     }
@@ -78,17 +80,17 @@ function pinParticipant(store, id) {
  * @returns {Promise}
  */
 function syncConferenceLocalTracksWithState(store, action) {
-    const conference =
-        store.getState()['features/base/conference'].jitsiConference;
+    const conference
+        = store.getState()['features/base/conference'].jitsiConference;
     let promise;
 
     if (conference) {
-        let track = action.track;
+        const track = action.track.jitsiTrack;
 
         if (action.type === TRACK_ADDED) {
             promise = _addLocalTracksToConference(conference, [ track ]);
         } else {
-            promise = _removeLocalTracksFromConference( conference, [ track ]);
+            promise = _removeLocalTracksFromConference(conference, [ track ]);
         }
     }
 

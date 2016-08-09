@@ -1,18 +1,19 @@
 import JitsiMeetJS from '../lib-jitsi-meet';
-
 import {
-    participantVideoTypeChanged
-} from '../../base/participants';
+    CAMERA_FACING_MODE,
+    MEDIA_TYPE
+} from '../media';
 
 import {
     TRACK_ADDED,
-    TRACK_MUTE_CHANGED,
-    TRACK_REMOVED
+    TRACK_REMOVED,
+    TRACK_UPDATED
 } from './actionTypes';
 import './middleware';
 import './reducer';
 
 const JitsiTrackErrors = JitsiMeetJS.errors.track;
+const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Request to start capturing local audio and/or video. By default, the user
@@ -21,22 +22,19 @@ const JitsiTrackErrors = JitsiMeetJS.errors.track;
  * @param {Object} [options] - For info @see JitsiMeetJS.createLocalTracks.
  * @returns {Function}
  */
-export function createLocalTracks(options) {
-    options || (options = {});
-    return dispatch => {
-        return JitsiMeetJS.createLocalTracks({
-            devices: options.devices || ['audio', 'video'],
-            facingMode: options.facingMode || 'user',
+export function createLocalTracks(options = {}) {
+    return dispatch =>
+        JitsiMeetJS.createLocalTracks({
+            devices: options.devices || [ MEDIA_TYPE.AUDIO, MEDIA_TYPE.VIDEO ],
+            facingMode: options.facingMode || CAMERA_FACING_MODE.USER,
             cameraDeviceId: options.cameraDeviceId,
             micDeviceId: options.micDeviceId
-        }).then(localTracks => {
-            return dispatch(_updateLocalTracks(localTracks));
-        }).catch(reason => {
+        })
+        .then(localTracks => dispatch(_updateLocalTracks(localTracks)))
+        .catch(err => {
             console.error(
-                'JitsiMeetJS.createLocalTracks.catch rejection reason: '
-                + reason);
+                `JitsiMeetJS.createLocalTracks.catch rejection reason: ${err}`);
         });
-    };
 }
 
 /**
@@ -46,77 +44,86 @@ export function createLocalTracks(options) {
  * @returns {Function}
  */
 export function destroyLocalTracks() {
-    return (dispatch, getState) => {
-        return dispatch(_disposeAndRemoveTracks(
-            getState()['features/base/tracks'].filter(t => t.isLocal())));
-    };
+    return (dispatch, getState) =>
+        dispatch(
+            _disposeAndRemoveTracks(
+                getState()['features/base/tracks']
+                    .filter(t => t.local)
+                    .map(t => t.jitsiTrack)));
 }
 
 /**
- * Returns video track for a specified participant.
+ * Returns true if the provided JitsiTrack should be rendered as a mirror.
  *
- * TODO The function is not an action. It's exported merely for the purpose of
- * reuse &, hence, reduction of duplication. Move it into a more appropriate
- * location in the source tree of the project.
+ * We only want to show a video in mirrored mode when:
+ * 1) The video source is local, and not remote.
+ * 2) The video source is a camera, not a desktop (capture).
+ * 3) TODO The video source is capturing the user, not the environment.
  *
- * @param {Participant|undefined} participant - Participant object.
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of all tracks.
- * @returns {(JitsiLocalTrack|JitsiRemoteTrack|undefined)}
+ * TODO Similar functionality is part of lib-jitsi-meet. This function should be
+ * removed after https://github.com/jitsi/lib-jitsi-meet/pull/187 is merged.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @private
+ * @returns {boolean}
  */
-export function getVideoTrack(participant, tracks) {
-    if (!participant) {
-        return;
-    }
-
-    return tracks.find(t => (
-        t.isVideoTrack() && isParticipantTrack(participant, t)
-    ));
-}
-
-/**
- * Determines whether a specific JitsiTrack belongs to a specific participant.
- *
- * TODO The function is not an action. It's exported merely for the purpose of
- * reuse &, hence, reduction of duplication. Move it into a more appropriate
- * location in the source tree of the project.
- *
- * @param {Object} p - The participant who is the possible owner of the
- * specified JitsiTrack.
- * @param {JitsiTrack} t - The JitsiTrack which is to be determined whether it
- * belongs to the specified participant.
- * @returns {boolean} True if the specified JitsiTrack belongs to the specified
- * participant; otherwise, false.
- */
-export function isParticipantTrack(p, t) {
-    // XXX The method getParticipantId() is defined on JitsiRemoteTrack only.
-    return t.isLocal() ? p.local : (t.getParticipantId() === p.id);
+function _shouldMirror(track) {
+    // XXX We should also check the facing mode of the track source, and only
+    // mirror when the source is user facing (and not environment facing).
+    return (
+        track
+            && track.isLocal()
+            && track.isVideoTrack()
+            && !track.isScreenSharing()
+    );
 }
 
 /**
  * Create an action for when a new track has been signaled to be added to the
  * conference.
  *
- * @param {JitsiTrack} track - JitsiTrack instance.
- * @returns {{ type: TRACK_ADDED, track: JitsiTrack }}
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_ADDED, track: Track }}
  */
 export function trackAdded(track) {
-    return {
-        type: TRACK_ADDED,
-        track
+    return (dispatch, getState) => {
+        track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
+            dispatch(trackVideoTypeChanged(track, type));
+        });
+
+        return dispatch({
+            type: TRACK_ADDED,
+            track: {
+                jitsiTrack: track,
+                local: track.isLocal(),
+                mediaType: track.getType(),
+                mirrorVideo: _shouldMirror(track),
+                muted: track.isMuted(),
+                participantId: track.isLocal()
+                    ? (getState()['features/base/participants']
+                        .find(p => p.local) || {}).id
+                    : track.getParticipantId(),
+                videoStarted: false,
+                videoType: track.videoType
+            }
+        });
     };
 }
 
 /**
- * Create an action for when a track has been signaled for removal from the
- * conference.
+ * Create an action for when a track's mute state has been signaled to be
+ * changed.
  *
- * @param {JitsiTrack} track - JitsiTrack instance.
- * @returns {{ type: TRACK_MUTE_CHANGED, track: JitsiTrack }}
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_UPDATED, track: Track }}
  */
 export function trackMuteChanged(track) {
     return {
-        type: TRACK_MUTE_CHANGED,
-        track
+        type: TRACK_UPDATED,
+        track: {
+            jitsiTrack: track,
+            muted: track.isMuted()
+        }
     };
 }
 
@@ -124,51 +131,84 @@ export function trackMuteChanged(track) {
  * Create an action for when a track has been signaled for removal from the
  * conference.
  *
- * @param {JitsiTrack} track - JitsiTrack instance.
- * @returns {{ type: TRACK_REMOVED, track: JitsiTrack }}
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_REMOVED, track: Track }}
  */
 export function trackRemoved(track) {
     return {
         type: TRACK_REMOVED,
-        track
+        track: {
+            jitsiTrack: track
+        }
+    };
+}
+
+/**
+ * Signal that track's video started to play.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @returns {{ type: TRACK_UPDATED, track: Track }}
+ */
+export function trackVideoStarted(track) {
+    return {
+        type: TRACK_UPDATED,
+        track: {
+            jitsiTrack: track,
+            videoStarted: true
+        }
+    };
+}
+
+/**
+ * Create an action for when participant video type changes.
+ *
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
+ * @param {VIDEO_TYPE|undefined} videoType - Video type.
+ * @returns {{ type: TRACK_UPDATED, track: Track }}
+ */
+export function trackVideoTypeChanged(track, videoType) {
+    return {
+        type: TRACK_UPDATED,
+        track: {
+            jitsiTrack: track,
+            videoType
+        }
     };
 }
 
 /**
  * Signals passed tracks to be added.
  *
- * @param {JitsiTrack[]} tracks - List of tracks.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of tracks.
  * @private
  * @returns {Function}
  */
 function _addTracks(tracks) {
-    return dispatch => {
-        return Promise.all(tracks.map(t => dispatch(trackAdded(t))));
-    };
+    return dispatch =>
+        Promise.all(tracks.map(t => dispatch(trackAdded(t))));
 }
 
 /**
  * Disposes passed tracks and signals them to be removed.
  *
- * @param {JitsiTrack[]} tracks - List of tracks.
+ * @param {(JitsiLocalTrack|JitsiRemoteTrack)[]} tracks - List of tracks.
  * @private
  * @returns {Function}
  */
 function _disposeAndRemoveTracks(tracks) {
-    return dispatch => {
-        return Promise.all(
-            tracks.map(t => {
-                return t.dispose()
+    return dispatch =>
+        Promise.all(
+            tracks.map(t =>
+                t.dispose()
                     .catch(err => {
                         // Track might be already disposed so ignore such an
                         // error. Of course, re-throw any other error(s).
                         if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
                             throw err;
                         }
-                    });
-            }))
+                    })
+            ))
             .then(Promise.all(tracks.map(t => dispatch(trackRemoved(t)))));
-    };
 }
 
 /**
@@ -185,28 +225,25 @@ function _disposeAndRemoveTracks(tracks) {
  * }}
  */
 function _getLocalTracksToChange(currentTracks, newTracks) {
-    let currentLocalAudio = currentTracks.find(
+    const currentLocalAudio = currentTracks.find(
         t => t.isLocal() && t.isAudioTrack());
-    let currentLocalVideo = currentTracks.find(
+    const currentLocalVideo = currentTracks.find(
         t => t.isLocal() && t.isVideoTrack());
-    let newLocalAudio = newTracks.find(
+    const newLocalAudio = newTracks.find(
         t => t.isLocal() && t.isAudioTrack());
-    let newLocalVideo = newTracks.find(
+    const newLocalVideo = newTracks.find(
         t => t.isLocal() && t.isVideoTrack());
-    let tracksToRemove = [];
-    let tracksToAdd = [];
+    const tracksToRemove = [];
+    const tracksToAdd = [];
 
     if (newLocalAudio) {
         tracksToAdd.push(newLocalAudio);
-
         if (currentLocalAudio) {
             tracksToRemove.push(newLocalVideo);
         }
     }
-
     if (newLocalVideo) {
         tracksToAdd.push(newLocalVideo);
-
         if (currentLocalVideo) {
             tracksToRemove.push(currentLocalVideo);
         }
@@ -228,35 +265,12 @@ function _getLocalTracksToChange(currentTracks, newTracks) {
  */
 function _updateLocalTracks(newTracks = []) {
     return (dispatch, getState) => {
-        let tracks = getState()['features/base/tracks'];
-        let { tracksToAdd, tracksToRemove } =
-            _getLocalTracksToChange(tracks, newTracks);
+        const tracks
+            = getState()['features/base/tracks'].map(t => t.jitsiTrack);
+        const { tracksToAdd, tracksToRemove }
+            = _getLocalTracksToChange(tracks, newTracks);
 
         return dispatch(_disposeAndRemoveTracks(tracksToRemove))
-            .then(() => dispatch(_addTracks(tracksToAdd)))
-            .then(() => {
-                // Maybe update local participant's videoType after we received
-                // new media tracks.
-
-                // FIXME Lyubomir Marinov: It doesn't sound right to me to have
-                // tracks trying to figure out & trigger participant-related
-                // events. A participant owns tracks so it appears natural to me
-                // to have the participant keep an eye on its tracks & determine
-                // whether its video type has changed.
-
-                let localTracks = getState()['features/base/tracks']
-                    .filter(t => t.isLocal());
-                let localParticipant = getState()['features/base/participants']
-                    .find(p => p.local);
-                let localVideo = tracks.find(t => t.isVideoTrack());
-
-                if (localParticipant) {
-                    dispatch(participantVideoTypeChanged(
-                        localParticipant.id,
-                        localVideo ? localVideo.videoType : undefined));
-                }
-
-                return Promise.resolve(localTracks);
-            });
+            .then(() => dispatch(_addTracks(tracksToAdd)));
     };
 }

@@ -11,7 +11,7 @@ export function getLocalParticipant(participantsOrGetState) {
     let participants;
 
     if (typeof participantsOrGetState === 'function') {
-        let getState = participantsOrGetState;
+        const getState = participantsOrGetState;
 
         participants = getState()['features/base/participants'];
     } else {

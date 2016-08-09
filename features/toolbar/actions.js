@@ -1,3 +1,7 @@
+import {
+    CAMERA_FACING_MODE,
+    MEDIA_TYPE
+} from '../base/media';
 import { createLocalTracks } from '../base/tracks';
 
 import {
@@ -6,24 +10,6 @@ import {
     TOGGLE_VIDEO_MUTED_STATE
 } from './actionTypes';
 import './reducer';
-
-/**
- * Camera facing modes.
- * @enum {string}
- */
-const CAMERA_FACING_MODE = {
-    ENVIRONMENT: 'environment',
-    USER: 'user'
-};
-
-/**
- * Media types.
- * @enum {string}
- */
-const MEDIA_TYPE = {
-    VIDEO: 'video',
-    AUDIO: 'audio'
-};
 
 /**
  * Toggles the mute state of the local audio track(s).
@@ -42,8 +28,8 @@ export function toggleAudio() {
 export function toggleCameraFacingMode() {
     return (dispatch, getState) => {
         const stateFeaturesToolbar = getState()['features/toolbar'];
-        const cameraFacingMode =
-            stateFeaturesToolbar.cameraFacingMode === CAMERA_FACING_MODE.USER
+        const cameraFacingMode
+            = stateFeaturesToolbar.cameraFacingMode === CAMERA_FACING_MODE.USER
                 ? CAMERA_FACING_MODE.ENVIRONMENT
                 : CAMERA_FACING_MODE.USER;
 
@@ -70,17 +56,18 @@ export function toggleCameraFacingMode() {
  */
 function toggleMedia(media) {
     return (dispatch, getState) => {
-        const stateFeaturesTracks = getState()['features/base/tracks'];
-        const localTracks = stateFeaturesTracks.filter(t => t.isLocal());
-        for (let track of localTracks) {
-            const type = track.getType();
-            if (type !== media) {
-                continue;
-            }
-            if (track.isMuted()) {
-                track.unmute();
-            } else {
-                track.mute();
+        const tracks = getState()['features/base/tracks'];
+        const localTracks = tracks.filter(t => t.local);
+
+        for (const track of localTracks) {
+            const type = track.mediaType;
+
+            if (type === media) {
+                if (track.muted) {
+                    track.jitsiTrack.unmute();
+                } else {
+                    track.jitsiTrack.mute();
+                }
             }
         }
 

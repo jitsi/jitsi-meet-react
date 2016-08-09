@@ -58,6 +58,7 @@ class Root extends Component {
             .then(url => this.setState({ url }))
             .catch(err => {
                 console.error('Failed to get initial URL', err);
+
                 // XXX Start with an empty URL if getting the initial URL fails;
                 // otherwise, nothing will be rendered.
                 this.setState({ url: null });
@@ -79,9 +80,9 @@ class Root extends Component {
 
         return (
             <App
-                config={ config }
-                store={ store }
-                url={ this.state.url } />
+                config = { config }
+                store = { store }
+                url = { this.state.url } />
         );
     }
 }

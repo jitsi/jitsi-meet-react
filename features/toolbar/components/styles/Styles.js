@@ -29,6 +29,17 @@ const container = {
 };
 
 /**
+ * Generic styles for an icon.
+ *
+ * @type {Object}
+ */
+const icon = {
+    alignSelf: 'center',
+    color: ColorPalette.jitsiDarkGrey,
+    fontSize: 24
+};
+
+/**
  * The toolbar related styles.
  * TODO Make styles more generic and reusable. Use ColorPalette for all colors.
  */
@@ -37,9 +48,8 @@ export const styles = createStyleSheet({
      * The toolbar button icon style.
      */
     icon: {
-        alignSelf: 'center',
-        color: ColorPalette.jitsiDarkGrey,
-        fontSize: 24
+        ...icon,
+        color: ColorPalette.jitsiDarkGrey
     },
 
     /**
@@ -87,5 +97,13 @@ export const styles = createStyleSheet({
         ...container,
         bottom: 0,
         top: 0
+    },
+
+    /**
+     * The toolbar white button icon style.
+     */
+    whiteIcon: {
+        ...icon,
+        color: 'white'
     }
 });

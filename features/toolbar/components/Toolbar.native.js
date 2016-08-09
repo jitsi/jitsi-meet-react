@@ -31,8 +31,8 @@ class Toolbar extends AbstractToolbar {
         super(props);
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onCameraFacingModeToggle =
-            this._onCameraFacingModeToggle.bind(this);
+        this._onCameraFacingModeToggle
+            = this._onCameraFacingModeToggle.bind(this);
     }
 
     /**
@@ -44,7 +44,7 @@ class Toolbar extends AbstractToolbar {
     render() {
         const cameraButtonStyles = this._getMuteButtonStyles('camera');
         const microphoneButtonStyles = this._getMuteButtonStyles('microphone');
-        let underlayColor = ColorPalette.buttonUnderlay;
+        const underlayColor = ColorPalette.buttonUnderlay;
 
         // The following property is responsible to hide/show the toolbar view
         // by moving it out of site of the screen boundaries. An attempt to use
@@ -53,7 +53,7 @@ class Toolbar extends AbstractToolbar {
         // discovered, which allowed the view to still capture touch events even
         // if hidden.
         // TODO Alternatives will be investigated.
-        let bottom = this.props.visible
+        const bottom = this.props.visible
             ? {}
             : { bottom: -Dimensions.get('window').height };
 
@@ -71,8 +71,8 @@ class Toolbar extends AbstractToolbar {
                         style = { styles.toggleCameraFacingModeButton }
                         underlayColor = 'transparent'>
                         <Icon
-                            name = "reload"
-                            style = { [styles.icon, { color: 'white' }] } />
+                            name = 'reload'
+                            style = { styles.whiteIcon } />
                     </TouchableHighlight>
                 </View>
                 <View
@@ -95,8 +95,8 @@ class Toolbar extends AbstractToolbar {
                         ] }
                         underlayColor = { underlayColor }>
                         <Icon
-                            name = "hangup"
-                            style = { [styles.icon, { color: 'white' }] } />
+                            name = 'hangup'
+                            style = { styles.whiteIcon } />
                     </TouchableHighlight>
                     <TouchableHighlight
                         onPress = { this._onCameraMute }

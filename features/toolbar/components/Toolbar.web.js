@@ -37,15 +37,17 @@ class Toolbar extends AbstractToolbar {
                             style = { microphoneButtonStyles.iconStyle } />
                     </button>
                     <button
-                        onClick= { this._onHangup }
-                        style = { {
+                        onClick = { this._onHangup }
+                        style = {{
                             ...styles.toolbarButton,
                             backgroundColor: ColorPalette.jitsiRed
-                        } }>
-                        <Icon name = "phone" style = { styles.icon } />
+                        }}>
+                        <Icon
+                            name = 'phone'
+                            style = { styles.icon } />
                     </button>
                     <button
-                        onClick= { this._onCameraMute }
+                        onClick = { this._onCameraMute }
                         style = { cameraButtonStyles.buttonStyle }>
                         <Icon
                             name = { cameraButtonStyles.iconName }
@@ -65,6 +67,7 @@ class Toolbar extends AbstractToolbar {
  */
 Object.assign(Toolbar.prototype, {
     cameraIcon: 'video-camera',
+
     // TODO: currently for web version we're using default FontAwesome
     // font set, which doesn't have 'slashed' version of 'video-camera'
     // icon. But this should be changed as soon as we start to use

@@ -32,7 +32,9 @@ class RouteRegistry {
         // We use the destructuring operator to 'clone' the route object to
         // prevent modifications from outside (e.g. React Native's Navigator
         // extends it with additional properties).
-        return [ ...this._routeRegistry ].map(r => { return { ...r }; });
+        return [ ...this._routeRegistry ].map(r => {
+            return { ...r };
+        });
     }
 
     /**
@@ -43,8 +45,8 @@ class RouteRegistry {
      * @returns {Route|null}
      */
     getRouteByComponent(component) {
-        let route =
-            [ ...this._routeRegistry ].find(r => r.component === component);
+        const route
+            = [ ...this._routeRegistry ].find(r => r.component === component);
 
         // We use destructuring operator to 'clone' route object to prevent
         // modifications from outside (e.g. React Native's Navigator extends

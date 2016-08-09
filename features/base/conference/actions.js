@@ -4,8 +4,7 @@ import {
     dominantSpeakerChanged,
     participantJoined,
     participantLeft,
-    participantRoleChanged,
-    participantVideoTypeChanged
+    participantRoleChanged
 } from '../participants';
 import {
     trackAdded,
@@ -24,7 +23,6 @@ import './middleware';
 import './reducer';
 
 const JitsiConferenceEvents = JitsiMeetJS.events.conference;
-const JitsiTrackEvents = JitsiMeetJS.events.track;
 
 /**
  * Initializes a new conference.
@@ -34,14 +32,14 @@ const JitsiTrackEvents = JitsiMeetJS.events.track;
  */
 export function createConference(room) {
     return (dispatch, getState) => {
-        let connection = getState()['features/base/connection'];
-        let conference;
+        const connection = getState()['features/base/connection'];
 
         if (!connection) {
             throw new Error('Cannot create conference without connection');
         }
 
-        conference = connection.initJitsiConference(room, { openSctp: true });
+        const conference
+            = connection.initJitsiConference(room, { openSctp: true });
 
         dispatch(_setupConferenceListeners(conference));
 
@@ -59,8 +57,9 @@ export function createConference(room) {
  */
 export function conferenceJoined(conference) {
     return (dispatch, getState) => {
-        let localTracks = getState()['features/base/tracks']
-            .filter(t => t.isLocal());
+        const localTracks = getState()['features/base/tracks']
+            .filter(t => t.local)
+            .map(t => t.jitsiTrack);
 
         if (localTracks.length) {
             _addLocalTracksToConference(conference, localTracks);
@@ -99,7 +98,8 @@ export function conferenceLeft(conference) {
 /**
  * Sets (the name of) the room of the conference to be joined.
  *
- * @param {string} room - The name of the room of the conference to be joined.
+ * @param {(string|undefined)} room - The name of the room of the conference to
+ * be joined.
  * @returns {{
  *      type: SET_ROOM,
  *      room: string
@@ -136,11 +136,6 @@ function _setupConferenceListeners(conference) {
                 }
 
                 dispatch(trackAdded(track));
-
-                track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-                    dispatch(participantVideoTypeChanged(
-                        track.getParticipantId(), type));
-                });
             });
         conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
             track => dispatch(trackMuteChanged(track)));

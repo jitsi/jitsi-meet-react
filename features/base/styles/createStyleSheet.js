@@ -9,10 +9,10 @@ import { shimStyles } from './shimStyles';
  * (often platform-independent) styles.
  * @returns {Object}
  */
-export function createStyleSheet(styles, overrides={}) {
-    let combinedStyles = {};
+export function createStyleSheet(styles, overrides = {}) {
+    const combinedStyles = {};
 
-    for (let key of Object.keys(styles)) {
+    for (const key of Object.keys(styles)) {
         combinedStyles[key]
             = shimStyles(
                 Object.assign(

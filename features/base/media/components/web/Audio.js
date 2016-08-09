@@ -7,6 +7,26 @@ import React, { Component } from 'react';
  */
 export class Audio extends Component {
     /**
+     * Implements React's {@link Component#render()}.
+     *
+     * @inheritdoc
+     * @returns {ReactElement}
+     */
+    render() {
+        // TODO URL.releaseObjectURL on componentDid/WillUnmount
+        const src = this.props.stream
+            ? URL.createObjectURL(this.props.stream)
+            : '';
+
+        return (
+            <audio
+                autoPlay = { true }
+                muted = { this.props.muted }
+                src = { src } />
+        );
+    }
+
+    /**
      * Implements shouldComponentUpdate of React Component. We don't update
      * component if stream has not changed.
      *
@@ -16,26 +36,6 @@ export class Audio extends Component {
      */
     shouldComponentUpdate(nextProps) {
         return (nextProps.stream || {}).id !== (this.props.stream || {}).id;
-    }
-
-    /**
-     * Implements React's {@link Component#render()}.
-     *
-     * @inheritdoc
-     * @returns {ReactElement}
-     */
-    render() {
-        // TODO URL.releaseObjectURL on componentDid/WillUnmount
-        let src = this.props.stream
-            ? URL.createObjectURL(this.props.stream)
-            : '';
-
-        return (
-            <audio autoPlay
-                muted={this.props.muted}
-                src={src}
-            ></audio>
-        );
     }
 }
 
