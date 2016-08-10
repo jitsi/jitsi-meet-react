@@ -19,18 +19,11 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
-        const { largeVideo, tracks } = this.props;
-        const videoTrack
-            = getTrackByMediaTypeAndParticipant(
-                tracks,
-                MEDIA_TYPE.VIDEO,
-                largeVideo.participantId);
-
         return (
             <LargeVideoContainer>
-                { videoTrack
-                    && videoTrack.videoStarted
-                    && <VideoTrack videoTrack = { videoTrack } /> }
+                <VideoTrack
+                    videoTrack = { this.props.videoTrack }
+                    waitForVideoStarted = { true } />
             </LargeVideoContainer>
         );
     }
@@ -41,16 +34,16 @@ class LargeVideo extends Component {
  *
  * @param {Object} state - Redux state.
  * @returns {{
- *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[],
- *      participants: Participant[]
- *  }}
+ *      videoTrack: Track
+ * }}
  */
-const mapStateToProps = state => {
-    return {
-        largeVideo: state['features/largeVideo'],
-        tracks: state['features/base/tracks']
-    };
-};
+const mapStateToProps = state => ({ // eslint-disable-line arrow-body-style
+    videoTrack:
+        getTrackByMediaTypeAndParticipant(
+            state['features/base/tracks'],
+            MEDIA_TYPE.VIDEO,
+            state['features/largeVideo'].participantId)
+});
 
 /**
  * LargeVideo component's property types.
@@ -59,8 +52,7 @@ const mapStateToProps = state => {
  */
 LargeVideo.propTypes = {
     dispatch: React.PropTypes.func,
-    largeVideo: React.PropTypes.object,
-    tracks: React.PropTypes.array
+    videoTrack: React.PropTypes.object
 };
 
 export default connect(mapStateToProps)(LargeVideo);

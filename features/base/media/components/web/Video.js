@@ -11,25 +11,28 @@ export class Video extends Component {
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
-     * @returns {ReactElement}
+     * @returns {ReactElement|null}
      */
     render() {
-        // TODO URL.releaseObjectURL on componentDid/WillUnmount
-        const src = this.props.stream
-            ? URL.createObjectURL(this.props.stream)
-            : '';
-        const style = this.props.mirror
-            ? styles.mirroredVideo
-            : styles.video;
+        const stream = this.props.stream;
 
-        return (
-            <video
-                autoPlay = { true }
-                muted = { this.props.muted }
-                onPlaying = { this.props.onPlaying }
-                src = { src }
-                style = { style } />
-        );
+        if (stream) {
+            // TODO URL.releaseObjectURL on componentDid/WillUnmount
+            const src = URL.createObjectURL(stream);
+            const style
+                = this.props.mirror ? styles.mirroredVideo : styles.video;
+
+            return (
+                <video
+                    autoPlay = { true }
+                    muted = { this.props.muted }
+                    onPlaying = { this.props.onPlaying }
+                    src = { src }
+                    style = { style } />
+            );
+        }
+
+        return null;
     }
 
     /**
