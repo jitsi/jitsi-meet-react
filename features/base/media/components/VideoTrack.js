@@ -29,12 +29,21 @@ class VideoTrack extends Component {
      */
     render() {
         const videoTrack = this.props.videoTrack;
+        let stream = null;
+
+        if (videoTrack) {
+            // XXX We may want not to start showing video until video stream
+            // has started to play anywhere else.
+            stream = this.props.waitForVideoStarted && !videoTrack.videoStarted
+                ? null
+                : videoTrack.jitsiTrack.getOriginalStream();
+        }
 
         return (
             <Video
-                mirror = { videoTrack.mirrorVideo }
+                mirror = { videoTrack && videoTrack.mirrorVideo }
                 onPlaying = { this._onVideoPlaying }
-                stream = { videoTrack.jitsiTrack.getOriginalStream() } />
+                stream = { stream } />
         );
     }
 
@@ -47,7 +56,7 @@ class VideoTrack extends Component {
     _onVideoPlaying() {
         const videoTrack = this.props.videoTrack;
 
-        if (videoTrack) {
+        if (videoTrack && !videoTrack.videoStarted) {
             this.props.dispatch(trackVideoStarted(videoTrack.jitsiTrack));
         }
     }
@@ -55,14 +64,13 @@ class VideoTrack extends Component {
 
 /**
  * Component's property types.
- * @type {{
- *      dispatch: Function,
- *      videoTrack: Track
- *  }}
+ *
+ * @static
  */
 VideoTrack.propTypes = {
     dispatch: React.PropTypes.func,
-    videoTrack: React.PropTypes.object.isRequired
+    videoTrack: React.PropTypes.object,
+    waitForVideoStarted: React.PropTypes.bool
 };
 
 export default connect()(VideoTrack);
