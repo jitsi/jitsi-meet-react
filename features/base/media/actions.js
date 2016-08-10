@@ -6,6 +6,7 @@ import {
 
 import { CAMERA_FACING_MODE } from './constants';
 
+import './middleware';
 import './reducer';
 
 /**

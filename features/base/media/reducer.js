@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 
-import { CONFERENCE_LEFT } from '../conference';
 import { ReducerRegistry } from '../redux';
 
 import {
@@ -45,9 +44,6 @@ const audio = (state = AUDIO_INITIAL_MEDIA_STATE, action) => {
             muted: action.media.audio.muted
         };
 
-    case CONFERENCE_LEFT:
-        return AUDIO_INITIAL_MEDIA_STATE;
-
     default:
         return state;
     }
@@ -88,9 +84,6 @@ const video = (state = VIDEO_INITIAL_MEDIA_STATE, action) => {
             ...state,
             facingMode: action.media.video.facingMode
         };
-
-    case CONFERENCE_LEFT:
-        return VIDEO_INITIAL_MEDIA_STATE;
 
     case VIDEO_MUTED_STATE_CHANGED:
         return {

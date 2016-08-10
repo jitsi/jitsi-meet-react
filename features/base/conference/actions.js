@@ -8,7 +8,6 @@ import {
 } from '../participants';
 import {
     trackAdded,
-    trackMuteChanged,
     trackRemoved
 } from '../tracks';
 
@@ -137,8 +136,6 @@ function _setupConferenceListeners(conference) {
 
                 dispatch(trackAdded(track));
             });
-        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
-            track => dispatch(trackMuteChanged(track)));
         conference.on(JitsiConferenceEvents.TRACK_REMOVED,
             track => {
                 if (!track || track.isLocal()) {
