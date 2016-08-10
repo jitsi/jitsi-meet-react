@@ -1,13 +1,36 @@
 import {
     CAMERA_FACING_MODE_CHANGED,
-    CAMERA_MUTED_STATE_CHANGED,
-    MICROPHONE_MUTED_STATE_CHANGED
+    VIDEO_MUTED_STATE_CHANGED,
+    AUDIO_MUTED_STATE_CHANGED
 } from './actionTypes';
 
 import { CAMERA_FACING_MODE } from './constants';
 
 import './reducer';
 
+/**
+ * Action to signal the change in local audio muted state.
+ *
+ * @param {boolean} muted - If local audio is muted.
+ * @returns {{
+ *      type: AUDIO_MUTED_STATE_CHANGED,
+ *      media: {
+ *          audio: {
+ *              muted: boolean
+ *          }
+ *      }
+ *  }}
+ */
+export function audioMutedStateChanged(muted) {
+    return {
+        type: AUDIO_MUTED_STATE_CHANGED,
+        media: {
+            audio: {
+                muted
+            }
+        }
+    };
+}
 
 /**
  * Action to signal the change in facing mode of local video camera.
@@ -16,7 +39,7 @@ import './reducer';
  * @returns {{
  *      type: CAMERA_FACING_MODE_CHANGED,
  *      media: {
- *          camera: {
+ *          video: {
  *              facingMode: CAMERA_FACING_MODE
  *          }
  *      }
@@ -26,7 +49,7 @@ export function cameraFacingModeChanged(facingMode) {
     return {
         type: CAMERA_FACING_MODE_CHANGED,
         media: {
-            camera: {
+            video: {
                 facingMode
             }
         }
@@ -34,23 +57,23 @@ export function cameraFacingModeChanged(facingMode) {
 }
 
 /**
- * Action to signal the change in camera muted state.
+ * Action to signal the change in local video muted state.
  *
- * @param {boolean} muted - If camera is muted.
+ * @param {boolean} muted - If local video is muted.
  * @returns {{
- *      type: CAMERA_MUTED_STATE_CHANGED,
+ *      type: VIDEO_MUTED_STATE_CHANGED,
  *      media: {
- *          camera: {
+ *          video: {
  *              muted: boolean
  *          }
  *      }
  *  }}
  */
-export function cameraMutedStateChanged(muted) {
+export function videoMutedStateChanged(muted) {
     return {
-        type: CAMERA_MUTED_STATE_CHANGED,
+        type: VIDEO_MUTED_STATE_CHANGED,
         media: {
-            camera: {
+            video: {
                 muted
             }
         }
@@ -58,26 +81,15 @@ export function cameraMutedStateChanged(muted) {
 }
 
 /**
- * Action to signal the change in microphone muted state.
+ * Toggles the mute state of the local audio track(s).
  *
- * @param {boolean} muted - If microphone is muted.
- * @returns {{
- *      type: MICROPHONE_MUTED_STATE_CHANGED,
- *      media: {
- *          microphone: {
- *              muted: boolean
- *          }
- *      }
- *  }}
+ * @returns {Function}
  */
-export function microphoneMutedStateChanged(muted) {
-    return {
-        type: MICROPHONE_MUTED_STATE_CHANGED,
-        media: {
-            microphone: {
-                muted
-            }
-        }
+export function toggleAudioMuted() {
+    return (dispatch, getState) => {
+        const muted = getState()['features/base/media'].audio.muted;
+
+        return dispatch(audioMutedStateChanged(!muted));
     };
 }
 
@@ -90,9 +102,9 @@ export function toggleCameraFacingMode() {
     return (dispatch, getState) => {
         const mediaState = getState()['features/base/media'];
         const cameraFacingMode
-            = mediaState.camera.facingMode === CAMERA_FACING_MODE.USER
-                ? CAMERA_FACING_MODE.ENVIRONMENT
-                : CAMERA_FACING_MODE.USER;
+            = mediaState.video.facingMode === CAMERA_FACING_MODE.USER
+            ? CAMERA_FACING_MODE.ENVIRONMENT
+            : CAMERA_FACING_MODE.USER;
 
         return dispatch(cameraFacingModeChanged(cameraFacingMode));
     };
@@ -103,23 +115,10 @@ export function toggleCameraFacingMode() {
  *
  * @returns {Function}
  */
-export function toggleCameraMuted() {
+export function toggleVideoMuted() {
     return (dispatch, getState) => {
-        const muted = getState()['features/base/media'].camera.muted;
+        const muted = getState()['features/base/media'].video.muted;
 
-        return dispatch(cameraMutedStateChanged(!muted));
-    };
-}
-
-/**
- * Toggles the mute state of the local audio track(s).
- *
- * @returns {Function}
- */
-export function toggleMicrophoneMuted() {
-    return (dispatch, getState) => {
-        const muted = getState()['features/base/media'].microphone.muted;
-
-        return dispatch(microphoneMutedStateChanged(!muted));
+        return dispatch(videoMutedStateChanged(!muted));
     };
 }

@@ -5,26 +5,68 @@ import { ReducerRegistry } from '../redux';
 
 import {
     CAMERA_FACING_MODE_CHANGED,
-    CAMERA_MUTED_STATE_CHANGED,
-    MICROPHONE_MUTED_STATE_CHANGED
+    VIDEO_MUTED_STATE_CHANGED,
+    AUDIO_MUTED_STATE_CHANGED
 } from './actionTypes';
 
 import { CAMERA_FACING_MODE } from './constants';
 
 /**
- * Media state object for camera.
+ * Media state object for local audio.
  *
- * @typedef {Object} CameraMediaState
- * @property {CAMERA_FACING_MODE} facingMode='user' - Camera facing mode.
- * @property {boolean} muted=false - Camera muted state.
+ * @typedef {Object} AudioMediaState
+ * @property {boolean} muted=false - Audio muted state.
  */
 
 /**
- * Initial state for camera.
+ * Initial state for local audio.
  *
- * @type {CameraMediaState}
+ * @type {AudioMediaState}
  */
-const CAMERA_INITIAL_STATE = {
+const AUDIO_INITIAL_MEDIA_STATE = {
+    muted: false
+};
+
+/**
+ * Reducer for audio media state.
+ *
+ * @param {AudioMediaState} state - Media state of local audio.
+ * @param {Object} action - Action object.
+ * @param {Object} action.media - Media state object.
+ * @param {AudioMediaState} action.media.audio - Media state of local audio.
+ * @param {string} action.type - Type of action.
+ * @returns {AudioMediaState}
+ */
+const audio = (state = AUDIO_INITIAL_MEDIA_STATE, action) => {
+    switch (action.type) {
+    case AUDIO_MUTED_STATE_CHANGED:
+        return {
+            ...state,
+            muted: action.media.audio.muted
+        };
+
+    case CONFERENCE_LEFT:
+        return AUDIO_INITIAL_MEDIA_STATE;
+
+    default:
+        return state;
+    }
+};
+
+/**
+ * Media state object for local video.
+ *
+ * @typedef {Object} VideoMediaState
+ * @property {CAMERA_FACING_MODE} facingMode='user' - Camera facing mode.
+ * @property {boolean} muted=false - Video muted state.
+ */
+
+/**
+ * Initial state for video.
+ *
+ * @type {VideoMediaState}
+ */
+const VIDEO_INITIAL_MEDIA_STATE = {
     facingMode: CAMERA_FACING_MODE.USER,
     muted: false
 };
@@ -32,69 +74,29 @@ const CAMERA_INITIAL_STATE = {
 /**
  * Reducer for camera media state.
  *
- * @param {CameraMediaState} state - Media state of camera.
+ * @param {VideoMediaState} state - Media state of local video.
  * @param {Object} action - Action object.
  * @param {Object} action.media - Media state object.
- * @param {CameraMediaState} action.media.camera - Media state of camera.
+ * @param {VideoMediaState} action.media.video - Media state of video.
  * @param {string} action.type - Type of action.
- * @returns {CameraMediaState}
+ * @returns {VideoMediaState}
  */
-const camera = (state = CAMERA_INITIAL_STATE, action) => {
+const video = (state = VIDEO_INITIAL_MEDIA_STATE, action) => {
     switch (action.type) {
     case CAMERA_FACING_MODE_CHANGED:
         return {
             ...state,
-            facingMode: action.media.camera.facingMode
-        };
-    case CAMERA_MUTED_STATE_CHANGED:
-        return {
-            ...state,
-            muted: action.media.camera.muted
-        };
-    case CONFERENCE_LEFT:
-        return CAMERA_INITIAL_STATE;
-    default:
-        return state;
-    }
-};
-
-/**
- * Media state object for microphone.
- *
- * @typedef {Object} MicrophoneMediaState
- * @property {boolean} muted=false - Microphone muted state.
- */
-
-/**
- * Initial state for microphone.
- *
- * @type {CameraMediaState}
- */
-const MICROPHONE_INITIAL_STATE = {
-    muted: false
-};
-
-/**
- * Reducer for microphone media state.
- *
- * @param {MicrophoneMediaState} state - Media state of microphone.
- * @param {Object} action - Action object.
- * @param {Object} action.media - Media state object.
- * @param {MicrophoneMediaState} action.media.microphone - Media state of
- * microphone.
- * @param {string} action.type - Type of action.
- * @returns {MicrophoneMediaState}
- */
-const microphone = (state = MICROPHONE_INITIAL_STATE, action) => {
-    switch (action.type) {
-    case MICROPHONE_MUTED_STATE_CHANGED:
-        return {
-            ...state,
-            muted: action.media.microphone.muted
+            facingMode: action.media.video.facingMode
         };
 
     case CONFERENCE_LEFT:
-        return MICROPHONE_INITIAL_STATE;
+        return VIDEO_INITIAL_MEDIA_STATE;
+
+    case VIDEO_MUTED_STATE_CHANGED:
+        return {
+            ...state,
+            muted: action.media.video.muted
+        };
 
     default:
         return state;
@@ -112,6 +114,6 @@ const microphone = (state = MICROPHONE_INITIAL_STATE, action) => {
  * @returns {Object}
  */
 ReducerRegistry.register('features/base/media', combineReducers({
-    camera,
-    microphone
+    audio,
+    video
 }));

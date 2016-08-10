@@ -1,10 +1,24 @@
 /**
+ * Action to change muted state of local audio.
+ *
+ * {
+ *      type: AUDIO_MUTED_STATE_CHANGED,
+ *      media: {
+ *          audio: {
+ *              muted: boolean
+ *          }
+ *      }
+ * }
+ */
+export const AUDIO_MUTED_STATE_CHANGED = 'AUDIO_MUTED_STATE_CHANGED';
+
+/**
  * Action to signal the change if facing mode of local video camera.
  *
  * {
  *      type: CAMERA_FACING_MODE_CHANGED,
  *      media: {
- *          camera: {
+ *          video: {
  *              facingMode: CAMERA_FACING_MODE
  *          }
  *      }
@@ -16,26 +30,12 @@ export const CAMERA_FACING_MODE_CHANGED = 'CAMERA_FACING_MODE_CHANGED';
  * Action to change muted state of local video.
  *
  * {
- *      type: CAMERA_MUTED_STATE_CHANGED,
+ *      type: VIDEO_MUTED_STATE_CHANGED,
  *      media: {
- *          camera: {
+ *          video: {
  *              muted: boolean
  *          }
  *      }
  * }
  */
-export const CAMERA_MUTED_STATE_CHANGED = 'CAMERA_MUTED_STATE_CHANGED';
-
-/**
- * Action to change muted state of local audio.
- *
- * {
- *      type: MICROPHONE_MUTED_STATE_CHANGED,
- *      media: {
- *          microphone: {
- *              muted: boolean
- *          }
- *      }
- * }
- */
-export const MICROPHONE_MUTED_STATE_CHANGED = 'MICROPHONE_MUTED_STATE_CHANGED';
+export const VIDEO_MUTED_STATE_CHANGED = 'VIDEO_MUTED_STATE_CHANGED';

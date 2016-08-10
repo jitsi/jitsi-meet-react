@@ -4,9 +4,9 @@ import {
 } from '../lib-jitsi-meet';
 import {
     CAMERA_FACING_MODE_CHANGED,
-    CAMERA_MUTED_STATE_CHANGED,
+    VIDEO_MUTED_STATE_CHANGED,
     MEDIA_TYPE,
-    MICROPHONE_MUTED_STATE_CHANGED
+    AUDIO_MUTED_STATE_CHANGED
 } from '../media';
 import { MiddlewareRegistry } from '../redux';
 
@@ -29,17 +29,17 @@ MiddlewareRegistry.register(store => next => action => {
         store.dispatch(
             createLocalTracks({
                 devices: [ MEDIA_TYPE.VIDEO ],
-                facingMode: action.media.camera.facingMode
+                facingMode: action.media.video.facingMode
             })
         );
         break;
 
-    case CAMERA_MUTED_STATE_CHANGED:
-        _setTrackMuted(store, MEDIA_TYPE.VIDEO, action.media.camera.muted);
+    case VIDEO_MUTED_STATE_CHANGED:
+        _setTrackMuted(store, MEDIA_TYPE.VIDEO, action.media.video.muted);
         break;
 
-    case MICROPHONE_MUTED_STATE_CHANGED:
-        _setTrackMuted(store, MEDIA_TYPE.AUDIO, action.media.microphone.muted);
+    case AUDIO_MUTED_STATE_CHANGED:
+        _setTrackMuted(store, MEDIA_TYPE.AUDIO, action.media.audio.muted);
         break;
 
     case LIB_INITIALIZED:
