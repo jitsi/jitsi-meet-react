@@ -19,9 +19,8 @@ export class Video extends Component {
         if (stream) {
             // TODO URL.releaseObjectURL on componentDid/WillUnmount
             const src = URL.createObjectURL(stream);
-            const style = this.props.mirror
-                ? styles.mirroredVideo
-                : styles.video;
+            const style
+                = this.props.mirror ? styles.mirroredVideo : styles.video;
 
             return (
                 <video

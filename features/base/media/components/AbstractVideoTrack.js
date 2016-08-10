@@ -54,12 +54,13 @@ export class AbstractVideoTrack extends Component {
         const videoTrack = this.state.videoTrack;
         let stream = null;
 
-        if (videoTrack) {
-            // XXX We may want not to start showing video until video stream
-            // has started to play anywhere else.
-            stream = this.props.waitForVideoStarted && !videoTrack.videoStarted
-                ? null
-                : videoTrack.jitsiTrack.getOriginalStream();
+        if (videoTrack
+
+                // XXX We may want not to start showing video until video stream
+                // has started to play anywhere else.
+                && (!this.props.waitForVideoStarted
+                    || videoTrack.videoStarted)) {
+            stream = videoTrack.jitsiTrack.getOriginalStream();
         }
 
         return (
@@ -97,7 +98,7 @@ export class AbstractVideoTrack extends Component {
 }
 
 /**
- * Component's property types.
+ * VideoTrack component's property types.
  *
  * @static
  */

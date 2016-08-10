@@ -19,12 +19,10 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
-        const videoTrack = this.props.videoTrack;
-
         return (
             <LargeVideoContainer>
                 <VideoTrack
-                    videoTrack = { videoTrack }
+                    videoTrack = { this.props.videoTrack }
                     waitForVideoStarted = { true } />
             </LargeVideoContainer>
         );
@@ -39,17 +37,13 @@ class LargeVideo extends Component {
  *      videoTrack: Track
  * }}
  */
-const mapStateToProps = state => {
-    const largeVideo = state['features/largeVideo'];
-    const tracks = state['features/base/tracks'];
-
-    return {
-        videoTrack: getTrackByMediaTypeAndParticipant(
-            tracks,
+const mapStateToProps = state => ({ // eslint-disable-line arrow-body-style
+    videoTrack:
+        getTrackByMediaTypeAndParticipant(
+            state['features/base/tracks'],
             MEDIA_TYPE.VIDEO,
-            largeVideo.participantId)
-    };
-};
+            state['features/largeVideo'].participantId)
+});
 
 /**
  * LargeVideo component's property types.
