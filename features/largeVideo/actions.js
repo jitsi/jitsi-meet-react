@@ -1,3 +1,4 @@
+import { handleEndpointChangeError } from '../base/conference';
 import {
     MEDIA_TYPE,
     VIDEO_TYPE
@@ -28,10 +29,14 @@ export function selectEndpoint() {
             const videoTrack = getTrackByMediaTypeAndParticipant(
                 tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
-            conference.selectParticipant(
-                videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA
-                    ? largeVideo.participantId
-                    : null);
+            try {
+                conference.selectParticipant(
+                    videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA
+                        ? largeVideo.participantId
+                        : null);
+            } catch (ex) {
+                handleEndpointChangeError(ex);
+            }
         }
     };
 }

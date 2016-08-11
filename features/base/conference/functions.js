@@ -44,6 +44,23 @@ export function isRoomValid(room) {
 }
 
 /**
+ * Handle exception received when trying to pin or select an endpoint in
+ * conference.
+ *
+ * @param {Error} error - Error.
+ * @returns {void}
+ */
+export function handleEndpointChangeError(error) {
+    // XXX DataChannels are initialized at some later point when conference has
+    // multiple participants, but code that pins or selects an endpoint might be
+    // executed before. So here we're swallowing a particular error.
+    // TODO this should be fixed in lib-jitsi-meet.
+    if (error.message !== 'Data channels support is disabled!') {
+        throw error;
+    }
+}
+
+/**
  * Remove a set of local tracks from a conference.
  *
  * NOTE The function is internal to this feature.
