@@ -10,6 +10,7 @@ import {
 
 import {
     _addLocalTracksToConference,
+    _handleParticipantError,
     _removeLocalTracksFromConference
 } from './functions';
 
@@ -68,7 +69,11 @@ function pinParticipant(store, id) {
                 && (!localParticipant || !localParticipant.pinned))) {
         const conference = state['features/base/conference'].jitsiConference;
 
-        conference.pinParticipant(id);
+        try {
+            conference.pinParticipant(id);
+        } catch (err) {
+            _handleParticipantError(err);
+        }
     }
 }
 

@@ -32,6 +32,27 @@ export function _addLocalTracksToConference(conference, localTracks) {
 }
 
 /**
+ * Handle an error thrown by the backend (i.e. lib-jitsi-meet) while
+ * manipulating a conference participant (e.g. pin or select participant).
+ *
+ * NOTE The function is internal to this feature.
+ *
+ * @param {Error} err - The Error which was thrown by the backend while
+ * manipulating a conference participant and which is to be handled.
+ * @returns {void}
+ */
+export function _handleParticipantError(err) {
+    // XXX DataChannels are initialized at some later point when the conference
+    // has multiple participants, but code that pins or selects a participant
+    // might be executed before. So here we're swallowing a particular error.
+    // TODO Lib-jitsi-meet should be fixed to not throw such an exception in
+    // these scenarios.
+    if (err.message !== 'Data channels support is disabled!') {
+        throw err;
+    }
+}
+
+/**
  * Determines whether a specific string is a valid room name.
  *
  * @param {(string|undefined)} room - The name of the conference room to check
