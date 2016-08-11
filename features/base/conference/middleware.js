@@ -10,6 +10,7 @@ import {
 
 import {
     _addLocalTracksToConference,
+    handleEndpointChangeError,
     _removeLocalTracksFromConference
 } from './functions';
 
@@ -71,14 +72,7 @@ function pinParticipant(store, id) {
         try {
             conference.pinParticipant(id);
         } catch (ex) {
-            // XXX DataChannels are initialized at some later point when
-            // conference has multiple participants, but this code might
-            // be executed before. So here we're swallowing a particular
-            // error.
-            // TODO this should be fixed in lib-jitsi-meet.
-            if (ex.message !== 'Data channels support is disabled!') {
-                throw ex;
-            }
+            handleEndpointChangeError(ex);
         }
     }
 }
