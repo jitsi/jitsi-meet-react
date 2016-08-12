@@ -53,32 +53,6 @@ export function destroyLocalTracks() {
 }
 
 /**
- * Returns true if the provided JitsiTrack should be rendered as a mirror.
- *
- * We only want to show a video in mirrored mode when:
- * 1) The video source is local, and not remote.
- * 2) The video source is a camera, not a desktop (capture).
- * 3) TODO The video source is capturing the user, not the environment.
- *
- * TODO Similar functionality is part of lib-jitsi-meet. This function should be
- * removed after https://github.com/jitsi/lib-jitsi-meet/pull/187 is merged.
- *
- * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
- * @private
- * @returns {boolean}
- */
-function _shouldMirror(track) {
-    // XXX We should also check the facing mode of the track source, and only
-    // mirror when the source is user facing (and not environment facing).
-    return (
-        track
-            && track.isLocal()
-            && track.isVideoTrack()
-            && !track.isScreenSharing()
-    );
-}
-
-/**
  * Create an action for when a new track has been signaled to be added to the
  * conference.
  *
@@ -97,7 +71,8 @@ export function trackAdded(track) {
                 jitsiTrack: track,
                 local: track.isLocal(),
                 mediaType: track.getType(),
-                mirrorVideo: _shouldMirror(track),
+                mirrorVideo: track.getCameraFacingMode()
+                    === CAMERA_FACING_MODE.USER,
                 muted: track.isMuted(),
                 participantId: track.isLocal()
                     ? (getState()['features/base/participants']
