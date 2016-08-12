@@ -11,10 +11,10 @@ import {
     pinParticipant
 } from '../../base/participants';
 import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
+import { Avatar } from '../../conference';
 
 import {
     AudioMutedIndicator,
-    Avatar,
     DominantSpeakerIndicator,
     ModeratorIndicator,
     VideoMutedIndicator,
@@ -100,6 +100,12 @@ class VideoThumbnail extends Component {
                 && (!videoTrack.videoStarted
                     || participant.id !== largeVideo.participantId);
 
+        // We don't render avatar if we're showing video or the video is
+        // rendered on the stage i.e. as a large video.
+        const renderAvatar
+            = !renderVideo
+                && participant.id !== largeVideo.participantId;
+
         return (
             <VideoThumbnailContainer
                 onClick = { this._onClick }
@@ -113,7 +119,7 @@ class VideoThumbnail extends Component {
                 { renderVideo
                     && <VideoTrack videoTrack = { videoTrack } /> }
 
-                { !renderVideo
+                { renderAvatar
                     && <Avatar uri = { participant.avatar } /> }
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR

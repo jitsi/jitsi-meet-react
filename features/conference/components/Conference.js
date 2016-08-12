@@ -9,7 +9,7 @@ import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
 
-import { ConferenceContainer } from './ConferenceContainer';
+import { ConferenceContainer } from './_';
 
 /**
  * The timeout in milliseconds after which the toolbar will be hidden.
