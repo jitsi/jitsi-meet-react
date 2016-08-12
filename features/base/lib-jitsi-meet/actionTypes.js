@@ -25,3 +25,13 @@ export const LIB_INIT_ERROR = 'LIB_INIT_ERROR';
  * }
  */
 export const LIB_INITIALIZED = 'LIB_INITIALIZED';
+
+/**
+ * Action to signal that config was set.
+ *
+ * {
+ *     type: SET_CONFIG,
+ *     config: Object
+ * }
+ */
+export const SET_CONFIG = 'SET_CONFIG';

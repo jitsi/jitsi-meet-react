@@ -3,7 +3,8 @@ import { ReducerRegistry } from '../redux';
 import {
     LIB_DISPOSED,
     LIB_INIT_ERROR,
-    LIB_INITIALIZED
+    LIB_INITIALIZED,
+    SET_CONFIG
 } from './actionTypes';
 
 /**
@@ -15,6 +16,7 @@ import {
  * }}
  */
 const INITIAL_STATE = {
+    config: null,
     initializationError: null,
     initialized: false
 };
@@ -38,6 +40,12 @@ ReducerRegistry.register(
                 ...state,
                 initializationError: null,
                 initialized: true
+            };
+
+        case SET_CONFIG:
+            return {
+                ...state,
+                config: action.config
             };
 
         default:

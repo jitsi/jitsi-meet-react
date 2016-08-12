@@ -12,18 +12,19 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 /**
  * Opens new connection.
  *
- * @param {Object} config - Application config.
- * @param {string} [room] - The room name to use.
  * @returns {Promise<JitsiConnection>}
  */
-export function connect(config, room) {
-    return dispatch => {
+export function connect() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const config = state['features/base/lib'].config;
+        const room = state['features/base/conference'].room;
         const connection = new JitsiMeetJS.JitsiConnection(
             config.appId,
             config.token,
             {
-                ...config.connection,
-                bosh: config.connection.bosh + (
+                ...config,
+                bosh: config.bosh + (
                     room ? `?room=${room}` : ''
                 )
             }

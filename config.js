@@ -1,10 +1,10 @@
 /* global config */
 
-// Override the default connection configuration. For legacy reasons, use
+// Override the default configuration. For legacy reasons, use
 // jitsi-meet's global variable config.
-let connection = typeof config !== 'undefined' && config;
+let configObject = typeof config !== 'undefined' && config;
 
-if (!connection) { // Default connection configuration
+if (!configObject) { // Default connection configuration
     const domain = 'meet.jit.si';
 
     // FIXME The HTTPS scheme for the BOSH URL works with meet.jit.si on both
@@ -33,7 +33,7 @@ if (!connection) { // Default connection configuration
         boshProtocol = 'https:';
     }
 
-    connection = {
+    configObject = {
         bosh: `${boshProtocol}//${domain}/http-bind`,
         hosts: {
             domain,
@@ -43,6 +43,4 @@ if (!connection) { // Default connection configuration
     };
 }
 
-export default {
-    connection
-};
+export default configObject;

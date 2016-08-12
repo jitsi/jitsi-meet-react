@@ -2,7 +2,8 @@ import JitsiMeetJS from './';
 import {
     LIB_DISPOSED,
     LIB_INIT_ERROR,
-    LIB_INITIALIZED
+    LIB_INITIALIZED,
+    SET_CONFIG
 } from './actionTypes';
 import './middleware';
 import './reducer';
@@ -23,16 +24,17 @@ export function disposeLib() {
 /**
  * Initializes lib-jitsi-meet with passed configuration.
  *
- * @param {Object} [config={}] - Config object accepted by JitsiMeetJS#init()
- * method.
  * @returns {Function}
  */
-export function initLib(config = {}) {
-    // XXX We wrapping this to be able to "dispatch" the action, because
-    // we will need to dispatch some errors to global error handler at some
-    // point.
-    return dispatch =>
-        JitsiMeetJS.init(config)
+export function initLib() {
+    return (dispatch, getState) => {
+        const config = getState()['features/base/lib'].config;
+
+        if (!config) {
+            throw new Error('Cannot initialize lib-jitsi-meet without config');
+        }
+
+        return JitsiMeetJS.init(config)
             .then(() => dispatch({ type: LIB_INITIALIZED }))
             .catch(error => {
                 dispatch({
@@ -44,4 +46,23 @@ export function initLib(config = {}) {
                 console.error('lib-jitsi-meet failed to init due to ', error);
                 throw error;
             });
+    };
 }
+
+/**
+ * Sets config.
+ *
+ * @param {Object} config - Config object accepted by JitsiMeetJS#init()
+ * method.
+ * @returns {{
+ *      type: SET_CONFIG,
+ *      config: Object
+ *  }}
+ */
+export function setConfig(config) {
+    return {
+        type: SET_CONFIG,
+        config
+    };
+}
+

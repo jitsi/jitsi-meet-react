@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { setRoom } from '../../base/conference';
+import { setConfig } from '../../base/lib-jitsi-meet';
 import {
     localParticipantJoined,
     localParticipantLeft
@@ -25,6 +26,7 @@ export class AbstractApp extends Component {
 
         dispatch(appWillMount(this));
 
+        dispatch(setConfig(this.props.config));
         dispatch(setRoom(this._getRoomFromUrlString(this.props.url)));
         dispatch(localParticipantJoined());
     }
@@ -58,6 +60,9 @@ export class AbstractApp extends Component {
     _createElement(component, props) {
         /* eslint-disable no-unused-vars, lines-around-comment */
         const {
+            // The config is stored inside Redux state, so no need to propagate
+            // it to child components.
+            config,
             // Don't propagate the dispatch and store props because they usually
             // come from react-redux and programmers don't really expect them to
             // be inherited but rather explicitly connected.

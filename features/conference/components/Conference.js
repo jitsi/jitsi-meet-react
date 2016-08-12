@@ -52,7 +52,7 @@ class Conference extends Component {
      * @returns {void}
      */
     componentWillMount() {
-        this.props.dispatch(connect(this.props.config, this.props.room));
+        this.props.dispatch(connect());
     }
 
     /**
@@ -126,27 +126,7 @@ class Conference extends Component {
  * @static
  */
 Conference.propTypes = {
-    /**
-     * The configuration with which a connection is to be initialized for the
-     * purposes of joining the conference depicted by the (React Component)
-     * Conference instance.
-     *
-     * @type {Object}
-     */
-    config: React.PropTypes.object,
-    dispatch: React.PropTypes.func,
-    room: React.PropTypes.string
+    dispatch: React.PropTypes.func
 };
 
-/**
- * Maps room property from state to component props.
- *
- * @param {Object} state - Redux state.
- * @returns {{ room: string }}
- */
-// eslint-disable-next-line arrow-body-style
-export const mapStateToProps = state => ({
-    room: state['features/base/conference'].room
-});
-
-export default reactReduxConnect(mapStateToProps)(Conference);
+export default reactReduxConnect()(Conference);
