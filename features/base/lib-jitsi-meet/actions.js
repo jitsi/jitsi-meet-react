@@ -27,7 +27,13 @@ export function disposeLib() {
  * method.
  * @returns {Function}
  */
-export function initLib(config = {}) {
+// FIXME This is temporary solution until we figure out how to deal with
+// analytics (and callstats) scripts async loading in React-Native environment.
+// Also this is done here and not in config.js because currently we don't have
+// access to config from where initLib() is currently called. This will be
+// changed in scope of another PR.
+// eslint-disable-next-line require-jsdoc
+export function initLib(config = { disableThirdPartyRequests: true }) {
     // XXX We wrapping this to be able to "dispatch" the action, because
     // we will need to dispatch some errors to global error handler at some
     // point.
