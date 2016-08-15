@@ -94,9 +94,11 @@ function _shouldMirror(track) {
  */
 export function trackAdded(track) {
     return (dispatch, getState) => {
-        track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-            dispatch(trackVideoTypeChanged(track, type));
-        });
+        track.on(JitsiTrackEvents.TRACK_MUTE_CHANGED, () =>
+            dispatch(trackMuteChanged(track)));
+
+        track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type =>
+            dispatch(trackVideoTypeChanged(track, type)));
 
         return dispatch({
             type: TRACK_ADDED,
