@@ -12,7 +12,7 @@ import { WelcomePage } from '../welcome';
      *      room: (string|undefined)
      *  }}
  */
-export function getRoomAndDomainFromUrlString(url) {
+export function _getRoomAndDomainFromUrlString(url) {
     return _getRoomAndDomainFromUrlObject(_urlStringToObject(url));
 }
 
@@ -26,7 +26,7 @@ export function getRoomAndDomainFromUrlString(url) {
      *      room: (string|undefined)
      *  }}
  */
-export function _getRoomAndDomainFromUrlObject(url) {
+function _getRoomAndDomainFromUrlObject(url) {
     let domain;
     let room;
 
@@ -54,13 +54,15 @@ export function _getRoomAndDomainFromUrlObject(url) {
  * Determines which route is to be rendered in order to depict a specific Redux
  * store.
  *
- * @param {Object} store - The Redux store which is to be depicted. In other
- * words, the Redux store into which the state to determine which route is to be
- * rendered is defined.
+ * @param {(Object|Function)} stateOrGetState - Redux state or Regux getState()
+ * method.
  * @returns {Route}
  */
-export function _getRouteToRender(store) {
-    const room = store.getState()['features/base/conference'].room;
+export function _getRouteToRender(stateOrGetState) {
+    const state = typeof stateOrGetState === 'function'
+        ? stateOrGetState()
+        : stateOrGetState;
+    const room = state['features/base/conference'].room;
     const component = isRoomValid(room) ? Conference : WelcomePage;
 
     return RouteRegistry.getRouteByComponent(component);
@@ -82,7 +84,7 @@ function _urlStringToObject(url) {
         } catch (ex) {
             // The return value will signal the failure & the logged
             // exception will provide the details to the developers.
-            console.warn(`Failed to parse URL: ${url}`, ex);
+            console.log(`${url} seems to be not a valid URL, but it's OK`, ex);
         }
     }
 

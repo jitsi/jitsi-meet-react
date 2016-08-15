@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { setRoom } from '../../base/conference';
+import { appNavigate } from '../../app';
 import { ColorPalette } from '../../base/styles';
 
 import {
@@ -80,7 +80,7 @@ export class AbstractToolbar extends Component {
         // know that anyway. The undefined value is our expression of (1) the
         // lack of knowledge & (2) the desire to no longer have a valid room
         // name to join.
-        this.props.dispatch(setRoom(undefined));
+        this.props.dispatch(appNavigate(undefined));
     }
 
     /**

@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 
-import { setRoom } from '../../base/conference';
 import { setConfig } from '../../base/lib-jitsi-meet';
 import {
     localParticipantJoined,
     localParticipantLeft
 } from '../../base/participants';
 
-import { appWillMount, appWillUnmount } from '../actions';
-import { getRoomAndDomainFromUrlString } from '../functions';
+import {
+    appNavigate,
+    appWillMount,
+    appWillUnmount
+} from '../actions';
 
 /**
  * Base (abstract) class for main App component.
@@ -93,13 +95,7 @@ export class AbstractApp extends Component {
      * @returns {void}
      */
     _openURL(url) {
-        const { room } = getRoomAndDomainFromUrlString(url);
-
-        // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
-        // currently in a conference and ask her if she wants to close the
-        // current conference and start a new one with the new room name.
-
-        this.props.store.dispatch(setRoom(room));
+        this.props.store.dispatch(appNavigate(url));
     }
 }
 

@@ -2,12 +2,7 @@ import React from 'react';
 import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { setDomain } from '../../base/connection';
-
-import {
-    getRoomAndDomainFromUrlString,
-    _getRouteToRender
-} from '../functions';
+import { _getRouteToRender } from '../functions';
 import { AbstractApp } from './AbstractApp';
 
 /**
@@ -72,7 +67,7 @@ export class App extends AbstractApp {
         return (
             <Provider store = { store }>
                 <Navigator
-                    initialRoute = { _getRouteToRender(store) }
+                    initialRoute = { _getRouteToRender(store.getState) }
                     ref = { navigator => { this.navigator = navigator; } }
                     renderScene = { this._navigatorRenderScene } />
             </Provider>
@@ -129,28 +124,6 @@ export class App extends AbstractApp {
      */
     _onLinkingURL(event) {
         this._openURL(event.url);
-    }
-
-    /**
-     * Navigates native App to (i.e. opens) a specific URL and possibly changes
-     * connection domain.
-     *
-     * @override
-     * @param {string} url - The URL to which to navigate this native App (i.e.
-     * the URL to open).
-     * @protected
-     * @returns {void}
-     */
-    _openURL(url) {
-        const { domain } = getRoomAndDomainFromUrlString(url);
-
-        // XXX Changing domain to connect to makes sense only for mobile app,
-        // it doesn't make much sense for web version.
-        if (domain) {
-            this.props.store.dispatch(setDomain(domain));
-        }
-
-        super._openURL(url);
     }
 }
 
