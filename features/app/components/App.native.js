@@ -2,7 +2,12 @@ import React from 'react';
 import { Linking, Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { _getRouteToRender } from '../functions';
+import { setDomain } from '../../base/connection';
+
+import {
+    getRoomAndDomainFromUrlString,
+    _getRouteToRender
+} from '../functions';
 import { AbstractApp } from './AbstractApp';
 
 /**
@@ -77,32 +82,6 @@ export class App extends AbstractApp {
     }
 
     /**
-     * Tries to get conference room name from URL.
-     * Alongside with getting room name from URL we want to compare hostname
-     * from URL with domain name from config to ensure we're a going to join
-     * room on the same domain for which our app is configured. This doesn't
-     * work quite well with web version, e.g. we're running our web app on
-     * localhost, but are joining meet.jit.si.
-     *
-     * @param {(string|undefined)} url - URL passed to the app.
-     * @override
-     * @protected
-     * @returns {string}
-     */
-    _getRoomFromUrlString(url) {
-        const urlObj = super._urlStringToObject(url);
-        let room;
-
-        if (urlObj
-                && urlObj.hostname
-                    === this.props.config.connection.hosts.domain) {
-            room = super._getRoomFromUrlObject(urlObj);
-        }
-
-        return room;
-    }
-
-    /**
      * Navigates to a specific Route (via platform-specific means).
      *
      * @param {Route} route - The Route to which to navigate.
@@ -150,6 +129,28 @@ export class App extends AbstractApp {
      */
     _onLinkingURL(event) {
         this._openURL(event.url);
+    }
+
+    /**
+     * Navigates native App to (i.e. opens) a specific URL and possibly changes
+     * connection domain.
+     *
+     * @override
+     * @param {string} url - The URL to which to navigate this native App (i.e.
+     * the URL to open).
+     * @protected
+     * @returns {void}
+     */
+    _openURL(url) {
+        const { domain } = getRoomAndDomainFromUrlString(url);
+
+        // XXX Changing domain to connect to makes sense only for mobile app,
+        // it doesn't make much sense for web version.
+        if (domain) {
+            this.props.store.dispatch(setDomain(domain));
+        }
+
+        super._openURL(url);
     }
 }
 

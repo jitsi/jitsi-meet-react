@@ -8,6 +8,7 @@ import {
 } from '../../base/participants';
 
 import { appWillMount, appWillUnmount } from '../actions';
+import { getRoomAndDomainFromUrlString } from '../functions';
 
 /**
  * Base (abstract) class for main App component.
@@ -27,7 +28,9 @@ export class AbstractApp extends Component {
         dispatch(appWillMount(this));
 
         dispatch(setConfig(this.props.config));
-        dispatch(setRoom(this._getRoomFromUrlString(this.props.url)));
+
+        this._openURL(this.props.url);
+
         dispatch(localParticipantJoined());
     }
 
@@ -82,39 +85,6 @@ export class AbstractApp extends Component {
     }
 
     /**
-     * Gets room name from URL object if any.
-     *
-     * @param {URL} url - URL object.
-     * @protected
-     * @returns {(string|undefined)}
-     */
-    _getRoomFromUrlObject(url) {
-        let room;
-
-        if (url) {
-            room = url.pathname.substr(1).toLowerCase();
-
-            // Convert empty string to undefined to simplify checks.
-            if (room === '') {
-                room = undefined;
-            }
-        }
-
-        return room;
-    }
-
-    /**
-     * Tries to get conference room name from URL.
-     *
-     * @param {(string|undefined)} url - URL passed to the app.
-     * @protected
-     * @returns {string}
-     */
-    _getRoomFromUrlString(url) {
-        return this._getRoomFromUrlObject(this._urlStringToObject(url));
-    }
-
-    /**
      * Navigates this AbstractApp to (i.e. opens) a specific URL.
      *
      * @param {string} url - The URL to which to navigate this AbstractApp (i.e.
@@ -123,36 +93,13 @@ export class AbstractApp extends Component {
      * @returns {void}
      */
     _openURL(url) {
-        const room = this._getRoomFromUrlString(url);
+        const { room } = getRoomAndDomainFromUrlString(url);
 
         // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
         // currently in a conference and ask her if she wants to close the
         // current conference and start a new one with the new room name.
 
         this.props.store.dispatch(setRoom(room));
-    }
-
-    /**
-     * Parses a string into a URL (object).
-     *
-     * @param {(string|undefined)} url - The URL to parse.
-     * @protected
-     * @returns {URL}
-     */
-    _urlStringToObject(url) {
-        let urlObj;
-
-        if (url) {
-            try {
-                urlObj = new URL(url);
-            } catch (ex) {
-                // The return value will signal the failure & the logged
-                // exception will provide the details to the developers.
-                console.error(`Failed to parse URL: ${url}`, ex);
-            }
-        }
-
-        return urlObj;
     }
 }
 

@@ -27,17 +27,23 @@ const JitsiConferenceEvents = JitsiMeetJS.events.conference;
 /**
  * Initializes a new conference.
  *
- * @param {string} room - Conference room name.
  * @returns {Function}
  */
-export function createConference(room) {
+export function createConference() {
     return (dispatch, getState) => {
-        const connection = getState()['features/base/connection'];
+        const state = getState();
+        const connection = state['features/base/connection'].jitsiConnection;
+        const room = state['features/base/conference'].room;
 
         if (!connection) {
             throw new Error('Cannot create conference without connection');
         }
 
+        if (typeof room === 'undefined' || room === '') {
+            throw new Error('Cannot join conference without room name');
+        }
+
+        // TODO Take options from config.
         const conference
             = connection.initJitsiConference(room, { openSctp: true });
 

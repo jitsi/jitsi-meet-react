@@ -2,6 +2,10 @@ import React from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
 
+import { getRoomAndDomainFromUrlString } from '../../app';
+import { setDomain } from '../../base/connection';
+import { setRoom } from '../../base/conference';
+
 import {
     AbstractWelcomePage,
     mapStateToProps
@@ -43,6 +47,28 @@ class WelcomePage extends AbstractWelcomePage {
                 </View>
             </View>
         );
+    }
+
+    /**
+     * Handles click on 'Join' button. Tries to parse input as URL first.
+     *
+     * @override
+     * @protected
+     * @returns {void}
+     */
+    _onJoinPress() {
+        const dispatch = this.props.dispatch;
+        const { domain, room } = getRoomAndDomainFromUrlString(this.state.room);
+
+        // XXX Here we first try to treat our input as URL and extract domain
+        // and room name from it. If we fail to parse our input as URL, then
+        // it's just a room name and we can proceed with our base case.
+        if (domain && room) {
+            dispatch(setDomain(domain));
+            dispatch(setRoom(room));
+        } else {
+            super._onJoinPress();
+        }
     }
 }
 
