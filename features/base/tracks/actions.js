@@ -58,7 +58,7 @@ export function destroyLocalTracks() {
  * We only want to show a video in mirrored mode when:
  * 1) The video source is local, and not remote.
  * 2) The video source is a camera, not a desktop (capture).
- * 3) TODO The video source is capturing the user, not the environment.
+ * 3) The camera is capturing the user, not the environment.
  *
  * TODO Similar functionality is part of lib-jitsi-meet. This function should be
  * removed after https://github.com/jitsi/lib-jitsi-meet/pull/187 is merged.
@@ -68,12 +68,19 @@ export function destroyLocalTracks() {
  * @returns {boolean}
  */
 function _shouldMirror(track) {
-    // XXX We should also check the facing mode of the track source, and only
-    // mirror when the source is user facing (and not environment facing).
     return (
         track
             && track.isLocal()
             && track.isVideoTrack()
+
+            // XXX Type of the return value of
+            // JitsiLocalTrack#getCameraFacingMode() happens to be named
+            // CAMERA_FACING_MODE as well, it's defined by lib-jitsi-meet. Note
+            // though that the type of the value on the right side of the
+            // equality check is defined by jitsi-meet-react. The type
+            // definitions are surely compatible today but that may not be the
+            // case tomorrow.
+            && track.getCameraFacingMode() === CAMERA_FACING_MODE.USER
             && !track.isScreenSharing()
     );
 }
