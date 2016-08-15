@@ -94,9 +94,12 @@ function _shouldMirror(track) {
  */
 export function trackAdded(track) {
     return (dispatch, getState) => {
-        track.on(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED, type => {
-            dispatch(trackVideoTypeChanged(track, type));
-        });
+        track.on(
+            JitsiTrackEvents.TRACK_MUTE_CHANGED,
+            () => dispatch(trackMuteChanged(track)));
+        track.on(
+            JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED,
+            type => dispatch(trackVideoTypeChanged(track, type)));
 
         return dispatch({
             type: TRACK_ADDED,
@@ -232,28 +235,22 @@ function _disposeAndRemoveTracks(tracks) {
  * }}
  */
 function _getLocalTracksToChange(currentTracks, newTracks) {
-    const currentLocalAudio = currentTracks.find(
-        t => t.isLocal() && t.isAudioTrack());
-    const currentLocalVideo = currentTracks.find(
-        t => t.isLocal() && t.isVideoTrack());
-    const newLocalAudio = newTracks.find(
-        t => t.isLocal() && t.isAudioTrack());
-    const newLocalVideo = newTracks.find(
-        t => t.isLocal() && t.isVideoTrack());
+    const currentLocalAudio
+        = currentTracks.find(t => t.isLocal() && t.isAudioTrack());
+    const currentLocalVideo
+        = currentTracks.find(t => t.isLocal() && t.isVideoTrack());
+    const newLocalAudio = newTracks.find(t => t.isLocal() && t.isAudioTrack());
+    const newLocalVideo = newTracks.find(t => t.isLocal() && t.isVideoTrack());
     const tracksToRemove = [];
     const tracksToAdd = [];
 
     if (newLocalAudio) {
         tracksToAdd.push(newLocalAudio);
-        if (currentLocalAudio) {
-            tracksToRemove.push(newLocalVideo);
-        }
+        currentLocalAudio && tracksToRemove.push(newLocalVideo);
     }
     if (newLocalVideo) {
         tracksToAdd.push(newLocalVideo);
-        if (currentLocalVideo) {
-            tracksToRemove.push(currentLocalVideo);
-        }
+        currentLocalVideo && tracksToRemove.push(currentLocalVideo);
     }
 
     return {

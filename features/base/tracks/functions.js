@@ -7,7 +7,18 @@ import { MEDIA_TYPE } from '../media';
  * @returns {(Track|undefined)}
  */
 export function getLocalAudioTrack(tracks) {
-    return tracks.find(t => t.local && t.mediaType === MEDIA_TYPE.AUDIO);
+    return getLocalTrack(tracks, MEDIA_TYPE.AUDIO);
+}
+
+/**
+ * Returns local track by media type.
+ *
+ * @param {Track[]} tracks - List of all tracks.
+ * @param {MEDIA_TYPE} mediaType - Media type.
+ * @returns {(Track|undefined)}
+ */
+export function getLocalTrack(tracks, mediaType) {
+    return tracks.find(t => t.local && t.mediaType === mediaType);
 }
 
 /**
@@ -17,7 +28,7 @@ export function getLocalAudioTrack(tracks) {
  * @returns {(Track|undefined)}
  */
 export function getLocalVideoTrack(tracks) {
-    return tracks.find(t => t.local && t.mediaType === MEDIA_TYPE.VIDEO);
+    return getLocalTrack(tracks, MEDIA_TYPE.VIDEO);
 }
 
 /**
@@ -32,8 +43,8 @@ export function getTrackByMediaTypeAndParticipant(
         tracks,
         mediaType,
         participantId) {
-    return tracks.find(t =>
-        t.participantId === participantId && t.mediaType === mediaType
+    return tracks.find(
+        t => t.participantId === participantId && t.mediaType === mediaType
     );
 }
 
@@ -58,4 +69,25 @@ export function getTrackByJitsiTrack(tracks, jitsiTrack) {
  */
 export function getTracksByMediaType(tracks, mediaType) {
     return tracks.filter(t => t.mediaType === mediaType);
+}
+
+/**
+ * Mute or unmute local track if any.
+ *
+ * @param {JitsiLocalTrack} track - Track instance.
+ * @param {boolean} muted - If audio stream should be muted or unmuted.
+ * @returns {Promise}
+ */
+export function setTrackMuted(track, muted) {
+    if (!track) {
+        return Promise.resolve();
+    }
+
+    const f = muted ? 'mute' : 'unmute';
+
+    return track[f]()
+        .catch(err => {
+            console.warn(`Track ${f} was rejected:`, err);
+            throw err;
+        });
 }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
 import { setRoom } from '../../base/conference';
+import {
+    toggleAudioMuted,
+    toggleVideoMuted
+} from '../../base/media';
 import { ColorPalette } from '../../base/styles';
 
-import {
-    toggleAudio,
-    toggleVideo
-} from '../actions';
 import { styles } from './styles';
 
 /**
@@ -90,7 +90,7 @@ export class AbstractToolbar extends Component {
      * @returns {void}
      */
     _toggleAudio() {
-        this.props.dispatch(toggleAudio());
+        this.props.dispatch(toggleAudioMuted());
     }
 
     /**
@@ -100,7 +100,7 @@ export class AbstractToolbar extends Component {
      * @returns {void}
      */
     _toggleVideo() {
-        this.props.dispatch(toggleVideo());
+        this.props.dispatch(toggleVideoMuted());
     }
 }
 
@@ -123,10 +123,10 @@ AbstractToolbar.propTypes = {
  * @returns {{ audioMuted: boolean, videoMuted: boolean }}
  */
 export const mapStateToProps = state => {
-    const toolbar = state['features/toolbar'];
+    const media = state['features/base/media'];
 
     return {
-        audioMuted: toolbar.audioMuted,
-        videoMuted: toolbar.videoMuted
+        audioMuted: media.audio.muted,
+        videoMuted: media.video.muted
     };
 };

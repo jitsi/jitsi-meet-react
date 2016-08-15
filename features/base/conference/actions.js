@@ -8,7 +8,6 @@ import {
 } from '../participants';
 import {
     trackAdded,
-    trackMuteChanged,
     trackRemoved
 } from '../tracks';
 
@@ -121,46 +120,42 @@ export function setRoom(room) {
  */
 function _setupConferenceListeners(conference) {
     return dispatch => {
-        conference.on(JitsiConferenceEvents.CONFERENCE_JOINED,
+        conference.on(
+            JitsiConferenceEvents.CONFERENCE_JOINED,
             () => dispatch(conferenceJoined(conference)));
-        conference.on(JitsiConferenceEvents.CONFERENCE_LEFT,
+        conference.on(
+            JitsiConferenceEvents.CONFERENCE_LEFT,
             () => dispatch(conferenceLeft(conference)));
 
-        conference.on(JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
+        conference.on(
+            JitsiConferenceEvents.DOMINANT_SPEAKER_CHANGED,
             id => dispatch(dominantSpeakerChanged(id)));
 
-        conference.on(JitsiConferenceEvents.TRACK_ADDED,
-            track => {
-                if (!track || track.isLocal()) {
-                    return;
-                }
+        conference.on(
+            JitsiConferenceEvents.TRACK_ADDED,
+            track =>
+                track && !track.isLocal() && dispatch(trackAdded(track)));
+        conference.on(
+            JitsiConferenceEvents.TRACK_REMOVED,
+            track =>
+                track && !track.isLocal() && dispatch(trackRemoved(track)));
 
-                dispatch(trackAdded(track));
-            });
-        conference.on(JitsiConferenceEvents.TRACK_MUTE_CHANGED,
-            track => dispatch(trackMuteChanged(track)));
-        conference.on(JitsiConferenceEvents.TRACK_REMOVED,
-            track => {
-                if (!track || track.isLocal()) {
-                    return;
-                }
-
-                dispatch(trackRemoved(track));
-            });
-
-        conference.on(JitsiConferenceEvents.USER_JOINED,
+        conference.on(
+            JitsiConferenceEvents.USER_JOINED,
             (id, user) => dispatch(participantJoined({
                 id,
                 name: user.getDisplayName(),
                 role: user.getRole()
             })));
-        conference.on(JitsiConferenceEvents.USER_LEFT,
+        conference.on(
+            JitsiConferenceEvents.USER_LEFT,
             id => dispatch(participantLeft(id)));
-        conference.on(JitsiConferenceEvents.USER_ROLE_CHANGED,
+        conference.on(
+            JitsiConferenceEvents.USER_ROLE_CHANGED,
             (id, role) => dispatch(participantRoleChanged(id, role)));
 
-        conference.addCommandListener(EMAIL_COMMAND, (data, id) => {
-            dispatch(changeParticipantEmail(id, data.value));
-        });
+        conference.addCommandListener(
+            EMAIL_COMMAND,
+            (data, id) => dispatch(changeParticipantEmail(id, data.value)));
     };
 }
