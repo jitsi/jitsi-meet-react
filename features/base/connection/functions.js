@@ -16,7 +16,9 @@ export function getDomain(stateOrGetState) {
     try {
         domain = connection.connectionOptions.hosts.domain;
     } catch (e) {
-        domain = undefined;
+        // XXX ConnectionOptions or any of its child properties may be undefined
+        // at some point (e.g. on start), so instead of multiple checks for
+        // undefined value we just wrap it in a try-catch block.
     }
 
     return domain;

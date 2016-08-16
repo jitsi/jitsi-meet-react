@@ -7,14 +7,16 @@ import {
 import { connect } from 'react-redux';
 
 import { Icon } from '../../base/fontIcons';
-import { MEDIA_TYPE } from '../../base/media';
+import {
+    MEDIA_TYPE,
+    toggleCameraFacingMode
+} from '../../base/media';
 import { ColorPalette } from '../../base/styles';
 
 import {
     AbstractToolbar,
     mapStateToProps
 } from './AbstractToolbar';
-import { toggleCameraFacingMode } from '../actions';
 import { styles } from './styles';
 
 /**
