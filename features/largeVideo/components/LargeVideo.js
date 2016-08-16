@@ -28,8 +28,7 @@ class LargeVideo extends Component {
             = typeof avatar !== 'undefined'
                 && avatar !== ''
                 && (!videoTrack
-                    || (videoTrack
-                        && (!videoTrack.videoStarted || videoTrack.muted)));
+                    || (!videoTrack.videoStarted || videoTrack.muted));
 
         return (
             <LargeVideoContainer>
@@ -57,11 +56,12 @@ class LargeVideo extends Component {
  */
 const mapStateToProps = state => {
     const participantId = state['features/largeVideo'].participantId;
+    const participant = getParticipant(
+        state['features/base/participants'],
+        participantId);
 
     return {
-        avatar: (getParticipant(
-            state['features/base/participants'],
-            participantId) || {}).avatar,
+        avatar: participant ? participant.avatar : undefined,
         videoTrack: getTrackByMediaTypeAndParticipant(
             state['features/base/tracks'],
             MEDIA_TYPE.VIDEO,
