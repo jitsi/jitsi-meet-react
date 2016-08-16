@@ -13,13 +13,14 @@ import {
 import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
 
 import {
-    AudioMutedIndicator,
     Avatar,
     DominantSpeakerIndicator,
-    ModeratorIndicator,
-    VideoMutedIndicator,
     VideoThumbnailContainer
 } from './_';
+
+import { AudioMutedIndicator } from './AudioMutedIndicator';
+import { ModeratorIndicator } from './ModeratorIndicator';
+import { VideoMutedIndicator } from './VideoMutedIndicator';
 
 /**
  * React component for video thumbnail.

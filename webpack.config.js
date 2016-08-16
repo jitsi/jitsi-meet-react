@@ -31,6 +31,12 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'style-loader!css-loader',
             },
+            // Load JSON files that are required in modules.
+            {
+                test: /\.json/,
+                exclude: /node_modules/,
+                loader: 'json-loader'
+            },
             // Load font files for font-awesome. It uses a trailing version
             // number in the names when requiring so we have to accept them in
             // our test regex.

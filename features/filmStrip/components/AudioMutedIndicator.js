@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import Icon from 'react-fontawesome';
 
-import { styles } from './styles';
+import { Icon } from '../../base/fontIcons';
+
+import { styles } from './_';
 
 /**
  * Thumbnail badge for displaying the audio mute status of a participant.
@@ -15,7 +16,7 @@ export class AudioMutedIndicator extends Component {
     render() {
         return (
             <Icon
-                name = 'microphone-slash'
+                name = 'mic-disabled'
                 style = { styles.audioMutedIndicator } />
         );
     }
