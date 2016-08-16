@@ -18,12 +18,20 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
  */
 export function connect() {
     return (dispatch, getState) => {
+        const state = getState();
         const connectionOpts
-            = getState()['features/base/connection'].connectionOptions;
+            = state['features/base/connection'].connectionOptions;
+        const room = state['features/base/conference'].room;
         const connection = new JitsiMeetJS.JitsiConnection(
             connectionOpts.appId,
             connectionOpts.token,
-            connectionOpts);
+            {
+                ...connectionOpts,
+                bosh: connectionOpts.bosh + (
+                    room ? `?room=${room}` : ''
+                )
+            }
+        );
 
         return new Promise((resolve, reject) => {
             connection.addEventListener(
