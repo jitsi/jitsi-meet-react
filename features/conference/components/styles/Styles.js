@@ -6,6 +6,14 @@ import { createStyleSheet } from '../../../base/styles';
  */
 export const styles = createStyleSheet({
     /**
+     * Avatar style.
+     */
+    avatar: {
+        alignSelf: 'stretch',
+        flex: 1
+    },
+
+    /**
      * Conference container style.
      */
     conference: {

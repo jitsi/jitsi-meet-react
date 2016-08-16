@@ -56,6 +56,9 @@ export class AbstractVideoTrack extends Component {
 
         if (videoTrack
 
+                // XXX There is no sense to show muted stream.
+                && !videoTrack.muted
+
                 // XXX We may want not to start showing video until video stream
                 // has started to play anywhere else.
                 && (!this.props.waitForVideoStarted

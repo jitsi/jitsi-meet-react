@@ -5,14 +5,6 @@ import { ColorPalette } from '../../../base/styles';
  */
 export const styles = {
     /**
-     * Avatar style.
-     */
-    avatar: {
-        alignSelf: 'stretch',
-        flex: 1
-    },
-
-    /**
      * Audio muted indicator style.
      */
     audioMutedIndicator: {

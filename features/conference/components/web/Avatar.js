@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
 
-import { styles } from './styles';
+import { styles } from '../styles';
 
 /**
  * Display a participant avatar.
@@ -14,9 +13,12 @@ export class Avatar extends Component {
      */
     render() {
         return (
-            <Image
-                source = {{ uri: this.props.uri }}
-                style = { styles.avatar } />
+            <img
+                src = { this.props.uri }
+                style = {{
+                    ...styles.avatar,
+                    ...(this.props.additionalStyle || {})
+                }} />
         );
     }
 }
@@ -27,5 +29,6 @@ export class Avatar extends Component {
  * @static
  */
 Avatar.propTypes = {
+    additionalStyle: React.PropTypes.object,
     uri: React.PropTypes.string
 };

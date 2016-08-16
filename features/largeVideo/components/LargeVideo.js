@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { MEDIA_TYPE, VideoTrack } from '../../base/media';
+import { getParticipant } from '../../base/participants';
 import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
+import { Avatar } from '../../conference';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
+import { styles } from './styles';
 
 /**
  * Large video React component.
@@ -19,10 +22,23 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
+        const avatar = this.props.avatar;
+        const videoTrack = this.props.videoTrack;
+        const renderAvatar
+            = typeof avatar !== 'undefined'
+                && avatar !== ''
+                && (!videoTrack
+                    || (!videoTrack.videoStarted || videoTrack.muted));
+
         return (
             <LargeVideoContainer>
+                { renderAvatar
+                    && <Avatar
+                        additionalStyle = { styles.dominantSpeakerAvatar }
+                        uri = { avatar } /> }
+
                 <VideoTrack
-                    videoTrack = { this.props.videoTrack }
+                    videoTrack = { videoTrack }
                     waitForVideoStarted = { true } />
             </LargeVideoContainer>
         );
@@ -34,16 +50,24 @@ class LargeVideo extends Component {
  *
  * @param {Object} state - Redux state.
  * @returns {{
+ *      avatar: string,
  *      videoTrack: Track
  * }}
  */
-const mapStateToProps = state => ({ // eslint-disable-line arrow-body-style
-    videoTrack:
-        getTrackByMediaTypeAndParticipant(
+const mapStateToProps = state => {
+    const participantId = state['features/largeVideo'].participantId;
+    const participant = getParticipant(
+        state['features/base/participants'],
+        participantId);
+
+    return {
+        avatar: participant ? participant.avatar : undefined,
+        videoTrack: getTrackByMediaTypeAndParticipant(
             state['features/base/tracks'],
             MEDIA_TYPE.VIDEO,
-            state['features/largeVideo'].participantId)
-});
+            participantId)
+    };
+};
 
 /**
  * LargeVideo component's property types.
@@ -51,6 +75,7 @@ const mapStateToProps = state => ({ // eslint-disable-line arrow-body-style
  * @static
  */
 LargeVideo.propTypes = {
+    avatar: React.PropTypes.string,
     dispatch: React.PropTypes.func,
     videoTrack: React.PropTypes.object
 };
