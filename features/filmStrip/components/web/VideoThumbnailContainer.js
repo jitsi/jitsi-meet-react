@@ -13,14 +13,19 @@ export class VideoThumbnailContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
-        const containerStyle = this.props.pinned
-            ? Object.assign({}, styles.thumbnail, styles.thumbnailPinned)
-            : styles.thumbnail;
+        let style = styles.thumbnail;
+
+        if (this.props.pinned) {
+            style = {
+                ...style,
+                ...styles.thumbnailPinned
+            };
+        }
 
         return (
             <div
                 onClick = { this.props.onClick }
-                style = { containerStyle }>
+                style = { style }>
                 { this.props.children }
             </div>
         );

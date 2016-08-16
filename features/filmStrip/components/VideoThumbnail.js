@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
     Audio,
     MEDIA_TYPE,
+    shouldRenderVideoTrack,
     VideoTrack
 } from '../../base/media';
 import {
@@ -11,10 +12,10 @@ import {
     pinParticipant
 } from '../../base/participants';
 import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
+import { Avatar } from '../../conference';
 
 import {
     AudioMutedIndicator,
-    Avatar,
     DominantSpeakerIndicator,
     ModeratorIndicator,
     VideoMutedIndicator,
@@ -94,11 +95,15 @@ class VideoThumbnail extends Component {
         //    black frames one day, we've decided to display the participant's
         //    avatar instead.
         // 2. The video is rendered on the stage i.e. as a large video.
-        const videoMuted = !videoTrack || videoTrack.muted;
+        const participantNotInLargeVideo
+            = participant.id !== largeVideo.participantId;
         const renderVideo
-            = !videoMuted
-                && (!videoTrack.videoStarted
-                    || participant.id !== largeVideo.participantId);
+            = participantNotInLargeVideo && shouldRenderVideoTrack(videoTrack);
+
+        // We don't render avatar if we're showing video or the video is
+        // rendered on the stage i.e. as a large video.
+        const renderAvatar = !renderVideo && participantNotInLargeVideo;
+        const videoMuted = !videoTrack || videoTrack.muted;
 
         return (
             <VideoThumbnailContainer
@@ -113,7 +118,7 @@ class VideoThumbnail extends Component {
                 { renderVideo
                     && <VideoTrack videoTrack = { videoTrack } /> }
 
-                { !renderVideo
+                { renderAvatar
                     && <Avatar uri = { participant.avatar } /> }
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR

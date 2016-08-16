@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 
-import { styles } from './styles';
+import { styles } from '../styles';
 
 /**
  * Display a participant avatar.
@@ -15,8 +15,11 @@ export class Avatar extends Component {
     render() {
         return (
             <Image
+
+                // XXX Avatar is expected to display the whole image.
+                resizeMode = 'contain'
                 source = {{ uri: this.props.uri }}
-                style = { styles.avatar } />
+                style = { [ styles.avatar, this.props.style ] } />
         );
     }
 }
@@ -27,5 +30,11 @@ export class Avatar extends Component {
  * @static
  */
 Avatar.propTypes = {
+
+    /**
+     * The optional style to add to an Avatar in order to customize its base
+     * look (and feel).
+     */
+    style: React.PropTypes.object,
     uri: React.PropTypes.string
 };

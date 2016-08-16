@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { styles } from './styles';
+import { styles } from '../styles';
 
 /**
  * Display a participant avatar.
@@ -12,10 +12,19 @@ export class Avatar extends Component {
      * @inheritdoc
      */
     render() {
+        const style = {
+
+            // XXX Avatar is expected to display the whole image.
+            objectFit: 'contain',
+
+            ...styles.avatar,
+            ...this.props.style
+        };
+
         return (
             <img
                 src = { this.props.uri }
-                style = { styles.avatar } />
+                style = { style } />
         );
     }
 }
@@ -26,5 +35,11 @@ export class Avatar extends Component {
  * @static
  */
 Avatar.propTypes = {
+
+    /**
+     * The optional style to add to an Avatar in order to customize its base
+     * look (and feel).
+     */
+    style: React.PropTypes.object,
     uri: React.PropTypes.string
 };

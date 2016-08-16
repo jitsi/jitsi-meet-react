@@ -47,14 +47,24 @@ function track(state, action) {
         }
         break;
 
-    case TRACK_UPDATED:
-        if (state.jitsiTrack === action.track.jitsiTrack) {
-            return {
-                ...state,
-                ...action.track
-            };
+    case TRACK_UPDATED: {
+        const t = action.track;
+
+        if (state.jitsiTrack === t.jitsiTrack) {
+            // Make sure that there's an actual update in order to reduce the
+            // risk of unnecessary React Component renders.
+            for (const p in t) {
+                if (state[p] !== t[p]) {
+                    // There's an actual update.
+                    return {
+                        ...state,
+                        ...t
+                    };
+                }
+            }
         }
         break;
+    }
     }
 
     return state;

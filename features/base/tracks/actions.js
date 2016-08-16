@@ -3,6 +3,7 @@ import {
     CAMERA_FACING_MODE,
     MEDIA_TYPE
 } from '../media';
+import { getLocalParticipant } from '../participants';
 
 import {
     TRACK_ADDED,
@@ -96,10 +97,23 @@ export function trackAdded(track) {
     return (dispatch, getState) => {
         track.on(
             JitsiTrackEvents.TRACK_MUTE_CHANGED,
-            () => dispatch(trackMuteChanged(track)));
+            () => dispatch(trackMutedChanged(track)));
         track.on(
             JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED,
             type => dispatch(trackVideoTypeChanged(track, type)));
+
+        // participantId
+        let participantId;
+
+        if (track.isLocal()) {
+            const participant = getLocalParticipant(getState);
+
+            if (participant) {
+                participantId = participant.id;
+            }
+        } else {
+            participantId = track.getParticipantId();
+        }
 
         return dispatch({
             type: TRACK_ADDED,
@@ -109,10 +123,7 @@ export function trackAdded(track) {
                 mediaType: track.getType(),
                 mirrorVideo: _shouldMirror(track),
                 muted: track.isMuted(),
-                participantId: track.isLocal()
-                    ? (getState()['features/base/participants']
-                        .find(p => p.local) || {}).id
-                    : track.getParticipantId(),
+                participantId,
                 videoStarted: false,
                 videoType: track.videoType
             }
@@ -121,13 +132,13 @@ export function trackAdded(track) {
 }
 
 /**
- * Create an action for when a track's mute state has been signaled to be
+ * Create an action for when a track's muted state has been signaled to be
  * changed.
  *
  * @param {(JitsiLocalTrack|JitsiRemoteTrack)} track - JitsiTrack instance.
  * @returns {{ type: TRACK_UPDATED, track: Track }}
  */
-export function trackMuteChanged(track) {
+export function trackMutedChanged(track) {
     return {
         type: TRACK_UPDATED,
         track: {

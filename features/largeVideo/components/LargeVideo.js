@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { MEDIA_TYPE, VideoTrack } from '../../base/media';
+import {
+    MEDIA_TYPE,
+    shouldRenderVideoTrack,
+    VideoTrack
+} from '../../base/media';
+import { getParticipantById } from '../../base/participants';
 import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
+import { Avatar } from '../../conference';
 
 import { LargeVideoContainer } from './LargeVideoContainer';
+import { styles } from './styles';
 
 /**
  * Large video React component.
@@ -19,11 +26,29 @@ class LargeVideo extends Component {
      * @returns {ReactElement}
      */
     render() {
+        const { avatar, videoTrack } = this.props;
+
+        // FIXME It's currently impossible to have true as the value of
+        // waitForVideoStarted because videoTrack's state videoStarted will be
+        // updated only after videoTrack is rendered.
+        const waitForVideoStarted = false;
+        const renderAvatar
+            = typeof avatar !== 'undefined'
+                && avatar !== ''
+                && !shouldRenderVideoTrack(videoTrack, waitForVideoStarted);
+        const renderVideo = !renderAvatar;
+
         return (
             <LargeVideoContainer>
-                <VideoTrack
-                    videoTrack = { this.props.videoTrack }
-                    waitForVideoStarted = { true } />
+                { renderVideo
+                    && <VideoTrack
+                        videoTrack = { videoTrack }
+                        waitForVideoStarted = { waitForVideoStarted } /> }
+
+                { renderAvatar
+                    && <Avatar
+                        style = { styles.avatar }
+                        uri = { avatar } /> }
             </LargeVideoContainer>
         );
     }
@@ -34,16 +59,26 @@ class LargeVideo extends Component {
  *
  * @param {Object} state - Redux state.
  * @returns {{
+ *      avatar: string,
  *      videoTrack: Track
  * }}
  */
-const mapStateToProps = state => ({ // eslint-disable-line arrow-body-style
-    videoTrack:
-        getTrackByMediaTypeAndParticipant(
-            state['features/base/tracks'],
-            MEDIA_TYPE.VIDEO,
-            state['features/largeVideo'].participantId)
-});
+function mapStateToProps(state) {
+    const participantId = state['features/largeVideo'].participantId;
+    const participant
+        = getParticipantById(
+            state['features/base/participants'],
+            participantId);
+
+    return {
+        avatar: participant ? participant.avatar : undefined,
+        videoTrack:
+            getTrackByMediaTypeAndParticipant(
+                state['features/base/tracks'],
+                MEDIA_TYPE.VIDEO,
+                participantId)
+    };
+}
 
 /**
  * LargeVideo component's property types.
@@ -51,6 +86,7 @@ const mapStateToProps = state => ({ // eslint-disable-line arrow-body-style
  * @static
  */
 LargeVideo.propTypes = {
+    avatar: React.PropTypes.string,
     dispatch: React.PropTypes.func,
     videoTrack: React.PropTypes.object
 };

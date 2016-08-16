@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableWithoutFeedback, View } from 'react-native';
 
-import { styles } from './styles';
+import { styles } from '../styles';
 
 /**
  * The native container rendering the conference view.
