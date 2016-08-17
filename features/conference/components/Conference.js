@@ -144,9 +144,10 @@ Conference.propTypes = {
  * @param {Object} state - Redux state.
  * @returns {{ room: string }}
  */
-// eslint-disable-next-line arrow-body-style
-export const mapStateToProps = state => ({
-    room: state['features/base/conference'].room
-});
+function mapStateToProps(state) {
+    return {
+        room: state['features/base/conference'].room
+    };
+}
 
 export default reactReduxConnect(mapStateToProps)(Conference);

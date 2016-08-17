@@ -11,9 +11,10 @@ const video = {
 /**
  * Transform local videos to behave like a mirror.
  */
-const mirroredVideo = Object.assign({}, video, {
+const mirroredVideo = {
+    ...video,
     transform: [ { scaleX: -1 } ]
-});
+};
 
 /**
  * Native-specific styles for media components.

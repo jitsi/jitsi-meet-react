@@ -91,6 +91,17 @@ export class AbstractWelcomePage extends Component {
 }
 
 /**
+ * AbstractWelcomePage component's property types.
+ *
+ * @static
+ */
+AbstractWelcomePage.propTypes = {
+    dispatch: React.PropTypes.func,
+    localVideoTrack: React.PropTypes.object,
+    room: React.PropTypes.string
+};
+
+/**
  * Selects local video track from tracks in state, local participant and room
  * and maps them to component props. It seems it's not possible to 'connect'
  * base component and then extend from it. So we export this function in order
@@ -102,7 +113,7 @@ export class AbstractWelcomePage extends Component {
  *      room: string
  * }}
  */
-export const mapStateToProps = state => {
+export function mapStateToProps(state) {
     const conference = state['features/base/conference'];
     const tracks = state['features/base/tracks'];
 
@@ -110,15 +121,4 @@ export const mapStateToProps = state => {
         localVideoTrack: getLocalVideoTrack(tracks),
         room: conference.room
     };
-};
-
-/**
- * AbstractWelcomePage component's property types.
- *
- * @static
- */
-AbstractWelcomePage.propTypes = {
-    dispatch: React.PropTypes.func,
-    localVideoTrack: React.PropTypes.object,
-    room: React.PropTypes.string
-};
+}

@@ -122,11 +122,11 @@ AbstractToolbar.propTypes = {
  * @param {Object} state - Redux state.
  * @returns {{ audioMuted: boolean, videoMuted: boolean }}
  */
-export const mapStateToProps = state => {
+export function mapStateToProps(state) {
     const media = state['features/base/media'];
 
     return {
         audioMuted: media.audio.muted,
         videoMuted: media.video.muted
     };
-};
+}

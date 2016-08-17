@@ -32,21 +32,6 @@ class FilmStrip extends Component {
 }
 
 /**
- * Function that maps parts of Redux state tree into component props.
- *
- * @param {Object} state - Redux state.
- * @returns {{
- *      participants: Participant[],
- *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
- *  }}
- */
-const mapStateToProps = state => {
-    return {
-        participants: state['features/base/participants']
-    };
-};
-
-/**
  * FilmStrip component's property types.
  *
  * @static
@@ -55,5 +40,20 @@ FilmStrip.propTypes = {
     participants: React.PropTypes.array,
     visible: React.PropTypes.bool.isRequired
 };
+
+/**
+ * Function that maps parts of Redux state tree into component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{
+ *      participants: Participant[],
+ *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
+ *  }}
+ */
+function mapStateToProps(state) {
+    return {
+        participants: state['features/base/participants']
+    };
+}
 
 export default connect(mapStateToProps)(FilmStrip);

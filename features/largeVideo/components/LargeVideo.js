@@ -55,6 +55,17 @@ class LargeVideo extends Component {
 }
 
 /**
+ * LargeVideo component's property types.
+ *
+ * @static
+ */
+LargeVideo.propTypes = {
+    avatar: React.PropTypes.string,
+    dispatch: React.PropTypes.func,
+    videoTrack: React.PropTypes.object
+};
+
+/**
  * Maps parts Redux state to Component's props.
  *
  * @param {Object} state - Redux state.
@@ -79,16 +90,5 @@ function mapStateToProps(state) {
                 participantId)
     };
 }
-
-/**
- * LargeVideo component's property types.
- *
- * @static
- */
-LargeVideo.propTypes = {
-    avatar: React.PropTypes.string,
-    dispatch: React.PropTypes.func,
-    videoTrack: React.PropTypes.object
-};
 
 export default connect(mapStateToProps)(LargeVideo);

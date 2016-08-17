@@ -139,6 +139,19 @@ class VideoThumbnail extends Component {
 }
 
 /**
+ * VideoThumbnail component's property types.
+ *
+ * @static
+ */
+VideoThumbnail.propTypes = {
+    audioTrack: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    largeVideo: React.PropTypes.object,
+    participant: React.PropTypes.object,
+    videoTrack: React.PropTypes.object
+};
+
+/**
  * Function that maps parts of Redux state tree into component props.
  *
  * @param {Object} state - Redux state.
@@ -149,7 +162,7 @@ class VideoThumbnail extends Component {
  *      videoTrack: Track
  *  }}
  */
-const mapStateToProps = (state, ownProps) => {
+function mapStateToProps(state, ownProps) {
     // We need read-only access to the state of features/largeVideo so that the
     // film strip doesn't render the video of the participant who is rendered on
     // the stage i.e. as a large video.
@@ -166,19 +179,6 @@ const mapStateToProps = (state, ownProps) => {
         largeVideo,
         videoTrack
     };
-};
-
-/**
- * VideoThumbnail component's property types.
- *
- * @static
- */
-VideoThumbnail.propTypes = {
-    audioTrack: React.PropTypes.object,
-    dispatch: React.PropTypes.func,
-    largeVideo: React.PropTypes.object,
-    participant: React.PropTypes.object,
-    videoTrack: React.PropTypes.object
-};
+}
 
 export default connect(mapStateToProps)(VideoThumbnail);

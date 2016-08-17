@@ -12,13 +12,12 @@ import { shimStyles } from './shimStyles';
 export function createStyleSheet(styles, overrides = {}) {
     const combinedStyles = {};
 
-    for (const key of Object.keys(styles)) {
-        combinedStyles[key]
-            = shimStyles(
-                Object.assign(
-                    {},
-                    styles[key],
-                    overrides[key] || {}));
+    for (const k of Object.keys(styles)) {
+        combinedStyles[k]
+            = shimStyles({
+                ...styles[k],
+                ...overrides[k]
+            });
     }
 
     return combinedStyles;

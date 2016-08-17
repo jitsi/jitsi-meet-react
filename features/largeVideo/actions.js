@@ -13,11 +13,11 @@ import './middleware';
 import './reducer';
 
 /**
- * Signals conference to select an endpoint.
+ * Signals conference to select a participant.
  *
  * @returns {Function}
  */
-export function selectEndpoint() {
+export function selectParticipant() {
     return (dispatch, getState) => {
         const state = getState();
         const conference = state['features/base/conference'].jitsiConference;
@@ -55,7 +55,7 @@ export function selectParticipantInLargeVideo() {
         const tracks = state['features/base/tracks'];
         const largeVideo = state['features/largeVideo'];
         const participantId
-            = electParticipantInLargeVideo(participants, tracks);
+            = _electParticipantInLargeVideo(participants, tracks);
 
         if (participantId !== largeVideo.participantId) {
             dispatch({
@@ -63,7 +63,7 @@ export function selectParticipantInLargeVideo() {
                 participantId
             });
 
-            dispatch(selectEndpoint());
+            dispatch(selectParticipant());
         }
     };
 }
@@ -73,9 +73,10 @@ export function selectParticipantInLargeVideo() {
  * video.
  *
  * @param {Track[]} tracks - All current tracks.
+ * @private
  * @returns {(Track|undefined)}
  */
-function electLastVisibleVideo(tracks) {
+function _electLastVisibleVideo(tracks) {
     let videoTrack;
 
     // First we try to get most recent remote video track.
@@ -100,9 +101,10 @@ function electLastVisibleVideo(tracks) {
  *
  * @param {Participant[]} participants - All participants.
  * @param {Track[]} tracks - All tracks.
+ * @private
  * @returns {(string|undefined)}
  */
-function electParticipantInLargeVideo(participants, tracks) {
+function _electParticipantInLargeVideo(participants, tracks) {
     // First get the pinned participant. If local participant is pinned, he will
     // be shown in LargeVideo.
     let participant = participants.find(p => p.pinned);
@@ -122,7 +124,7 @@ function electParticipantInLargeVideo(participants, tracks) {
     // participant with last visible video track. This may turn out to be local
     // participant.
     if (!id) {
-        const videoTrack = electLastVisibleVideo(tracks);
+        const videoTrack = _electLastVisibleVideo(tracks);
 
         id = videoTrack && videoTrack.participantId;
     }

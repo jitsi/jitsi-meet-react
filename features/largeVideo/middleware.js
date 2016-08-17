@@ -13,7 +13,7 @@ import {
 } from '../base/tracks';
 
 import {
-    selectEndpoint,
+    selectParticipant,
     selectParticipantInLargeVideo
 } from './actions';
 
@@ -24,7 +24,7 @@ import {
  * @param {Store} store - Redux store.
  * @returns {Function}
  */
-const largeVideoMiddleware = store => next => action => {
+MiddlewareRegistry.register(store => next => action => {
     const result = next(action);
 
     switch (action.type) {
@@ -38,9 +38,9 @@ const largeVideoMiddleware = store => next => action => {
         break;
 
     case TRACK_UPDATED: {
-        // In order to minimize re-calculations, we need to select endpoint only
-        // if the videoType of the current participant rendered in LargeVideo
-        // has changed.
+        // In order to minimize re-calculations, we need to select participant
+        // only if the videoType of the current participant rendered in
+        // LargeVideo has changed.
         if ('videoType' in action.track) {
             const state = store.getState();
             const track
@@ -50,7 +50,7 @@ const largeVideoMiddleware = store => next => action => {
             const participantId = state['features/largeVideo'].participantId;
 
             if (track.participantId === participantId) {
-                store.dispatch(selectEndpoint());
+                store.dispatch(selectParticipant());
             }
         }
         break;
@@ -58,6 +58,4 @@ const largeVideoMiddleware = store => next => action => {
     }
 
     return result;
-};
-
-MiddlewareRegistry.register(largeVideoMiddleware);
+});
