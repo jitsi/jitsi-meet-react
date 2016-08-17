@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { trackVideoStarted } from '../../tracks';
 
+import { shouldRenderVideoTrack } from '../functions';
 import { Video } from './_';
 
 /**
@@ -52,16 +53,32 @@ export class AbstractVideoTrack extends Component {
      */
     render() {
         const videoTrack = this.state.videoTrack;
-        let stream = null;
+        let render;
 
-        if (videoTrack
-
-                // XXX We may want not to start showing video until video stream
-                // has started to play anywhere else.
-                && (!this.props.waitForVideoStarted
-                    || videoTrack.videoStarted)) {
-            stream = videoTrack.jitsiTrack.getOriginalStream();
+        if (this.props.waitForVideoStarted) {
+            // That's the complex case: we have to wait for onPlaying before we
+            // render videoTrack. The complexity comes from the fact that
+            // onPlaying will come after we render videoTrack.
+            if (shouldRenderVideoTrack(videoTrack, true)) {
+                // It appears that onPlaying has come for videoTrack already.
+                // Most probably, another render has already passed through the
+                // else clause bellow already.
+                render = true;
+            } else if (shouldRenderVideoTrack(videoTrack, false)
+                    && !videoTrack.videoStarted) {
+                // XXX Unfortunately, onPlaying has not come for videoTrack yet.
+                // We have to render in order to give onPlaying a chance to
+                // come.
+                render = true;
+            }
+        } else {
+            // That's the simple case: we don't have to wait for onPlaying
+            // before we render videoTrack
+            render = shouldRenderVideoTrack(videoTrack, false);
         }
+
+        const stream
+            = render ? videoTrack.jitsiTrack.getOriginalStream() : null;
 
         return (
             <Video

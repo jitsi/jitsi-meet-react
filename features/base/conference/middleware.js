@@ -1,5 +1,6 @@
 import {
     getLocalParticipant,
+    getParticipantById,
     PIN_PARTICIPANT
 } from '../participants';
 import { MiddlewareRegistry } from '../redux';
@@ -54,8 +55,8 @@ MiddlewareRegistry.register(store => next => action => {
 function pinParticipant(store, id) {
     const state = store.getState();
     const participants = state['features/base/participants'];
-    const participantById = participants.find(p => p.id === id);
-    const localParticipant = getLocalParticipant(participants);
+    const participantById = getParticipantById(participants, id);
+    let pin;
 
     // The following condition prevents signaling to pin local participant. The
     // logic is:
@@ -64,9 +65,14 @@ function pinParticipant(store, id) {
     // - If we don't have an ID (i.e. no participant identified by an ID), we
     //   check for local participant. If she's currently pinned, then this
     //   action will unpin her and that's why we won't signal here too.
-    if ((participantById && !participantById.local)
-            || (!participantById
-                && (!localParticipant || !localParticipant.pinned))) {
+    if (participantById) {
+        pin = !participantById.local;
+    } else {
+        const localParticipant = getLocalParticipant(participants);
+
+        pin = !localParticipant || !localParticipant.pinned;
+    }
+    if (pin) {
         const conference = state['features/base/conference'].jitsiConference;
 
         try {

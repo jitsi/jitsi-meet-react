@@ -15,12 +15,16 @@ export class VideoThumbnailContainer extends Component {
      * @returns {ReactElement}
      */
     render() {
+        let style = [ styles.thumbnail ];
+
+        if (this.props.pinned) {
+            style = [ ...style, styles.thumbnailPinned ];
+        }
+
         return (
             <TouchableHighlight onPress = { this.props.onClick }>
                 <View
-                    style = { this.props.pinned
-                        ? [ styles.thumbnail, styles.thumbnailPinned ]
-                        : [ styles.thumbnail ] }>
+                    style = { style }>
                     { this.props.children }
                 </View>
             </TouchableHighlight>
