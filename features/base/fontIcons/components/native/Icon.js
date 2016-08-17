@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 const FontAwesomeIcon = require('react-native-vector-icons/FontAwesome');
 
-import { JITSI_ICONS } from './constants';
-import icoMoonConfig from './fonts/selection.json';
+import { JITSI_ICONS } from '../../constants';
+import icoMoonConfig from '../fonts/selection.json';
 
 /**
  * Creates the Jitsi icon set from the ico moon project config file.
@@ -26,7 +26,7 @@ export class Icon extends Component {
         /* eslint-disable react/jsx-no-bind, no-return-assign */
 
         // Jitsi icons have priority over FontAwesome icons.
-        if (this.props.name in JITSI_ICONS) {
+        if (JITSI_ICONS.has(this.props.name)) {
             return (
                 <JitsiIcon
                     { ...this.props }

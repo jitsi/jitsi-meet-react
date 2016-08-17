@@ -115,7 +115,7 @@ AbstractToolbar.icons = {
     audioMutedIcon: 'mic-disabled',
     cameraSwitchIcon: 'reload',
     hangupIcon: 'hangup',
-    videoIcon: 'webCam',
+    videoIcon: 'camera',
     videoMutedIcon: 'camera-disabled'
 };
 

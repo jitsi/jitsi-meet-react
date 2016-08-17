@@ -11,7 +11,9 @@ export const styles = createStyleSheet(platformIndependentStyles, {
      * Audio muted indicator style.
      */
     audioMutedIndicator: {
-        textShadow: '1px 1px 2px black'
+        fontSize: 15,
+        textShadow: '1px 1px 2px black',
+        top: 4
     },
 
     /**
@@ -50,6 +52,9 @@ export const styles = createStyleSheet(platformIndependentStyles, {
      * Video muted indicator style.
      */
     videoMutedIndicator: {
-        textShadow: '1px 1px 2px black'
+        fontSize: 15,
+        left: 40,
+        textShadow: '1px 1px 2px black',
+        top: 4
     }
 });
