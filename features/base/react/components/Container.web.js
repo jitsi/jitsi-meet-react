@@ -15,12 +15,7 @@ export class Container extends AbstractContainer {
      */
     render() {
         // eslint-disable-next-line prefer-const
-        let { onPress, style, visible, ...props } = this.props;
-
-        // onPress
-        if (onPress && typeof props.onClick === 'undefined') {
-            props.onClick = onPress;
-        }
+        let { style, visible, ...props } = this.props;
 
         // visible
         if (typeof visible !== 'undefined' && !visible) {

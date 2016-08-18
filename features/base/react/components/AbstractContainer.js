@@ -27,8 +27,7 @@ export default class AbstractContainer extends Component {
             // The following properties are defined for the benefit of
             // AbstractContainer and its extenders so they are to not be
             // propagated.
-            feedback,
-            onPress,
+            touchFeedback,
             visible,
 
             /* eslint-enable no-unused-vars */
@@ -49,12 +48,27 @@ AbstractContainer.propTypes = {
     children: React.PropTypes.node,
 
     /**
-     * True if this instance is to provide visual feedback when touched;
-     * otherwise, false. If feedback is undefined and onPress is defined,
-     * feedback is considered defined as true.
+     * The event handler/listener to be invoked when this AbstractContainer is
+     * clicked on Web or pressed on React Native. If onClick is defined and
+     * touchFeedback is undefined, touchFeedback is considered defined as true.
      */
-    feedback: React.PropTypes.bool,
-    onPress: React.PropTypes.func,
+    onClick: React.PropTypes.func,
+
+    /**
+     * The style (as in stylesheet) to be applied to this AbstractContainer.
+     */
     style: React.PropTypes.object,
+
+    /**
+     * True if this instance is to provide visual feedback when touched;
+     * otherwise, false. If touchFeedback is undefined and onClick is defined,
+     * touchFeedback is considered defined as true.
+     */
+    touchFeedback: React.PropTypes.bool,
+
+    /**
+     * True if this AbstractContainer is to be visible or false if this instance
+     * is to be hidden or not rendered at all.
+     */
     visible: React.PropTypes.bool
 };

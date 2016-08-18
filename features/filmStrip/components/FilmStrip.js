@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Container } from '../../base/react';
 
-import VideoThumbnail from './VideoThumbnail';
+import Thumbnail from './Thumbnail';
 import { styles } from './_';
 
 /**
@@ -26,7 +26,7 @@ class FilmStrip extends Component {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
                     .map(p =>
-                        <VideoThumbnail
+                        <Thumbnail
                             key = { p.id }
                             participant = { p } />)
             }

@@ -25,7 +25,7 @@ import {
  * React component for video thumbnail.
  * @extends Component
  */
-class VideoThumbnail extends Component {
+class Thumbnail extends Component {
     /**
      * Initializes new Video Thumbnail component.
      *
@@ -108,7 +108,7 @@ class VideoThumbnail extends Component {
 
         return (
             <Container
-                onPress = { this._onClick }
+                onClick = { this._onClick }
                 style = { style }>
 
                 { renderAudio
@@ -139,11 +139,11 @@ class VideoThumbnail extends Component {
 }
 
 /**
- * VideoThumbnail component's property types.
+ * Thumbnail component's property types.
  *
  * @static
  */
-VideoThumbnail.propTypes = {
+Thumbnail.propTypes = {
     audioTrack: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     largeVideo: React.PropTypes.object,
@@ -181,4 +181,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps)(VideoThumbnail);
+export default connect(mapStateToProps)(Thumbnail);

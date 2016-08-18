@@ -43,7 +43,7 @@ class Conference extends Component {
         this._toolbarTimeout = undefined;
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onPress = this._onPress.bind(this);
+        this._onClick = this._onClick.bind(this);
     }
 
     /**
@@ -80,9 +80,9 @@ class Conference extends Component {
 
         return (
             <Container
-                feedback = { false }
-                onPress = { this._onPress }
-                style = { styles.conference } >
+                onClick = { this._onClick }
+                style = { styles.conference }
+                touchFeedback = { false }>
 
                 <LargeVideo />
                 <Toolbar visible = { toolbarVisible } />
@@ -112,7 +112,7 @@ class Conference extends Component {
      * @private
      * @returns {void}
      */
-    _onPress() {
+    _onClick() {
         const toolbarVisible = !this.state.toolbarVisible;
 
         this.setState({ toolbarVisible });
@@ -120,7 +120,7 @@ class Conference extends Component {
         this._clearToolbarTimeout();
         if (toolbarVisible) {
             this._toolbarTimeout
-                = setTimeout(this._onPress, TOOLBAR_TIMEOUT_MS);
+                = setTimeout(this._onClick, TOOLBAR_TIMEOUT_MS);
         }
     }
 }

@@ -33,7 +33,7 @@ class WelcomePage extends AbstractWelcomePage {
                         value = { this.state.room || '' } />
                     <button
                         disabled = { this._isJoinDisabled() }
-                        onClick = { this._onJoinPress }
+                        onClick = { this._onJoinClick }
                         style = { styles.button }>JOIN</button>
                 </div>
             </div>

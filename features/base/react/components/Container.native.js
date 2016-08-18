@@ -23,7 +23,7 @@ export class Container extends AbstractContainer {
      */
     render() {
         // eslint-disable-next-line prefer-const
-        let { feedback, onPress, style, visible, ...props } = this.props;
+        let { onClick, style, touchFeedback, visible, ...props } = this.props;
 
         // visible
 
@@ -45,12 +45,12 @@ export class Container extends AbstractContainer {
             };
         }
 
-        // feedback & onPress
-        if (typeof feedback === 'undefined') {
-            feedback = onPress;
+        // onClick & touchFeedback
+        if (typeof touchFeedback === 'undefined') {
+            touchFeedback = onClick;
         }
 
-        const renderParent = feedback || onPress;
+        const renderParent = touchFeedback || onClick;
 
         if (!renderParent && parentStyle) {
             style = {
@@ -64,11 +64,11 @@ export class Container extends AbstractContainer {
 
         if (renderParent) {
             const parentType
-                = feedback ? TouchableHighlight : TouchableWithoutFeedback;
+                = touchFeedback ? TouchableHighlight : TouchableWithoutFeedback;
             const parentProps = {};
 
-            if (onPress) {
-                parentProps.onPress = onPress;
+            if (onClick) {
+                parentProps.onPress = onClick;
             }
             if (parentStyle) {
                 parentProps.style = parentStyle;

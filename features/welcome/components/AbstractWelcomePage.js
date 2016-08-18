@@ -29,7 +29,7 @@ export class AbstractWelcomePage extends Component {
         };
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onJoinPress = this._onJoinPress.bind(this);
+        this._onJoinClick = this._onJoinClick.bind(this);
         this._onRoomChange = this._onRoomChange.bind(this);
     }
 
@@ -61,7 +61,7 @@ export class AbstractWelcomePage extends Component {
      * @protected
      * @returns {void}
      */
-    _onJoinPress() {
+    _onJoinClick() {
         this.props.dispatch(setRoom(this.state.room));
     }
 
