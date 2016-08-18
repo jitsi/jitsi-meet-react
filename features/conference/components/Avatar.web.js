@@ -1,25 +1,30 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
 
-import { styles } from '../styles';
+import { styles } from './styles';
 
 /**
  * Display a participant avatar.
  */
-export class Avatar extends Component {
+export default class Avatar extends Component {
     /**
      * Implements React's {@link Component#render()}.
      *
      * @inheritdoc
      */
     render() {
-        return (
-            <Image
+        const style = {
 
-                // XXX Avatar is expected to display the whole image.
-                resizeMode = 'contain'
-                source = {{ uri: this.props.uri }}
-                style = { [ styles.avatar, this.props.style ] } />
+            // XXX Avatar is expected to display the whole image.
+            objectFit: 'contain',
+
+            ...styles.avatar,
+            ...this.props.style
+        };
+
+        return (
+            <img
+                src = { this.props.uri }
+                style = { style } />
         );
     }
 }

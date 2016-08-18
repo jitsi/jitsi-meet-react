@@ -62,7 +62,7 @@ export const styles = {
      * Video thumbnail style.
      */
     thumbnail: {
-        alignItems: 'center',
+        alignItems: 'stretch',
         backgroundColor: 'black',
         borderColor: '#424242',
         borderStyle: 'solid',

@@ -5,11 +5,12 @@ import {
     connect,
     disconnect
 } from '../../base/connection';
+import { Container } from '../../base/react';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
 
-import { ConferenceContainer } from './_';
+import { styles } from './styles';
 
 /**
  * The timeout in milliseconds after which the toolbar will be hidden.
@@ -78,11 +79,15 @@ class Conference extends Component {
         const toolbarVisible = this.state.toolbarVisible;
 
         return (
-            <ConferenceContainer onPress = { this._onPress }>
+            <Container
+                feedback = { false }
+                onPress = { this._onPress }
+                style = { styles.conference } >
+
                 <LargeVideo />
                 <Toolbar visible = { toolbarVisible } />
                 <FilmStrip visible = { !toolbarVisible } />
-            </ConferenceContainer>
+            </Container>
         );
     }
 
@@ -126,6 +131,7 @@ class Conference extends Component {
  * @static
  */
 Conference.propTypes = {
+
     /**
      * The configuration with which a connection is to be initialized for the
      * purposes of joining the conference depicted by the (React Component)

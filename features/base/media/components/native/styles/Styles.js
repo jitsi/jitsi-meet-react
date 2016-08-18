@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
  * Make video element fill its container.
  */
 const video = {
-    alignSelf: 'stretch',
     flex: 1
 };
 

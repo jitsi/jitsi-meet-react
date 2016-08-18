@@ -9,17 +9,24 @@ export const styles = createStyleSheet({
      * Avatar style.
      */
     avatar: {
-        alignSelf: 'stretch',
-        flex: 1
+        flex: 1,
+        width: '100%'
     },
 
     /**
-     * Conference container style.
+     * Conference style.
      */
     conference: {
         alignSelf: 'stretch',
         backgroundColor: '#111111',
-        flex: 1,
-        flexDirection: 'column'
+        flex: 1
+    },
+
+    /**
+     * ParticipantView style
+     */
+    participantView: {
+        alignItems: 'stretch',
+        flex: 1
     }
 });

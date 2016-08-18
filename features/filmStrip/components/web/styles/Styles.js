@@ -15,15 +15,6 @@ export const styles = createStyleSheet(platformIndependentStyles, {
     },
 
     /**
-     * Make avatars expand to fill their container.
-     */
-    avatar: {
-        height: '100%',
-        objectFit: 'cover',
-        width: '100%'
-    },
-
-    /**
      * Dominant speaker indicator background style.
      */
     dominantSpeakerIndicatorBackground: {

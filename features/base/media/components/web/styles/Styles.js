@@ -2,7 +2,7 @@
  * Make video element fill its container.
  */
 const video = {
-    height: '100%',
+    flex: 1,
     objectFit: 'cover',
     width: '100%'
 };

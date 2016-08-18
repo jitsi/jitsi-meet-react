@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { Container } from '../../base/react';
+
 import VideoThumbnail from './VideoThumbnail';
-import { FilmStripContainer } from './_';
+import { styles } from './_';
 
 /**
  * React component for film strip.
@@ -17,7 +19,9 @@ class FilmStrip extends Component {
      */
     render() {
         return (
-            <FilmStripContainer visible = { this.props.visible }>
+            <Container
+                style = { styles.filmStrip }
+                visible = { this.props.visible }>
             {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
@@ -26,7 +30,7 @@ class FilmStrip extends Component {
                             key = { p.id }
                             participant = { p } />)
             }
-            </FilmStripContainer>
+            </Container>
         );
     }
 }

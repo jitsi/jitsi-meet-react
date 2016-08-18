@@ -3,23 +3,22 @@ import { connect } from 'react-redux';
 
 import {
     Audio,
-    MEDIA_TYPE,
-    shouldRenderVideoTrack,
-    VideoTrack
+    MEDIA_TYPE
 } from '../../base/media';
 import {
     PARTICIPANT_ROLE,
     pinParticipant
 } from '../../base/participants';
+import { Container } from '../../base/react';
 import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
-import { Avatar } from '../../conference';
+import { ParticipantView } from '../../conference';
 
 import {
     AudioMutedIndicator,
     DominantSpeakerIndicator,
     ModeratorIndicator,
-    VideoMutedIndicator,
-    VideoThumbnailContainer
+    styles,
+    VideoMutedIndicator
 } from './_';
 
 /**
@@ -79,7 +78,21 @@ class VideoThumbnail extends Component {
      * @returns {ReactElement}
      */
     render() {
-        const { audioTrack, largeVideo, participant, videoTrack } = this.props;
+        const {
+            audioTrack,
+            largeVideo,
+            participant,
+            videoTrack
+        } = this.props;
+
+        let style = styles.thumbnail;
+
+        if (participant.pinned) {
+            style = {
+                ...style,
+                ...styles.thumbnailPinned
+            };
+        }
 
         // We don't render audio in any of the following:
         // 1. The audio (source) is muted. There's no practical reason (that we
@@ -89,37 +102,24 @@ class VideoThumbnail extends Component {
         //    participants would be hearing themselves.
         const audioMuted = !audioTrack || audioTrack.muted;
         const renderAudio = !audioMuted && !audioTrack.local;
-
-        // We don't render video (in the film strip) in any of the following:
-        // 1. The video (source) is muted. Even if muted video happens to be
-        //    black frames one day, we've decided to display the participant's
-        //    avatar instead.
-        // 2. The video is rendered on the stage i.e. as a large video.
         const participantNotInLargeVideo
             = participant.id !== largeVideo.participantId;
-        const renderVideo
-            = participantNotInLargeVideo && shouldRenderVideoTrack(videoTrack);
-
-        // We don't render avatar if we're showing video or the video is
-        // rendered on the stage i.e. as a large video.
-        const renderAvatar = !renderVideo && participantNotInLargeVideo;
         const videoMuted = !videoTrack || videoTrack.muted;
 
         return (
-            <VideoThumbnailContainer
-                onClick = { this._onClick }
-                pinned = { participant.pinned }>
+            <Container
+                onPress = { this._onClick }
+                style = { style }>
 
                 { renderAudio
                     && <Audio
                         stream
                             = { audioTrack.jitsiTrack.getOriginalStream() } /> }
 
-                { renderVideo
-                    && <VideoTrack videoTrack = { videoTrack } /> }
-
-                { renderAvatar
-                    && <Avatar uri = { participant.avatar } /> }
+                <ParticipantView
+                    participantId = { participant.id }
+                    showAvatar = { participantNotInLargeVideo }
+                    showVideo = { participantNotInLargeVideo } />
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR
                     && <ModeratorIndicator /> }
@@ -133,7 +133,7 @@ class VideoThumbnail extends Component {
                 { videoMuted
                     && <VideoMutedIndicator /> }
 
-            </VideoThumbnailContainer>
+            </Container>
         );
     }
 }

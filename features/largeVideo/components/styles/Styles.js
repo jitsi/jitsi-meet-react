@@ -17,7 +17,7 @@ export const styles = createStyleSheet({
      * Large video container style.
      */
     largeVideo: {
-        alignItems: 'center',
+        alignItems: 'stretch',
         backgroundColor: ColorPalette.appBackground,
         bottom: 0,
         flex: 1,
