@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { setConfig } from '../../base/lib-jitsi-meet';
 import {
     localParticipantJoined,
     localParticipantLeft
@@ -11,6 +10,18 @@ import {
     appWillMount,
     appWillUnmount
 } from '../actions';
+
+/**
+ * Default config.
+ *
+ * @type {Object}
+ */
+const DEFAULT_CONFIG = {
+    configLocation: './config.js',
+    hosts: {
+        domain: 'meet.jit.si'
+    }
+};
 
 /**
  * Base (abstract) class for main App component.
@@ -29,11 +40,13 @@ export class AbstractApp extends Component {
 
         dispatch(appWillMount(this));
 
-        dispatch(setConfig(this.props.config));
-
-        this._openURL(this.props.url);
-
         dispatch(localParticipantJoined());
+
+        const config = typeof this.props.config === 'object'
+            ? this.props.config
+            : DEFAULT_CONFIG;
+
+        this._openURL(this.props.url || `https://${config.hosts.domain}`);
     }
 
     /**

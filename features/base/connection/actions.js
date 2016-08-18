@@ -1,4 +1,7 @@
-import { createConference } from '../conference';
+import {
+    conferenceWillLeave,
+    createConference
+} from '../conference';
 import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     SET_DOMAIN,
@@ -6,7 +9,6 @@ import {
     CONNECTION_ESTABLISHED,
     CONNECTION_FAILED
 } from './actionTypes';
-import './middleware';
 import './reducer';
 
 const JitsiConnectionEvents = JitsiMeetJS.events.connection;
@@ -120,6 +122,12 @@ export function disconnect() {
         let promise = Promise.resolve();
 
         if (conference) {
+            // XXX Conference leave is async and may take some time. We need to
+            // mark it as leaving to prevent race conditions when conference in
+            // 'leaving' state can be modified, e.g. by adding new local media
+            // tracks.
+            dispatch(conferenceWillLeave(conference));
+
             promise = conference.leave();
         }
 

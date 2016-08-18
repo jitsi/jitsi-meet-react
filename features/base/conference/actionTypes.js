@@ -23,6 +23,18 @@ export const CONFERENCE_JOINED = 'CONFERENCE_JOINED';
 export const CONFERENCE_LEFT = 'CONFERENCE_LEFT';
 
 /**
+ * Action type to signal that we will leave the specified conference.
+ *
+ * {
+ *      type: CONFERENCE_WILL_LEAVE,
+ *      conference: {
+ *          jitsiConference: JitsiConference
+ *      }
+ * }
+ */
+export const CONFERENCE_WILL_LEAVE = 'CONFERENCE_WILL_LEAVE';
+
+/**
  * The type of the Redux action which sets the name of the room of the
  * conference to be joined.
  *

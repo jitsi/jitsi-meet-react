@@ -16,7 +16,16 @@ import {
  * }}
  */
 const INITIAL_STATE = {
-    config: null,
+    config: {
+        // FIXME Lib-jitsi-meet uses HTML script elements to asynchronously
+        // load certain pieces of JavaScript. Unfortunately, the technique
+        // doesn't work on React Native (because there are no HTML elements
+        // in the first place). Fortunately, these pieces of JavaScript
+        // currently involve third parties and we can temporarily disable
+        // them (until we implement an alternative to async script elements
+        // on React Native).
+        disableThirdPartyRequests: true
+    },
     initializationError: null,
     initialized: false
 };
@@ -45,7 +54,10 @@ ReducerRegistry.register(
         case SET_CONFIG:
             return {
                 ...state,
-                config: action.config
+                config: {
+                    ...action.config,
+                    ...state.config
+                }
             };
 
         default:

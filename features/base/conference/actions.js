@@ -14,6 +14,7 @@ import {
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
+    CONFERENCE_WILL_LEAVE,
     SET_ROOM
 } from './actionTypes';
 import { EMAIL_COMMAND } from './constants';
@@ -94,6 +95,28 @@ export function conferenceJoined(conference) {
 export function conferenceLeft(conference) {
     return {
         type: CONFERENCE_LEFT,
+        conference: {
+            jitsiConference: conference
+        }
+    };
+}
+
+/**
+ * Signal that specified conference will be left. This is needed to prevent race
+ * conditions when one conference is leaving and new one is joining.
+ *
+ * @param {JitsiConference} conference - The JitsiConference instance which will
+ * be left by the local participant.
+ * @returns {{
+ *      type: CONFERENCE_LEFT,
+ *      conference: {
+ *          jitsiConference: JitsiConference
+ *      }
+ *  }}
+ */
+export function conferenceWillLeave(conference) {
+    return {
+        type: CONFERENCE_WILL_LEAVE,
         conference: {
             jitsiConference: conference
         }

@@ -3,12 +3,18 @@ import { ReducerRegistry } from '../redux';
 import {
     CONFERENCE_JOINED,
     CONFERENCE_LEFT,
+    CONFERENCE_WILL_LEAVE,
     SET_ROOM
 } from './actionTypes';
 import { isRoomValid } from './functions';
 
 const INITIAL_STATE = {
     jitsiConference: null,
+
+    /**
+     * Instance of JitsiConference that is currently in 'leaving' state.
+     */
+    leavingJitsiConference: null,
 
     /**
      * The name of the room of the conference (to be) joined (i.e.
@@ -36,10 +42,20 @@ ReducerRegistry.register('features/base/conference',
             if (state.jitsiConference === action.conference.jitsiConference) {
                 return {
                     ...state,
-                    jitsiConference: null
+                    jitsiConference: null,
+                    leavingJitsiConference: state.leavingJitsiConference
+                        === action.conference.jitsiConference
+                            ? null
+                            : state.leavingJitsiConference
                 };
             }
             break;
+
+        case CONFERENCE_WILL_LEAVE:
+            return {
+                ...state,
+                leavingJitsiConference: action.conference.jitsiConference
+            };
 
         case SET_ROOM: {
             let room = action.room;

@@ -14,11 +14,17 @@ import './reducer';
  * @returns {Function}
  */
 export function disposeLib() {
-    // XXX We're wrapping this to be able to "dispatch" the action, because we
-    // will need to dispatch some errors to global error handler at some point.
+    // XXX We're wrapping it with Promise, because:
+    // a) to be better aligned with initLib() method, which is async.
+    // b) as currently there is no implementation for it in lib-jitsi-meet, and
+    // there is a big chance it will be async.
     // TODO Currently, lib-jitsi-meet doesn't have any functionality to
     // dispose itself.
-    return dispatch => dispatch({ type: LIB_DISPOSED });
+    return dispatch => {
+        dispatch({ type: LIB_DISPOSED });
+
+        return Promise.resolve();
+    };
 }
 
 /**
