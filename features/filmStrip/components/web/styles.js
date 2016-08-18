@@ -1,6 +1,6 @@
-import { createStyleSheet } from '../../../../base/styles';
+import { createStyleSheet } from '../../../base/styles';
 
-import { styles as platformIndependentStyles } from '../../styles';
+import { styles as platformIndependentStyles } from '../styles';
 
 /**
  * Web-specific styles for the film strip.

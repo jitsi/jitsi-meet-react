@@ -1,4 +1,4 @@
-import { ColorPalette, createStyleSheet } from '../../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../base/styles';
 
 /**
  * Generic styles for a button.
