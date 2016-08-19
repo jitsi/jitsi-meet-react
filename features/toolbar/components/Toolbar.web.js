@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { Icon } from '../../base/fontIcons';
 import { MEDIA_TYPE } from '../../base/media';
+import { Container } from '../../base/react';
 import { ColorPalette } from '../../base/styles';
 
 import {
@@ -28,7 +29,10 @@ class Toolbar extends AbstractToolbar {
         const videoButtonStyles = this._getMuteButtonStyles(MEDIA_TYPE.VIDEO);
 
         return (
-            <div style = { styles.toolbarContainer }>
+            <Container
+                style = { styles.toolbarContainer }
+                visible = { this.props.visible }>
+
                 <div style = { styles.toolbarButtonsContainer }>
                     <button
 
@@ -59,7 +63,7 @@ class Toolbar extends AbstractToolbar {
                             style = { videoButtonStyles.iconStyle } />
                     </button>
                 </div>
-            </div>
+            </Container>
         );
     }
 }

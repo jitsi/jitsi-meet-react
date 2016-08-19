@@ -2,7 +2,7 @@ import './_';
 
 // The library lib-jitsi-meet (externally) depends on the libraries jQuery and
 // Strophe
-(function(global) {
+(global => {
     // jQuery
     if (typeof global.$ === 'undefined') {
         const jQuery = require('jquery');

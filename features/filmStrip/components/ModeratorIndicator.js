@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Icon } from '../../base/fontIcons';
 
-import { styles } from './_';
+import { styles } from './styles';
 
 /**
  * Thumbnail badge showing that the participant is a conference moderator.

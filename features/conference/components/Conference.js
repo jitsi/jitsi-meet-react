@@ -5,11 +5,12 @@ import {
     connect,
     disconnect
 } from '../../base/connection';
+import { Container } from '../../base/react';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
 
-import { ConferenceContainer } from './_';
+import { styles } from './styles';
 
 /**
  * The timeout in milliseconds after which the toolbar will be hidden.
@@ -42,7 +43,7 @@ class Conference extends Component {
         this._toolbarTimeout = undefined;
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onPress = this._onPress.bind(this);
+        this._onClick = this._onClick.bind(this);
     }
 
     /**
@@ -78,11 +79,15 @@ class Conference extends Component {
         const toolbarVisible = this.state.toolbarVisible;
 
         return (
-            <ConferenceContainer onPress = { this._onPress }>
+            <Container
+                onClick = { this._onClick }
+                style = { styles.conference }
+                touchFeedback = { false }>
+
                 <LargeVideo />
                 <Toolbar visible = { toolbarVisible } />
                 <FilmStrip visible = { !toolbarVisible } />
-            </ConferenceContainer>
+            </Container>
         );
     }
 
@@ -107,7 +112,7 @@ class Conference extends Component {
      * @private
      * @returns {void}
      */
-    _onPress() {
+    _onClick() {
         const toolbarVisible = !this.state.toolbarVisible;
 
         this.setState({ toolbarVisible });
@@ -115,7 +120,7 @@ class Conference extends Component {
         this._clearToolbarTimeout();
         if (toolbarVisible) {
             this._toolbarTimeout
-                = setTimeout(this._onPress, TOOLBAR_TIMEOUT_MS);
+                = setTimeout(this._onClick, TOOLBAR_TIMEOUT_MS);
         }
     }
 }
@@ -126,6 +131,7 @@ class Conference extends Component {
  * @static
  */
 Conference.propTypes = {
+
     /**
      * The configuration with which a connection is to be initialized for the
      * purposes of joining the conference depicted by the (React Component)
@@ -144,9 +150,10 @@ Conference.propTypes = {
  * @param {Object} state - Redux state.
  * @returns {{ room: string }}
  */
-// eslint-disable-next-line arrow-body-style
-export const mapStateToProps = state => ({
-    room: state['features/base/conference'].room
-});
+function mapStateToProps(state) {
+    return {
+        room: state['features/base/conference'].room
+    };
+}
 
 export default reactReduxConnect(mapStateToProps)(Conference);

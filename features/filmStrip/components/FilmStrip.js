@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import VideoThumbnail from './VideoThumbnail';
-import { FilmStripContainer } from './_';
+import { Container } from '../../base/react';
+
+import { styles } from './styles';
+import Thumbnail from './Thumbnail';
 
 /**
  * React component for film strip.
@@ -17,34 +19,21 @@ class FilmStrip extends Component {
      */
     render() {
         return (
-            <FilmStripContainer visible = { this.props.visible }>
+            <Container
+                style = { styles.filmStrip }
+                visible = { this.props.visible }>
             {
                 this.props.participants
                     .sort((a, b) => b.local - a.local)
                     .map(p =>
-                        <VideoThumbnail
+                        <Thumbnail
                             key = { p.id }
                             participant = { p } />)
             }
-            </FilmStripContainer>
+            </Container>
         );
     }
 }
-
-/**
- * Function that maps parts of Redux state tree into component props.
- *
- * @param {Object} state - Redux state.
- * @returns {{
- *      participants: Participant[],
- *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
- *  }}
- */
-const mapStateToProps = state => {
-    return {
-        participants: state['features/base/participants']
-    };
-};
 
 /**
  * FilmStrip component's property types.
@@ -55,5 +44,20 @@ FilmStrip.propTypes = {
     participants: React.PropTypes.array,
     visible: React.PropTypes.bool.isRequired
 };
+
+/**
+ * Function that maps parts of Redux state tree into component props.
+ *
+ * @param {Object} state - Redux state.
+ * @returns {{
+ *      participants: Participant[],
+ *      tracks: (JitsiLocalTrack|JitsiRemoteTrack)[]
+ *  }}
+ */
+function mapStateToProps(state) {
+    return {
+        participants: state['features/base/participants']
+    };
+}
 
 export default connect(mapStateToProps)(FilmStrip);

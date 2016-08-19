@@ -35,7 +35,7 @@ class WelcomePage extends AbstractWelcomePage {
                         value = { this.state.room } />
                     <TouchableHighlight
                         disabled = { this._isJoinDisabled() }
-                        onPress = { this._onJoinPress }
+                        onPress = { this._onJoinClick }
                         style = { styles.button }
                         underlayColor = 'white'>
                         <Text style = { styles.buttonText }>JOIN</Text>

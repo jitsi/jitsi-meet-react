@@ -23,7 +23,7 @@ import {
  * @property {string} avatar - Path to participant avatar if any.
  * @property {string} role - Participant role.
  * @property {boolean} local - If true, participant is local.
- * @property {boolean} pinned - If true, participant is current
+ * @property {boolean} pinned - If true, participant is currently a
  * "PINNED_ENDPOINT".
  * @property {boolean} speaking - If true, participant is currently a dominant
  * speaker.

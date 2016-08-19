@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Dimensions,
     TouchableHighlight,
     View
 } from 'react-native';
@@ -11,6 +10,7 @@ import {
     MEDIA_TYPE,
     toggleCameraFacingMode
 } from '../../base/media';
+import { Container } from '../../base/react';
 import { ColorPalette } from '../../base/styles';
 
 import {
@@ -50,27 +50,15 @@ class Toolbar extends AbstractToolbar {
         const videoButtonStyles = this._getMuteButtonStyles(MEDIA_TYPE.VIDEO);
         const underlayColor = ColorPalette.buttonUnderlay;
 
-        // The following property is responsible to hide/show the toolbar view
-        // by moving it out of site of the screen boundaries. An attempt to use
-        // the opacity property was made in order to eventually implement a
-        // fadeIn/fadeOut animation, however a known React Native problem was
-        // discovered, which allowed the view to still capture touch events even
-        // if hidden.
-        // TODO Alternatives will be investigated.
-        const bottom
-            = this.props.visible
-                ? {}
-                : { bottom: -Dimensions.get('window').height };
-
         // TODO Use correct Jitsi icon for camera switch button when available.
 
         return (
-            <View style = { styles.toolbarContainer }>
+            <Container
+                style = { styles.toolbarContainer }
+                visible = { this.props.visible }>
+
                 <View
-                    style = { [
-                        styles.toggleCameraFacingModeContainer,
-                        bottom
-                    ] }>
+                    style = { styles.toggleCameraFacingModeContainer }>
                     <TouchableHighlight
                         onPress = { this._onCameraFacingModeToggle }
                         style = { styles.toggleCameraFacingModeButton }
@@ -81,10 +69,7 @@ class Toolbar extends AbstractToolbar {
                     </TouchableHighlight>
                 </View>
                 <View
-                    style = { [
-                        styles.toolbarButtonsContainer,
-                        bottom
-                    ] }>
+                    style = { styles.toolbarButtonsContainer }>
                     <TouchableHighlight
 
                         // eslint-disable-next-line react/jsx-handler-names
@@ -115,7 +100,7 @@ class Toolbar extends AbstractToolbar {
                             style = { videoButtonStyles.iconStyle } />
                     </TouchableHighlight>
                 </View>
-            </View>
+            </Container>
         );
     }
 

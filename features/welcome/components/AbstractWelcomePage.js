@@ -29,7 +29,7 @@ export class AbstractWelcomePage extends Component {
         };
 
         // Bind event handlers so they are only bound once for every instance.
-        this._onJoinPress = this._onJoinPress.bind(this);
+        this._onJoinClick = this._onJoinClick.bind(this);
         this._onRoomChange = this._onRoomChange.bind(this);
     }
 
@@ -61,7 +61,7 @@ export class AbstractWelcomePage extends Component {
      * @protected
      * @returns {void}
      */
-    _onJoinPress() {
+    _onJoinClick() {
         this.props.dispatch(setRoom(this.state.room));
     }
 
@@ -91,6 +91,17 @@ export class AbstractWelcomePage extends Component {
 }
 
 /**
+ * AbstractWelcomePage component's property types.
+ *
+ * @static
+ */
+AbstractWelcomePage.propTypes = {
+    dispatch: React.PropTypes.func,
+    localVideoTrack: React.PropTypes.object,
+    room: React.PropTypes.string
+};
+
+/**
  * Selects local video track from tracks in state, local participant and room
  * and maps them to component props. It seems it's not possible to 'connect'
  * base component and then extend from it. So we export this function in order
@@ -102,7 +113,7 @@ export class AbstractWelcomePage extends Component {
  *      room: string
  * }}
  */
-export const mapStateToProps = state => {
+export function mapStateToProps(state) {
     const conference = state['features/base/conference'];
     const tracks = state['features/base/tracks'];
 
@@ -110,15 +121,4 @@ export const mapStateToProps = state => {
         localVideoTrack: getLocalVideoTrack(tracks),
         room: conference.room
     };
-};
-
-/**
- * AbstractWelcomePage component's property types.
- *
- * @static
- */
-AbstractWelcomePage.propTypes = {
-    dispatch: React.PropTypes.func,
-    localVideoTrack: React.PropTypes.object,
-    room: React.PropTypes.string
-};
+}

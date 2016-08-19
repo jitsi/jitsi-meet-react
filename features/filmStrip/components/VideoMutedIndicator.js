@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Icon } from '../../base/fontIcons';
 
-import { styles } from './_';
+import { styles } from './styles';
 
 /**
  * Thumbnail badge for displaying the video mute status of a participant.
