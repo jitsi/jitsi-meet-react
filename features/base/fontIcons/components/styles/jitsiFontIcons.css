@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'jitsi';
-    src:url('../../fonts/jitsi.eot?94d075');
-    src:url('../../fonts/jitsi.eot?#iefix94d075') format('embedded-opentype'),
-        url('../../fonts/jitsi.woff?94d075') format('woff'),
-        url('../../fonts/jitsi.ttf?94d075') format('truetype'),
-        url('../../fonts/jitsi.svg?94d075#jitsi') format('svg');
+    src:url('../fonts/jitsi.eot?94d075');
+    src:url('../fonts/jitsi.eot?#iefix94d075') format('embedded-opentype'),
+        url('../fonts/jitsi.woff?94d075') format('woff'),
+        url('../fonts/jitsi.ttf?94d075') format('truetype'),
+        url('../fonts/jitsi.svg?94d075#jitsi') format('svg');
     font-weight: normal;
     font-style: normal;
 }

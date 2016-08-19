@@ -11,6 +11,7 @@
     "start:web": "webpack-dev-server --colors --history-api-fallback --hot --https --inline --open --port 5000"
   },
   "dependencies": {
+    "font-awesome": "^4.6.3",
     "getconfig": "^3.0.0",
     "haste-resolver-webpack-plugin": "^0.2.1",
     "html-webpack-plugin": "^2.19.0",

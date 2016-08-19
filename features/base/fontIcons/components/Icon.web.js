@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 const FontAwesomeIcon = require('react-fontawesome');
 
-import { JITSI_ICONS } from '../../constants';
+import { JITSI_ICONS } from '../constants';
 import './styles';
 
 /**

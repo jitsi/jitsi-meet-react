@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 const FontAwesomeIcon = require('react-native-vector-icons/FontAwesome');
 
-import { JITSI_ICONS } from '../../constants';
-import icoMoonConfig from '../fonts/selection.json';
+import { JITSI_ICONS } from '../constants';
+import icoMoonConfig from './fonts/selection.json';
 
 /**
  * Creates the Jitsi icon set from the ico moon project config file.
