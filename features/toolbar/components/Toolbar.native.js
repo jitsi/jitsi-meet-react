@@ -64,7 +64,7 @@ class Toolbar extends AbstractToolbar {
                         style = { styles.toggleCameraFacingModeButton }
                         underlayColor = 'transparent'>
                         <Icon
-                            name = 'reload'
+                            name = { AbstractToolbar.icons.cameraSwitchIcon }
                             style = { styles.whiteIcon } />
                     </TouchableHighlight>
                 </View>
@@ -87,7 +87,7 @@ class Toolbar extends AbstractToolbar {
                         ] }
                         underlayColor = { underlayColor }>
                         <Icon
-                            name = 'hangup'
+                            name = { AbstractToolbar.icons.hangupIcon }
                             style = { styles.whiteIcon } />
                     </TouchableHighlight>
                     <TouchableHighlight
@@ -115,19 +115,6 @@ class Toolbar extends AbstractToolbar {
         this.props.dispatch(toggleCameraFacingMode());
     }
 }
-
-/**
- * Additional properties for various icons, which are now platform-dependent.
- * This is done to have common logic of generating styles for web and native.
- * TODO As soon as we have common font sets for web and native, this will no
- * longer be required.
- */
-Object.assign(Toolbar.prototype, {
-    audioIcon: 'microphone',
-    audioMutedIcon: 'mic-disabled',
-    videoIcon: 'webCam',
-    videoMutedIcon: 'camera-disabled'
-});
 
 /**
  * Toolbar component's property types.

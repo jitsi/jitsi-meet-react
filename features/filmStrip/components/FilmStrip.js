@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import { Container } from '../../base/react';
 
+import { styles } from './styles';
 import Thumbnail from './Thumbnail';
-import { styles } from './_';
 
 /**
  * React component for film strip.

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Icon from 'react-fontawesome';
+
+import { Icon } from '../../base/fontIcons';
 
 import { styles } from './styles';
 

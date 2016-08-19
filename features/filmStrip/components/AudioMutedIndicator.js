@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Icon from 'react-fontawesome';
+
+import { Icon } from '../../base/fontIcons';
 
 import { styles } from './styles';
 
@@ -15,7 +16,7 @@ export class AudioMutedIndicator extends Component {
     render() {
         return (
             <Icon
-                name = 'microphone-slash'
+                name = 'mic-disabled'
                 style = { styles.audioMutedIndicator } />
         );
     }

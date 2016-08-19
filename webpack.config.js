@@ -31,15 +31,21 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'style-loader!css-loader',
             },
+            // Load JSON files that are required in modules.
+            {
+                test: /\.json/,
+                exclude: /node_modules/,
+                loader: 'json-loader'
+            },
             // Load font files for font-awesome. It uses a trailing version
             // number in the names when requiring so we have to accept them in
             // our test regex.
             {
-                test: /\.(eot|svg|ttf)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                test: /\.(eot|svg|ttf).*$/,
                 loader: "file-loader"
             },
             {
-                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                test: /\.woff(2)?.*$/,
                 loader: "url-loader?limit=10000&minetype=application/font-woff"
             },
             // Process all JavaScript files as ECMAScript2015 along with

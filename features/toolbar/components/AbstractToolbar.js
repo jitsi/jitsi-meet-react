@@ -53,11 +53,11 @@ export class AbstractToolbar extends Component {
                 ...styles.toolbarButton,
                 backgroundColor: ColorPalette.buttonUnderlay
             };
-            iconName = this[`${mediaType}MutedIcon`];
+            iconName = AbstractToolbar.icons[`${mediaType}MutedIcon`];
             iconStyle = styles.whiteIcon;
         } else {
             buttonStyle = styles.toolbarButton;
-            iconName = this[`${mediaType}Icon`];
+            iconName = AbstractToolbar.icons[`${mediaType}Icon`];
             iconStyle = styles.icon;
         }
 
@@ -103,6 +103,21 @@ export class AbstractToolbar extends Component {
         this.props.dispatch(toggleVideoMuted());
     }
 }
+
+/**
+ * Additional properties for various icons, which are now platform-independent.
+ * This is done to have common logic of generating styles for web and native.
+ *
+ * @static
+ */
+AbstractToolbar.icons = {
+    audioIcon: 'microphone',
+    audioMutedIcon: 'mic-disabled',
+    cameraSwitchIcon: 'reload',
+    hangupIcon: 'hangup',
+    videoIcon: 'camera',
+    videoMutedIcon: 'camera-disabled'
+};
 
 /**
  * AbstractToolbar component's property types.

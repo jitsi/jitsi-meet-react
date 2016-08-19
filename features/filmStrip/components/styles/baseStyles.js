@@ -1,4 +1,4 @@
-import { ColorPalette } from '../../base/styles';
+import { ColorPalette } from '../../../base/styles';
 
 /**
  * Film strip related styles common to both Web and native.

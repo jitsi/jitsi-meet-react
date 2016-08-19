@@ -11,6 +11,7 @@
     "start:web": "webpack-dev-server --colors --history-api-fallback --hot --https --inline --open --port 5000"
   },
   "dependencies": {
+    "font-awesome": "^4.6.3",
     "getconfig": "^3.0.0",
     "haste-resolver-webpack-plugin": "^0.2.1",
     "html-webpack-plugin": "^2.19.0",
@@ -49,6 +50,7 @@
     "file-loader": "^0.9.0",
     "html-webpack-template": "^5.0.0",
     "imports-loader": "0.6.5",
+    "json-loader": "^0.5.4",
     "precommit-hook-eslint": "^3.0.0",
     "style-loader": "^0.13.1",
     "uglify-js": "2.4.24",

@@ -1,7 +1,7 @@
 import React from 'react';
-import Icon from 'react-fontawesome';
 import { connect } from 'react-redux';
 
+import { Icon } from '../../base/fontIcons';
 import { MEDIA_TYPE } from '../../base/media';
 import { Container } from '../../base/react';
 import { ColorPalette } from '../../base/styles';
@@ -50,8 +50,8 @@ class Toolbar extends AbstractToolbar {
                             backgroundColor: ColorPalette.jitsiRed
                         }}>
                         <Icon
-                            name = 'phone'
-                            style = { styles.icon } />
+                            name = { AbstractToolbar.icons.hangupIcon }
+                            style = { styles.whiteIcon } />
                     </button>
                     <button
 
@@ -67,23 +67,6 @@ class Toolbar extends AbstractToolbar {
         );
     }
 }
-
-/**
- * Additional properties for various icons, which are now platform-dependent.
- * This is done to have common logic of generating styles for web and native.
- * TODO As soon as we have common font sets for web and native, this will no
- * longer be required.
- */
-Object.assign(Toolbar.prototype, {
-    audioIcon: 'microphone',
-    audioMutedIcon: 'microphone-slash',
-    videoIcon: 'video-camera',
-
-    // TODO Currently, for web version we're using default FontAwesome font set,
-    // which doesn't have 'slashed' version of 'video-camera' icon. But this
-    // should be changed as soon as we start to use custom Jitsi icons.
-    videoMutedIcon: 'video-camera'
-});
 
 /**
  * Toolbar component's property types.

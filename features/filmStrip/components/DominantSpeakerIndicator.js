@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Icon from 'react-fontawesome';
+
+import { Icon } from '../../base/fontIcons';
+import { Container } from '../../base/react';
 
 import { styles } from './styles';
 
@@ -15,11 +17,11 @@ export class DominantSpeakerIndicator extends Component {
      */
     render() {
         return (
-            <div style = { styles.dominantSpeakerIndicatorBackground }>
+            <Container style = { styles.dominantSpeakerIndicatorBackground }>
                 <Icon
                     name = 'bullhorn'
                     style = { styles.dominantSpeakerIndicator } />
-            </div>
+            </Container>
         );
     }
 }
