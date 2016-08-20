@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-    TouchableHighlight,
-    View
-} from 'react-native';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 
-import { Icon } from '../../base/fontIcons';
 import {
     MEDIA_TYPE,
     toggleCameraFacingMode
@@ -18,6 +14,7 @@ import {
     mapStateToProps
 } from './AbstractToolbar';
 import { styles } from './styles';
+import ToolbarButton from './ToolbarButton';
 
 /**
  * Implements the conference toolbar on React Native.
@@ -52,56 +49,46 @@ class Toolbar extends AbstractToolbar {
 
         // TODO Use correct Jitsi icon for camera switch button when available.
 
+        /* eslint-disable react/jsx-handler-names */
+
         return (
             <Container
                 style = { styles.toolbarContainer }
                 visible = { this.props.visible }>
 
-                <View
-                    style = { styles.toggleCameraFacingModeContainer }>
-                    <TouchableHighlight
-                        onPress = { this._onCameraFacingModeToggle }
+                <View style = { styles.toggleCameraFacingModeContainer }>
+                    <ToolbarButton
+                        iconName = 'reload'
+                        iconstyle = { styles.whiteIcon }
+                        onClick = { this._onCameraFacingModeToggle }
                         style = { styles.toggleCameraFacingModeButton }
-                        underlayColor = 'transparent'>
-                        <Icon
-                            name = 'reload'
-                            style = { styles.whiteIcon } />
-                    </TouchableHighlight>
+                        underlayColor = 'transparent' />
                 </View>
-                <View
-                    style = { styles.toolbarButtonsContainer }>
-                    <TouchableHighlight
-
-                        // eslint-disable-next-line react/jsx-handler-names
-                        onPress = { this._toggleAudio }
-                        style = { audioButtonStyles.buttonStyle }>
-                        <Icon
-                            name = { audioButtonStyles.iconName }
-                            style = { audioButtonStyles.iconStyle } />
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        onPress = { this._onHangup }
-                        style = { [
-                            styles.toolbarButton,
-                            { backgroundColor: ColorPalette.jitsiRed }
-                        ] }
-                        underlayColor = { underlayColor }>
-                        <Icon
-                            name = 'hangup'
-                            style = { styles.whiteIcon } />
-                    </TouchableHighlight>
-                    <TouchableHighlight
-
-                        // eslint-disable-next-line react/jsx-handler-names
-                        onPress = { this._toggleVideo }
-                        style = { videoButtonStyles.buttonStyle }>
-                        <Icon
-                            name = { videoButtonStyles.iconName }
-                            style = { videoButtonStyles.iconStyle } />
-                    </TouchableHighlight>
+                <View style = { styles.toolbarButtonsContainer }>
+                    <ToolbarButton
+                        iconName = { audioButtonStyles.iconName }
+                        iconStyle = { audioButtonStyles.iconStyle }
+                        onClick = { this._toggleAudio }
+                        style = { audioButtonStyles.buttonStyle } />
+                    <ToolbarButton
+                        iconName = 'hangup'
+                        iconStyle = { styles.whiteIcon }
+                        onClick = { this._onHangup }
+                        style = {{
+                            ...styles.toolbarButton,
+                            backgroundColor: ColorPalette.jitsiRed
+                        }}
+                        underlayColor = { underlayColor } />
+                    <ToolbarButton
+                        iconName = { videoButtonStyles.iconName }
+                        iconStyle = { videoButtonStyles.iconStyle }
+                        onClick = { this._toggleVideo }
+                        style = { videoButtonStyles.buttonStyle } />
                 </View>
             </Container>
         );
+
+        /* eslint-enable react/jsx-handler-names */
     }
 
     /**

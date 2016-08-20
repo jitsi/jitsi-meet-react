@@ -46,9 +46,7 @@ export class Container extends AbstractContainer {
         }
 
         // onClick & touchFeedback
-        if (typeof touchFeedback === 'undefined') {
-            touchFeedback = onClick;
-        }
+        (typeof touchFeedback === 'undefined') && (touchFeedback = onClick);
 
         const renderParent = touchFeedback || onClick;
 
@@ -67,12 +65,9 @@ export class Container extends AbstractContainer {
                 = touchFeedback ? TouchableHighlight : TouchableWithoutFeedback;
             const parentProps = {};
 
-            if (onClick) {
-                parentProps.onPress = onClick;
-            }
-            if (parentStyle) {
-                parentProps.style = parentStyle;
-            }
+            onClick && (parentProps.onPress = onClick);
+            parentStyle && (parentProps.style = parentStyle);
+
             component = React.createElement(parentType, parentProps, component);
         }
 

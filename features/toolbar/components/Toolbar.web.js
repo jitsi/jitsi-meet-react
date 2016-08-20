@@ -1,5 +1,4 @@
 import React from 'react';
-import Icon from 'react-fontawesome';
 import { connect } from 'react-redux';
 
 import { MEDIA_TYPE } from '../../base/media';
@@ -11,6 +10,7 @@ import {
     mapStateToProps
 } from './AbstractToolbar';
 import { styles } from './styles';
+import ToolbarButton from './ToolbarButton';
 
 /**
  * Implements the conference toolbar on Web.
@@ -34,34 +34,28 @@ class Toolbar extends AbstractToolbar {
                 visible = { this.props.visible }>
 
                 <div style = { styles.toolbarButtonsContainer }>
-                    <button
+                    <ToolbarButton
+                        iconName = { audioButtonStyles.iconName }
+                        iconStyle = { audioButtonStyles.iconStyle }
 
                         // eslint-disable-next-line react/jsx-handler-names
                         onClick = { this._toggleAudio }
-                        style = { audioButtonStyles.buttonStyle }>
-                        <Icon
-                            name = { audioButtonStyles.iconName }
-                            style = { audioButtonStyles.iconStyle } />
-                    </button>
-                    <button
+                        style = { audioButtonStyles.buttonStyle } />
+                    <ToolbarButton
+                        iconName = 'phone'
+                        iconStyle = { styles.icon }
                         onClick = { this._onHangup }
                         style = {{
                             ...styles.toolbarButton,
                             backgroundColor: ColorPalette.jitsiRed
-                        }}>
-                        <Icon
-                            name = 'phone'
-                            style = { styles.icon } />
-                    </button>
-                    <button
+                        }} />
+                    <ToolbarButton
+                        iconName = { videoButtonStyles.iconName }
+                        iconStyle = { videoButtonStyles.iconStyle }
 
                         // eslint-disable-next-line react/jsx-handler-names
                         onClick = { this._toggleVideo }
-                        style = { videoButtonStyles.buttonStyle }>
-                        <Icon
-                            name = { videoButtonStyles.iconName }
-                            style = { videoButtonStyles.iconStyle } />
-                    </button>
+                        style = { videoButtonStyles.buttonStyle } />
                 </div>
             </Container>
         );

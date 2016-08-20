@@ -1,3 +1,4 @@
+import { stopEventPropagation } from '../functions';
 import AbstractContainer from './AbstractContainer';
 
 /**
@@ -15,7 +16,7 @@ export class Container extends AbstractContainer {
      */
     render() {
         // eslint-disable-next-line prefer-const
-        let { style, visible, ...props } = this.props;
+        let { onClick, style, visible, ...props } = this.props;
 
         // visible
         if (typeof visible !== 'undefined' && !visible) {
@@ -24,6 +25,10 @@ export class Container extends AbstractContainer {
                 display: 'none'
             };
         }
+
+        // onClick
+        (typeof onClick === 'function')
+            && (props.onClick = stopEventPropagation(onClick));
 
         // eslint-disable-next-line object-property-newline
         return this._render('div', { ...props, style });

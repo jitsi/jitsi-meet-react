@@ -39,36 +39,15 @@ class Thumbnail extends Component {
     }
 
     /**
-     * Processes click on video thumbnail.
+     * Handles click/tap event on the thumbnail.
      *
      * @returns {void}
      */
-    handleVideoThumbClicked() {
+    _onClick() {
         const { dispatch, participant } = this.props;
 
         // TODO The following currently ignores interfaceConfig.filmStripOnly.
         dispatch(pinParticipant(participant.pinned ? null : participant.id));
-    }
-
-    /**
-     *
-     * Handles click/tap event on the thumbnail. Prevents further event
-     * propagation.
-     *
-     * @param {Event} ev - DOM event.
-     * @returns {boolean}
-     */
-    _onClick(ev) {
-        this.handleVideoThumbClicked();
-
-        // On IE we need to populate this handler on video <object> and it does
-        // not give event instance as an argument, so we check here for methods.
-        if (ev && ev.stopPropagation && ev.preventDefault) {
-            ev.stopPropagation();
-            ev.preventDefault();
-        }
-
-        return false;
     }
 
     /**
