@@ -22,7 +22,8 @@ class LargeVideo extends Component {
             <ParticipantView
                 avatarStyle = { styles.avatar }
                 participantId = { this.props._participantId }
-                style = { styles.largeVideo } />
+                style = { styles.largeVideo }
+                zOrder = { 0 } />
         );
     }
 }

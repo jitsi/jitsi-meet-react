@@ -84,7 +84,8 @@ export class AbstractVideoTrack extends Component {
             <Video
                 mirror = { videoTrack && videoTrack.mirrorVideo }
                 onPlaying = { this._onVideoPlaying }
-                stream = { stream } />
+                stream = { stream }
+                zOrder = { this.props.zOrder } />
         );
     }
 
@@ -123,7 +124,14 @@ export class AbstractVideoTrack extends Component {
 AbstractVideoTrack.propTypes = {
     dispatch: React.PropTypes.func,
     videoTrack: React.PropTypes.object,
-    waitForVideoStarted: React.PropTypes.bool
+    waitForVideoStarted: React.PropTypes.bool,
+
+    /**
+     * The z-order of the Video of AbstractVideoTrack in the stacking space of
+     * all Videos. For more details, refer to the zOrder property of the Video
+     * class for React Native.
+     */
+    zOrder: React.PropTypes.number
 };
 
 /**

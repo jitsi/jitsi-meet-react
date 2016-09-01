@@ -98,7 +98,8 @@ class Thumbnail extends Component {
                 <ParticipantView
                     participantId = { participant.id }
                     showAvatar = { participantNotInLargeVideo }
-                    showVideo = { participantNotInLargeVideo } />
+                    showVideo = { participantNotInLargeVideo }
+                    zOrder = { 1 } />
 
                 { participant.role === PARTICIPANT_ROLE.MODERATOR
                     && <ModeratorIndicator /> }

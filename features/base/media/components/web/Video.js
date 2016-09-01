@@ -57,5 +57,12 @@ Video.propTypes = {
     mirror: React.PropTypes.bool,
     muted: React.PropTypes.bool,
     onPlaying: React.PropTypes.func,
-    stream: React.PropTypes.object
+    stream: React.PropTypes.object,
+
+    /**
+     * Not used on Web. Introduced for the benefit of React Native. For more
+     * details, refer to the zOrder property of the Video class for React
+     * Native (i.e. ../native/Video.js).
+     */
+    zOrder: React.PropTypes.number
 };

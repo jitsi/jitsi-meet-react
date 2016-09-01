@@ -59,7 +59,8 @@ class ParticipantView extends Component {
                     && _toBoolean(this.props.showVideo, true)
                     && <VideoTrack
                         videoTrack = { videoTrack }
-                        waitForVideoStarted = { waitForVideoStarted } /> }
+                        waitForVideoStarted = { waitForVideoStarted }
+                        zOrder = { this.props.zOrder } /> }
 
                 { renderAvatar
 
@@ -125,7 +126,14 @@ ParticipantView.propTypes = {
      * The style, if any, to apply to ParticipantView in addition to its default
      * style.
      */
-    style: React.PropTypes.object
+    style: React.PropTypes.object,
+
+    /**
+     * The z-order of the Video of ParticipantView in the stacking space of all
+     * Videos. For more details, refer to the zOrder property of the Video class
+     * for React Native.
+     */
+    zOrder: React.PropTypes.number
 };
 
 /**
