@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 
 import { styles } from './styles';
+
+/**
+ * Indicates whether RTCView (is to be considered that it) natively supports
+ * i.e. implements mirroring the video it renders. If false, a workaround will
+ * be used in an attempt to support mirroring in Video. If RTCView does not
+ * implement mirroring on a specific platform but the workaround causes issues,
+ * set to true for that platform to disable the workaround.
+ */
+const RTCVIEW_SUPPORTS_MIRROR = Platform.OS === 'android';
 
 /**
  * The React Native component which is similar to Web's video element and wraps
@@ -43,20 +52,25 @@ export class Video extends Component {
             const style = styles.video;
             const objectFit = (style && style.objectFit) || 'cover';
 
+            const mirror = this.props.mirror;
+
+            // XXX RTCView doesn't currently support mirroring, even when
+            // providing a transform style property. As a workaround, wrap the
+            // RTCView inside another View and apply the transform style
+            // property to that View instead.
+            const mirrorWorkaround = mirror && !RTCVIEW_SUPPORTS_MIRROR;
+
             // eslint-disable-next-line no-extra-parens
             const video = (
                 <RTCView
+                    mirror = { !mirrorWorkaround }
                     objectFit = { objectFit }
                     streamURL = { streamURL }
                     style = { style }
                     zOrder = { this.props.zOrder } />
             );
 
-            // XXX RTCView doesn't currently support mirroring, even when
-            // providing a transform style property. As a workaround, wrap the
-            // RTCView inside another View and apply the transform style
-            // property to that View instead.
-            if (this.props.mirror) {
+            if (mirrorWorkaround) {
                 return (
                     <View style = { styles.mirroredVideo }>{ video }</View>
                 );
