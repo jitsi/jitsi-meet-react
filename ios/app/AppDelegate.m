@@ -28,13 +28,9 @@ continueUserActivity:(NSUserActivity *)userActivity
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  RCTBundleURLProvider *bundleURLProvider
-    = [RCTBundleURLProvider sharedSettings];
-  [bundleURLProvider setDefaults];
   NSURL *jsCodeLocation
-    = [bundleURLProvider jsBundleURLForBundleRoot:@"index.ios"
-                                 fallbackResource:nil];
-
+    = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios"
+                                                     fallbackResource:nil];
   RCTRootView *rootView
     = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                   moduleName:@"App"
