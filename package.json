@@ -22,7 +22,7 @@
     "react-fontawesome": "^1.1.0",
     "react-native": "0.32.0",
     "react-native-vector-icons": "^2.0.3",
-    "react-native-webrtc": "jitsi/react-native-webrtc#lib-jitsi-meet",
+    "react-native-webrtc": "jitsi/react-native-webrtc",
     "react-redux": "^4.4.5",
     "react-router": "^2.4.1",
     "react-router-redux": "^4.0.5",
