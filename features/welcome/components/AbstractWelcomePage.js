@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import { isRoomValid, setRoom } from '../../base/conference';
+import { appNavigate } from '../../app';
+import { isRoomValid } from '../../base/conference';
 import { VideoTrack } from '../../base/media';
 import { getLocalVideoTrack } from '../../base/tracks';
 
@@ -62,7 +63,7 @@ export class AbstractWelcomePage extends Component {
      * @returns {void}
      */
     _onJoinClick() {
-        this.props.dispatch(setRoom(this.state.room));
+        this.props.dispatch(appNavigate(this.state.room));
     }
 
     /**

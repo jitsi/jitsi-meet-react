@@ -67,39 +67,13 @@ export class App extends AbstractApp {
         return (
             <Provider store = { store }>
                 <Navigator
-                    initialRoute = { _getRouteToRender(store) }
+                    initialRoute = { _getRouteToRender(store.getState) }
                     ref = { navigator => { this.navigator = navigator; } }
                     renderScene = { this._navigatorRenderScene } />
             </Provider>
         );
 
         /* eslint-enable brace-style, react/jsx-no-bind */
-    }
-
-    /**
-     * Tries to get conference room name from URL.
-     * Alongside with getting room name from URL we want to compare hostname
-     * from URL with domain name from config to ensure we're a going to join
-     * room on the same domain for which our app is configured. This doesn't
-     * work quite well with web version, e.g. we're running our web app on
-     * localhost, but are joining meet.jit.si.
-     *
-     * @param {(string|undefined)} url - URL passed to the app.
-     * @override
-     * @protected
-     * @returns {string}
-     */
-    _getRoomFromUrlString(url) {
-        const urlObj = super._urlStringToObject(url);
-        let room;
-
-        if (urlObj
-                && urlObj.hostname
-                    === this.props.config.connection.hosts.domain) {
-            room = super._getRoomFromUrlObject(urlObj);
-        }
-
-        return room;
     }
 
     /**

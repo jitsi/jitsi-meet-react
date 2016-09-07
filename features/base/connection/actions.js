@@ -1,9 +1,13 @@
-import { createConference } from '../conference';
+import {
+    conferenceWillLeave,
+    createConference
+} from '../conference';
 import JitsiMeetJS from '../lib-jitsi-meet';
 import {
     CONNECTION_DISCONNECTED,
     CONNECTION_ESTABLISHED,
-    CONNECTION_FAILED
+    CONNECTION_FAILED,
+    SET_DOMAIN
 } from './actionTypes';
 import './reducer';
 
@@ -12,18 +16,20 @@ const JitsiConnectionEvents = JitsiMeetJS.events.connection;
 /**
  * Opens new connection.
  *
- * @param {Object} config - Application config.
- * @param {string} [room] - The room name to use.
  * @returns {Promise<JitsiConnection>}
  */
-export function connect(config, room) {
-    return dispatch => {
+export function connect() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const connectionOpts
+            = state['features/base/connection'].connectionOptions;
+        const room = state['features/base/conference'].room;
         const connection = new JitsiMeetJS.JitsiConnection(
-            config.appId,
-            config.token,
+            connectionOpts.appId,
+            connectionOpts.token,
             {
-                ...config.connection,
-                bosh: config.connection.bosh + (
+                ...connectionOpts,
+                bosh: connectionOpts.bosh + (
                     room ? `?room=${room}` : ''
                 )
             }
@@ -54,7 +60,7 @@ export function connect(config, room) {
                     JitsiConnectionEvents.CONNECTION_DISCONNECTED,
                     handleConnectionDisconnected);
 
-                dispatch(connectionDisconnected(connection, message));
+                dispatch(_connectionDisconnected(connection, message));
             }
 
             /**
@@ -96,9 +102,57 @@ export function connect(config, room) {
                 );
             }
         })
-        .catch(err => dispatch(connectionFailed(err)))
-        .then(con => dispatch(connectionEstablished(con)))
-        .then(() => dispatch(createConference(room)));
+        .catch(err => dispatch(_connectionFailed(err)))
+        .then(con => dispatch(_connectionEstablished(con)))
+        .then(() => dispatch(createConference()));
+    };
+}
+
+/**
+ * Closes connection.
+ *
+ * @returns {Function}
+ */
+export function disconnect() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const conference = state['features/base/conference'].jitsiConference;
+        const connection = state['features/base/connection'].jitsiConnection;
+
+        let promise = Promise.resolve();
+
+        if (conference) {
+            // XXX Conference leave is async and may take some time. We need to
+            // mark it as leaving to prevent race conditions when conference in
+            // 'leaving' state can be modified, e.g. by adding new local media
+            // tracks.
+            dispatch(conferenceWillLeave(conference));
+
+            promise = conference.leave();
+        }
+
+        if (connection) {
+            promise = promise
+                .then(() => connection.disconnect());
+        }
+
+        return promise;
+    };
+}
+
+/**
+ * Sets connection domain.
+ *
+ * @param {string} domain - Domain name.
+ * @returns {{
+ *      type: SET_DOMAIN,
+ *      domain: string
+ *  }}
+ */
+export function setDomain(domain) {
+    return {
+        type: SET_DOMAIN,
+        domain
     };
 }
 
@@ -108,13 +162,14 @@ export function connect(config, room) {
  * @param {JitsiConnection} connection - The JitsiConnection which was
  * disconnected.
  * @param {string} message - Error message.
+ * @private
  * @returns {{
  *     type: CONNECTION_DISCONNECTED,
  *     connection: JitsiConnection,
  *     message: string
  * }}
  */
-function connectionDisconnected(connection, message) {
+function _connectionDisconnected(connection, message) {
     return {
         type: CONNECTION_DISCONNECTED,
         connection,
@@ -126,9 +181,10 @@ function connectionDisconnected(connection, message) {
  * Create an action for when the signaling connection has been established.
  *
  * @param {JitsiConnection} connection - JitsiConnection instance.
+ * @private
  * @returns {{type: CONNECTION_ESTABLISHED, connection: JitsiConnection}}
  */
-function connectionEstablished(connection) {
+function _connectionEstablished(connection) {
     return {
         type: CONNECTION_ESTABLISHED,
         connection
@@ -139,37 +195,12 @@ function connectionEstablished(connection) {
  * Create an action for when the signaling connection could not be created.
  *
  * @param {string} error - Error message.
+ * @private
  * @returns {{type: CONNECTION_FAILED, error: string}}
  */
-function connectionFailed(error) {
+function _connectionFailed(error) {
     return {
         type: CONNECTION_FAILED,
         error
-    };
-}
-
-/**
- * Leaves the conference, closes the connection and destroys local tracks.
- *
- * @returns {Function}
- */
-export function disconnect() {
-    return (dispatch, getState) => {
-        const state = getState();
-        const conference = state['features/base/conference'].jitsiConference;
-        const connection = state['features/base/connection'];
-
-        let promise = Promise.resolve();
-
-        if (conference) {
-            promise = conference.leave();
-        }
-
-        if (connection) {
-            promise = promise
-                .then(() => connection.disconnect());
-        }
-
-        return promise;
     };
 }

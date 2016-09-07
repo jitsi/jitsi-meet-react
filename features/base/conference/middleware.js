@@ -91,11 +91,14 @@ function pinParticipant(store, id) {
  * @returns {Promise}
  */
 function syncConferenceLocalTracksWithState(store, action) {
-    const conference
-        = store.getState()['features/base/conference'].jitsiConference;
+    const conferenceState = store.getState()['features/base/conference'];
+    const conference = conferenceState.jitsiConference;
+    const leavingConference = conferenceState.leavingJitsiConference;
     let promise;
 
-    if (conference) {
+    // XXX The conference in state might be already in 'leaving' state, that's
+    // why we should not add/remove local tracks to such conference.
+    if (conference && conference !== leavingConference) {
         const track = action.track.jitsiTrack;
 
         if (action.type === TRACK_ADDED) {

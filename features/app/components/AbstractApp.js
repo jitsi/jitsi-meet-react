@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
 
-import { setRoom } from '../../base/conference';
 import {
     localParticipantJoined,
     localParticipantLeft
 } from '../../base/participants';
 
-import { appWillMount, appWillUnmount } from '../actions';
+import {
+    appNavigate,
+    appWillMount,
+    appWillUnmount
+} from '../actions';
+
+/**
+ * Default config.
+ *
+ * @type {Object}
+ */
+const DEFAULT_CONFIG = {
+    configLocation: './config.js',
+    hosts: {
+        domain: 'meet.jit.si'
+    }
+};
 
 /**
  * Base (abstract) class for main App component.
@@ -25,8 +40,14 @@ export class AbstractApp extends Component {
 
         dispatch(appWillMount(this));
 
-        dispatch(setRoom(this._getRoomFromUrlString(this.props.url)));
         dispatch(localParticipantJoined());
+
+        const config
+            = typeof this.props.config === 'object'
+                ? this.props.config
+                : DEFAULT_CONFIG;
+
+        this._openURL(this.props.url || `https://${config.hosts.domain}`);
     }
 
     /**
@@ -58,6 +79,10 @@ export class AbstractApp extends Component {
     _createElement(component, props) {
         /* eslint-disable no-unused-vars, lines-around-comment */
         const {
+            // Don't propagate the config prop(erty) because the config is
+            // stored inside the Redux state and, thus, is visible to the
+            // children anyway.
+            config,
             // Don't propagate the dispatch and store props because they usually
             // come from react-redux and programmers don't really expect them to
             // be inherited but rather explicitly connected.
@@ -77,39 +102,6 @@ export class AbstractApp extends Component {
     }
 
     /**
-     * Gets room name from URL object if any.
-     *
-     * @param {URL} url - URL object.
-     * @protected
-     * @returns {(string|undefined)}
-     */
-    _getRoomFromUrlObject(url) {
-        let room;
-
-        if (url) {
-            room = url.pathname.substr(1).toLowerCase();
-
-            // Convert empty string to undefined to simplify checks.
-            if (room === '') {
-                room = undefined;
-            }
-        }
-
-        return room;
-    }
-
-    /**
-     * Tries to get conference room name from URL.
-     *
-     * @param {(string|undefined)} url - URL passed to the app.
-     * @protected
-     * @returns {string}
-     */
-    _getRoomFromUrlString(url) {
-        return this._getRoomFromUrlObject(this._urlStringToObject(url));
-    }
-
-    /**
      * Navigates this AbstractApp to (i.e. opens) a specific URL.
      *
      * @param {string} url - The URL to which to navigate this AbstractApp (i.e.
@@ -118,36 +110,7 @@ export class AbstractApp extends Component {
      * @returns {void}
      */
     _openURL(url) {
-        const room = this._getRoomFromUrlString(url);
-
-        // TODO Kostiantyn Tsaregradskyi: We should probably detect if user is
-        // currently in a conference and ask her if she wants to close the
-        // current conference and start a new one with the new room name.
-
-        this.props.store.dispatch(setRoom(room));
-    }
-
-    /**
-     * Parses a string into a URL (object).
-     *
-     * @param {(string|undefined)} url - The URL to parse.
-     * @protected
-     * @returns {URL}
-     */
-    _urlStringToObject(url) {
-        let urlObj;
-
-        if (url) {
-            try {
-                urlObj = new URL(url);
-            } catch (ex) {
-                // The return value will signal the failure & the logged
-                // exception will provide the details to the developers.
-                console.error(`Failed to parse URL: ${url}`, ex);
-            }
-        }
-
-        return urlObj;
+        this.props.store.dispatch(appNavigate(url));
     }
 }
 

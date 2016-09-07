@@ -18,3 +18,13 @@ export const CONNECTION_ESTABLISHED = 'CONNECTION_ESTABLISHED';
  * @type {string}
  */
 export const CONNECTION_FAILED = 'CONNECTION_FAILED';
+
+/**
+ * Action to signal to change connection domain.
+ *
+ * {
+ *     type: SET_DOMAIN,
+ *     domain: string
+ * }
+ */
+export const SET_DOMAIN = 'SET_DOMAIN';

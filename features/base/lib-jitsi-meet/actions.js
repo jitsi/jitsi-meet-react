@@ -2,7 +2,8 @@ import JitsiMeetJS from './';
 import {
     LIB_DISPOSED,
     LIB_INIT_ERROR,
-    LIB_INITIALIZED
+    LIB_INITIALIZED,
+    SET_CONFIG
 } from './actionTypes';
 import './middleware';
 import './reducer';
@@ -13,33 +14,33 @@ import './reducer';
  * @returns {Function}
  */
 export function disposeLib() {
-    // XXX We're wrapping this to be able to "dispatch" the action, because we
-    // will need to dispatch some errors to global error handler at some point.
+    // XXX We're wrapping it with Promise, because:
+    // a) to be better aligned with initLib() method, which is async.
+    // b) as currently there is no implementation for it in lib-jitsi-meet, and
+    // there is a big chance it will be async.
     // TODO Currently, lib-jitsi-meet doesn't have any functionality to
     // dispose itself.
-    return dispatch => dispatch({ type: LIB_DISPOSED });
+    return dispatch => {
+        dispatch({ type: LIB_DISPOSED });
+
+        return Promise.resolve();
+    };
 }
 
 /**
  * Initializes lib-jitsi-meet with passed configuration.
  *
- * @param {Object} [config={}] - Config object accepted by JitsiMeetJS#init()
- * method.
  * @returns {Function}
  */
-export function initLib(
-        config = {
-            // FIXME Lib-jitsi-meet uses HTML script elements to asynchronously
-            // load certain pieces of JavaScript. Unfortunately, the technique
-            // doesn't work on React Native (because there are no HTML elements
-            // in the first place). Fortunately, these pieces of JavaScript
-            // currently involve third parties and we can temporarily disable
-            // them (until we implement an alternative to async script elements
-            // on React Native).
-            disableThirdPartyRequests: true
-        }) {
-    return dispatch =>
-        JitsiMeetJS.init(config)
+export function initLib() {
+    return (dispatch, getState) => {
+        const config = getState()['features/base/lib'].config;
+
+        if (!config) {
+            throw new Error('Cannot initialize lib-jitsi-meet without config');
+        }
+
+        return JitsiMeetJS.init(config)
             .then(() => dispatch({ type: LIB_INITIALIZED }))
             .catch(error => {
                 dispatch({
@@ -51,4 +52,22 @@ export function initLib(
                 console.error('lib-jitsi-meet failed to init due to ', error);
                 throw error;
             });
+    };
+}
+
+/**
+ * Sets config.
+ *
+ * @param {Object} config - Config object accepted by JitsiMeetJS#init()
+ * method.
+ * @returns {{
+ *      type: SET_CONFIG,
+ *      config: Object
+ *  }}
+ */
+export function setConfig(config) {
+    return {
+        type: SET_CONFIG,
+        config
+    };
 }
