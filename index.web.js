@@ -45,16 +45,10 @@ if (typeof window === 'object'
 // Create Redux store with our reducer and middleware.
 const store = createStore(reducer, middleware);
 
-// XXX In order to unify work with URLs in web and native environments,
-// we will construct URL here with correct domain from config.
-const url
-    = new URL(window.location.pathname, `https://${config.hosts.domain}`)
-        .toString();
-
 // Render the main Component.
 ReactDOM.render(
     <App
         config = { config }
         store = { store }
-        url = { url } />,
+        url = { window.location.toString() } />,
     document.body);

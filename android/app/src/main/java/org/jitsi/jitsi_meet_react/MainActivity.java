@@ -1,25 +1,38 @@
 package org.jitsi.jitsi_meet_react;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
 public class MainActivity extends ReactActivity {
-
     /**
      * {@inheritDoc}
      *
-     * Overrides {@link ReactActivity#createRootView()} to customize the
-     * {@link ReactRootView} with a background color that is in accord with the
-     * JavaScript and iOS parts of the application and causes less perceived
+     * Overrides {@link ReactActivity#createRootActivityDelegate()} to customize
+     * the {@link ReactRootView} with a background color that is in accord with
+     * the JavaScript and iOS parts of the application and causes less perceived
      * visual flicker than the default background color.
      */
     @Override
-    protected ReactRootView createRootView() {
-        ReactRootView rootView = super.createRootView();
+    protected ReactActivityDelegate createReactActivityDelegate() {
+        return new ReactActivityDelegate(this, getMainComponentName()) {
+            /**
+             * {@inheritDoc}
+             *
+             * Overrides {@link ReactActivityDelegate#createRootView()} to
+             * customize the {@link ReactRootView} with a background color that
+             * is in accord with the JavaScript and iOS parts of the application
+             * and causes less perceived visual flicker than the default
+             * background color.
+             */
+            @Override
+            protected ReactRootView createRootView() {
+                ReactRootView rootView = super.createRootView();
 
-        rootView.setBackgroundColor(0xFF111111);
-
-        return rootView;
+                rootView.setBackgroundColor(0xFF111111);
+                return rootView;
+            }
+        };
     }
 
     /**

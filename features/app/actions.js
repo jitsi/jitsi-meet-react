@@ -22,7 +22,7 @@ import './reducer';
  * Triggers an in-app navigation to a different route. Allows navigation to be
  * abstracted between the mobile and web versions.
  *
- * @param {(string|undefined)} urlOrRoom - The url or room name to which to
+ * @param {(string|undefined)} urlOrRoom - The URL or room name to which to
  * navigate.
  * @returns {Function}
  */

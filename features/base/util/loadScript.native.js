@@ -1,7 +1,9 @@
 /**
- * Loads a script from a specific source. In React Native it's not possible to
- * load JS as &lt;script&gt;, so instead we will load file as text via
- * XmlHttpRequest and then eval() it.
+ * Loads a script from a specific source. React Native cannot load a JS
+ * file/resource/URL via a &lt;script&gt; HTML element, so the implementation
+ * fetches the specified src as plain text (e.g. via XMLHttpRequest) and then
+ * evaluates the fetched string as JavaScript code (i.e. via the {@link eval}
+ * function).
  *
  * @param {string} src - The source from the which the script is to be
  * (down)loaded. Only absolute URLs are supported.

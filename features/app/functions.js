@@ -46,6 +46,31 @@ function _getRoomAndDomainFromUrlObject(url) {
  *  }}
  */
 export function _getRoomAndDomainFromUrlString(url) {
+    // Rewrite the specified URL in order to handle special cases such as
+    // hipchat.com and enso.me which do not follow the common pattern of most
+    // Jitsi Meet deployments.
+    if (typeof url === 'string') {
+        // hipchat.com
+        let regex = /^(https?):\/\/hipchat.com\/video\/call\//gi;
+        let match = regex.exec(url);
+
+        if (!match) {
+            // enso.me
+            regex = /^(https?):\/\/enso\.me\/(?:call|meeting)\//gi;
+            match = regex.exec(url);
+        }
+        if (match && match.length > 1) {
+            /* eslint-disable no-param-reassign, prefer-template */
+
+            url
+                = match[1] /* URL protocol */
+                   + '://enso.hipchat.me/'
+                   + url.substring(regex.lastIndex);
+
+            /* eslint-enable no-param-reassign, prefer-template */
+        }
+    }
+
     return _getRoomAndDomainFromUrlObject(_urlStringToObject(url));
 }
 
@@ -58,9 +83,10 @@ export function _getRoomAndDomainFromUrlString(url) {
  * @returns {Route}
  */
 export function _getRouteToRender(stateOrGetState) {
-    const state = typeof stateOrGetState === 'function'
-        ? stateOrGetState()
-        : stateOrGetState;
+    const state
+        = typeof stateOrGetState === 'function'
+            ? stateOrGetState()
+            : stateOrGetState;
     const room = state['features/base/conference'].room;
     const component = isRoomValid(room) ? Conference : WelcomePage;
 

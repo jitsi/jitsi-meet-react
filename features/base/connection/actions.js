@@ -119,21 +119,24 @@ export function disconnect() {
         const conference = state['features/base/conference'].jitsiConference;
         const connection = state['features/base/connection'].jitsiConnection;
 
-        let promise = Promise.resolve();
+        let promise;
 
+        // Leave the conference.
         if (conference) {
-            // XXX Conference leave is async and may take some time. We need to
-            // mark it as leaving to prevent race conditions when conference in
-            // 'leaving' state can be modified, e.g. by adding new local media
-            // tracks.
+            // In a fashion similar to JitsiConference's CONFERENCE_LEFT event
+            // (and the respective Redux action) which is fired after the
+            // conference has been left, notify the application about the
+            // intention to leave the conference.
             dispatch(conferenceWillLeave(conference));
 
             promise = conference.leave();
+        } else {
+            promise = Promise.resolve();
         }
 
+        // Disconnect the connection.
         if (connection) {
-            promise = promise
-                .then(() => connection.disconnect());
+            promise = promise.then(() => connection.disconnect());
         }
 
         return promise;

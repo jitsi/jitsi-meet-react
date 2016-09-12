@@ -101,8 +101,10 @@ export function conferenceLeft(conference) {
 }
 
 /**
- * Signal that specified conference will be left. This is needed to prevent race
- * conditions when one conference is leaving and new one is joining.
+ * Signal the intention of the application to have the local participant leave a
+ * specific conference. Similar in fashion to CONFERENCE_LEFT. Contrary to it
+ * though, it's not guaranteed because CONFERENCE_LEFT may be triggered by
+ * lib-jitsi-meet and not the application.
  *
  * @param {JitsiConference} conference - The JitsiConference instance which will
  * be left by the local participant.
