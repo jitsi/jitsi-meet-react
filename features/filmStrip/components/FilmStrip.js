@@ -22,14 +22,14 @@ class FilmStrip extends Component {
             <Container
                 style = { styles.filmStrip }
                 visible = { this.props.visible }>
-            {
-                this.props.participants
-                    .sort((a, b) => b.local - a.local)
-                    .map(p =>
-                        <Thumbnail
-                            key = { p.id }
-                            participant = { p } />)
-            }
+                {
+                    this.props.participants
+                        .sort((a, b) => b.local - a.local)
+                        .map(p =>
+                            <Thumbnail
+                                key = { p.id }
+                                participant = { p } />)
+                }
             </Container>
         );
     }
