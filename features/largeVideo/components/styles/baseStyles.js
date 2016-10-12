@@ -1,4 +1,4 @@
-import { ColorPalette, createStyleSheet } from '../../base/styles';
+import { ColorPalette, createStyleSheet } from '../../../base/styles';
 
 export const styles = createStyleSheet({
     /**
@@ -8,7 +8,6 @@ export const styles = createStyleSheet({
     avatar: {
         alignSelf: 'center',
         borderRadius: 100,
-        flex: 0,
         height: 200,
         width: 200
     },
