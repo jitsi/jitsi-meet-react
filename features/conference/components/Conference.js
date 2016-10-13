@@ -9,6 +9,7 @@ import { Container } from '../../base/react';
 import { FilmStrip } from '../../filmStrip';
 import { LargeVideo } from '../../largeVideo';
 import { Toolbar } from '../../toolbar';
+import IdleTimerManager from 'react-native-idle-timer';
 
 import { styles } from './styles';
 
@@ -54,6 +55,7 @@ class Conference extends Component {
      */
     componentWillMount() {
         this.props.dispatch(connect());
+        IdleTimerManager.setIdleTimerDisabled(true);
     }
 
     /**
@@ -65,6 +67,7 @@ class Conference extends Component {
      */
     componentWillUnmount() {
         this._clearToolbarTimeout();
+        IdleTimerManager.setIdleTimerDisabled(false);
 
         this.props.dispatch(disconnect());
     }
