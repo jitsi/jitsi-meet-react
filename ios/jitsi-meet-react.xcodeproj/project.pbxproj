@@ -36,6 +36,7 @@
 		BF9643941C34FBF900B0BBDF /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9643931C34FBF900B0BBDF /* libstdc++.tbd */; };
 		BFC745101CB829A700673F38 /* libWebRTC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFC7450C1CB829A700673F38 /* libWebRTC.a */; };
 		BFC745141CB829B300673F38 /* libRCTWebRTC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFC745131CB829A700673F38 /* libRCTWebRTC.a */; };
+		D97D9F051DAF8AB500FA1A92 /* libRNIdleTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D97D9F031DAF8A7E00FA1A92 /* libRNIdleTimer.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +124,13 @@
 			remoteGlobalIDString = 35A2221F1CB493700015FD5C;
 			remoteInfo = RCTWebRTC;
 		};
+		D97D9F021DAF8A7E00FA1A92 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D97D9EF31DAF8A7E00FA1A92 /* RNIdleTimer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 01D7495A1CC96385007E93FA;
+			remoteInfo = RNIdleTimer;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -191,6 +199,7 @@
 		BFC7450B1CB829A700673F38 /* RTCVideoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCVideoTrack.h; sourceTree = "<group>"; };
 		BFC7450C1CB829A700673F38 /* libWebRTC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWebRTC.a; sourceTree = "<group>"; };
 		BFC7450D1CB829A700673F38 /* RCTWebRTC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebRTC.xcodeproj; path = "../node_modules/react-native-webrtc/ios/RCTWebRTC.xcodeproj"; sourceTree = "<group>"; };
+		D97D9EF31DAF8A7E00FA1A92 /* RNIdleTimer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNIdleTimer.xcodeproj; path = "../node_modules/react-native-idle-timer/ios/RNIdleTimer.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +207,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D97D9F051DAF8AB500FA1A92 /* libRNIdleTimer.a in Frameworks */,
 				BFC745141CB829B300673F38 /* libRCTWebRTC.a in Frameworks */,
 				BF9643941C34FBF900B0BBDF /* libstdc++.tbd in Frameworks */,
 				BF9643921C34FBF100B0BBDF /* libsqlite3.tbd in Frameworks */,
@@ -332,6 +342,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				D97D9EF31DAF8A7E00FA1A92 /* RNIdleTimer.xcodeproj */,
 				BFC744EC1CB829A700673F38 /* libjingle_peerconnection */,
 				BFC7450D1CB829A700673F38 /* RCTWebRTC.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -444,6 +455,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D97D9EF41DAF8A7E00FA1A92 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D97D9F031DAF8A7E00FA1A92 /* libRNIdleTimer.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -541,6 +560,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = D97D9EF41DAF8A7E00FA1A92 /* Products */;
+					ProjectRef = D97D9EF31DAF8A7E00FA1A92 /* RNIdleTimer.xcodeproj */;
+				},
+				{
 					ProductGroup = 26D589F81D0B42EE00FC396B /* Products */;
 					ProjectRef = 22418656B14845609F953A42 /* RNVectorIcons.xcodeproj */;
 				},
@@ -635,6 +658,13 @@
 			fileType = archive.ar;
 			path = libRCTWebRTC.a;
 			remoteRef = BFC745121CB829A700673F38 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D97D9F031DAF8A7E00FA1A92 /* libRNIdleTimer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNIdleTimer.a;
+			remoteRef = D97D9F021DAF8A7E00FA1A92 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
