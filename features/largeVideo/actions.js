@@ -1,4 +1,3 @@
-import { _handleParticipantError } from '../base/conference';
 import {
     MEDIA_TYPE,
     VIDEO_TYPE
@@ -29,14 +28,10 @@ export function selectParticipant() {
             const videoTrack = getTrackByMediaTypeAndParticipant(
                 tracks, MEDIA_TYPE.VIDEO, largeVideo.participantId);
 
-            try {
-                conference.selectParticipant(
-                    videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA
-                        ? largeVideo.participantId
-                        : null);
-            } catch (err) {
-                _handleParticipantError(err);
-            }
+            conference.selectParticipant(
+                videoTrack && videoTrack.videoType === VIDEO_TYPE.CAMERA
+                    ? largeVideo.participantId
+                    : null);
         }
     };
 }
