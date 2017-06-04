@@ -47,7 +47,8 @@ export function _handleParticipantError(err) {
     // might be executed before. So here we're swallowing a particular error.
     // TODO Lib-jitsi-meet should be fixed to not throw such an exception in
     // these scenarios.
-    if (err.message !== 'Data channels support is disabled!') {
+    if (err.message !== 'Data channels support is disabled!'
+        && err.message !== 'No opened data channels found!') {
         throw err;
     }
 }
