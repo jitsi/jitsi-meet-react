@@ -71,10 +71,13 @@ export class AbstractToolbar extends Component {
     /**
      * Dispatches action to leave the current conference.
      *
+     * @param {Event} ev - Click event.
      * @protected
      * @returns {void}
      */
-    _onHangup() {
+    _onHangup(ev) {
+        stopClickEventPropagation(ev);
+
         // XXX We don't know here which value is effectively/internally used
         // when there's no valid room name to join. It isn't our business to
         // know that anyway. The undefined value is our expression of (1) the
@@ -86,20 +89,26 @@ export class AbstractToolbar extends Component {
     /**
      * Dispatches action to toggle the mute state of the audio/microphone.
      *
+     * @param {Event} ev - Click event.
      * @protected
      * @returns {void}
      */
-    _toggleAudio() {
+    _toggleAudio(ev) {
+        stopClickEventPropagation(ev);
+
         this.props.dispatch(toggleAudioMuted());
     }
 
     /**
      * Dispatches action to toggle the mute state of the video/camera.
      *
+     * @param {Event} ev - Click event.
      * @protected
      * @returns {void}
      */
-    _toggleVideo() {
+    _toggleVideo(ev) {
+        stopClickEventPropagation(ev);
+
         this.props.dispatch(toggleVideoMuted());
     }
 }
@@ -129,4 +138,18 @@ export function mapStateToProps(state) {
         audioMuted: media.audio.muted,
         videoMuted: media.video.muted
     };
+}
+
+/**
+ * Stops click event propagation in browser environment.
+ *
+ * @param {Event} ev - Click event.
+ * @returns {void}
+ */
+function stopClickEventPropagation(ev) {
+    // Stop click event propagation in browser environment. In native
+    // environment event doesn't propagate, so do nothing.
+    if (ev && ev.stopPropagation) {
+        ev.stopPropagation();
+    }
 }
